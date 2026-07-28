@@ -3,106 +3,741 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Disney Cruise Line FAQ | Cruising Cove</title>
-<meta name="description" content="The most common questions about Disney Cruise Line, answered plainly — passports, age requirements, alcohol policy, seasickness, what's included, and more.">
+<title>Cruising Cove — Plan your Disney cruise like you already know the ship</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Big+Shoulders+Display:wght@400;600;700;800&family=Karla:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-deep:#0A2733;
+    --navy-mid:#123B4E;
+    --teal:#1E6E79;
+    --seafoam:#CFE6DC;
+    --sand:#BFE3DA;
+    --white:#FBF9F1;
+    --brass:#C6A044;
+    --brass-light:#E3C878;
+    --ink:#0A2733;
+    --ink-soft:#3C5560;
+    --shadow: 0 12px 30px -14px rgba(10,39,51,0.35);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--sand);
+    color:var(--ink);
+    font-family:'Karla',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .eyebrow{
+    font-family:'Big Shoulders Display',sans-serif;
+    font-weight:700;
+    letter-spacing:0.22em;
+    text-transform:uppercase;
+    font-size:0.78rem;
+    color:var(--brass);
+  }
+  h1,h2,h3{
+    font-family:'Bodoni Moda',serif;
+    margin:0;
+    color:var(--ink);
+    letter-spacing:-0.01em;
+  }
+  a{color:inherit;}
+  img,svg{display:block;max-width:100%;}
+
+  /* ---------- NAV ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(10,39,51,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid rgba(198,160,68,0.25);
+  }
+  .nav-wrap{
+    max-width:1180px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 28px;gap:16px;
+  }
+  .wordmark{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;}
+  .wordmark span{
+    font-family:'Big Shoulders Display',sans-serif;
+    font-weight:800;font-size:1.35rem;letter-spacing:0.04em;
+    color:var(--white);text-transform:uppercase;
+  }
+  .nav-right{display:flex;align-items:center;gap:24px;}
+  .nav-links{display:flex;gap:30px;align-items:center;}
+  .nav-links a{
+    font-family:'Big Shoulders Display',sans-serif;
+    font-weight:600;font-size:0.92rem;letter-spacing:0.05em;
+    text-transform:uppercase;color:var(--seafoam);text-decoration:none;
+    padding-bottom:3px;border-bottom:2px solid transparent;
+    transition:border-color .2s ease, color .2s ease;
+  }
+  .nav-links a:hover{border-color:var(--brass);color:var(--white);}
+  .nav-ctas{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+  .nav-cta{
+    font-family:'Big Shoulders Display',sans-serif;
+    font-weight:700;font-size:0.88rem;letter-spacing:0.05em;text-transform:uppercase;
+    background:var(--brass);color:var(--navy-deep);
+    padding:10px 20px;border-radius:2px;text-decoration:none;white-space:nowrap;
+    border:1px solid var(--brass);
+    transition:background .2s ease, transform .15s ease;
+  }
+  .nav-cta:hover{background:var(--brass-light);transform:translateY(-1px);}
+  .nav-cta-ghost{
+    font-family:'Big Shoulders Display',sans-serif;
+    font-weight:700;font-size:0.88rem;letter-spacing:0.05em;text-transform:uppercase;
+    color:var(--brass-light);background:transparent;
+    padding:9px 18px;border-radius:2px;text-decoration:none;white-space:nowrap;
+    border:1px solid rgba(198,160,68,0.55);
+    transition:background .2s ease, border-color .2s ease, color .2s ease;
+  }
+  .nav-cta-ghost:hover{background:rgba(198,160,68,0.12);border-color:var(--brass-light);color:var(--white);}
+  @media (max-width:860px){ .nav-links{display:none;} }
+  @media (max-width:520px){
+    .nav-cta-ghost{padding:8px 12px;font-size:0.78rem;}
+    .nav-cta{padding:8px 14px;font-size:0.78rem;}
+    .nav-ctas{gap:8px;}
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;overflow:hidden;
+    background:
+      radial-gradient(120% 90% at 50% -10%, var(--navy-mid) 0%, var(--navy-deep) 55%, #06181F 100%);
+    color:var(--white);
+    padding:88px 28px 0;
+  }
+  .starfield{
+    position:absolute;inset:0;pointer-events:none;
+    background-image:
+      radial-gradient(1.5px 1.5px at 20% 22%, rgba(251,249,241,0.7), transparent 60%),
+      radial-gradient(1.5px 1.5px at 68% 12%, rgba(251,249,241,0.5), transparent 60%),
+      radial-gradient(1px 1px at 85% 30%, rgba(251,249,241,0.6), transparent 60%),
+      radial-gradient(1px 1px at 12% 45%, rgba(251,249,241,0.4), transparent 60%),
+      radial-gradient(1.5px 1.5px at 50% 8%, rgba(251,249,241,0.5), transparent 60%),
+      radial-gradient(1px 1px at 92% 55%, rgba(251,249,241,0.4), transparent 60%),
+      radial-gradient(1px 1px at 35% 15%, rgba(251,249,241,0.55), transparent 60%);
+    background-repeat:no-repeat;
+    animation:twinkle 5s ease-in-out infinite alternate;
+  }
+  @keyframes twinkle{ from{opacity:0.5;} to{opacity:1;} }
+  @media (prefers-reduced-motion: reduce){ .starfield{animation:none;opacity:0.8;} }
+
+  .firework{
+    position:absolute;width:150px;height:150px;opacity:0;pointer-events:none;
+    animation:fw-burst 4s ease-out infinite;
+    filter:drop-shadow(0 0 8px rgba(255,255,255,0.35));
+  }
+  .firework svg{width:100%;height:100%;}
+  .fw1{top:8%;left:10%;animation-delay:0.2s;}
+  .fw2{top:4%;right:12%;width:130px;height:130px;animation-delay:1.4s;}
+  .fw3{top:20%;right:34%;width:100px;height:100px;animation-delay:2.6s;}
+  .fw4{top:14%;left:34%;width:110px;height:110px;animation-delay:3.6s;}
+  .fw5{top:2%;left:52%;width:90px;height:90px;animation-delay:0.9s;}
+  @keyframes fw-burst{
+    0%{ transform:scale(0.25); opacity:0; }
+    22%{ opacity:1; }
+    55%{ opacity:0.55; }
+    100%{ transform:scale(1.25); opacity:0; }
+  }
+  @media (prefers-reduced-motion: reduce){ .firework{animation:none;display:none;} }
+  .hero-inner{
+    max-width:760px;margin:0 auto;text-align:center;
+    position:relative;z-index:2;
+  }
+  .hero h1{
+    font-size:clamp(2.4rem,4.6vw,3.6rem);
+    color:var(--white);line-height:1.06;font-weight:600;
+    margin:18px auto 22px;
+  }
+  .hero h1 em{font-style:italic;color:var(--brass-light);}
+  .hero p.lede{
+    font-size:1.08rem;line-height:1.65;color:var(--seafoam);
+    max-width:52ch;margin:0 auto 32px;
+  }
+  .hero-ctas{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;}
+  .btn-primary{
+    font-family:'Big Shoulders Display',sans-serif;font-weight:700;
+    letter-spacing:0.04em;text-transform:uppercase;font-size:0.95rem;
+    background:var(--brass);color:var(--navy-deep);
+    padding:15px 28px;border-radius:2px;text-decoration:none;
+    border:1px solid var(--brass);
+    transition:background .2s ease, transform .15s ease;
+  }
+  .btn-primary:hover{background:var(--brass-light);transform:translateY(-2px);box-shadow:0 10px 26px -8px rgba(230,193,110,0.55);}
+  .btn-ghost{
+    font-family:'Big Shoulders Display',sans-serif;font-weight:700;
+    letter-spacing:0.04em;text-transform:uppercase;font-size:0.95rem;
+    color:var(--white);padding:15px 22px;text-decoration:none;
+    border:1px solid rgba(251,249,241,0.35);border-radius:2px;
+    transition:border-color .2s ease, background .2s ease;
+  }
+  .btn-ghost:hover{border-color:var(--brass-light);background:rgba(251,249,241,0.06);}
+
+  /* wave divider */
+  .wave{display:block;width:100%;height:60px;position:relative;z-index:1;}
+
+  /* ---------- MARQUEE ---------- */
+  .marquee{
+    position:relative;
+    background:linear-gradient(180deg, #06181F 0%, #0C2836 100%);
+    overflow:hidden;padding:14px 0 0;
+  }
+  .marquee-track{
+    display:flex;gap:48px;white-space:nowrap;width:max-content;
+    animation:scroll 34s linear infinite;
+    padding-bottom:14px;
+  }
+  @media (prefers-reduced-motion: reduce){ .marquee-track{animation:none;} }
+  @keyframes scroll{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+  .marquee-track span{
+    font-family:'Big Shoulders Display',sans-serif;font-weight:700;
+    letter-spacing:0.14em;font-size:0.95rem;color:rgba(251,249,241,0.55);
+    text-transform:uppercase;
+  }
+  .marquee-track span.dot{color:var(--brass);}
+
+  /* ---------- PROBLEM SECTION ---------- */
+  .section{max-width:1180px;margin:0 auto;padding:96px 28px;}
+  .section + .section{padding-top:32px;}
+  .section-head{max-width:640px;margin-bottom:52px;}
+  .section-head h2{font-size:clamp(1.8rem,3.4vw,2.5rem);line-height:1.15;margin-top:12px;font-weight:600;}
+
+  .magic-word{
+    font-style:italic;
+    background:linear-gradient(90deg,
+      #8A6415 0%, #B08A2A 22%, #C6A044 38%, #F4D98A 50%,
+      #C6A044 62%, #B08A2A 78%, #8A6415 100%);
+    background-size:250% auto;
+    -webkit-background-clip:text; background-clip:text;
+    color:transparent;
+    -webkit-text-stroke:0.4px rgba(10,39,51,0.3);
+    text-shadow:0 1px 1px rgba(10,39,51,0.18);
+    animation:shimmer 4.5s linear infinite;
+  }
+  @keyframes shimmer{
+    0%{ background-position:200% center; }
+    100%{ background-position:-50% center; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .magic-word{ animation:none; background-position:0% center; }
+  }
+
+  .card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .card-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;}
+  .card-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+  @media (max-width:860px){ .card-grid{grid-template-columns:1fr;} .card-grid-2{grid-template-columns:1fr;} .card-grid-4{grid-template-columns:1fr 1fr;} }
+  @media (max-width:560px){ .card-grid-4{grid-template-columns:1fr;} }
+  .tag-card{
+    background:var(--white);border:1px solid rgba(10,39,51,0.1);
+    border-top:4px solid var(--teal);
+    padding:28px 24px 26px;border-radius:3px;box-shadow:var(--shadow);
+    position:relative;
+  }
+  .tag-card .hole{
+    position:absolute;top:14px;right:16px;width:12px;height:12px;border-radius:50%;
+    background:var(--sand);border:2px solid rgba(10,39,51,0.15);
+  }
+  .tag-card h3{font-size:1.2rem;font-weight:600;margin-bottom:10px;line-height:1.3;}
+  .tag-card p{font-size:0.96rem;line-height:1.6;color:var(--ink-soft);margin:0;}
+
+  /* ---------- DECK / FEATURES ---------- */
+  .decks{background:var(--navy-deep);color:var(--white);}
+  .decks .section-head .eyebrow{color:var(--brass-light);}
+  .decks .section-head h2{color:var(--white);}
+  .decks .section-head p{color:var(--seafoam);margin-top:14px;line-height:1.6;max-width:56ch;}
+  .deck-list{display:flex;flex-direction:column;border-top:1px solid rgba(251,249,241,0.14);}
+  .deck-row{
+    display:grid;grid-template-columns:120px 1fr 44px;align-items:center;gap:26px;
+    padding:30px 6px;border-bottom:1px solid rgba(251,249,241,0.14);
+    transition:background .2s ease;
+  }
+  .deck-row:hover{background:rgba(251,249,241,0.04);}
+  .deck-label{
+    font-family:'Big Shoulders Display',sans-serif;font-weight:800;
+    color:var(--brass);font-size:1.05rem;letter-spacing:0.06em;
+  }
+  .deck-label small{
+    display:block;font-family:'Karla',sans-serif;font-weight:400;
+    color:var(--seafoam);letter-spacing:0;font-size:0.72rem;margin-top:2px;
+    text-transform:none;
+  }
+  .deck-body h3{font-size:1.32rem;color:var(--white);font-weight:600;margin-bottom:6px;}
+  .deck-body p{margin:0;color:var(--seafoam);font-size:0.97rem;line-height:1.6;max-width:60ch;}
+  .deck-icon{width:34px;height:34px;color:var(--brass-light);justify-self:end;}
+  @media (max-width:700px){
+    .deck-row{grid-template-columns:1fr;gap:10px;padding:24px 4px;}
+    .deck-icon{justify-self:start;}
+  }
+  .decks .price-note{
+    margin-top:34px;font-family:'Big Shoulders Display',sans-serif;
+    font-weight:700;letter-spacing:0.05em;text-transform:uppercase;font-size:0.9rem;
+    color:var(--brass-light);
+  }
+
+  /* ---------- AGENT BAND ---------- */
+  .agent-band{
+    background:linear-gradient(120deg, var(--teal), var(--navy-mid));
+    color:var(--white);position:relative;overflow:hidden;
+  }
+  .agent-inner{
+    max-width:1180px;margin:0 auto;padding:88px 28px;
+    display:grid;grid-template-columns:1.1fr 0.9fr;gap:40px;align-items:center;
+  }
+  .agent-inner h2{color:var(--white);font-size:clamp(1.7rem,3vw,2.3rem);font-weight:600;line-height:1.2;}
+  .agent-inner p{color:var(--seafoam);line-height:1.65;font-size:1.02rem;max-width:52ch;margin:16px 0 28px;}
+  .agent-card{
+    background:rgba(251,249,241,0.08);border:1px solid rgba(251,249,241,0.22);
+    border-radius:4px;padding:26px;backdrop-filter:blur(2px);
+  }
+  .agent-card .badge{
+    display:inline-block;font-family:'Big Shoulders Display',sans-serif;
+    font-weight:700;font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;
+    color:var(--navy-deep);background:var(--brass-light);
+    padding:5px 10px;border-radius:2px;margin-bottom:14px;
+  }
+  .agent-card p{color:var(--white);font-size:0.94rem;margin:0 0 6px;line-height:1.5;}
+  .agent-card .fine{color:var(--seafoam);font-size:0.82rem;}
+  @media (max-width:860px){ .agent-inner{grid-template-columns:1fr;} }
+
+  /* ---------- FOOTER ---------- */
+  footer{background:var(--navy-deep);color:var(--seafoam);border-top:1px solid rgba(198,160,68,0.25);}
+  .footer-inner{max-width:1180px;margin:0 auto;padding:56px 28px 40px;}
+  .footer-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:24px;margin-bottom:34px;}
+  .footer-links{display:flex;gap:26px;flex-wrap:wrap;}
+  .footer-links a{
+    font-family:'Big Shoulders Display',sans-serif;font-weight:600;font-size:0.85rem;
+    letter-spacing:0.05em;text-transform:uppercase;text-decoration:none;color:var(--seafoam);
+  }
+  .footer-links a:hover{color:var(--brass-light);}
+  .disclaimer{
+    font-size:0.82rem;line-height:1.6;color:rgba(207,230,220,0.55);
+    border-top:1px solid rgba(251,249,241,0.12);padding-top:22px;max-width:70ch;
+  }
+
+  /* reveal on scroll */
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease, transform .6s ease;}
+  .reveal.in{opacity:1;transform:none;}
+  @media (prefers-reduced-motion: reduce){ .reveal{opacity:1;transform:none;transition:none;} }
+</style>
 </head>
 <body>
 
-<nav class="site-nav">
-  <a class="brand" href="../index.html">Cruising<span>&middot;</span>Cove</a>
-  <button class="nav-toggle" aria-label="Menu" aria-expanded="false" onclick="var m=document.getElementById('siteMenu');var open=m.classList.toggle('open');this.setAttribute('aria-expanded',open);">
-    <span></span><span></span><span></span>
-  </button>
-  <div class="nav-menu" id="siteMenu">
-    <a href="../ships/index.html">Ships</a>
-    <a href="../ports/index.html">Destinations</a>
-    <a href="../excursions/index.html">Port Excursions</a>
-    <a href="../decorations/index.html">Decorations</a>
-    <a href="../pirate-night/index.html">Pirate Night</a>
-    <a href="../special-cruises/index.html">Special Cruises</a>
-    <a href="../faq/index.html">FAQ</a>
-    <a class="nav-cta" href="../agents/index.html">Travel Agents</a>
+<header>
+  <div class="nav-wrap">
+    <a class="wordmark" href="#top">
+      <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+        <circle cx="15" cy="15" r="13" stroke="#C6A044" stroke-width="2"/>
+        <path d="M6 16c2-3 4-3 6 0s4 3 6 0 4-3 6 0" stroke="#E3C878" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+      </svg>
+      <span>Cruising Cove</span>
+    </a>
+    <div class="nav-right">
+      <nav class="nav-links">
+        <a href="/ships/">Ships</a>
+        <a href="/planning/disney-cruise-cost.html">Plan Your Sailing</a>
+        <a href="/ports/">Ports</a>
+      </nav>
+      <div class="nav-ctas">
+        <a href="/agents/" class="nav-cta-ghost">Find an Agent</a>
+        <a href="#" class="nav-cta">Get the App</a>
+      </div>
+    </div>
   </div>
-</nav>
+</header>
 
-<div class="page-hero">
-  <div class="page-hero-inner">
-    <span class="eyebrow mono">Frequently asked</span>
-    <h1>The questions everyone <em>actually asks.</em></h1>
-    <p class="lede">
-      Real, commonly-asked questions about Disney Cruise Line, answered plainly &mdash; no fluff, no guessing.
-    </p>
-  </div>
-  
-  <div class="tide" aria-hidden="true">
-    <svg viewBox="0 0 1200 56" preserveAspectRatio="none">
-      <path d="M0,28 C150,50 300,6 450,28 C600,50 750,6 900,28 C1050,50 1150,18 1200,26 L1200,56 L0,56 Z" fill="#F1E3C0"></path>
-    </svg>
-  </div>
+<section class="hero" id="top">
+  <div class="starfield"></div>
 
+  <div class="firework fw1"><svg viewBox="0 0 200 200" fill="none">
+    <defs><radialGradient id="fwGlow1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9"/>
+      <stop offset="40%" stop-color="#E3C878" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#E3C878" stop-opacity="0"/>
+    </radialGradient></defs>
+    <circle cx="100" cy="100" r="22" fill="url(#fwGlow1)"/>
+    <g stroke="#E3C878" stroke-linecap="round">
+      <line x1="100" y1="100" x2="182" y2="100" stroke-width="2.6"/>
+      <line x1="100" y1="100" x2="159" y2="134" stroke-width="1.8"/>
+      <line x1="100" y1="100" x2="145" y2="178" stroke-width="2.4"/>
+      <line x1="100" y1="100" x2="100" y2="174" stroke-width="1.6"/>
+      <line x1="100" y1="100" x2="57" y2="175" stroke-width="2.6"/>
+      <line x1="100" y1="100" x2="39" y2="135" stroke-width="1.8"/>
+      <line x1="100" y1="100" x2="12" y2="100" stroke-width="2.4"/>
+      <line x1="100" y1="100" x2="34" y2="62" stroke-width="1.6"/>
+      <line x1="100" y1="100" x2="58" y2="27" stroke-width="2.6"/>
+      <line x1="100" y1="100" x2="100" y2="34" stroke-width="1.8"/>
+      <line x1="100" y1="100" x2="146" y2="20" stroke-width="2.4"/>
+      <line x1="100" y1="100" x2="168" y2="61" stroke-width="1.6"/>
+    </g>
+    <g fill="#E3C878">
+      <circle cx="182" cy="100" r="2.4"/><circle cx="159" cy="134" r="1.8"/>
+      <circle cx="145" cy="178" r="2.2"/><circle cx="100" cy="174" r="1.6"/>
+      <circle cx="57" cy="175" r="2.4"/><circle cx="39" cy="135" r="1.8"/>
+      <circle cx="12" cy="100" r="2.2"/><circle cx="34" cy="62" r="1.6"/>
+      <circle cx="58" cy="27" r="2.4"/><circle cx="100" cy="34" r="1.8"/>
+      <circle cx="146" cy="20" r="2.2"/><circle cx="168" cy="61" r="1.6"/>
+    </g>
+    <g fill="#E3C878" opacity="0.5">
+      <circle cx="145" cy="100" r="1.4"/><circle cx="132" cy="119" r="1.1"/>
+      <circle cx="125" cy="143" r="1.3"/><circle cx="100" cy="141" r="1"/>
+      <circle cx="76" cy="141" r="1.4"/><circle cx="66" cy="119" r="1.1"/>
+      <circle cx="52" cy="100" r="1.3"/><circle cx="64" cy="79" r="1"/>
+      <circle cx="77" cy="60" r="1.4"/><circle cx="100" cy="64" r="1.1"/>
+      <circle cx="125" cy="56" r="1.3"/><circle cx="137" cy="79" r="1"/>
+    </g>
+    <circle cx="100" cy="100" r="3" fill="#FFFFFF"/>
+  </svg></div>
+
+  <div class="firework fw2"><svg viewBox="0 0 200 200" fill="none">
+    <defs><radialGradient id="fwGlow2" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9"/>
+      <stop offset="40%" stop-color="#EF8C6B" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#EF8C6B" stop-opacity="0"/>
+    </radialGradient></defs>
+    <circle cx="100" cy="100" r="20" fill="url(#fwGlow2)"/>
+    <g stroke="#EF8C6B" stroke-linecap="round">
+      <line x1="100" y1="100" x2="182" y2="100" stroke-width="2.4"/>
+      <line x1="100" y1="100" x2="159" y2="134" stroke-width="1.6"/>
+      <line x1="100" y1="100" x2="145" y2="178" stroke-width="2.2"/>
+      <line x1="100" y1="100" x2="100" y2="174" stroke-width="1.5"/>
+      <line x1="100" y1="100" x2="57" y2="175" stroke-width="2.4"/>
+      <line x1="100" y1="100" x2="39" y2="135" stroke-width="1.6"/>
+      <line x1="100" y1="100" x2="12" y2="100" stroke-width="2.2"/>
+      <line x1="100" y1="100" x2="34" y2="62" stroke-width="1.5"/>
+      <line x1="100" y1="100" x2="58" y2="27" stroke-width="2.4"/>
+      <line x1="100" y1="100" x2="100" y2="34" stroke-width="1.6"/>
+      <line x1="100" y1="100" x2="146" y2="20" stroke-width="2.2"/>
+      <line x1="100" y1="100" x2="168" y2="61" stroke-width="1.5"/>
+    </g>
+    <g fill="#EF8C6B">
+      <circle cx="182" cy="100" r="2.2"/><circle cx="159" cy="134" r="1.6"/>
+      <circle cx="145" cy="178" r="2"/><circle cx="100" cy="174" r="1.5"/>
+      <circle cx="57" cy="175" r="2.2"/><circle cx="39" cy="135" r="1.6"/>
+      <circle cx="12" cy="100" r="2"/><circle cx="34" cy="62" r="1.5"/>
+      <circle cx="58" cy="27" r="2.2"/><circle cx="100" cy="34" r="1.6"/>
+      <circle cx="146" cy="20" r="2"/><circle cx="168" cy="61" r="1.5"/>
+    </g>
+    <circle cx="100" cy="100" r="3" fill="#FFFFFF"/>
+  </svg></div>
+
+  <div class="firework fw3"><svg viewBox="0 0 200 200" fill="none">
+    <defs><radialGradient id="fwGlow3" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.85"/>
+      <stop offset="40%" stop-color="#6FD8C8" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#6FD8C8" stop-opacity="0"/>
+    </radialGradient></defs>
+    <circle cx="100" cy="100" r="18" fill="url(#fwGlow3)"/>
+    <g stroke="#6FD8C8" stroke-linecap="round" opacity="0.92">
+      <line x1="100" y1="100" x2="182" y2="100" stroke-width="2.2"/>
+      <line x1="100" y1="100" x2="159" y2="134" stroke-width="1.5"/>
+      <line x1="100" y1="100" x2="145" y2="178" stroke-width="2"/>
+      <line x1="100" y1="100" x2="100" y2="174" stroke-width="1.4"/>
+      <line x1="100" y1="100" x2="57" y2="175" stroke-width="2.2"/>
+      <line x1="100" y1="100" x2="39" y2="135" stroke-width="1.5"/>
+      <line x1="100" y1="100" x2="12" y2="100" stroke-width="2"/>
+      <line x1="100" y1="100" x2="34" y2="62" stroke-width="1.4"/>
+      <line x1="100" y1="100" x2="58" y2="27" stroke-width="2.2"/>
+      <line x1="100" y1="100" x2="100" y2="34" stroke-width="1.5"/>
+      <line x1="100" y1="100" x2="146" y2="20" stroke-width="2"/>
+      <line x1="100" y1="100" x2="168" y2="61" stroke-width="1.4"/>
+    </g>
+    <g fill="#6FD8C8">
+      <circle cx="182" cy="100" r="2"/><circle cx="159" cy="134" r="1.5"/>
+      <circle cx="145" cy="178" r="1.8"/><circle cx="100" cy="174" r="1.4"/>
+      <circle cx="57" cy="175" r="2"/><circle cx="39" cy="135" r="1.5"/>
+      <circle cx="12" cy="100" r="1.8"/><circle cx="34" cy="62" r="1.4"/>
+      <circle cx="58" cy="27" r="2"/><circle cx="100" cy="34" r="1.5"/>
+      <circle cx="146" cy="20" r="1.8"/><circle cx="168" cy="61" r="1.4"/>
+    </g>
+    <circle cx="100" cy="100" r="2.6" fill="#FFFFFF"/>
+  </svg></div>
+
+  <div class="firework fw4"><svg viewBox="0 0 200 200" fill="none">
+    <defs><radialGradient id="fwGlow4" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9"/>
+      <stop offset="40%" stop-color="#E38FA8" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#E38FA8" stop-opacity="0"/>
+    </radialGradient></defs>
+    <circle cx="100" cy="100" r="20" fill="url(#fwGlow4)"/>
+    <g stroke="#E38FA8" stroke-linecap="round">
+      <line x1="100" y1="100" x2="182" y2="100" stroke-width="2.4"/>
+      <line x1="100" y1="100" x2="159" y2="134" stroke-width="1.6"/>
+      <line x1="100" y1="100" x2="145" y2="178" stroke-width="2.2"/>
+      <line x1="100" y1="100" x2="100" y2="174" stroke-width="1.5"/>
+      <line x1="100" y1="100" x2="57" y2="175" stroke-width="2.4"/>
+      <line x1="100" y1="100" x2="39" y2="135" stroke-width="1.6"/>
+      <line x1="100" y1="100" x2="12" y2="100" stroke-width="2.2"/>
+      <line x1="100" y1="100" x2="34" y2="62" stroke-width="1.5"/>
+      <line x1="100" y1="100" x2="58" y2="27" stroke-width="2.4"/>
+      <line x1="100" y1="100" x2="100" y2="34" stroke-width="1.6"/>
+      <line x1="100" y1="100" x2="146" y2="20" stroke-width="2.2"/>
+      <line x1="100" y1="100" x2="168" y2="61" stroke-width="1.5"/>
+    </g>
+    <g fill="#E38FA8" opacity="0.55">
+      <circle cx="145" cy="100" r="1.3"/><circle cx="132" cy="119" r="1"/>
+      <circle cx="125" cy="143" r="1.2"/><circle cx="100" cy="141" r="0.9"/>
+      <circle cx="76" cy="141" r="1.3"/><circle cx="66" cy="119" r="1"/>
+      <circle cx="52" cy="100" r="1.2"/><circle cx="64" cy="79" r="0.9"/>
+      <circle cx="77" cy="60" r="1.3"/><circle cx="100" cy="64" r="1"/>
+      <circle cx="125" cy="56" r="1.2"/><circle cx="137" cy="79" r="0.9"/>
+    </g>
+    <g fill="#E38FA8">
+      <circle cx="182" cy="100" r="2.2"/><circle cx="159" cy="134" r="1.6"/>
+      <circle cx="145" cy="178" r="2"/><circle cx="100" cy="174" r="1.5"/>
+      <circle cx="57" cy="175" r="2.2"/><circle cx="39" cy="135" r="1.6"/>
+      <circle cx="12" cy="100" r="2"/><circle cx="34" cy="62" r="1.5"/>
+      <circle cx="58" cy="27" r="2.2"/><circle cx="100" cy="34" r="1.6"/>
+      <circle cx="146" cy="20" r="2"/><circle cx="168" cy="61" r="1.5"/>
+    </g>
+    <circle cx="100" cy="100" r="3" fill="#FFFFFF"/>
+  </svg></div>
+
+  <div class="firework fw5"><svg viewBox="0 0 200 200" fill="none">
+    <defs><radialGradient id="fwGlow5" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.85"/>
+      <stop offset="40%" stop-color="#9FD3EC" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#9FD3EC" stop-opacity="0"/>
+    </radialGradient></defs>
+    <circle cx="100" cy="100" r="18" fill="url(#fwGlow5)"/>
+    <g stroke="#9FD3EC" stroke-linecap="round" opacity="0.9">
+      <line x1="100" y1="100" x2="182" y2="100" stroke-width="2.1"/>
+      <line x1="100" y1="100" x2="159" y2="134" stroke-width="1.4"/>
+      <line x1="100" y1="100" x2="145" y2="178" stroke-width="1.9"/>
+      <line x1="100" y1="100" x2="100" y2="174" stroke-width="1.3"/>
+      <line x1="100" y1="100" x2="57" y2="175" stroke-width="2.1"/>
+      <line x1="100" y1="100" x2="39" y2="135" stroke-width="1.4"/>
+      <line x1="100" y1="100" x2="12" y2="100" stroke-width="1.9"/>
+      <line x1="100" y1="100" x2="34" y2="62" stroke-width="1.3"/>
+      <line x1="100" y1="100" x2="58" y2="27" stroke-width="2.1"/>
+      <line x1="100" y1="100" x2="100" y2="34" stroke-width="1.4"/>
+      <line x1="100" y1="100" x2="146" y2="20" stroke-width="1.9"/>
+      <line x1="100" y1="100" x2="168" y2="61" stroke-width="1.3"/>
+    </g>
+    <g fill="#9FD3EC">
+      <circle cx="182" cy="100" r="1.9"/><circle cx="159" cy="134" r="1.4"/>
+      <circle cx="145" cy="178" r="1.7"/><circle cx="100" cy="174" r="1.3"/>
+      <circle cx="57" cy="175" r="1.9"/><circle cx="39" cy="135" r="1.4"/>
+      <circle cx="12" cy="100" r="1.7"/><circle cx="34" cy="62" r="1.3"/>
+      <circle cx="58" cy="27" r="1.9"/><circle cx="100" cy="34" r="1.4"/>
+      <circle cx="146" cy="20" r="1.7"/><circle cx="168" cy="61" r="1.3"/>
+    </g>
+    <circle cx="100" cy="100" r="2.6" fill="#FFFFFF"/>
+  </svg></div>
+
+  <div class="hero-inner">
+    <p class="eyebrow">Disney Cruise Line, decoded</p>
+    <h1>Chart your course<br>before you ever <em>board</em>.</h1>
+    <p class="lede">Every ship, every stateroom, every port — all in one place, so you can plan with confidence, whether you're booking a year out or just a few weeks away.</p>
+    <div class="hero-ctas">
+      <a href="/planning/disney-cruise-cost.html" class="btn-primary">Explore your ship</a>
+      <a href="#decks" class="btn-ghost">See what's free</a>
+    </div>
+  </div>
+</section>
+
+<div class="marquee">
+  <div class="marquee-track">
+    <span>MAGIC</span><span class="dot">·</span><span>WONDER</span><span class="dot">·</span><span>DREAM</span><span class="dot">·</span><span>FANTASY</span><span class="dot">·</span><span>WISH</span><span class="dot">·</span><span>TREASURE</span><span class="dot">·</span><span>DESTINY</span><span class="dot">·</span><span>ADVENTURE</span><span class="dot">·</span>
+    <span>MAGIC</span><span class="dot">·</span><span>WONDER</span><span class="dot">·</span><span>DREAM</span><span class="dot">·</span><span>FANTASY</span><span class="dot">·</span><span>WISH</span><span class="dot">·</span><span>TREASURE</span><span class="dot">·</span><span>DESTINY</span><span class="dot">·</span><span>ADVENTURE</span><span class="dot">·</span>
+  </div>
+  <svg class="wave" viewBox="0 0 1440 60" preserveAspectRatio="none">
+    <path d="M0 30 C 240 60, 480 0, 720 30 C 960 60, 1200 0, 1440 30 L1440 60 L0 60 Z" fill="#BFE3DA"/>
+  </svg>
 </div>
 
-<main>
-  
-  <section id="faq-1">
-    <h2>Do I need a passport for a Disney cruise?</h2>
-    <p>For "closed-loop" sailings &mdash; cruises that depart from and return to the same U.S. port &mdash; U.S. citizens technically only need a certified birth certificate with a raised seal plus a government-issued photo ID (for guests 16+). <strong>A passport is still strongly recommended even when not required</strong> &mdash; it's the only document accepted if you need to fly home unexpectedly from a port, and it simplifies re-entry to the U.S. For any cruise that isn't closed-loop (international one-way sailings, repositioning cruises), a passport is required for all ages, including infants.</p>
-  </section>
+<section class="section" id="ships">
+  <div class="section-head reveal">
+    <p class="eyebrow">Why this exists</p>
+    <h2>You're planning a once-in-a-lifetime family getaway. Let us help you make it <span class="magic-word">magical</span>.</h2>
+  </div>
+  <div class="card-grid">
+    <div class="tag-card reveal"><div class="hole"></div>
+      <h3>Everything you need is out there — somewhere.</h3>
+      <p>Scattered information lives across sailing groups, blogs, and forums with no single, searchable home.</p>
+    </div>
+    <div class="tag-card reveal"><div class="hole"></div>
+      <h3>Know your stateroom before you book it</h3>
+      <p>See which rooms sit closest to the elevators, which verandahs are fully open, and real guest noise reports — so you can pick with total confidence.</p>
+    </div>
+    <div class="tag-card reveal"><div class="hole"></div>
+      <h3>Windows open once</h3>
+      <p>Check-in times, Palo, and excursions release on a schedule tied to your Castaway Club tier. We'll let you know the moment yours opens, with your wishlist ready to book.</p>
+    </div>
+  </div>
+</section>
 
-  <section id="faq-2">
-    <h2>What's the minimum age to sail?</h2>
-    <p>For most itineraries, guests must be at least <strong>6 months old</strong> at the time of embarkation. For certain repositioning cruises (South Pacific, Transatlantic, Hawaii, and Panama Canal), the minimum rises to <strong>1 year old</strong>. Separately, Disney will refuse passage to anyone who has entered, or will enter, their 24th week of pregnancy by the time the cruise ends.</p>
-  </section>
+<section class="section" id="plan">
+  <div class="section-head reveal">
+    <p class="eyebrow">Free, ship by ship</p>
+    <h2>Every kids' club, restaurant, show, and character meet-up — not just the highlights reel.</h2>
+  </div>
+  <div class="card-grid-4">
+    <div class="tag-card reveal"><div class="hole"></div>
+      <h3>Kids' clubs</h3>
+      <p>Oceaneer Club and Lab by age group, the teen-only Vibe space, and nursery care where it's offered — with drop-in hours and check-in rules for every ship in the fleet.</p>
+    </div>
+    <div class="tag-card reveal"><div class="hole"></div>
+      <h3>Restaurants</h3>
+      <p>The full rotational dining lineup, which nights land where, and how far ahead to book the reservation-only rooms like Palo and Remy before they're gone.</p>
+    </div>
+    <div class="tag-card reveal"><div class="hole"></div>
+      <h3>Shows</h3>
+      <p>Every stage production, deck party, and movie-under-the-stars listing per ship, flagged for which ones fill up first so you know what to book on day one.</p>
+    </div>
+    <div class="tag-card reveal"><div class="hole"></div>
+      <h3>Character meet-ups</h3>
+      <p>Which characters turn up on your ship and where the best photo ops are, plus how to schedule a free character phone call before you even set sail.</p>
+    </div>
+  </div>
+</section>
 
-  <section id="faq-3">
-    <h2>What's the drinking age onboard?</h2>
-    <p><strong>21, on virtually every sailing</strong> &mdash; U.S. law governs the ship on any cruise departing a U.S. port, regardless of where you are at sea. The one real exception: on select cruises departing certain overseas ports (parts of Europe, and round-trip sailings from Australia, New Zealand, or Singapore), guests 18&ndash;20 may be permitted to drink, sometimes only with a signed parental consent form. If you're sailing from the U.S., plan around 21 without exception.</p>
-  </section>
+<section class="section" id="ports">
+  <div class="section-head reveal">
+    <p class="eyebrow">Free, port by port</p>
+    <h2>Every port explained — from the day you dock to the day you fly home.</h2>
+  </div>
+  <div class="card-grid-2">
+    <div class="tag-card reveal"><div class="hole"></div>
+      <h3>Ports of call</h3>
+      <p>Age and height restrictions for every excursion, real guest reviews, local tipping norms, and exactly what to pack — DCL-run and independent operators side by side, with the one detail that actually matters: whether the ship waits if you're late.</p>
+    </div>
+    <div class="tag-card reveal"><div class="hole"></div>
+      <h3>Departure ports</h3>
+      <p>The nearest airports, where to stay the night before, and parking, rideshare, and transfer options compared by real cost and time — so the trip starts smooth, not scrambled.</p>
+    </div>
+  </div>
+</section>
 
-  <section id="faq-4">
-    <h2>Can I bring my own alcohol onboard?</h2>
-    <p>Yes, but the policy tightened in June 2026. Guests 21+ may now bring <strong>one unopened bottle of wine or champagne, plus six beers</strong>, packed in carry-on luggage at embarkation only. This is down from the previous allowance of two bottles, and <strong>you can no longer replenish your alcohol allotment at each port</strong> &mdash; that used to be allowed and no longer is. You can still buy alcohol at a port stop, but Disney holds it until the end of the cruise rather than letting you bring it onboard immediately.</p>
-  </section>
+<section class="section" id="save">
+  <div class="section-head reveal">
+    <p class="eyebrow">Free, dollar by dollar</p>
+    <h2>Real ways to save before you ever swipe a card onboard.</h2>
+  </div>
+  <div class="card-grid">
+    <div class="tag-card reveal"><div class="hole"></div>
+      <h3>Stack the Target discount</h3>
+      <p>Disney Gift Cards bought with a Target Circle Card (formerly RedCard) get an automatic 5% off — and Disney accepts gift cards toward your deposit, final payment, and onboard spending.</p>
+    </div>
+    <div class="tag-card reveal"><div class="hole"></div>
+      <h3>Six months, no interest</h3>
+      <p>Book directly through Disney Cruise Line and pay with a Chase Disney Visa or Disney Premier Visa, and the balance qualifies for 0% promotional APR for six months from the purchase date — a perk of the Disney-branded cards specifically, not Chase cards in general.</p>
+    </div>
+    <div class="tag-card reveal"><div class="hole"></div>
+      <h3>Check the warehouse clubs</h3>
+      <p>Sam's Club and BJ's Wholesale periodically sell Disney Gift Cards below face value, sometimes on top of the Target discount — worth a look before a big payment comes due.</p>
+    </div>
+  </div>
+  <p style="margin-top:26px;font-size:0.85rem;color:var(--ink-soft);max-width:70ch;">Card terms and retailer discounts change often — we'll keep this page current, and it's always worth confirming the offer at checkout.</p>
+</section>
 
-  <section id="faq-5">
-    <h2>Will I get seasick?</h2>
-    <p>For most people, no. Modern cruise ships (including every DCL ship) have stabilizers that largely eliminate side-to-side rolling, and DCL's larger ships in particular are quite stable in typical Caribbean and Bahamas conditions. If you're prone to motion sickness, the ship's medical center can provide remedies, and booking a stateroom on a lower, more midship deck (see each ship's stateroom guide) minimizes motion further.</p>
-  </section>
+<section class="decks" id="decks">
 
-  <section id="faq-6">
-    <h2>What's actually included in the cruise fare, and what isn't?</h2>
-    <p>Included: your stateroom, all rotational dining, entertainment, youth clubs, and most private-island beach access including the BBQ lunch. Not included: gratuities, specialty dining (Palo, Remy, Enchant&eacute;), alcohol, Wi-Fi, spa services, and excursions. See the <a href='../planning/disney-cruise-cost.html' style='color:var(--water-deep); border-bottom:2px solid var(--sunset);'>full cost breakdown</a> for real numbers on each of these.</p>
-  </section>
+  <div class="section">
+    <div class="section-head reveal">
+      <p class="eyebrow">Below deck</p>
+      <h2>The extra detail that makes your Disney cruise even better.</h2>
+      <p>Four decks of premium detail, unlocked once — the reference content above stays free forever.</p>
+    </div>
 
-  <section id="faq-7">
-    <h2>How far in advance should I book?</h2>
-    <p>Earlier than most first-time cruisers expect. Popular sailings (school breaks, holiday weeks) and the best stateroom categories can sell out 9&ndash;12 months ahead, and Castaway Club returning-guest booking windows open even earlier for repeat cruisers. Booking early also means more time for the price-monitoring benefit a travel agent provides (see our <a href='../agents/index.html' style='color:var(--water-deep); border-bottom:2px solid var(--sunset);'>Travel Agents page</a>) to actually pay off if the fare drops before you sail.</p>
-  </section>
+    <div class="deck-list">
+      <div class="deck-row reveal">
+        <div class="deck-label">DECK 1<small>Cabin intel</small></div>
+        <div class="deck-body">
+          <h3>Stateroom-level cabin intelligence</h3>
+          <p>Obstructed verandahs, undersized rooms, connecting maps, and guest noise reports with dates attached — not just the category overview.</p>
+        </div>
+        <svg class="deck-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/></svg>
+      </div>
+      <div class="deck-row reveal">
+        <div class="deck-label">DECK 2<small>Offline</small></div>
+        <div class="deck-body">
+          <h3>Everything cached, no signal required</h3>
+          <p>Deck plans, menus, port maps, and your itinerary — all saved at unlock, for when onboard wifi is paid, slow, and exactly when you need it most.</p>
+        </div>
+        <svg class="deck-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 10a12 12 0 0 1 16 0M7 13.5a7.5 7.5 0 0 1 10 0M10 17a3 3 0 0 1 4 0"/><circle cx="12" cy="20" r="0.8" fill="currentColor" stroke="none"/></svg>
+      </div>
+      <div class="deck-row reveal">
+        <div class="deck-label">DECK 3<small>Alerts</small></div>
+        <div class="deck-body">
+          <h3>Booking windows, before they close</h3>
+          <p>A push the morning your window opens, tuned to your Castaway Club tier, with a prioritized grab-list for Palo, Remy, and excursions.</p>
+        </div>
+        <svg class="deck-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6Z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>
+      </div>
+      <div class="deck-row reveal">
+        <div class="deck-label">DECK 4<small>Budget</small></div>
+        <div class="deck-body">
+          <h3>One true all-in number</h3>
+          <p>Fare, gratuities, Palo surcharges, excursions, photos, and spa — tracked against what you actually planned to spend.</p>
+        </div>
+        <svg class="deck-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M8 9.5h5.5a2 2 0 1 1 0 4H9a2 2 0 1 0 0 4h6" stroke-linecap="round"/></svg>
+      </div>
+      <div class="deck-row reveal">
+        <div class="deck-label">DECK 5<small>Timing tips</small></div>
+        <div class="deck-body">
+          <h3>Buy your photos at the right moment</h3>
+          <p>Pre-cruise photo packages cost noticeably less than buying at Shutters onboard. U.S. sailors get up to 45 days after each photo is taken to purchase and download — we keep this current as Disney's policy changes.</p>
+        </div>
+        <svg class="deck-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7l1.5-3h5L16 7"/><circle cx="12" cy="13.5" r="3.2"/></svg>
+      </div>
+    </div>
+    <p class="price-note">One-time $9.99 — not a subscription. Free to preview every deck first.</p>
+  </div>
+</section>
 
-  <section id="faq-8">
-    <h2>Is Wi-Fi included?</h2>
-    <p>Basic connectivity for iMessage, WhatsApp, and the Disney Cruise Line Navigator app is free. Real browsing, email, or streaming requires a paid Wi-Fi package, tiered by speed and data allowance &mdash; see the <a href='../planning/disney-cruise-cost.html' style='color:var(--water-deep); border-bottom:2px solid var(--sunset);'>cost breakdown page</a> for current pricing.</p>
-  </section>
-
-  <section id="faq-9">
-    <h2>What if I'm a solo parent traveling with one child?</h2>
-    <p>This isn't a DCL-specific restriction &mdash; a single parent or guardian can absolutely book and sail with their child, no special documentation required beyond the usual proof of citizenship for both of you. If a child is traveling with only one parent and that could raise a custody question at security or immigration in some ports, some experienced cruisers recommend carrying a simple signed permission note from the non-traveling parent, though DCL itself doesn't require it for standard sailings.</p>
-  </section>
-
-</main>
+<section class="agent-band" id="agents">
+  <div class="agent-inner">
+    <div class="reveal">
+      <p class="eyebrow" style="color:var(--brass-light);">Find an agent</p>
+      <h2>Real travel agents. Paid by Disney, not by you.</h2>
+      <p>Booking through a Disney-specialist agent costs exactly what booking direct costs — Disney pays their commission either way. The difference is someone who answers your questions for the next year, for free.</p>
+      <a href="/agents/" class="btn-primary">Browse the directory</a>
+    </div>
+    <div class="agent-card reveal">
+      <span class="badge">Opening soon</span>
+      <p>"Ask an Agent" — Sarah M. on the best Treasure staterooms for a family of five.</p>
+      <p class="fine">Diamond-tier, EarMarked by Disney. Featured this month.</p>
+    </div>
+  </div>
+</section>
 
 <footer>
-  <div class="disclaimer">
-    Cruising Cove is an independent, fan-operated planning resource. It is not
-    affiliated with, endorsed by, or sponsored by The Walt Disney Company, Disney
-    Cruise Line, or any of their affiliates.
-    <div class="legal-name">EZ Cruise Planning, LLC, doing business as Cruising Cove.</div>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <a class="wordmark" href="#top">
+        <svg width="26" height="26" viewBox="0 0 30 30" fill="none">
+          <circle cx="15" cy="15" r="13" stroke="#C6A044" stroke-width="2"/>
+          <path d="M6 16c2-3 4-3 6 0s4 3 6 0 4-3 6 0" stroke="#E3C878" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        </svg>
+        <span>Cruising Cove</span>
+      </a>
+      <div class="footer-links">
+        <a href="/ships/">Ships</a>
+        <a href="/planning/disney-cruise-cost.html">Plan Your Sailing</a>
+        <a href="/ports/">Ports</a>
+        <a href="#save">Ways to Save</a>
+        <a href="/agents/">Find an Agent</a>
+      </div>
+    </div>
+    <p class="disclaimer">Cruising Cove is an independent planning guide and is not affiliated with, endorsed by, or sponsored by The Walt Disney Company, Disney Cruise Line, or any of their affiliates. All ship names are used for reference purposes only.</p>
   </div>
 </footer>
+
+<script>
+  const items = document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    },{threshold:0.15});
+    items.forEach(el=>io.observe(el));
+  } else {
+    items.forEach(el=>el.classList.add('in'));
+  }
+</script>
 
 </body>
 </html>
