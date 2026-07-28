@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cruising Cove — a Disney Cruise Line planning site, built in the open</title>
+<meta name="description" content="Cruising Cove is a Disney Cruise Line planning site currently under construction — ship guides, cabin intelligence, and a directory of Disney-specialist travel agents. Say hello.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --water-deep:#0D3B3A;
+    --water-ink:#0A211F;
+    --sand:#F1E3C0;
+    --foam:#FBF8EF;
+    --sunset:#E2933C;
+    --tide:#7C9990;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+
+  body{
+    margin:0;
+    background:var(--sand);
+    color:var(--water-ink);
+    font-family:'Lora', Georgia, serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{ color:inherit; }
+
+  .display{
+    font-family:'Big Shoulders Display', sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+    font-weight:700;
+  }
+
+  .mono{
+    font-family:'IBM Plex Mono', monospace;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+  }
+
+  /* ---------- Nav ---------- */
+  nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:1.6rem clamp(1.2rem, 5vw, 4rem);
+    position:relative;
+    z-index:2;
+  }
+  nav .brand{
+    font-family:'Big Shoulders Display', sans-serif;
+    font-weight:800;
+    font-size:1.4rem;
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+    color:var(--foam);
+  }
+  nav .brand span{ color:var(--sunset); }
+  nav .status{
+    font-size:0.68rem;
+    color:var(--foam);
+    opacity:0.75;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background:
+      radial-gradient(120% 90% at 20% -10%, #1C5551 0%, transparent 55%),
+      linear-gradient(160deg, var(--water-deep) 0%, #0A2E2C 60%, var(--water-ink) 100%);
+    color:var(--foam);
+    padding-bottom: 6.5rem;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .hero-inner{
+    max-width:760px;
+    margin:0 auto;
+    padding: 3.5rem clamp(1.2rem, 5vw, 4rem) 2rem;
+    text-align:left;
+  }
+
+  .eyebrow{
+    display:inline-block;
+    font-size:0.7rem;
+    color:var(--sunset);
+    border:1px solid rgba(226,147,60,0.45);
+    border-radius:999px;
+    padding:0.35rem 0.9rem;
+    margin-bottom:1.6rem;
+  }
+
+  h1{
+    font-size:clamp(2.4rem, 6vw, 4rem);
+    line-height:1.04;
+    margin:0 0 1.3rem;
+    font-weight:800;
+    letter-spacing:0.005em;
+  }
+  h1 em{
+    font-style:normal;
+    color:var(--sunset);
+  }
+
+  .lede{
+    font-size:1.15rem;
+    max-width:56ch;
+    color:#DCE7E2;
+    margin:0 0 2.2rem;
+    font-family:'Lora', serif;
+  }
+
+  .hero-cta{
+    display:inline-flex;
+    align-items:center;
+    gap:0.6rem;
+    background:var(--sunset);
+    color:var(--water-ink);
+    font-family:'Big Shoulders Display', sans-serif;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+    text-decoration:none;
+    padding:0.85rem 1.6rem;
+    border-radius:4px;
+    font-size:1rem;
+    transition:transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .hero-cta:hover{ transform:translateY(-2px); box-shadow:0 8px 20px rgba(226,147,60,0.35); }
+  .hero-cta:focus-visible{ outline:3px solid var(--foam); outline-offset:3px; }
+
+  /* tide line divider — signature element */
+  .tide{
+    position:relative;
+    width:100%;
+    height:64px;
+    margin-top:-1px;
+    display:block;
+  }
+  .tide svg{ display:block; width:100%; height:100%; }
+
+  /* ---------- Content sections ---------- */
+  main{
+    max-width:760px;
+    margin:0 auto;
+    padding:0 clamp(1.2rem, 5vw, 4rem) 1rem;
+  }
+
+  section{
+    padding:3rem 0;
+    border-bottom:1px solid rgba(10,33,31,0.1);
+  }
+  section:last-of-type{ border-bottom:none; }
+
+  section .label{
+    font-size:0.72rem;
+    color:var(--tide);
+    margin-bottom:0.9rem;
+    display:block;
+  }
+
+  h2{
+    font-family:'Big Shoulders Display', sans-serif;
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:1.5rem;
+    letter-spacing:0.02em;
+    margin:0 0 1.1rem;
+    color:var(--water-deep);
+  }
+
+  p{ margin:0 0 1rem; max-width:62ch; }
+  p:last-child{ margin-bottom:0; }
+
+  .signature{
+    color:var(--water-ink);
+    font-size:1rem;
+  }
+
+  ul.manifest{
+    list-style:none;
+    margin:1.4rem 0 0;
+    padding:0;
+    display:grid;
+    gap:0.9rem;
+  }
+  ul.manifest li{
+    display:flex;
+    gap:0.9rem;
+    align-items:flex-start;
+    font-size:0.98rem;
+  }
+  ul.manifest .tag{
+    flex:none;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.68rem;
+    color:var(--foam);
+    background:var(--water-deep);
+    padding:0.28rem 0.5rem;
+    border-radius:3px;
+    margin-top:0.15rem;
+    letter-spacing:0.06em;
+  }
+
+  .contact-card{
+    background:var(--foam);
+    border:1px solid rgba(10,33,31,0.12);
+    border-radius:10px;
+    padding:2rem clamp(1.2rem, 4vw, 2.4rem);
+    margin-top:1.4rem;
+  }
+  .contact-card p{ color:var(--water-ink); }
+  .mail-link{
+    display:inline-flex;
+    align-items:center;
+    gap:0.5rem;
+    margin-top:0.6rem;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:1.02rem;
+    color:var(--water-deep);
+    text-decoration:none;
+    border-bottom:2px solid var(--sunset);
+    padding-bottom:2px;
+  }
+  .mail-link:hover{ color:var(--sunset); }
+
+  /* ---------- Footer ---------- */
+  footer{
+    max-width:760px;
+    margin:0 auto;
+    padding:2.5rem clamp(1.2rem, 5vw, 4rem) 3.5rem;
+    font-size:0.8rem;
+    color:var(--tide);
+  }
+  footer .disclaimer{
+    padding-top:1.4rem;
+    border-top:1px solid rgba(10,33,31,0.1);
+    line-height:1.55;
+  }
+  footer .legal-name{
+    margin-top:0.6rem;
+    opacity:0.8;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    .hero-cta{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <nav>
+    <div class="brand">Cruising<span>·</span>Cove</div>
+    <div class="mono status">Under construction · Est. 2026</div>
+  </nav>
+
+  <div class="hero-inner">
+    <span class="eyebrow mono">Building in the open</span>
+    <h1>A Disney Cruise<br>planning site, <em>anchored<br>in real detail.</em></h1>
+    <p class="lede">
+      Ship-by-ship reference guides, honest stateroom intelligence, and a directory
+      connecting planning families to Disney-specialist travel agents — currently being
+      built, one page at a time, by one person.
+    </p>
+    <a class="hero-cta" href="#contact">Say hello →</a>
+  </div>
+
+  <div class="tide" aria-hidden="true">
+    <svg viewBox="0 0 1200 64" preserveAspectRatio="none">
+      <path d="M0,32 C150,58 300,6 450,32 C600,58 750,6 900,32 C1050,58 1150,20 1200,30 L1200,64 L0,64 Z" fill="#F1E3C0"></path>
+    </svg>
+  </div>
+</div>
+
+<main>
+
+  <section id="about">
+    <span class="label mono">— The idea</span>
+    <h2>Why this exists</h2>
+    <p class="signature">
+      Hi! I'm Cassondra, and I want to help you make the most of your Disney cruise.
+      I've spent enough hours in Disney Cruise Line planning groups to notice the same
+      questions surface on every sailing thread — which stateroom actually has the
+      noise problem, whether an excursion is worth booking independently, what a
+      cruise really costs once gratuities and Palo and excursions are added in.
+      Disney's own materials won't tell you any of that. The internet has answers, but
+      they're scattered across forums, Facebook groups, and a dozen blogs.
+    </p>
+    <p>
+      Cruising Cove is an attempt to put that knowledge in one place — structured,
+      searchable, and honest about the parts of planning that are genuinely stressful.
+      It's being built in public, a page at a time, starting now.
+    </p>
+  </section>
+
+  <section id="whats-coming">
+    <span class="label mono">— What's taking shape</span>
+    <h2>Currently under construction</h2>
+    <ul class="manifest">
+      <li><span class="tag">Ships</span> Deck-by-deck reference guides for every ship in the fleet</li>
+      <li><span class="tag">Cabins</span> Candid stateroom intelligence — noise, obstruction, and layout detail Disney doesn't publish</li>
+      <li><span class="tag">Ports</span> Destination and excursion guides, including independent-vs-ship comparisons</li>
+      <li><span class="tag">Agents</span> A directory connecting planning families to Disney-specialist travel agents</li>
+    </ul>
+  </section>
+
+  <section id="contact">
+    <span class="label mono">— Get in touch</span>
+    <h2>Say hello</h2>
+    <div class="contact-card">
+      <p>
+        Travel agent, fellow DCL planner, or just curious what this is — I'd genuinely
+        like to hear from you. No pitch, no mailing list, just a real inbox.
+      </p>
+      <a class="mail-link" href="mailto:cassondra@cruisingcove.com">
+        cassondra@cruisingcove.com
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="disclaimer">
+    Cruising Cove is an independent, fan-operated planning resource. It is not
+    affiliated with, endorsed by, or sponsored by The Walt Disney Company, Disney
+    Cruise Line, or any of their affiliates.
+    <div class="legal-name">EZ Cruise Planning, LLC, doing business as Cruising Cove.</div>
+  </div>
+</footer>
+
+</body>
+</html>
