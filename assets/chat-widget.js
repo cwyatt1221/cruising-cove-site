@@ -2,6 +2,9 @@
  * Cruising Cove chat widget.
  * Drop <script src="/assets/chat-widget.js" defer></script> before </body> on any page.
  * Self-contained: injects its own styles and DOM, no dependencies.
+ *
+ * Exposes window.CruisingCoveChat.open() so any nav button on any page can
+ * open the panel programmatically (e.g. an "Ask AI" link in the header).
  */
 (function () {
   "use strict";
@@ -166,6 +169,13 @@
 
     btn.addEventListener("click", () => togglePanel());
     closeBtn.addEventListener("click", () => togglePanel(false));
+
+    // Expose so nav buttons on any page can open the chat programmatically.
+    window.CruisingCoveChat = {
+      open: () => togglePanel(true),
+      close: () => togglePanel(false),
+      toggle: () => togglePanel(),
+    };
 
     function addMessage(text, kind) {
       const msg = el("div", "cc-msg cc-msg-" + kind, escapeHtml(text));
