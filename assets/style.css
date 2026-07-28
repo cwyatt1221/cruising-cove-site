@@ -254,3 +254,75 @@ footer .legal-name{ margin-top:0.6rem; opacity:0.8; }
 @media (prefers-reduced-motion: reduce){
   html{ scroll-behavior:auto; }
 }
+
+/* ---------- Site-wide nav menu ---------- */
+nav.site-nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:1.1rem clamp(1.2rem, 5vw, 4rem);
+  background:var(--water-deep);
+  position:relative;
+  flex-wrap:wrap;
+}
+nav.site-nav .brand{
+  font-family:'Big Shoulders Display', sans-serif;
+  font-weight:800;
+  font-size:1.3rem;
+  text-transform:uppercase;
+  letter-spacing:0.03em;
+  color:var(--foam);
+  text-decoration:none;
+}
+nav.site-nav .brand span{ color:var(--sunset); }
+
+.nav-toggle{
+  display:none;
+  background:none;
+  border:none;
+  cursor:pointer;
+  padding:0.4rem;
+  flex-direction:column;
+  gap:4px;
+}
+.nav-toggle span{ width:22px; height:2px; background:var(--foam); display:block; }
+
+.nav-menu{
+  display:flex;
+  gap:1.3rem;
+  align-items:center;
+  flex-wrap:wrap;
+}
+.nav-menu a{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:0.7rem;
+  letter-spacing:0.04em;
+  text-transform:uppercase;
+  color:var(--foam);
+  text-decoration:none;
+  opacity:0.85;
+  white-space:nowrap;
+}
+.nav-menu a:hover{ opacity:1; color:var(--sunset); }
+.nav-menu a.nav-cta{
+  background:var(--sunset);
+  color:var(--water-ink);
+  padding:0.4rem 0.8rem;
+  border-radius:4px;
+  opacity:1;
+  font-weight:700;
+}
+.nav-menu a.nav-cta:hover{ color:var(--water-ink); opacity:0.9; }
+
+@media (max-width: 900px){
+  .nav-toggle{ display:flex; }
+  .nav-menu{
+    display:none;
+    width:100%;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:0.9rem;
+    padding-top:1.1rem;
+  }
+  .nav-menu.open{ display:flex; }
+}

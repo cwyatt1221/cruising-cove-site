@@ -3,85 +3,373 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Disney Cruise Line Ships — Fleet Guide | Cruising Cove</title>
-<meta name="description" content="A guide to every ship in the Disney Cruise Line fleet — staterooms, dining, and what makes each ship different, from the classic Magic and Wonder to the newest Wish-class ships.">
+<title>Cruising Cove — a Disney Cruise Line planning site, built in the open</title>
+<meta name="description" content="Cruising Cove is a Disney Cruise Line planning site currently under construction — ship guides, cabin intelligence, and a directory of Disney-specialist travel agents. Say hello.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css">
+<style>
+  :root{
+    --water-deep:#0D3B3A;
+    --water-ink:#0A211F;
+    --sand:#F1E3C0;
+    --foam:#FBF8EF;
+    --sunset:#E2933C;
+    --tide:#7C9990;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+
+  body{
+    margin:0;
+    background:var(--sand);
+    color:var(--water-ink);
+    font-family:'Lora', Georgia, serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{ color:inherit; }
+
+  .display{
+    font-family:'Big Shoulders Display', sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+    font-weight:700;
+  }
+
+  .mono{
+    font-family:'IBM Plex Mono', monospace;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+  }
+
+  /* ---------- Nav ---------- */
+  nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:1.6rem clamp(1.2rem, 5vw, 4rem);
+    position:relative;
+    z-index:2;
+  }
+  nav .brand{
+    font-family:'Big Shoulders Display', sans-serif;
+    font-weight:800;
+    font-size:1.4rem;
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+    color:var(--foam);
+  }
+  nav .brand span{ color:var(--sunset); }
+  nav .status{
+    font-size:0.68rem;
+    color:var(--foam);
+    opacity:0.75;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background:
+      radial-gradient(120% 90% at 20% -10%, #1C5551 0%, transparent 55%),
+      linear-gradient(160deg, var(--water-deep) 0%, #0A2E2C 60%, var(--water-ink) 100%);
+    color:var(--foam);
+    padding-bottom: 6.5rem;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .hero-inner{
+    max-width:760px;
+    margin:0 auto;
+    padding: 3.5rem clamp(1.2rem, 5vw, 4rem) 2rem;
+    text-align:left;
+  }
+
+  .eyebrow{
+    display:inline-block;
+    font-size:0.7rem;
+    color:var(--sunset);
+    border:1px solid rgba(226,147,60,0.45);
+    border-radius:999px;
+    padding:0.35rem 0.9rem;
+    margin-bottom:1.6rem;
+  }
+
+  h1{
+    font-size:clamp(2.4rem, 6vw, 4rem);
+    line-height:1.04;
+    margin:0 0 1.3rem;
+    font-weight:800;
+    letter-spacing:0.005em;
+  }
+  h1 em{
+    font-style:normal;
+    color:var(--sunset);
+  }
+
+  .lede{
+    font-size:1.15rem;
+    max-width:56ch;
+    color:#DCE7E2;
+    margin:0 0 2.2rem;
+    font-family:'Lora', serif;
+  }
+
+  .hero-cta{
+    display:inline-flex;
+    align-items:center;
+    gap:0.6rem;
+    background:var(--sunset);
+    color:var(--water-ink);
+    font-family:'Big Shoulders Display', sans-serif;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+    text-decoration:none;
+    padding:0.85rem 1.6rem;
+    border-radius:4px;
+    font-size:1rem;
+    transition:transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .hero-cta:hover{ transform:translateY(-2px); box-shadow:0 8px 20px rgba(226,147,60,0.35); }
+  .hero-cta:focus-visible{ outline:3px solid var(--foam); outline-offset:3px; }
+
+  /* tide line divider — signature element */
+  .tide{
+    position:relative;
+    width:100%;
+    height:64px;
+    margin-top:-1px;
+    display:block;
+  }
+  .tide svg{ display:block; width:100%; height:100%; }
+
+  /* ---------- Content sections ---------- */
+  main{
+    max-width:760px;
+    margin:0 auto;
+    padding:0 clamp(1.2rem, 5vw, 4rem) 1rem;
+  }
+
+  section{
+    padding:3rem 0;
+    border-bottom:1px solid rgba(10,33,31,0.1);
+  }
+  section:last-of-type{ border-bottom:none; }
+
+  section .label{
+    font-size:0.72rem;
+    color:var(--tide);
+    margin-bottom:0.9rem;
+    display:block;
+  }
+
+  h2{
+    font-family:'Big Shoulders Display', sans-serif;
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:1.5rem;
+    letter-spacing:0.02em;
+    margin:0 0 1.1rem;
+    color:var(--water-deep);
+  }
+
+  p{ margin:0 0 1rem; max-width:62ch; }
+  p:last-child{ margin-bottom:0; }
+
+  .signature{
+    color:var(--water-ink);
+    font-size:1rem;
+  }
+
+  ul.manifest{
+    list-style:none;
+    margin:1.4rem 0 0;
+    padding:0;
+    display:grid;
+    gap:0.9rem;
+  }
+  ul.manifest li{
+    display:flex;
+    gap:0.9rem;
+    align-items:flex-start;
+    font-size:0.98rem;
+  }
+  ul.manifest .tag{
+    flex:none;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.68rem;
+    color:var(--foam);
+    background:var(--water-deep);
+    padding:0.28rem 0.5rem;
+    border-radius:3px;
+    margin-top:0.15rem;
+    letter-spacing:0.06em;
+  }
+
+  .contact-card{
+    background:var(--foam);
+    border:1px solid rgba(10,33,31,0.12);
+    border-radius:10px;
+    padding:2rem clamp(1.2rem, 4vw, 2.4rem);
+    margin-top:1.4rem;
+  }
+  .contact-card p{ color:var(--water-ink); }
+  .mail-link{
+    display:inline-flex;
+    align-items:center;
+    gap:0.5rem;
+    margin-top:0.6rem;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:1.02rem;
+    color:var(--water-deep);
+    text-decoration:none;
+    border-bottom:2px solid var(--sunset);
+    padding-bottom:2px;
+  }
+  .mail-link:hover{ color:var(--sunset); }
+
+  /* ---------- Footer ---------- */
+  footer{
+    max-width:760px;
+    margin:0 auto;
+    padding:2.5rem clamp(1.2rem, 5vw, 4rem) 3.5rem;
+    font-size:0.8rem;
+    color:var(--tide);
+  }
+  footer .disclaimer{
+    padding-top:1.4rem;
+    border-top:1px solid rgba(10,33,31,0.1);
+    line-height:1.55;
+  }
+  footer .legal-name{
+    margin-top:0.6rem;
+    opacity:0.8;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    .hero-cta{ transition:none; }
+  }
+
+  nav.site-nav{ display:flex; justify-content:space-between; align-items:center; padding:1.1rem clamp(1.2rem, 5vw, 4rem); background:var(--water-deep); position:relative; flex-wrap:wrap; }
+  nav.site-nav .brand{ font-family:'Big Shoulders Display', sans-serif; font-weight:800; font-size:1.3rem; text-transform:uppercase; letter-spacing:0.03em; color:var(--foam); text-decoration:none; }
+  nav.site-nav .brand span{ color:var(--sunset); }
+  .nav-toggle{ display:none; background:none; border:none; cursor:pointer; padding:0.4rem; flex-direction:column; gap:4px; }
+  .nav-toggle span{ width:22px; height:2px; background:var(--foam); display:block; }
+  .nav-menu{ display:flex; gap:1.3rem; align-items:center; flex-wrap:wrap; }
+  .nav-menu a{ font-family:'IBM Plex Mono', monospace; font-size:0.7rem; letter-spacing:0.04em; text-transform:uppercase; color:var(--foam); text-decoration:none; opacity:0.85; white-space:nowrap; }
+  .nav-menu a:hover{ opacity:1; color:var(--sunset); }
+  .nav-menu a.nav-cta{ background:var(--sunset); color:var(--water-ink); padding:0.4rem 0.8rem; border-radius:4px; opacity:1; font-weight:700; }
+  .nav-menu a.nav-cta:hover{ color:var(--water-ink); opacity:0.9; }
+  @media (max-width: 900px){
+    .nav-toggle{ display:flex; }
+    .nav-menu{ display:none; width:100%; flex-direction:column; align-items:flex-start; gap:0.9rem; padding-top:1.1rem; }
+    .nav-menu.open{ display:flex; }
+  }
+
+
+  nav.site-nav{ display:flex; justify-content:space-between; align-items:center; padding:1.1rem clamp(1.2rem, 5vw, 4rem); background:var(--water-deep); position:relative; flex-wrap:wrap; }
+  nav.site-nav .brand{ font-family:'Big Shoulders Display', sans-serif; font-weight:800; font-size:1.3rem; text-transform:uppercase; letter-spacing:0.03em; color:var(--foam); text-decoration:none; }
+  nav.site-nav .brand span{ color:var(--sunset); }
+  .nav-toggle{ display:none; background:none; border:none; cursor:pointer; padding:0.4rem; flex-direction:column; gap:4px; }
+  .nav-toggle span{ width:22px; height:2px; background:var(--foam); display:block; }
+  .nav-menu{ display:flex; gap:1.3rem; align-items:center; flex-wrap:wrap; }
+  .nav-menu a{ font-family:'IBM Plex Mono', monospace; font-size:0.7rem; letter-spacing:0.04em; text-transform:uppercase; color:var(--foam); text-decoration:none; opacity:0.85; white-space:nowrap; }
+  .nav-menu a:hover{ opacity:1; color:var(--sunset); }
+  .nav-menu a.nav-cta{ background:var(--sunset); color:var(--water-ink); padding:0.4rem 0.8rem; border-radius:4px; opacity:1; font-weight:700; }
+  .nav-menu a.nav-cta:hover{ color:var(--water-ink); opacity:0.9; }
+  @media (max-width: 900px){
+    .nav-toggle{ display:flex; }
+    .nav-menu{ display:none; width:100%; flex-direction:column; align-items:flex-start; gap:0.9rem; padding-top:1.1rem; }
+    .nav-menu.open{ display:flex; }
+  }
+
+</style>
 </head>
 <body>
 
-<nav>
-  <a class="brand" href="../index.html">Cruising<span>&middot;</span>Cove</a>
-  <a class="back mono" href="../index.html">&larr; Home</a>
+<div class="hero">
+  <nav class="site-nav">
+  <a class="brand" href="index.html">Cruising<span>&middot;</span>Cove</a>
+  <button class="nav-toggle" aria-label="Menu" aria-expanded="false" onclick="var m=document.getElementById('siteMenu');var open=m.classList.toggle('open');this.setAttribute('aria-expanded',open);">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-menu" id="siteMenu">
+    <a href="ships/index.html">Ships</a>
+    <a href="ports/index.html">Destinations</a>
+    <a href="excursions/index.html">Port Excursions</a>
+    <a href="decorations/index.html">Decorations</a>
+    <a href="pirate-night/index.html">Pirate Night</a>
+    <a href="special-cruises/index.html">Special Cruises</a>
+    <a class="nav-cta" href="agents/index.html">Travel Agents</a>
+  </div>
 </nav>
 
-<div class="page-hero">
-  <div class="page-hero-inner">
-    <span class="eyebrow mono">Fleet guide</span>
-    <h1>Eight ships, <em>one fleet.</em></h1>
+  <div class="hero-inner">
+    <span class="eyebrow mono">Building in the open</span>
+    <h1>A Disney Cruise<br>planning site, <em>anchored<br>in real detail.</em></h1>
     <p class="lede">
-      From the classic 1998 Disney Magic to the newest ships entering service, every
-      Disney Cruise Line ship has its own theme, dining lineup, and stateroom quirks.
-      Pick a ship to see the details.
+      Ship-by-ship reference guides, honest stateroom intelligence, and a directory
+      connecting planning families to Disney-specialist travel agents — currently being
+      built, one page at a time, by one person.
     </p>
+    <a class="hero-cta" href="#contact">Say hello →</a>
   </div>
+
   <div class="tide" aria-hidden="true">
-    <svg viewBox="0 0 1200 56" preserveAspectRatio="none">
-      <path d="M0,28 C150,50 300,6 450,28 C600,50 750,6 900,28 C1050,50 1150,18 1200,26 L1200,56 L0,56 Z" fill="#F1E3C0"></path>
+    <svg viewBox="0 0 1200 64" preserveAspectRatio="none">
+      <path d="M0,32 C150,58 300,6 450,32 C600,58 750,6 900,32 C1050,58 1150,20 1200,30 L1200,64 L0,64 Z" fill="#F1E3C0"></path>
     </svg>
   </div>
 </div>
 
 <main>
-  <section id="fleet">
-    <span class="label mono">&mdash; The fleet</span>
-    <h2>Choose a ship</h2>
 
-    <div class="fleet-grid">
-      <a class="fleet-card" href="disney-magic.html">
-        <span class="class-tag">Classic Class &middot; 1998</span>
-        <h3>Disney Magic</h3>
-        <p>The original ship. Art Deco styling, 875 staterooms, an intimate classic-class feel.</p>
-      </a>
-      <a class="fleet-card" href="disney-wonder.html">
-        <span class="class-tag">Classic Class &middot; 1999</span>
-        <h3>Disney Wonder</h3>
-        <p>The Magic's twin, with Art Nouveau styling and the exclusive Tiana's Place.</p>
-      </a>
-      <a class="fleet-card" href="disney-dream.html">
-        <span class="class-tag">Dream Class &middot; 2011</span>
-        <h3>Disney Dream</h3>
-        <p>Introduced the AquaDuck to the fleet, plus Palo and Remy specialty dining.</p>
-      </a>
-      <a class="fleet-card" href="disney-fantasy.html">
-        <span class="class-tag">Dream Class &middot; 2012</span>
-        <h3>Disney Fantasy</h3>
-        <p>The Dream's sister ship, styled Art Nouveau, sharing the same AquaDuck.</p>
-      </a>
-      <a class="fleet-card" href="disney-wish.html">
-        <span class="class-tag">Wish Class &middot; 2022</span>
-        <h3>Disney Wish</h3>
-        <p>Home to the AquaMouse &mdash; Disney's first attraction ever built at sea.</p>
-      </a>
-      <a class="fleet-card" href="disney-treasure.html">
-        <span class="class-tag">Wish Class &middot; 2024</span>
-        <h3>Disney Treasure</h3>
-        <p>An adventure-themed twin to the Wish, with the world's first Coco-themed dining.</p>
-      </a>
-      <a class="fleet-card" href="disney-destiny.html">
-        <span class="class-tag">Wish Class &middot; 2025</span>
-        <h3>Disney Destiny</h3>
-        <p>The newest Wish-class ship, themed around Disney heroes and villains.</p>
-      </a>
-      <a class="fleet-card" href="disney-adventure.html">
-        <span class="class-tag">Singapore &middot; 2026</span>
-        <h3>Disney Adventure</h3>
-        <p>The fleet's largest ship, homeported in Singapore with seven themed lands.</p>
+  <section id="about">
+    <span class="label mono">— The idea</span>
+    <h2>Why this exists</h2>
+    <p class="signature">
+      Hi! I'm Cassondra, and I want to help you make the most of your Disney cruise.
+      I've spent enough hours in Disney Cruise Line planning groups to notice the same
+      questions surface on every sailing thread — which stateroom actually has the
+      noise problem, whether an excursion is worth booking independently, what a
+      cruise really costs once gratuities and Palo and excursions are added in.
+      Disney's own materials won't tell you any of that. The internet has answers, but
+      they're scattered across forums, Facebook groups, and a dozen blogs.
+    </p>
+    <p>
+      Cruising Cove is an attempt to put that knowledge in one place — structured,
+      searchable, and honest about the parts of planning that are genuinely stressful.
+      It's being built in public, a page at a time, starting now.
+    </p>
+  </section>
+
+  <section id="whats-coming">
+    <span class="label mono">— What's taking shape</span>
+    <h2>Currently under construction</h2>
+    <p>
+      Ship guides, destination guides, and the agent directory are all being built out
+      section by section — use the menu above to browse what's live so far.
+    </p>
+  </section>
+
+  <section id="contact">
+    <span class="label mono">— Get in touch</span>
+    <h2>Say hello</h2>
+    <div class="contact-card">
+      <p>
+        Travel agent, fellow DCL planner, or just curious what this is — I'd genuinely
+        like to hear from you. No pitch, no mailing list, just a real inbox.
+      </p>
+      <a class="mail-link" href="mailto:cassondra@cruisingcove.com">
+        cassondra@cruisingcove.com
       </a>
     </div>
   </section>
+
 </main>
 
 <footer>

@@ -12,9 +12,20 @@
 </head>
 <body>
 
-<nav>
+<nav class="site-nav">
   <a class="brand" href="../index.html">Cruising<span>&middot;</span>Cove</a>
-  <a class="back mono" href="index.html">&larr; All ships</a>
+  <button class="nav-toggle" aria-label="Menu" aria-expanded="false" onclick="var m=document.getElementById('siteMenu');var open=m.classList.toggle('open');this.setAttribute('aria-expanded',open);">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-menu" id="siteMenu">
+    <a href="../ships/index.html">Ships</a>
+    <a href="../ports/index.html">Destinations</a>
+    <a href="../excursions/index.html">Port Excursions</a>
+    <a href="../decorations/index.html">Decorations</a>
+    <a href="../pirate-night/index.html">Pirate Night</a>
+    <a href="../special-cruises/index.html">Special Cruises</a>
+    <a class="nav-cta" href="../agents/index.html">Travel Agents</a>
+  </div>
 </nav>
 
 <div class="page-hero">
