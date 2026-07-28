@@ -125,9 +125,20 @@ Sort by totalCount descending. Include at most 3 example questions per topic (us
 }
 
 export async function topQuestions(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
-  const key = request.query.get("key");
+   const key = request.query.get("key");
   if (!process.env.REPORT_ACCESS_KEY || key !== process.env.REPORT_ACCESS_KEY) {
-    return { status: 401, jsonBody: { error: "Missing or invalid 'key' query parameter." } };
+    return {
+      status: 401,
+      jsonBody: {
+        error: "Missing or invalid 'key' query parameter.",
+        debug: {
+          receivedKeyPresent: key !== null,
+          receivedKeyLength: key ? key.length : null,
+          envKeyPresent: !!process.env.REPORT_ACCESS_KEY,
+          envKeyLength: process.env.REPORT_ACCESS_KEY ? process.env.REPORT_ACCESS_KEY.length : null,
+        },
+      },
+    };
   }
 
   const daysParam = request.query.get("days");
