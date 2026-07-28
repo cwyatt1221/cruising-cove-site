@@ -3,76 +3,170 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Disney Cruise Line Ports &amp; Islands Guide | Cruising Cove</title>
-<meta name="description" content="A guide to Disney Cruise Line's private islands and ports of call, starting with Castaway Cay and Lookout Cay at Lighthouse Point.">
+<title>Ports — Cruising Cove</title>
+<meta name="description" content="Browse Disney Cruise Line ports of call — what to do, what to pack, and honest guest reviews.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Big+Shoulders+Display:wght@400;600;700;800&family=Karla:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-deep:#0A2733; --navy-mid:#123B4E; --teal:#1E6E79;
+    --seafoam:#CFE6DC; --page-bg:#BFE3DA; --white:#FBF9F1;
+    --brass:#C6A044; --brass-light:#E3C878;
+    --ink:#0A2733; --ink-soft:#3C5560;
+    --shadow: 0 12px 30px -14px rgba(10,39,51,0.35);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--page-bg);color:var(--ink);font-family:'Karla',sans-serif;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;}
+  h1,h2,h3{font-family:'Bodoni Moda',serif;margin:0;color:var(--ink);letter-spacing:-0.01em;}
+  .eyebrow{font-family:'Big Shoulders Display',sans-serif;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;font-size:0.76rem;color:var(--brass);}
+
+  header{position:sticky;top:0;z-index:50;background:rgba(10,39,51,0.94);backdrop-filter:blur(6px);border-bottom:1px solid rgba(198,160,68,0.25);}
+  .nav-wrap{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:16px 28px;gap:16px;}
+  .wordmark{display:flex;align-items:center;gap:10px;}
+  .wordmark span{font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:1.25rem;letter-spacing:0.04em;color:var(--white);text-transform:uppercase;}
+  .nav-links{display:flex;gap:26px;}
+  .nav-links a{font-family:'Big Shoulders Display',sans-serif;font-weight:600;font-size:0.88rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--seafoam);border-bottom:2px solid transparent;padding-bottom:3px;}
+  .nav-links a:hover{color:var(--white);border-color:var(--brass);}
+  .nav-links a.current{color:var(--brass-light);border-color:var(--brass-light);}
+  @media (max-width:820px){ .nav-links{display:none;} }
+
+  .page-hero{max-width:900px;margin:0 auto;padding:56px 28px 20px;text-align:center;}
+  .page-hero h1{font-size:clamp(2rem,4vw,2.7rem);margin:14px 0 12px;font-weight:600;}
+  .page-hero p{color:var(--ink-soft);font-size:1.02rem;line-height:1.6;max-width:60ch;margin:0 auto;}
+
+  .grid-wrap{max-width:1180px;margin:0 auto;padding:36px 28px 90px;}
+  .card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  @media (max-width:860px){ .card-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:560px){ .card-grid{grid-template-columns:1fr;} }
+
+  .port-card{
+    background:var(--white);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);
+    border:1px solid rgba(10,39,51,0.08); display:flex; flex-direction:column;
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .port-card:hover{transform:translateY(-4px);box-shadow:0 18px 36px -14px rgba(10,39,51,0.45);}
+  .port-card.soon:hover{transform:none;box-shadow:var(--shadow);}
+  .port-card-top{background:linear-gradient(135deg, var(--teal), var(--navy-mid));padding:24px 20px 18px;color:var(--white);}
+  .port-card.soon .port-card-top{background:linear-gradient(135deg, #8FAFAE, #5C7679);}
+  .port-card-top svg{width:34px;height:34px;color:var(--brass-light);margin-bottom:8px;}
+  .port-card-top h3{color:var(--white);font-size:1.15rem;font-weight:600;}
+  .port-card-body{padding:16px 20px 20px;flex:1;display:flex;flex-direction:column;}
+  .port-card-body p{font-size:0.88rem;color:var(--ink-soft);line-height:1.5;margin:0 0 14px;flex:1;}
+  .port-card-cta{font-family:'Big Shoulders Display',sans-serif;font-weight:700;font-size:0.8rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--teal);}
+  .port-card-cta::after{content:' →';}
+  .soon-badge{
+    display:inline-block;font-family:'Big Shoulders Display',sans-serif;font-weight:700;font-size:0.68rem;
+    letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-soft);background:var(--page-bg);
+    padding:4px 10px;border-radius:20px;
+  }
+
+  footer{background:var(--navy-deep);color:var(--seafoam);border-top:1px solid rgba(198,160,68,0.25);}
+  .footer-inner{max-width:1180px;margin:0 auto;padding:36px 28px;}
+  .disclaimer{font-size:0.78rem;line-height:1.6;color:rgba(207,230,220,0.55);max-width:70ch;}
+</style>
 </head>
 <body>
 
-<nav class="site-nav">
-  <a class="brand" href="../index.html">Cruising<span>&middot;</span>Cove</a>
-  <button class="nav-toggle" aria-label="Menu" aria-expanded="false" onclick="var m=document.getElementById('siteMenu');var open=m.classList.toggle('open');this.setAttribute('aria-expanded',open);">
-    <span></span><span></span><span></span>
-  </button>
-  <div class="nav-menu" id="siteMenu">
-    <a href="../ships/index.html">Ships</a>
-    <a href="../ports/index.html">Destinations</a>
-    <a href="../excursions/index.html">Port Excursions</a>
-    <a href="../decorations/index.html">Decorations</a>
-    <a href="../pirate-night/index.html">Pirate Night</a>
-    <a href="../special-cruises/index.html">Special Cruises</a>
-    <a href="../faq/index.html">FAQ</a>
-    <a class="nav-cta" href="../agents/index.html">Travel Agents</a>
+<header>
+  <div class="nav-wrap">
+    <a class="wordmark" href="/">
+      <svg width="26" height="26" viewBox="0 0 30 30" fill="none">
+        <circle cx="15" cy="15" r="13" stroke="#C6A044" stroke-width="2"/>
+        <path d="M6 16c2-3 4-3 6 0s4 3 6 0 4-3 6 0" stroke="#E3C878" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+      </svg>
+      <span>Cruising Cove</span>
+    </a>
+    <nav class="nav-links">
+      <a href="/ships/">Ships</a>
+      <a href="/ports/" class="current">Ports</a>
+      <a href="/dining/">Dining</a>
+      <a href="/entertainment/">Entertainment</a>
+    </nav>
   </div>
-</nav>
+</header>
 
 <div class="page-hero">
-  <div class="page-hero-inner">
-    <span class="eyebrow mono">Ports &amp; islands</span>
-    <h1>Where the ship <em>stops.</em></h1>
-    <p class="lede">
-      Disney's two private Bahamian islands are the highlight of most Caribbean and
-      Bahamas sailings. Here's what to expect at each one.
-    </p>
-  </div>
-  
-  <div class="tide" aria-hidden="true">
-    <svg viewBox="0 0 1200 56" preserveAspectRatio="none">
-      <path d="M0,28 C150,50 300,6 450,28 C600,50 750,6 900,28 C1050,50 1150,18 1200,26 L1200,56 L0,56 Z" fill="#F1E3C0"></path>
-    </svg>
-  </div>
-
+  <p class="eyebrow">Ports of Call</p>
+  <h1>Every stop, explained before you dock.</h1>
+  <p>What to pack, what to expect, and whether the ship waits if your excursion runs late.</p>
 </div>
 
-<main>
-  <section id="ports">
-    <span class="label mono">&mdash; Private islands</span>
-    <h2>Choose a destination</h2>
-    <div class="fleet-grid">
-      <a class="fleet-card" href="castaway-cay.html">
-        <span class="class-tag">Private Island &middot; Since 1998</span>
+<div class="grid-wrap">
+  <div class="card-grid">
+
+    <a class="port-card" href="/ports/castaway-cay.html">
+      <div class="port-card-top">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
         <h3>Castaway Cay</h3>
-        <p>Disney's original private island &mdash; classic Disney theming, a protected lagoon, and the fleet's most-visited port.</p>
-      </a>
-      <a class="fleet-card" href="lookout-cay.html">
-        <span class="class-tag">Private Peninsula &middot; Since 2024</span>
-        <h3>Lookout Cay at Lighthouse Point</h3>
-        <p>Disney's newer Bahamian stop, built around Bahamian culture and a wide, unsheltered beach on Eleuthera.</p>
-      </a>
+      </div>
+      <div class="port-card-body">
+        <p>Disney's original private island in the Bahamas — beaches, bike trails, and a dedicated kids' area.</p>
+        <span class="port-card-cta">View port guide</span>
+      </div>
+    </a>
+
+    <a class="port-card" href="/ports/lookout-cay.html">
+      <div class="port-card-top">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
+        <h3>Lookout Cay</h3>
+      </div>
+      <div class="port-card-body">
+        <p>Disney's newer private port destination at Lighthouse Point, Bahamas.</p>
+        <span class="port-card-cta">View port guide</span>
+      </div>
+    </a>
+
+    <div class="port-card soon">
+      <div class="port-card-top">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
+        <h3>Nassau</h3>
+      </div>
+      <div class="port-card-body">
+        <p>A common Bahamian port stop on shorter itineraries.</p>
+        <span class="soon-badge">Guide coming soon</span>
+      </div>
     </div>
-    <p style="margin-top:1.4rem; font-size:0.9rem; color:var(--tide);">More ports of call &mdash; Nassau, Cozumel, and beyond &mdash; are being added as this section grows. Planning your budget too? See the <a href="../planning/disney-cruise-cost.html" style="color:var(--water-deep); border-bottom:2px solid var(--sunset);">full cost breakdown</a>.</p>
-  </section>
-</main>
+
+    <div class="port-card soon">
+      <div class="port-card-top">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
+        <h3>Cozumel</h3>
+      </div>
+      <div class="port-card-body">
+        <p>A frequent stop on Western Caribbean sailings, known for diving and snorkeling.</p>
+        <span class="soon-badge">Guide coming soon</span>
+      </div>
+    </div>
+
+    <div class="port-card soon">
+      <div class="port-card-top">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
+        <h3>San Juan</h3>
+      </div>
+      <div class="port-card-body">
+        <p>A regular stop on Eastern Caribbean itineraries.</p>
+        <span class="soon-badge">Guide coming soon</span>
+      </div>
+    </div>
+
+    <div class="port-card soon">
+      <div class="port-card-top">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
+        <h3>More ports</h3>
+      </div>
+      <div class="port-card-body">
+        <p>We're adding port guides as sailings and research allow.</p>
+        <span class="soon-badge">More coming soon</span>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 <footer>
-  <div class="disclaimer">
-    Cruising Cove is an independent, fan-operated planning resource. It is not
-    affiliated with, endorsed by, or sponsored by The Walt Disney Company, Disney
-    Cruise Line, or any of their affiliates.
-    <div class="legal-name">EZ Cruise Planning, LLC, doing business as Cruising Cove.</div>
+  <div class="footer-inner">
+    <p class="disclaimer">Cruising Cove is an independent planning guide and is not affiliated with, endorsed by, or sponsored by The Walt Disney Company, Disney Cruise Line, or any of their affiliates.</p>
   </div>
 </footer>
 
