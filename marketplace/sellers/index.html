@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Founding Seller Partners — Cruising Cove Marketplace</title>
+<meta name="description" content="Cruising Cove's Founding Seller Partner program — free featured placement for 10 Etsy shops in our first year.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Big+Shoulders+Display:wght@400;600;700;800&family=Karla:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-deep:#0A2733; --navy-mid:#123B4E; --teal:#1E6E79;
+    --seafoam:#CFE6DC; --page-bg:#BFE3DA; --white:#FBF9F1;
+    --brass:#C6A044; --brass-light:#E3C878;
+    --ink:#0A2733; --ink-soft:#3C5560;
+    --shadow: 0 12px 30px -14px rgba(10,39,51,0.35);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--page-bg);color:var(--ink);font-family:'Karla',sans-serif;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;}
+  h1,h2,h3{font-family:'Bodoni Moda',serif;margin:0;color:var(--ink);letter-spacing:-0.01em;}
+  .eyebrow{font-family:'Big Shoulders Display',sans-serif;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;font-size:0.76rem;color:var(--brass);}
+
+  header{background:var(--navy-deep);border-bottom:1px solid rgba(198,160,68,0.25);}
+  .nav-wrap{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:16px 24px;}
+  .wordmark{display:flex;align-items:center;gap:10px;text-decoration:none;}
+  .wordmark span{font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:1.2rem;letter-spacing:0.04em;color:var(--white);text-transform:uppercase;}
+  .back-link{font-family:'Big Shoulders Display',sans-serif;font-weight:600;font-size:0.82rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--seafoam);text-decoration:none;}
+  .back-link:hover{color:var(--white);}
+
+  .wrap{max-width:760px;margin:0 auto;padding:56px 24px 100px;}
+
+  .boarding-pass{
+    background:var(--white);border-radius:10px;box-shadow:var(--shadow);
+    display:flex;overflow:hidden;margin-bottom:36px;border:1px solid rgba(10,39,51,0.08);
+  }
+  .bp-main{flex:1;padding:32px 30px;}
+  .bp-stub{
+    width:150px;background:var(--navy-deep);color:var(--white);
+    padding:26px 18px;display:flex;flex-direction:column;justify-content:space-between;
+    position:relative;flex-shrink:0;
+  }
+  .bp-stub::before{
+    content:'';position:absolute;left:-9px;top:0;bottom:0;width:18px;
+    background:radial-gradient(circle, var(--page-bg) 5px, transparent 5.5px);
+    background-size:18px 22px;background-repeat:repeat-y;
+  }
+  .bp-stub .label{font-family:'Big Shoulders Display',sans-serif;font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--seafoam);}
+  .bp-stub .value{font-family:'Big Shoulders Display',sans-serif;font-weight:700;font-size:0.95rem;color:var(--brass-light);margin-top:2px;}
+  .bp-stub .stub-block + .stub-block{margin-top:16px;}
+
+  .bp-main .eyebrow{margin-bottom:10px;}
+  .bp-main h1{font-size:1.8rem;line-height:1.15;font-weight:600;margin-bottom:14px;}
+  .bp-main p{font-size:0.96rem;line-height:1.6;color:var(--ink-soft);margin:0 0 22px;max-width:46ch;}
+  .apply-btn{
+    display:inline-block;font-family:'Big Shoulders Display',sans-serif;font-weight:700;
+    font-size:0.9rem;letter-spacing:0.05em;text-transform:uppercase;
+    background:var(--brass);color:var(--navy-deep);padding:13px 24px;border-radius:2px;
+    text-decoration:none;border:1px solid var(--brass);transition:background .2s ease, transform .15s ease;
+  }
+  .apply-btn:hover{background:var(--brass-light);transform:translateY(-1px);}
+
+  .intro-copy{font-size:0.98rem;line-height:1.7;color:var(--ink-soft);margin-bottom:24px;}
+  .intro-copy strong{color:var(--ink);}
+
+  .terms-box{
+    background:var(--white);border-radius:10px;box-shadow:var(--shadow);
+    padding:26px 28px;margin-bottom:48px;border:1px solid rgba(10,39,51,0.08);
+  }
+  .terms-box h2{font-size:1.15rem;margin-bottom:12px;}
+  .terms-box ul{margin:0 0 16px;padding-left:20px;font-size:0.92rem;color:var(--ink-soft);line-height:1.7;}
+  .terms-box p{font-size:0.9rem;color:var(--ink-soft);line-height:1.6;margin:0;}
+  .terms-box .categories{
+    display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px;
+  }
+  .category-chip{
+    background:var(--page-bg);color:var(--navy-deep);border-radius:20px;
+    padding:6px 12px;font-size:0.82rem;font-weight:600;
+  }
+
+  form{background:var(--white);border-radius:10px;box-shadow:var(--shadow);padding:8px 32px 32px;border:1px solid rgba(10,39,51,0.08);}
+  fieldset{border:none;padding:26px 0;margin:0;border-bottom:1px solid rgba(10,39,51,0.08);}
+  fieldset:last-of-type{border-bottom:none;}
+  legend{font-family:'Bodoni Moda',serif;font-size:1.2rem;font-weight:600;padding:0;margin-bottom:4px;}
+
+  label.field-label{display:block;font-family:'Big Shoulders Display',sans-serif;font-weight:600;font-size:0.8rem;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink);margin:16px 0 6px;}
+  label.field-label .req{color:var(--teal);}
+  input[type="text"], input[type="email"], input[type="url"], textarea{
+    width:100%;border:1px solid rgba(10,39,51,0.2);border-radius:5px;padding:10px 12px;
+    font-family:'Karla',sans-serif;font-size:0.94rem;color:var(--ink);background:var(--white);
+  }
+  input:focus, textarea:focus{outline:none;border-color:var(--teal);}
+  textarea{resize:vertical;min-height:80px;}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media (max-width:560px){ .field-row{grid-template-columns:1fr;} }
+
+  .check-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;margin-top:6px;}
+  @media (max-width:560px){ .check-grid{grid-template-columns:1fr;} }
+  .check-item{display:flex;align-items:flex-start;gap:8px;font-size:0.92rem;line-height:1.4;}
+  .check-item input{width:auto;margin-top:3px;flex-shrink:0;}
+
+  .attestation{
+    background:var(--page-bg);border-radius:6px;padding:14px 16px;margin-top:18px;
+    display:flex;align-items:flex-start;gap:10px;font-size:0.88rem;line-height:1.5;
+  }
+  .attestation input{margin-top:3px;flex-shrink:0;}
+
+  .radio-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px;}
+  .radio-pill{position:relative;}
+  .radio-pill input{position:absolute;opacity:0;}
+  .radio-pill label{
+    display:block;padding:8px 16px;border:1px solid rgba(10,39,51,0.2);border-radius:20px;
+    font-size:0.88rem;cursor:pointer;transition:background .15s ease, border-color .15s ease;
+  }
+  .radio-pill input:checked + label{background:var(--teal);border-color:var(--teal);color:var(--white);}
+
+  .submit-btn{
+    width:100%;margin-top:26px;font-family:'Big Shoulders Display',sans-serif;font-weight:700;
+    font-size:1rem;letter-spacing:0.05em;text-transform:uppercase;
+    background:var(--brass);color:var(--navy-deep);padding:16px;border-radius:4px;border:none;
+    cursor:pointer;transition:background .2s ease;
+  }
+  .submit-btn:hover:not(:disabled){background:var(--brass-light);}
+  .submit-btn:disabled{opacity:0.6;cursor:default;}
+  .submit-error{color:#B3261E;font-size:0.88rem;margin-top:10px;display:none;}
+
+  .success-card{background:var(--white);border-radius:10px;box-shadow:var(--shadow);padding:40px 34px;text-align:center;border:1px solid rgba(10,39,51,0.08);}
+  .success-card h2{font-size:1.6rem;margin-bottom:12px;}
+  .success-card p{color:var(--ink-soft);line-height:1.6;margin:0;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-wrap">
+    <a class="wordmark" href="/">
+      <svg width="26" height="26" viewBox="0 0 30 30" fill="none">
+        <circle cx="15" cy="15" r="13" stroke="#C6A044" stroke-width="2"/>
+        <path d="M6 16c2-3 4-3 6 0s4 3 6 0 4-3 6 0" stroke="#E3C878" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+      </svg>
+      <span>Cruising Cove</span>
+    </a>
+    <a class="back-link" href="/marketplace/">&larr; Marketplace</a>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="boarding-pass">
+    <div class="bp-main">
+      <p class="eyebrow">Founding Seller Partners</p>
+      <h1>Get your shop in front of Disney cruise families.</h1>
+      <p>We're building a curated directory of Etsy shops for Disney Cruise Line planning — fish extender gear, cabin decorations, packing essentials. For our first year, we're inviting exactly <strong>10 shops</strong> to a founding partnership: 30 days free, then $39/month.</p>
+      <a href="#apply" class="apply-btn">Apply for a Spot</a>
+    </div>
+    <div class="bp-stub">
+      <div class="stub-block">
+        <div class="label">Spots</div>
+        <div class="value">10 Total</div>
+      </div>
+      <div class="stub-block">
+        <div class="label">Cost</div>
+        <div class="value">30 Days Free</div>
+      </div>
+      <div class="stub-block">
+        <div class="label">Cohort</div>
+        <div class="value">Founding</div>
+      </div>
+      <div class="stub-block">
+        <div class="label">Then</div>
+        <div class="value">$39/mo</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="terms-box">
+    <h2>How it works</h2>
+    <p style="margin-bottom:14px;">Applications are free. If you're one of the 10 founding partners we select, you get a 30-day free trial — no card charged during the trial, cancel anytime with nothing owed. After 30 days, it's <strong>$39/month</strong>, locked at that rate for your first year.</p>
+    <ul>
+      <li><strong>What you get:</strong> a featured shop profile in the Cruising Cove marketplace directory, a credited link to your Etsy shop, and exposure to families actively planning a Disney cruise.</li>
+      <li><strong>How billing works:</strong> if you're selected, we'll follow up directly to confirm your trial start date. No payment during the 30-day trial — after that, we'll send you a simple monthly payment request (PayPal or Venmo).</li>
+      <li><strong>Only 10 spots, this year only.</strong> Founding partners lock in this rate and get first right of renewal as the directory grows.</li>
+    </ul>
+    <h2 style="margin-top:22px;">Eligible product categories</h2>
+    <p style="margin-bottom:10px;">To keep things simple and licensing-clean, featured placement is limited to items that don't use Disney characters or artwork:</p>
+    <div class="categories">
+      <span class="category-chip">Packing organizers</span>
+      <span class="category-chip">Door &amp; cabin magnets</span>
+      <span class="category-chip">Lanyards &amp; pin displays</span>
+      <span class="category-chip">Luggage tags</span>
+      <span class="category-chip">Generic nautical decor</span>
+      <span class="category-chip">Port-specific items</span>
+      <span class="category-chip">Personalized name signs (no characters)</span>
+      <span class="category-chip">Fish extender bases (no character art)</span>
+    </div>
+    <p>Character merchandise is still very welcome as a free, user-submitted listing elsewhere on the site — it just isn't eligible for this featured program.</p>
+  </div>
+
+  <form id="seller-form">
+    <fieldset>
+      <legend>Your Shop</legend>
+
+      <label class="field-label" for="shopName">Shop name <span class="req">*</span></label>
+      <input type="text" id="shopName" name="shopName" required>
+
+      <label class="field-label" for="etsyShopUrl">Etsy shop URL <span class="req">*</span></label>
+      <input type="url" id="etsyShopUrl" name="etsyShopUrl" placeholder="https://etsy.com/shop/..." required>
+
+      <div class="field-row">
+        <div>
+          <label class="field-label" for="ownerName">Your name <span class="req">*</span></label>
+          <input type="text" id="ownerName" name="ownerName" required>
+        </div>
+        <div>
+          <label class="field-label" for="email">Email <span class="req">*</span></label>
+          <input type="email" id="email" name="email" required>
+        </div>
+      </div>
+
+      <label class="field-label">Social links (optional)</label>
+      <div class="field-row">
+        <input type="url" name="instagramUrl" placeholder="Instagram URL">
+        <input type="url" name="tiktokUrl" placeholder="TikTok URL">
+      </div>
+      <input type="url" name="facebookUrl" placeholder="Facebook URL" style="margin-top:10px;">
+
+      <label class="field-label" for="audienceSize">Roughly how many followers / shop favorites do you have? (optional)</label>
+      <input type="text" id="audienceSize" name="audienceSize" placeholder="e.g. 2,400 Etsy favorites, 5k Instagram">
+    </fieldset>
+
+    <fieldset>
+      <legend>What You Sell</legend>
+      <label class="field-label">Which eligible categories does your shop cover? <span class="req">*</span></label>
+      <div class="check-grid" data-group="productCategories">
+        <label class="check-item"><input type="checkbox" value="Packing organizers"> Packing organizers</label>
+        <label class="check-item"><input type="checkbox" value="Door & cabin magnets"> Door &amp; cabin magnets</label>
+        <label class="check-item"><input type="checkbox" value="Lanyards & pin displays"> Lanyards &amp; pin displays</label>
+        <label class="check-item"><input type="checkbox" value="Luggage tags"> Luggage tags</label>
+        <label class="check-item"><input type="checkbox" value="Generic nautical decor"> Generic nautical decor</label>
+        <label class="check-item"><input type="checkbox" value="Port-specific items"> Port-specific items</label>
+        <label class="check-item"><input type="checkbox" value="Personalized name signs (no characters)"> Personalized name signs (no characters)</label>
+        <label class="check-item"><input type="checkbox" value="Fish extender bases (no character art)"> Fish extender bases (no character art)</label>
+      </div>
+      <input type="text" name="productCategoriesOther" placeholder="Other eligible category" style="margin-top:10px;">
+
+      <div class="attestation">
+        <input type="checkbox" id="attestation" name="confirmNoUnlicensedCharacterMerch" required>
+        <label for="attestation">I confirm the items I'm submitting for featured placement don't include unlicensed Disney character merchandise or artwork. <span class="req">*</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Partnership</legend>
+
+      <label class="field-label">Optional: would you be open to including a Cruising Cove promo card in your outgoing packages? (Not required — just appreciated.)</label>
+      <div class="radio-row" data-group="willingToBarter">
+        <div class="radio-pill"><input type="radio" name="willingToBarter" value="yes" id="wb-yes"><label for="wb-yes">Yes</label></div>
+        <div class="radio-pill"><input type="radio" name="willingToBarter" value="maybe" id="wb-maybe"><label for="wb-maybe">Maybe — tell me more</label></div>
+        <div class="radio-pill"><input type="radio" name="willingToBarter" value="no" id="wb-no"><label for="wb-no">No</label></div>
+      </div>
+
+      <label class="field-label" for="whyFeature">Why should we feature your shop?</label>
+      <textarea id="whyFeature" name="whyFeature"></textarea>
+
+      <label class="field-label" for="otherNotes">Anything else we should know? (optional)</label>
+      <textarea id="otherNotes" name="otherNotes"></textarea>
+    </fieldset>
+
+    <button type="submit" class="submit-btn" id="submit-btn">Submit Application</button>
+    <p class="submit-error" id="submit-error">Something went wrong submitting your application. Please try again.</p>
+  </form>
+
+  <div class="success-card" id="success-card" style="display:none;">
+    <h2>🎉 Thanks for applying!</h2>
+    <p>We're reviewing applications for our first 10 founding partners and will reach out by email if it's a fit. Appreciate you taking the time.</p>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  const form = document.getElementById('seller-form');
+  const submitBtn = document.getElementById('submit-btn');
+  const errorEl = document.getElementById('submit-error');
+  const successCard = document.getElementById('success-card');
+
+  function checkedValues(group) {
+    const container = form.querySelector('[data-group="' + group + '"]');
+    return Array.from(container.querySelectorAll('input:checked')).map(function(i){ return i.value; });
+  }
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    errorEl.style.display = 'none';
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+
+    const payload = {
+      shopName: form.shopName.value.trim(),
+      etsyShopUrl: form.etsyShopUrl.value.trim(),
+      ownerName: form.ownerName.value.trim(),
+      email: form.email.value.trim(),
+      instagramUrl: form.instagramUrl.value.trim(),
+      tiktokUrl: form.tiktokUrl.value.trim(),
+      facebookUrl: form.facebookUrl.value.trim(),
+      audienceSize: form.audienceSize.value.trim(),
+      productCategories: checkedValues('productCategories'),
+      productCategoriesOther: form.productCategoriesOther.value.trim(),
+      confirmNoUnlicensedCharacterMerch: form.confirmNoUnlicensedCharacterMerch.checked,
+      willingToBarter: (form.querySelector('input[name="willingToBarter"]:checked') || {}).value || '',
+      whyFeature: form.whyFeature.value.trim(),
+      otherNotes: form.otherNotes.value.trim(),
+    };
+
+    try {
+      const res = await fetch('/api/seller-application', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const errBody = await res.json().catch(function(){ return {}; });
+        throw new Error(errBody.error || 'Request failed');
+      }
+
+      form.style.display = 'none';
+      successCard.style.display = 'block';
+      successCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (err) {
+      errorEl.textContent = err.message || 'Something went wrong submitting your application. Please try again.';
+      errorEl.style.display = 'block';
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit Application';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
