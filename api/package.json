@@ -1,0 +1,21 @@
+{
+  "name": "cruising-cove-api",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/src/index.js",
+  "scripts": {
+    "build": "tsc",
+    "prestart": "npm run build",
+    "start": "func start"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.0",
+    "@azure/data-tables": "^13.2.2",
+    "@azure/functions": "^4.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "azure-functions-core-tools": "^4.0.0",
+    "typescript": "^5.4.0"
+  }
+}
