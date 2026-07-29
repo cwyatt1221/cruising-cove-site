@@ -41,6 +41,8 @@ export async function listSellerApplications(request: HttpRequest, context: Invo
         etsyShopUrl: entity.etsyShopUrl,
         ownerName: entity.ownerName,
         email: entity.email,
+        shopDescription: entity.shopDescription,
+        photoUrls: splitCsv(entity.photoUrls),
         productCategories: splitCsv(entity.productCategories),
         productCategoriesOther: entity.productCategoriesOther,
         socialLinks: {

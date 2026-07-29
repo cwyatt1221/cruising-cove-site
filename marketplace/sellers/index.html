@@ -123,6 +123,16 @@
   .submit-btn:hover:not(:disabled){background:var(--brass-light);}
   .submit-btn:disabled{opacity:0.6;cursor:default;}
   .submit-error{color:#B3261E;font-size:0.88rem;margin-top:10px;display:none;}
+  .photo-thumb{position:relative;width:74px;height:74px;border-radius:6px;overflow:hidden;border:1px solid rgba(10,39,51,0.15);}
+  .photo-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .photo-thumb .thumb-remove{
+    position:absolute;top:2px;right:2px;background:rgba(10,39,51,0.75);color:#fff;
+    border:none;border-radius:50%;width:18px;height:18px;font-size:12px;line-height:1;cursor:pointer;
+  }
+  .photo-thumb.uploading::after{
+    content:'...';position:absolute;inset:0;background:rgba(251,249,241,0.7);
+    display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:var(--ink-soft);
+  }
 
   .success-card{background:var(--white);border-radius:10px;box-shadow:var(--shadow);padding:40px 34px;text-align:center;border:1px solid rgba(10,39,51,0.08);}
   .success-card h2{font-size:1.6rem;margin-bottom:12px;}
@@ -206,7 +216,17 @@
       <label class="field-label" for="etsyShopUrl">Etsy shop URL <span class="req">*</span></label>
       <input type="url" id="etsyShopUrl" name="etsyShopUrl" placeholder="https://etsy.com/shop/..." required>
 
-      <div class="field-row">
+      <label class="field-label" for="shopDescription">Describe your shop for the directory listing</label>
+      <p style="font-size:0.85rem;color:var(--ink-soft);margin:0 0 8px;">2-3 sentences — this is what families will see when browsing the directory.</p>
+      <textarea id="shopDescription" name="shopDescription" maxlength="500"></textarea>
+
+      <label class="field-label">Shop photos (up to 4)</label>
+      <p style="font-size:0.85rem;color:var(--ink-soft);margin:0 0 8px;">Product photos or your shop banner — JPEG, PNG, or WEBP, resized automatically.</p>
+      <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp" multiple>
+      <div id="photoStatus" style="font-size:0.82rem;color:var(--ink-soft);margin-top:6px;"></div>
+      <div id="photoPreviews" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;"></div>
+
+      <div class="field-row" style="margin-top:16px;">
         <div>
           <label class="field-label" for="ownerName">Your name <span class="req">*</span></label>
           <input type="text" id="ownerName" name="ownerName" required>
@@ -283,21 +303,125 @@
   const submitBtn = document.getElementById('submit-btn');
   const errorEl = document.getElementById('submit-error');
   const successCard = document.getElementById('success-card');
+  const photoInput = document.getElementById('photoInput');
+  const photoStatus = document.getElementById('photoStatus');
+  const photoPreviews = document.getElementById('photoPreviews');
+
+  const MAX_PHOTOS = 4;
+  const MAX_DIMENSION = 1600;
+  const JPEG_QUALITY = 0.8;
+  let uploadedPhotoUrls = [];
+  let uploadsInFlight = 0;
 
   function checkedValues(group) {
     const container = form.querySelector('[data-group="' + group + '"]');
     return Array.from(container.querySelectorAll('input:checked')).map(function(i){ return i.value; });
   }
 
+  function compressImage(file) {
+    return new Promise(function(resolve, reject){
+      const img = new Image();
+      const reader = new FileReader();
+      reader.onload = function(e){ img.src = e.target.result; };
+      reader.onerror = reject;
+      img.onload = function(){
+        let w = img.width, h = img.height;
+        if (w > MAX_DIMENSION || h > MAX_DIMENSION) {
+          const scale = MAX_DIMENSION / Math.max(w, h);
+          w = Math.round(w * scale);
+          h = Math.round(h * scale);
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        canvas.toBlob(function(blob){
+          if (!blob) { reject(new Error('Compression failed')); return; }
+          resolve(blob);
+        }, 'image/jpeg', JPEG_QUALITY);
+      };
+      img.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function blobToBase64(blob) {
+    return new Promise(function(resolve, reject){
+      const reader = new FileReader();
+      reader.onload = function(){ resolve(reader.result.split(',')[1]); };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  photoInput.addEventListener('change', async function(){
+    const files = Array.from(photoInput.files || []);
+    photoInput.value = '';
+
+    if (uploadedPhotoUrls.length + files.length > MAX_PHOTOS) {
+      photoStatus.textContent = 'Up to ' + MAX_PHOTOS + ' photos only.';
+      return;
+    }
+
+    for (const file of files) {
+      const thumb = document.createElement('div');
+      thumb.className = 'photo-thumb uploading';
+      photoPreviews.appendChild(thumb);
+
+      uploadsInFlight++;
+      submitBtn.disabled = true;
+      photoStatus.textContent = 'Uploading photo...';
+
+      try {
+        const compressedBlob = await compressImage(file);
+        const base64Data = await blobToBase64(compressedBlob);
+
+        const res = await fetch('/api/seller-photo-upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fileName: file.name, contentType: 'image/jpeg', base64Data: base64Data }),
+        });
+        if (!res.ok) throw new Error('Upload failed');
+        const data = await res.json();
+
+        uploadedPhotoUrls.push(data.url);
+        thumb.classList.remove('uploading');
+        thumb.innerHTML = '<img src="' + data.url + '" alt="">' +
+          '<button type="button" class="thumb-remove" aria-label="Remove photo">&times;</button>';
+        thumb.querySelector('.thumb-remove').addEventListener('click', function(){
+          uploadedPhotoUrls = uploadedPhotoUrls.filter(function(u){ return u !== data.url; });
+          thumb.remove();
+        });
+      } catch (err) {
+        thumb.remove();
+        photoStatus.textContent = 'A photo failed to upload. Please try again.';
+      } finally {
+        uploadsInFlight--;
+        if (uploadsInFlight === 0) {
+          submitBtn.disabled = false;
+          if (!photoStatus.textContent.includes('failed')) photoStatus.textContent = '';
+        }
+      }
+    }
+  });
+
   form.addEventListener('submit', async function(e){
     e.preventDefault();
     errorEl.style.display = 'none';
+
+    if (uploadsInFlight > 0) {
+      errorEl.textContent = 'Please wait for photo uploads to finish.';
+      errorEl.style.display = 'block';
+      return;
+    }
+
     submitBtn.disabled = true;
     submitBtn.textContent = 'Submitting...';
 
     const payload = {
       shopName: form.shopName.value.trim(),
       etsyShopUrl: form.etsyShopUrl.value.trim(),
+      shopDescription: form.shopDescription.value.trim(),
+      photoUrls: uploadedPhotoUrls,
       ownerName: form.ownerName.value.trim(),
       email: form.email.value.trim(),
       instagramUrl: form.instagramUrl.value.trim(),

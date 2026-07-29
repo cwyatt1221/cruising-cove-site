@@ -3,12 +3,15 @@ import { TableClient } from "@azure/data-tables";
 import { randomUUID } from "crypto";
 
 const TABLE_NAME = "SellerApplications";
+const MAX_PHOTOS = 4;
 
 interface SellerApplicationInput {
   shopName?: string;
   etsyShopUrl?: string;
   ownerName?: string;
   email?: string;
+  shopDescription?: string;
+  photoUrls?: string[];
   productCategories?: string[];
   productCategoriesOther?: string;
   confirmNoUnlicensedCharacterMerch?: boolean;
@@ -49,7 +52,7 @@ export async function submitSellerApplication(request: HttpRequest, context: Inv
   }
 
   // Required attestation — matches the site's category restriction policy: featured
-  // placement (even barter-based, not just paid) is limited to non-Disney-IP items.
+  // placement is limited to non-Disney-IP items, whether the arrangement is paid or barter.
   if (body.confirmNoUnlicensedCharacterMerch !== true) {
     return {
       status: 400,
@@ -60,6 +63,8 @@ export async function submitSellerApplication(request: HttpRequest, context: Inv
   if (!body.productCategories || body.productCategories.length === 0) {
     return { status: 400, jsonBody: { error: "Select at least one product category." } };
   }
+
+  const photoUrls = (body.photoUrls ?? []).slice(0, MAX_PHOTOS);
 
   try {
     const client = await getTableClient();
@@ -72,6 +77,8 @@ export async function submitSellerApplication(request: HttpRequest, context: Inv
       etsyShopUrl: body.etsyShopUrl.trim(),
       ownerName: body.ownerName.trim(),
       email: body.email.trim(),
+      shopDescription: body.shopDescription ?? "",
+      photoUrls: csv(photoUrls),
       productCategories: csv(body.productCategories),
       productCategoriesOther: body.productCategoriesOther ?? "",
       confirmNoUnlicensedCharacterMerch: true,
