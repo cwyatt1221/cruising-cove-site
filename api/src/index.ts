@@ -5,3 +5,4 @@ import "./functions/listCreatorApplications";
 import "./functions/sellerApplication";
 import "./functions/listSellerApplications";
 import "./functions/uploadSellerPhoto";
+import "./functions/agentLead";

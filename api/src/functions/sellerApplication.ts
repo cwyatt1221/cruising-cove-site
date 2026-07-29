@@ -51,6 +51,14 @@ export async function submitSellerApplication(request: HttpRequest, context: Inv
     return { status: 400, jsonBody: { error: "Shop name, Etsy shop URL, owner name, and email are required." } };
   }
 
+  if (!body.shopDescription?.trim()) {
+    return { status: 400, jsonBody: { error: "A directory description is required." } };
+  }
+
+  if (!body.photoUrls || body.photoUrls.length < 1) {
+    return { status: 400, jsonBody: { error: "Upload at least one product photo." } };
+  }
+
   // Required attestation — matches the site's category restriction policy: featured
   // placement is limited to non-Disney-IP items, whether the arrangement is paid or barter.
   if (body.confirmNoUnlicensedCharacterMerch !== true) {

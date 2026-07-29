@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Request a Disney Cruise Agent | Cruising Cove</title>
+<meta name="description" content="Choose a Disney-specialist travel agent and request a conversation. You pay nothing extra — Disney pays their commission.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/agents.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <nav class="site-nav-bar" aria-label="Primary">
+      <a class="logo" href="/">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M1 8c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0" stroke="#c9a24b" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </span>
+        Cruising Cove
+      </a>
+      <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primaryNav">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="primaryNav">
+        <a href="/ships/">Ships</a>
+        <a href="/ports/">Ports</a>
+        <a href="/dining/">Dining</a>
+        <a href="/entertainment/">Entertainment</a>
+        <a href="/excursions/">Excursions</a>
+        <a href="/faq/">FAQ</a>
+        <a href="/marketplace/">Marketplace</a>
+      </div>
+      <div class="nav-cta">
+        <a href="/agents/" class="btn btn-outline current">Find an Agent</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="agent-request-wrap">
+  <p class="eyebrow">Find an agent</p>
+  <h1>Request a conversation</h1>
+  <p class="intro">Select the agent you’d like to work with and tell us about your sailing. We’ll notify them with a summary — they unlock your contact details on Cruising Cove when they’re ready to reach out. You still pay the same fare as booking direct.</p>
+
+  <div class="agent-preview" id="agentPreview" aria-live="polite"></div>
+
+  <form class="agent-form" id="leadForm" novalidate>
+    <fieldset>
+      <legend>Your agent</legend>
+      <p class="field-hint"><a href="/agents/">Browse the directory</a> if you haven’t chosen someone yet.</p>
+      <label for="agentId">Agent <span class="req">*</span></label>
+      <select id="agentId" name="agentId" required>
+        <option value="">Select an agent…</option>
+      </select>
+    </fieldset>
+
+    <fieldset>
+      <legend>About you</legend>
+      <label for="guestName">Full name <span class="req">*</span></label>
+      <input id="guestName" name="guestName" type="text" autocomplete="name" required>
+
+      <div class="field-row">
+        <div>
+          <label for="email">Email <span class="req">*</span></label>
+          <input id="email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div>
+          <label for="phone">Phone <span class="req">*</span></label>
+          <input id="phone" name="phone" type="tel" autocomplete="tel" required>
+        </div>
+      </div>
+
+      <label for="partySize">Party size</label>
+      <input id="partySize" name="partySize" type="text" placeholder="e.g. 2 adults, 2 kids (ages 5 & 8)">
+    </fieldset>
+
+    <fieldset>
+      <legend>Your sailing</legend>
+      <div class="field-row">
+        <div>
+          <label for="sailingWindow">When are you hoping to sail?</label>
+          <input id="sailingWindow" name="sailingWindow" type="text" placeholder="e.g. Fall 2027 / still deciding">
+        </div>
+        <div>
+          <label for="shipInterest">Ship or destination interest</label>
+          <input id="shipInterest" name="shipInterest" type="text" placeholder="e.g. Wish · Bahamas">
+        </div>
+      </div>
+
+      <label for="firstTimer">Is this your first Disney cruise?</label>
+      <select id="firstTimer" name="firstTimer">
+        <option value="">Select…</option>
+        <option value="yes">Yes — first timer</option>
+        <option value="no">No — we’ve sailed before</option>
+        <option value="mixed">Mixed group / some first-timers</option>
+      </select>
+
+      <label for="notes">Anything else the agent should know?</label>
+      <textarea id="notes" name="notes" placeholder="Stateroom questions, celebrations, accessibility needs…"></textarea>
+    </fieldset>
+
+    <fieldset>
+      <legend>Consent</legend>
+      <label style="display:flex;gap:10px;align-items:flex-start;text-transform:none;letter-spacing:0;font-weight:500;font-size:0.92rem;">
+        <input type="checkbox" id="consent" name="consent" required style="width:auto;margin-top:3px;">
+        <span>I agree to share my contact details with the agent I selected so they can reach out about planning my Disney cruise. <span class="req">*</span></span>
+      </label>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-gold" id="submitBtn">Send request</button>
+        <p class="form-note">You won’t be charged. Agents pay Cruising Cove a lead fee to unlock your contact — that’s separate from your cruise fare.</p>
+        <p class="form-status" id="formStatus" role="status"></p>
+      </div>
+    </fieldset>
+  </form>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-top">
+      <a class="logo" href="/">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M1 8c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0" stroke="#c9a24b" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </span>
+        Cruising Cove
+      </a>
+      <div class="foot-links">
+        <a href="/ships/">Ships</a>
+        <a href="/ports/">Ports</a>
+        <a href="/agents/">Find an Agent</a>
+        <a href="/agents/request.html">Request an Agent</a>
+      </div>
+    </div>
+    <p class="disclaimer">Cruising Cove is an independent planning guide and is not affiliated with, endorsed by, or sponsored by The Walt Disney Company, Disney Cruise Line, or any of their affiliates.</p>
+  </div>
+</footer>
+
+<script src="/assets/agents-data.js"></script>
+<script>
+  (function(){
+    var btn=document.querySelector('.nav-toggle');
+    var menu=document.getElementById('primaryNav');
+    if(btn&&menu){
+      btn.addEventListener('click',function(){
+        var open=menu.classList.toggle('open');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    }
+
+    var select=document.getElementById('agentId');
+    var preview=document.getElementById('agentPreview');
+    var params=new URLSearchParams(location.search);
+    var preselect=params.get('agent')||'';
+
+    (window.CC_AGENTS||[]).forEach(function(agent){
+      var opt=document.createElement('option');
+      opt.value=agent.id;
+      opt.textContent=agent.name+' — '+agent.agency;
+      if(agent.id===preselect) opt.selected=true;
+      select.appendChild(opt);
+    });
+
+    function updatePreview(){
+      var agent=window.CC_getAgent(select.value);
+      if(!agent){
+        preview.className='agent-preview';
+        preview.innerHTML='';
+        return;
+      }
+      preview.className='agent-preview visible';
+      preview.innerHTML='<strong>'+agent.name+'</strong><p>'+agent.pitch+'</p><p style="margin-top:8px"><a href="/agents/'+agent.id+'.html">View full profile →</a></p>';
+    }
+    select.addEventListener('change', updatePreview);
+    updatePreview();
+
+    var form=document.getElementById('leadForm');
+    var statusEl=document.getElementById('formStatus');
+    var submitBtn=document.getElementById('submitBtn');
+
+    form.addEventListener('submit', async function(e){
+      e.preventDefault();
+      statusEl.className='form-status';
+      statusEl.textContent='';
+
+      if(!form.reportValidity()) return;
+
+      var agent=window.CC_getAgent(select.value);
+      var payload={
+        agentId: select.value,
+        agentName: agent ? agent.name : '',
+        guestName: document.getElementById('guestName').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        partySize: document.getElementById('partySize').value.trim(),
+        sailingWindow: document.getElementById('sailingWindow').value.trim(),
+        shipInterest: document.getElementById('shipInterest').value.trim(),
+        firstTimer: document.getElementById('firstTimer').value,
+        notes: document.getElementById('notes').value.trim(),
+        consent: document.getElementById('consent').checked
+      };
+
+      submitBtn.disabled=true;
+      submitBtn.textContent='Sending…';
+
+      try{
+        var res=await fetch('/api/agent-lead',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify(payload)
+        });
+        var data={};
+        try{ data=await res.json(); }catch(_){}
+        if(!res.ok){
+          throw new Error(data.error || 'Something went wrong. Please try again.');
+        }
+        statusEl.className='form-status ok';
+        statusEl.textContent=data.message || 'Request sent. Your selected agent will reach out after unlocking your contact.';
+        form.reset();
+        if(preselect){
+          select.value=preselect;
+        }
+        updatePreview();
+      }catch(err){
+        statusEl.className='form-status err';
+        statusEl.textContent=err.message || 'Something went wrong. Please try again.';
+      }finally{
+        submitBtn.disabled=false;
+        submitBtn.textContent='Send request';
+      }
+    });
+  })();
+</script>
+<script src="/assets/chat-widget.js" defer></script>
+</body>
+</html>

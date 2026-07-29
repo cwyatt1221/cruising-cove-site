@@ -1,0 +1,86 @@
+/**
+ * Cruising Cove — founding agent directory data.
+ * Replace these example profiles with real EarMarked agents as they onboard.
+ */
+window.CC_AGENTS = [
+  {
+    id: "jordan-mitchell",
+    name: "Jordan Mitchell",
+    agency: "Harbor & Sail Travel",
+    location: "Orlando, FL",
+    years: 9,
+    sailings: 40,
+    earmarked: true,
+    featured: true,
+    specialties: ["First-timers", "Wish-class", "Family groups"],
+    pitch: "I help first-time Disney cruisers feel booked and ready — stateroom strategy, dining windows, and the messy details between deposit and sail-away.",
+    bio: "Jordan has planned Disney cruises for families of every size, with a focus on Wish-class ships and Port Canaveral sailings. Expect clear timelines, booking-window reminders, and someone who answers when plans change.",
+    highlights: [
+      "Wishlist stateroom shortlists before you book",
+      "Castaway Club window strategy for Palo, cabanas, and excursions",
+      "Multi-cabin family coordination"
+    ],
+    emailNotify: "leads+jordan@example.com"
+  },
+  {
+    id: "samira-owens",
+    name: "Samira Owens",
+    agency: "Tide & Table Voyages",
+    location: "Atlanta, GA",
+    years: 12,
+    sailings: 55,
+    earmarked: true,
+    featured: true,
+    specialties: ["Castaway Cay", "Lookout Cay", "Adult sailings"],
+    pitch: "Beach-day planning is my specialty — cabanas, tender timing, and which ports are worth the independent adventure.",
+    bio: "Samira specializes in Bahamas itineraries and private-island days. If your group cares about cabanas, adult beaches, and getting the most out of a short sailing, she's the fit.",
+    highlights: [
+      "Private-island cabana and beach strategy",
+      "Adults-focused sailings without losing family logistics",
+      "Accessible and mobility-friendly planning"
+    ],
+    emailNotify: "leads+samira@example.com"
+  },
+  {
+    id: "chris-delgado",
+    name: "Chris Delgado",
+    agency: "Blue Pennant Planners",
+    location: "Houston, TX",
+    years: 7,
+    sailings: 28,
+    earmarked: true,
+    featured: false,
+    specialties: ["Dream-class", "Alaska", "Large groups"],
+    pitch: "Big groups, interlocking staterooms, and itineraries that aren't just the Bahamas — I keep the paperwork from becoming the vacation.",
+    bio: "Chris works with reunions and multi-generation groups sailing Dream-class and Alaska. Strong on connecting rooms, payment schedules, and keeping every cabin on the same page.",
+    highlights: [
+      "Reunion and multi-cabin booking",
+      "Alaska and longer itineraries",
+      "Payment and rebooking advocacy"
+    ],
+    emailNotify: "leads+chris@example.com"
+  },
+  {
+    id: "ava-bennett",
+    name: "Ava Bennett",
+    agency: "Lantern Line Travel",
+    location: "Remote · US",
+    years: 6,
+    sailings: 22,
+    earmarked: true,
+    featured: false,
+    specialties: ["Budget planning", "Gift-card strategies", "First-timers"],
+    pitch: "You're excited — and a little sticker-shocked. I help you spend where it matters and skip what doesn't.",
+    bio: "Ava is known for transparent cost planning: deposit timelines, gift-card stacking awareness, and helping first-timers avoid surprise onboard spend.",
+    highlights: [
+      "Cost walkthroughs before you commit",
+      "First-timer orientation without the overwhelm",
+      "Clear communication over group texts"
+    ],
+    emailNotify: "leads+ava@example.com"
+  }
+];
+
+window.CC_getAgent = function (id) {
+  return (window.CC_AGENTS || []).find(function (a) { return a.id === id; }) || null;
+};

@@ -3,91 +3,88 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Founding Seller Partners — Cruising Cove Marketplace</title>
-<meta name="description" content="Cruising Cove's Founding Seller Partner program — free featured placement for 10 Etsy shops in our first year.">
+<title>Apply for a Curated 10 Slot — Cruising Cove Marketplace</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Big+Shoulders+Display:wght@400;600;700;800&family=Karla:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<meta name="description" content="Apply for one of 10 exclusive Etsy shop slots on Cruising Cove. Submit your store link, description, and product photos.">
 <style>
   :root{
-    --navy-deep:#0A2733; --navy-mid:#123B4E; --teal:#1E6E79;
-    --seafoam:#CFE6DC; --page-bg:#BFE3DA; --white:#FBF9F1;
-    --brass:#C6A044; --brass-light:#E3C878;
-    --ink:#0A2733; --ink-soft:#3C5560;
+    --navy-deep:#0f1c33; --navy-mid:var(--navy); --teal:var(--teal);
+    --seafoam:var(--cream); --page-bg:var(--cream-2); --white:var(--cream);
+    --brass:var(--gold); --brass-light:var(--gold-light);
+    --ink:#2c2c2a; --ink-soft:var(--muted);
     --shadow: 0 12px 30px -14px rgba(10,39,51,0.35);
   }
   *{box-sizing:border-box;}
-  body{margin:0;background:var(--page-bg);color:var(--ink);font-family:'Karla',sans-serif;-webkit-font-smoothing:antialiased;}
+  body{margin:0;background:var(--cream-2);color:var(--ink);font-family:var(--font-sans);-webkit-font-smoothing:antialiased;}
   a{color:inherit;}
-  h1,h2,h3{font-family:'Bodoni Moda',serif;margin:0;color:var(--ink);letter-spacing:-0.01em;}
-  .eyebrow{font-family:'Big Shoulders Display',sans-serif;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;font-size:0.76rem;color:var(--brass);}
-
-  header{background:var(--navy-deep);border-bottom:1px solid rgba(198,160,68,0.25);}
-  .nav-wrap{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:16px 24px;}
-  .wordmark{display:flex;align-items:center;gap:10px;text-decoration:none;}
-  .wordmark span{font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:1.2rem;letter-spacing:0.04em;color:var(--white);text-transform:uppercase;}
-  .back-link{font-family:'Big Shoulders Display',sans-serif;font-weight:600;font-size:0.82rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--seafoam);text-decoration:none;}
-  .back-link:hover{color:var(--white);}
+  h1,h2,h3{font-family:var(--font-serif);margin:0;color:var(--ink);letter-spacing:-0.01em;}
+  .eyebrow{font-family:var(--font-sans);font-weight:700;letter-spacing:0.2em;text-transform:uppercase;font-size:0.76rem;color:var(--gold);}
+  .back-link:hover{color:var(--cream);}
 
   .wrap{max-width:760px;margin:0 auto;padding:56px 24px 100px;}
 
   .boarding-pass{
-    background:var(--white);border-radius:10px;box-shadow:var(--shadow);
+    background:var(--cream);border-radius:10px;box-shadow:var(--shadow);
     display:flex;overflow:hidden;margin-bottom:36px;border:1px solid rgba(10,39,51,0.08);
   }
   .bp-main{flex:1;padding:32px 30px;}
   .bp-stub{
-    width:150px;background:var(--navy-deep);color:var(--white);
+    width:150px;background:var(--navy-deep);color:var(--cream);
     padding:26px 18px;display:flex;flex-direction:column;justify-content:space-between;
     position:relative;flex-shrink:0;
   }
   .bp-stub::before{
     content:'';position:absolute;left:-9px;top:0;bottom:0;width:18px;
-    background:radial-gradient(circle, var(--page-bg) 5px, transparent 5.5px);
+    background:radial-gradient(circle, var(--cream-2) 5px, transparent 5.5px);
     background-size:18px 22px;background-repeat:repeat-y;
   }
-  .bp-stub .label{font-family:'Big Shoulders Display',sans-serif;font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--seafoam);}
-  .bp-stub .value{font-family:'Big Shoulders Display',sans-serif;font-weight:700;font-size:0.95rem;color:var(--brass-light);margin-top:2px;}
+  .bp-stub .label{font-family:var(--font-sans);font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--cream);}
+  .bp-stub .value{font-family:var(--font-sans);font-weight:700;font-size:0.95rem;color:var(--gold-light);margin-top:2px;}
   .bp-stub .stub-block + .stub-block{margin-top:16px;}
 
   .bp-main .eyebrow{margin-bottom:10px;}
   .bp-main h1{font-size:1.8rem;line-height:1.15;font-weight:600;margin-bottom:14px;}
-  .bp-main p{font-size:0.96rem;line-height:1.6;color:var(--ink-soft);margin:0 0 22px;max-width:46ch;}
+  .bp-main p{font-size:0.96rem;line-height:1.6;color:var(--muted);margin:0 0 22px;max-width:46ch;}
   .apply-btn{
-    display:inline-block;font-family:'Big Shoulders Display',sans-serif;font-weight:700;
+    display:inline-block;font-family:var(--font-sans);font-weight:700;
     font-size:0.9rem;letter-spacing:0.05em;text-transform:uppercase;
-    background:var(--brass);color:var(--navy-deep);padding:13px 24px;border-radius:2px;
-    text-decoration:none;border:1px solid var(--brass);transition:background .2s ease, transform .15s ease;
+    background:var(--gold);color:var(--navy-deep);padding:13px 24px;border-radius:2px;
+    text-decoration:none;border:1px solid var(--gold);transition:background .2s ease, transform .15s ease;
   }
-  .apply-btn:hover{background:var(--brass-light);transform:translateY(-1px);}
+  .apply-btn:hover{background:var(--gold-light);transform:translateY(-1px);}
 
-  .intro-copy{font-size:0.98rem;line-height:1.7;color:var(--ink-soft);margin-bottom:24px;}
+  .intro-copy{font-size:0.98rem;line-height:1.7;color:var(--muted);margin-bottom:24px;}
   .intro-copy strong{color:var(--ink);}
 
   .terms-box{
-    background:var(--white);border-radius:10px;box-shadow:var(--shadow);
+    background:var(--cream);border-radius:10px;box-shadow:var(--shadow);
     padding:26px 28px;margin-bottom:48px;border:1px solid rgba(10,39,51,0.08);
   }
   .terms-box h2{font-size:1.15rem;margin-bottom:12px;}
-  .terms-box ul{margin:0 0 16px;padding-left:20px;font-size:0.92rem;color:var(--ink-soft);line-height:1.7;}
-  .terms-box p{font-size:0.9rem;color:var(--ink-soft);line-height:1.6;margin:0;}
+  .terms-box ul{margin:0 0 16px;padding-left:20px;font-size:0.92rem;color:var(--muted);line-height:1.7;}
+  .terms-box p{font-size:0.9rem;color:var(--muted);line-height:1.6;margin:0;}
   .terms-box .categories{
     display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px;
   }
   .category-chip{
-    background:var(--page-bg);color:var(--navy-deep);border-radius:20px;
+    background:var(--cream-2);color:var(--navy-deep);border-radius:20px;
     padding:6px 12px;font-size:0.82rem;font-weight:600;
   }
 
-  form{background:var(--white);border-radius:10px;box-shadow:var(--shadow);padding:8px 32px 32px;border:1px solid rgba(10,39,51,0.08);}
+  form{background:var(--cream);border-radius:10px;box-shadow:var(--shadow);padding:8px 32px 32px;border:1px solid rgba(10,39,51,0.08);}
   fieldset{border:none;padding:26px 0;margin:0;border-bottom:1px solid rgba(10,39,51,0.08);}
   fieldset:last-of-type{border-bottom:none;}
-  legend{font-family:'Bodoni Moda',serif;font-size:1.2rem;font-weight:600;padding:0;margin-bottom:4px;}
+  legend{font-family:var(--font-serif);font-size:1.2rem;font-weight:600;padding:0;margin-bottom:4px;}
 
-  label.field-label{display:block;font-family:'Big Shoulders Display',sans-serif;font-weight:600;font-size:0.8rem;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink);margin:16px 0 6px;}
+  label.field-label{display:block;font-family:var(--font-sans);font-weight:600;font-size:0.8rem;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink);margin:16px 0 6px;}
   label.field-label .req{color:var(--teal);}
   input[type="text"], input[type="email"], input[type="url"], textarea{
     width:100%;border:1px solid rgba(10,39,51,0.2);border-radius:5px;padding:10px 12px;
-    font-family:'Karla',sans-serif;font-size:0.94rem;color:var(--ink);background:var(--white);
+    font-family:var(--font-sans);font-size:0.94rem;color:var(--ink);background:var(--cream);
   }
   input:focus, textarea:focus{outline:none;border-color:var(--teal);}
   textarea{resize:vertical;min-height:80px;}
@@ -100,7 +97,7 @@
   .check-item input{width:auto;margin-top:3px;flex-shrink:0;}
 
   .attestation{
-    background:var(--page-bg);border-radius:6px;padding:14px 16px;margin-top:18px;
+    background:var(--cream-2);border-radius:6px;padding:14px 16px;margin-top:18px;
     display:flex;align-items:flex-start;gap:10px;font-size:0.88rem;line-height:1.5;
   }
   .attestation input{margin-top:3px;flex-shrink:0;}
@@ -112,15 +109,15 @@
     display:block;padding:8px 16px;border:1px solid rgba(10,39,51,0.2);border-radius:20px;
     font-size:0.88rem;cursor:pointer;transition:background .15s ease, border-color .15s ease;
   }
-  .radio-pill input:checked + label{background:var(--teal);border-color:var(--teal);color:var(--white);}
+  .radio-pill input:checked + label{background:var(--teal);border-color:var(--teal);color:var(--cream);}
 
   .submit-btn{
-    width:100%;margin-top:26px;font-family:'Big Shoulders Display',sans-serif;font-weight:700;
+    width:100%;margin-top:26px;font-family:var(--font-sans);font-weight:700;
     font-size:1rem;letter-spacing:0.05em;text-transform:uppercase;
-    background:var(--brass);color:var(--navy-deep);padding:16px;border-radius:4px;border:none;
+    background:var(--gold);color:var(--navy-deep);padding:16px;border-radius:4px;border:none;
     cursor:pointer;transition:background .2s ease;
   }
-  .submit-btn:hover:not(:disabled){background:var(--brass-light);}
+  .submit-btn:hover:not(:disabled){background:var(--gold-light);}
   .submit-btn:disabled{opacity:0.6;cursor:default;}
   .submit-error{color:#B3261E;font-size:0.88rem;margin-top:10px;display:none;}
   .photo-thumb{position:relative;width:74px;height:74px;border-radius:6px;overflow:hidden;border:1px solid rgba(10,39,51,0.15);}
@@ -131,37 +128,52 @@
   }
   .photo-thumb.uploading::after{
     content:'...';position:absolute;inset:0;background:rgba(251,249,241,0.7);
-    display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:var(--ink-soft);
+    display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:var(--muted);
   }
 
-  .success-card{background:var(--white);border-radius:10px;box-shadow:var(--shadow);padding:40px 34px;text-align:center;border:1px solid rgba(10,39,51,0.08);}
+  .success-card{background:var(--cream);border-radius:10px;box-shadow:var(--shadow);padding:40px 34px;text-align:center;border:1px solid rgba(10,39,51,0.08);}
   .success-card h2{font-size:1.6rem;margin-bottom:12px;}
-  .success-card p{color:var(--ink-soft);line-height:1.6;margin:0;}
+  .success-card p{color:var(--muted);line-height:1.6;margin:0;}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="nav-wrap">
-    <a class="wordmark" href="/">
-      <svg width="26" height="26" viewBox="0 0 30 30" fill="none">
-        <circle cx="15" cy="15" r="13" stroke="#C6A044" stroke-width="2"/>
-        <path d="M6 16c2-3 4-3 6 0s4 3 6 0 4-3 6 0" stroke="#E3C878" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-      </svg>
-      <span>Cruising Cove</span>
-    </a>
-    <a class="back-link" href="/marketplace/">&larr; Marketplace</a>
+<header class="site-header">
+  <div class="wrap">
+    <nav class="site-nav-bar" aria-label="Primary">
+      <a class="logo" href="/">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M1 8c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0" stroke="#c9a24b" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </span>
+        Cruising Cove
+      </a>
+      <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primaryNav">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="primaryNav">
+        <a href="/ships/">Ships</a>
+        <a href="/ports/">Ports</a>
+        <a href="/dining/">Dining</a>
+        <a href="/entertainment/">Entertainment</a>
+        <a href="/excursions/">Excursions</a>
+        <a href="/faq/">FAQ</a>
+        <a href="/marketplace/" class="current">Marketplace</a>
+      </div>
+      <div class="nav-cta">
+        <a href="/agents/" class="btn btn-outline">Find an Agent</a>
+      </div>
+    </nav>
   </div>
 </header>
 
 <div class="wrap">
 
-  <div class="boarding-pass">
+  <div class="boarding-pass" id="apply">
     <div class="bp-main">
-      <p class="eyebrow">Founding Seller Partners</p>
-      <h1>Get your shop in front of Disney cruise families.</h1>
-      <p>We're building a curated directory of Etsy shops for Disney Cruise Line planning — fish extender gear, cabin decorations, packing essentials. For our first year, we're inviting exactly <strong>10 shops</strong> to a founding partnership: 30 days free, then $39/month.</p>
-      <a href="#apply" class="apply-btn">Apply for a Spot</a>
+      <p class="eyebrow">Curated 10 · Exclusive spots</p>
+      <h1>One of ten shops. Reach Disney cruise families.</h1>
+      <p>Only <strong>10 shops</strong> on Cruising Cove. Apply with your Etsy link, a short description, and product photos. Selected partners get a founding listing — not a crowded directory.</p>
+      <a href="#seller-form" class="apply-btn">Start application</a>
     </div>
     <div class="bp-stub">
       <div class="stub-block">
@@ -169,41 +181,31 @@
         <div class="value">10 Total</div>
       </div>
       <div class="stub-block">
-        <div class="label">Cost</div>
-        <div class="value">30 Days Free</div>
+        <div class="label">Exclusivity</div>
+        <div class="value">Curated</div>
       </div>
       <div class="stub-block">
-        <div class="label">Cohort</div>
-        <div class="value">Founding</div>
+        <div class="label">Required</div>
+        <div class="value">Link · Photos</div>
       </div>
       <div class="stub-block">
-        <div class="label">Then</div>
+        <div class="label">Founding</div>
         <div class="value">$39/mo</div>
       </div>
     </div>
   </div>
 
   <div class="terms-box">
-    <h2>How it works</h2>
-    <p style="margin-bottom:14px;">Applications are free. If you're one of the 10 founding partners we select, you get a 30-day free trial — no card charged during the trial, cancel anytime with nothing owed. After 30 days, it's <strong>$39/month</strong>, locked at that rate for your first year.</p>
+    <h2>What you’ll submit</h2>
     <ul>
-      <li><strong>What you get:</strong> a featured shop profile in the Cruising Cove marketplace directory, a credited link to your Etsy shop, and exposure to families actively planning a Disney cruise.</li>
-      <li><strong>How billing works:</strong> if you're selected, we'll follow up directly to confirm your trial start date. No payment during the 30-day trial — after that, we'll send you a simple monthly payment request (PayPal or Venmo).</li>
-      <li><strong>Only 10 spots, this year only.</strong> Founding partners lock in this rate and get first right of renewal as the directory grows.</li>
+      <li><strong>Etsy shop URL</strong> — families click through to buy on Etsy.</li>
+      <li><strong>Directory description</strong> — 2–3 sentences shown on your marketplace card.</li>
+      <li><strong>Product photos</strong> — up to 4 images of items for your listing (required).</li>
     </ul>
-    <h2 style="margin-top:22px;">Eligible product categories</h2>
-    <p style="margin-bottom:10px;">To keep things simple and licensing-clean, featured placement is limited to items that don't use Disney characters or artwork:</p>
-    <div class="categories">
-      <span class="category-chip">Packing organizers</span>
-      <span class="category-chip">Door &amp; cabin magnets</span>
-      <span class="category-chip">Lanyards &amp; pin displays</span>
-      <span class="category-chip">Luggage tags</span>
-      <span class="category-chip">Generic nautical decor</span>
-      <span class="category-chip">Port-specific items</span>
-      <span class="category-chip">Personalized name signs (no characters)</span>
-      <span class="category-chip">Fish extender bases (no character art)</span>
-    </div>
-    <p>Character merchandise is still very welcome as a free, user-submitted listing elsewhere on the site — it just isn't eligible for this featured program.</p>
+    <p style="margin-top:14px;">Applications are reviewed by hand. Founding partners get a 30-day trial, then <strong>$39/month</strong> locked for the first year. Cancel anytime during the trial with nothing owed.</p>
+    <h2 style="margin-top:22px;">Eligible products</h2>
+    <p style="margin-bottom:10px;">Featured placement is limited to items that don’t use Disney characters or artwork — for example packing organizers, cabin magnets, lanyards, luggage tags, nautical decor, personalized name signs, and fish extender bases without character art.</p>
+    <p style="margin-top:12px;"><a href="/marketplace/">See open spots on the Curated 10 page →</a></p>
   </div>
 
   <form id="seller-form">
@@ -214,16 +216,16 @@
       <input type="text" id="shopName" name="shopName" required>
 
       <label class="field-label" for="etsyShopUrl">Etsy shop URL <span class="req">*</span></label>
-      <input type="url" id="etsyShopUrl" name="etsyShopUrl" placeholder="https://etsy.com/shop/..." required>
+      <input type="url" id="etsyShopUrl" name="etsyShopUrl" placeholder="https://www.etsy.com/shop/..." required>
 
-      <label class="field-label" for="shopDescription">Describe your shop for the directory listing</label>
-      <p style="font-size:0.85rem;color:var(--ink-soft);margin:0 0 8px;">2-3 sentences — this is what families will see when browsing the directory.</p>
-      <textarea id="shopDescription" name="shopDescription" maxlength="500"></textarea>
+      <label class="field-label" for="shopDescription">Directory description <span class="req">*</span></label>
+      <p style="font-size:0.85rem;color:var(--muted);margin:0 0 8px;">2–3 sentences — this is what families will see on your Curated 10 card.</p>
+      <textarea id="shopDescription" name="shopDescription" maxlength="500" required></textarea>
 
-      <label class="field-label">Shop photos (up to 4)</label>
-      <p style="font-size:0.85rem;color:var(--ink-soft);margin:0 0 8px;">Product photos or your shop banner — JPEG, PNG, or WEBP, resized automatically.</p>
+      <label class="field-label">Product photos <span class="req">*</span></label>
+      <p style="font-size:0.85rem;color:var(--muted);margin:0 0 8px;">Upload 1–4 photos of items you want featured. JPEG, PNG, or WEBP — resized automatically.</p>
       <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp" multiple>
-      <div id="photoStatus" style="font-size:0.82rem;color:var(--ink-soft);margin-top:6px;"></div>
+      <div id="photoStatus" style="font-size:0.82rem;color:var(--muted);margin-top:6px;"></div>
       <div id="photoPreviews" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;"></div>
 
       <div class="field-row" style="margin-top:16px;">
@@ -249,23 +251,26 @@
     </fieldset>
 
     <fieldset>
-      <legend>What You Sell</legend>
-      <label class="field-label">Which eligible categories does your shop cover? <span class="req">*</span></label>
+      <legend>What you sell</legend>
+      <p class="field-hint" style="margin-top:0;">Tell us what kinds of cruise-prep items you offer (helps us review). This doesn’t put you in a public category.</p>
+      <label class="field-label">Product types <span class="req">*</span></label>
       <div class="check-grid" data-group="productCategories">
+        <label class="check-item"><input type="checkbox" value="Door decorations"> Door decorations</label>
+        <label class="check-item"><input type="checkbox" value="Fish extenders"> Fish extenders</label>
+        <label class="check-item"><input type="checkbox" value="Cabin magnets & hooks"> Cabin magnets &amp; hooks</label>
         <label class="check-item"><input type="checkbox" value="Packing organizers"> Packing organizers</label>
-        <label class="check-item"><input type="checkbox" value="Door & cabin magnets"> Door &amp; cabin magnets</label>
-        <label class="check-item"><input type="checkbox" value="Lanyards & pin displays"> Lanyards &amp; pin displays</label>
+        <label class="check-item"><input type="checkbox" value="Lanyards & credentials"> Lanyards &amp; credentials</label>
         <label class="check-item"><input type="checkbox" value="Luggage tags"> Luggage tags</label>
-        <label class="check-item"><input type="checkbox" value="Generic nautical decor"> Generic nautical decor</label>
-        <label class="check-item"><input type="checkbox" value="Port-specific items"> Port-specific items</label>
-        <label class="check-item"><input type="checkbox" value="Personalized name signs (no characters)"> Personalized name signs (no characters)</label>
-        <label class="check-item"><input type="checkbox" value="Fish extender bases (no character art)"> Fish extender bases (no character art)</label>
+        <label class="check-item"><input type="checkbox" value="Personalized name signs"> Personalized name signs</label>
+        <label class="check-item"><input type="checkbox" value="Nautical / cabin decor"> Nautical / cabin decor</label>
+        <label class="check-item"><input type="checkbox" value="Apparel"> Apparel</label>
+        <label class="check-item"><input type="checkbox" value="Printables"> Printables</label>
       </div>
-      <input type="text" name="productCategoriesOther" placeholder="Other eligible category" style="margin-top:10px;">
+      <input type="text" name="productCategoriesOther" placeholder="Other (no Disney character art)" style="margin-top:10px;">
 
       <div class="attestation">
         <input type="checkbox" id="attestation" name="confirmNoUnlicensedCharacterMerch" required>
-        <label for="attestation">I confirm the items I'm submitting for featured placement don't include unlicensed Disney character merchandise or artwork. <span class="req">*</span></label>
+        <label for="attestation">I confirm the items I’m submitting for featured placement don’t include unlicensed Disney character merchandise or artwork. <span class="req">*</span></label>
       </div>
     </fieldset>
 
@@ -291,8 +296,8 @@
   </form>
 
   <div class="success-card" id="success-card" style="display:none;">
-    <h2>🎉 Thanks for applying!</h2>
-    <p>We're reviewing applications for our first 10 founding partners and will reach out by email if it's a fit. Appreciate you taking the time.</p>
+    <h2>Thanks for applying</h2>
+    <p>We’re reviewing Curated 10 applications and will email you if your slot is a fit. Make sure your Etsy link, description, and photos are ready on your shop in the meantime.</p>
   </div>
 
 </div>
@@ -315,8 +320,11 @@
 
   function checkedValues(group) {
     const container = form.querySelector('[data-group="' + group + '"]');
+    if (!container) return [];
     return Array.from(container.querySelectorAll('input:checked')).map(function(i){ return i.value; });
   }
+
+  // (category query param no longer used)
 
   function compressImage(file) {
     return new Promise(function(resolve, reject){
@@ -414,6 +422,26 @@
       return;
     }
 
+    if (!form.shopDescription.value.trim()) {
+      errorEl.textContent = 'Please add a directory description for your shop.';
+      errorEl.style.display = 'block';
+      return;
+    }
+
+    if (uploadedPhotoUrls.length < 1) {
+      errorEl.textContent = 'Please upload at least one product photo.';
+      errorEl.style.display = 'block';
+      return;
+    }
+
+    const categories = checkedValues('productCategories');
+    const otherCat = (form.productCategoriesOther && form.productCategoriesOther.value.trim()) || '';
+    if (categories.length < 1 && !otherCat) {
+      errorEl.textContent = 'Please select at least one product type (or describe one under Other).';
+      errorEl.style.display = 'block';
+      return;
+    }
+
     submitBtn.disabled = true;
     submitBtn.textContent = 'Submitting...';
 
@@ -428,8 +456,8 @@
       tiktokUrl: form.tiktokUrl.value.trim(),
       facebookUrl: form.facebookUrl.value.trim(),
       audienceSize: form.audienceSize.value.trim(),
-      productCategories: checkedValues('productCategories'),
-      productCategoriesOther: form.productCategoriesOther.value.trim(),
+      productCategories: categories,
+      productCategoriesOther: otherCat,
       confirmNoUnlicensedCharacterMerch: form.confirmNoUnlicensedCharacterMerch.checked,
       willingToBarter: (form.querySelector('input[name="willingToBarter"]:checked') || {}).value || '',
       whyFeature: form.whyFeature.value.trim(),
@@ -460,5 +488,45 @@
 })();
 </script>
 
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-top">
+      <a class="logo" href="/">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M1 8c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0" stroke="#c9a24b" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </span>
+        Cruising Cove
+      </a>
+      <div class="foot-links">
+        <a href="/marketplace/">Curated 10</a>
+        <a href="/marketplace/sellers/">Seller apply</a>
+        <a href="/marketplace/creators/">Creators</a>
+        <a href="/agents/">Find an Agent</a>
+      </div>
+    </div>
+    <p class="disclaimer">Cruising Cove is an independent planning guide and is not affiliated with, endorsed by, or sponsored by The Walt Disney Company, Disney Cruise Line, or any of their affiliates. All ship names are used for reference purposes only.</p>
+  </div>
+</footer>
+<script>
+  (function(){
+    var btn=document.querySelector('.nav-toggle');
+    var menu=document.getElementById('primaryNav');
+    if(btn&&menu){
+      btn.addEventListener('click',function(){
+        var open=menu.classList.toggle('open');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    }
+    var path=location.pathname.replace(/\/+/g,'/');
+    document.querySelectorAll('.site-nav-bar .nav-links a').forEach(function(a){
+      var href=a.getAttribute('href');
+      if(!href) return;
+      if(path===href || (href!=='/' && path.indexOf(href.replace(/\.html$/,''))===0)){
+        a.classList.add('current');
+      }
+    });
+  })();
+</script>
+<script src="/assets/chat-widget.js" defer></script>
 </body>
 </html>

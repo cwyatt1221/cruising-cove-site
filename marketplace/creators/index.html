@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Founding Cruise Experts — Cruising Cove</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/creators.css">
+<meta name="description" content="Become a Founding Cruise Expert on Cruising Cove — your videos featured on ship, port, and planning guides where families are deciding what to book.">
+<style>
+  :root{
+    --navy-deep:#0f1c33; --navy-mid:var(--navy); --teal:var(--teal);
+    --seafoam:var(--cream); --page-bg:var(--cream-2); --white:var(--cream);
+    --brass:var(--gold); --brass-light:var(--gold-light);
+    --ink:#2c2c2a; --ink-soft:var(--muted);
+    --shadow: 0 12px 30px -14px rgba(10,39,51,0.35);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--cream-2);color:var(--ink);font-family:var(--font-sans);-webkit-font-smoothing:antialiased;}
+  a{color:inherit;}
+  h1,h2,h3{font-family:var(--font-serif);margin:0;color:var(--ink);letter-spacing:-0.01em;}
+  .eyebrow{font-family:var(--font-sans);font-weight:700;letter-spacing:0.2em;text-transform:uppercase;font-size:0.76rem;color:var(--gold);}
+  .back-link:hover{color:var(--cream);}
+
+  .wrap{max-width:760px;margin:0 auto;padding:56px 24px 100px;}
+
+  /* ---- Signature element: boarding pass ---- */
+  .boarding-pass{
+    background:var(--cream);border-radius:10px;box-shadow:var(--shadow);
+    display:flex;overflow:hidden;margin-bottom:48px;border:1px solid rgba(10,39,51,0.08);
+  }
+  .bp-main{flex:1;padding:32px 30px;}
+  .bp-stub{
+    width:150px;background:var(--navy-deep);color:var(--cream);
+    padding:26px 18px;display:flex;flex-direction:column;justify-content:space-between;
+    position:relative;flex-shrink:0;
+  }
+  .bp-stub::before{
+    content:'';position:absolute;left:-9px;top:0;bottom:0;width:18px;
+    background:radial-gradient(circle, var(--cream-2) 5px, transparent 5.5px);
+    background-size:18px 22px;background-repeat:repeat-y;
+  }
+  .bp-stub .label{font-family:var(--font-sans);font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--cream);}
+  .bp-stub .value{font-family:var(--font-sans);font-weight:700;font-size:0.95rem;color:var(--gold-light);margin-top:2px;}
+  .bp-stub .stub-block + .stub-block{margin-top:16px;}
+
+  .bp-main .eyebrow{margin-bottom:10px;}
+  .bp-main h1{font-size:1.9rem;line-height:1.15;font-weight:600;margin-bottom:14px;}
+  .bp-main p{font-size:0.96rem;line-height:1.6;color:var(--muted);margin:0 0 22px;max-width:46ch;}
+  .apply-btn{
+    display:inline-block;font-family:var(--font-sans);font-weight:700;
+    font-size:0.9rem;letter-spacing:0.05em;text-transform:uppercase;
+    background:var(--gold);color:var(--navy-deep);padding:13px 24px;border-radius:2px;
+    text-decoration:none;border:1px solid var(--gold);transition:background .2s ease, transform .15s ease;
+  }
+  .apply-btn:hover{background:var(--gold-light);transform:translateY(-1px);}
+
+  .intro-copy{font-size:0.98rem;line-height:1.7;color:var(--muted);margin-bottom:48px;}
+  .intro-copy strong{color:var(--ink);}
+
+  /* ---- Form ---- */
+  form{background:var(--cream);border-radius:10px;box-shadow:var(--shadow);padding:8px 32px 32px;border:1px solid rgba(10,39,51,0.08);}
+  fieldset{border:none;padding:26px 0;margin:0;border-bottom:1px solid rgba(10,39,51,0.08);}
+  fieldset:last-of-type{border-bottom:none;}
+  legend{font-family:var(--font-serif);font-size:1.2rem;font-weight:600;padding:0;margin-bottom:4px;}
+  .field-hint{font-size:0.82rem;color:var(--muted);margin:0 0 16px;}
+
+  label.field-label{display:block;font-family:var(--font-sans);font-weight:600;font-size:0.8rem;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink);margin:16px 0 6px;}
+  label.field-label .req{color:var(--teal);}
+  input[type="text"], input[type="email"], input[type="url"], input[type="number"], textarea{
+    width:100%;border:1px solid rgba(10,39,51,0.2);border-radius:5px;padding:10px 12px;
+    font-family:var(--font-sans);font-size:0.94rem;color:var(--ink);background:var(--cream);
+  }
+  input:focus, textarea:focus{outline:none;border-color:var(--teal);}
+  textarea{resize:vertical;min-height:80px;}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media (max-width:560px){ .field-row{grid-template-columns:1fr;} }
+
+  .check-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;margin-top:6px;}
+  @media (max-width:560px){ .check-grid{grid-template-columns:1fr;} }
+  .check-item{display:flex;align-items:center;gap:8px;font-size:0.92rem;}
+  .check-item input{width:auto;}
+
+  .radio-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px;}
+  .radio-pill{position:relative;}
+  .radio-pill input{position:absolute;opacity:0;}
+  .radio-pill label{
+    display:block;padding:8px 16px;border:1px solid rgba(10,39,51,0.2);border-radius:20px;
+    font-size:0.88rem;cursor:pointer;transition:background .15s ease, border-color .15s ease;
+  }
+  .radio-pill input:checked + label{background:var(--teal);border-color:var(--teal);color:var(--cream);}
+
+  .submit-btn{
+    width:100%;margin-top:26px;font-family:var(--font-sans);font-weight:700;
+    font-size:1rem;letter-spacing:0.05em;text-transform:uppercase;
+    background:var(--gold);color:var(--navy-deep);padding:16px;border-radius:4px;border:none;
+    cursor:pointer;transition:background .2s ease;
+  }
+  .submit-btn:hover:not(:disabled){background:var(--gold-light);}
+  .submit-btn:disabled{opacity:0.6;cursor:default;}
+  .submit-error{color:#B3261E;font-size:0.88rem;margin-top:10px;display:none;}
+
+  /* ---- Success state ---- */
+  .success-card{background:var(--cream);border-radius:10px;box-shadow:var(--shadow);padding:40px 34px;text-align:center;border:1px solid rgba(10,39,51,0.08);}
+  .success-card h2{font-size:1.6rem;margin-bottom:12px;}
+  .success-card p{color:var(--muted);line-height:1.6;margin:0 0 24px;}
+  .badge-list{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+  .badge-chip{
+    display:flex;align-items:center;gap:6px;background:var(--cream-2);
+    border-radius:20px;padding:8px 14px;font-size:0.86rem;font-weight:600;color:var(--navy-deep);
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <nav class="site-nav-bar" aria-label="Primary">
+      <a class="logo" href="/">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M1 8c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0" stroke="#c9a24b" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </span>
+        Cruising Cove
+      </a>
+      <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primaryNav">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="primaryNav">
+        <a href="/ships/">Ships</a>
+        <a href="/ports/">Ports</a>
+        <a href="/dining/">Dining</a>
+        <a href="/entertainment/">Entertainment</a>
+        <a href="/excursions/">Excursions</a>
+        <a href="/faq/">FAQ</a>
+        <a href="/marketplace/" class="current">Marketplace</a>
+      </div>
+      <div class="nav-cta">
+        <a href="/agents/" class="btn btn-outline">Find an Agent</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <p style="margin:0 0 18px;font-size:0.9rem;color:var(--muted);"><a href="/marketplace/" style="color:var(--navy);border-bottom:1px solid rgba(201,162,75,.5);">← Curated 10 shops</a> · Creator Program</p>
+
+  <div class="boarding-pass">
+    <div class="bp-main">
+      <p class="eyebrow">Founding Cruise Experts</p>
+      <h1>Your video. On the page where they’re deciding.</h1>
+      <p>You already have the views. We put your best Disney cruise videos <strong>inside ship, port, and planning guides</strong> — credited, linked to your channel, with a Cruising Cove expert profile. High-intent families, not random scrollers.</p>
+      <a href="#apply" class="apply-btn">Apply to join</a>
+    </div>
+    <div class="bp-stub">
+      <div class="stub-block">
+        <div class="label">Placement</div>
+        <div class="value">On Guides</div>
+      </div>
+      <div class="stub-block">
+        <div class="label">Credit</div>
+        <div class="value">Your Name</div>
+      </div>
+      <div class="stub-block">
+        <div class="label">Link</div>
+        <div class="value">Your Channel</div>
+      </div>
+      <div class="stub-block">
+        <div class="label">Cohort</div>
+        <div class="value">Founding</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="creator-value">
+    <div class="item">
+      <h3>Guide embeds</h3>
+      <p>Wish tour on the Wish page. Castaway tips on Castaway Cay. Cost videos on the planning guide — not buried in a generic feed.</p>
+    </div>
+    <div class="item">
+      <h3>Expert profile</h3>
+      <p>A Cruising Cove page with your bio, specialties, and video list — something you can share with brands and subscribers.</p>
+    </div>
+    <div class="item">
+      <h3>Intent traffic</h3>
+      <p>Families reading guides are mid-decision. A credited embed converts better than another shoutout to people who already follow you.</p>
+    </div>
+  </div>
+
+  <p class="intro-copy">We’re inviting a small founding group. You keep ownership of your content; we embed with credit and a link back to YouTube. As Cruising Cove grows, Founding Experts keep preferred placement.</p>
+
+  <h2 style="font-size:1.4rem;margin:0 0 8px;">Featured experts</h2>
+  <p class="creator-hub-note" id="creatorEmpty">Founding Cruise Experts will appear here once approved. Apply below to be considered for the first cohort.</p>
+  <div class="creator-grid" id="creatorGrid"></div>
+
+  <a id="apply"></a>
+  <form id="creator-form">
+    <fieldset>
+      <legend>Creator Information</legend>
+
+      <label class="field-label" for="name">Your name <span class="req">*</span></label>
+      <input type="text" id="name" name="name" required>
+
+      <label class="field-label" for="creatorName">Creator / channel name <span class="req">*</span></label>
+      <input type="text" id="creatorName" name="creatorName" required>
+
+      <label class="field-label" for="email">Email address <span class="req">*</span></label>
+      <input type="email" id="email" name="email" required>
+
+      <label class="field-label" for="website">Website or main channel link <span class="req">*</span></label>
+      <input type="url" id="website" name="website" placeholder="https://" required>
+
+      <label class="field-label">Social media links</label>
+      <div class="field-row">
+        <input type="url" name="youtubeUrl" placeholder="YouTube URL">
+        <input type="url" name="instagramUrl" placeholder="Instagram URL">
+      </div>
+      <div class="field-row" style="margin-top:10px;">
+        <input type="url" name="tiktokUrl" placeholder="TikTok URL">
+        <input type="url" name="facebookUrl" placeholder="Facebook URL">
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Tell Us About Your Content</legend>
+
+      <label class="field-label">What type of content do you create?</label>
+      <div class="check-grid" data-group="contentTypes">
+        <label class="check-item"><input type="checkbox" value="Disney Cruise Line"> Disney Cruise Line</label>
+        <label class="check-item"><input type="checkbox" value="Disney Travel"> Disney Travel</label>
+        <label class="check-item"><input type="checkbox" value="Family Travel"> Family Travel</label>
+        <label class="check-item"><input type="checkbox" value="Cruise Travel"> Cruise Travel</label>
+        <label class="check-item"><input type="checkbox" value="Vacation Planning"> Vacation Planning</label>
+        <label class="check-item"><input type="checkbox" value="Theme Parks"> Theme Parks</label>
+      </div>
+      <input type="text" name="contentTypesOther" placeholder="Other content type" style="margin-top:10px;">
+
+      <label class="field-label">Followers / subscribers (optional, but helps us understand your reach)</label>
+      <div class="field-row">
+        <input type="number" name="youtubeFollowers" placeholder="YouTube" min="0">
+        <input type="number" name="instagramFollowers" placeholder="Instagram" min="0">
+      </div>
+      <div class="field-row" style="margin-top:10px;">
+        <input type="number" name="tiktokFollowers" placeholder="TikTok" min="0">
+        <input type="number" name="otherFollowers" placeholder="Other" min="0">
+      </div>
+
+      <label class="field-label" for="avgViews">Average views per video/post (optional)</label>
+      <p class="field-hint">This matters more to us than raw follower count — an engaged niche audience stands out here.</p>
+      <input type="number" id="avgViews" name="avgViews" min="0">
+    </fieldset>
+
+    <fieldset>
+      <legend>Your Disney Cruise Experience</legend>
+
+      <label class="field-label">How many Disney Cruises have you taken?</label>
+      <div class="radio-row" data-group="cruisesCount">
+        <div class="radio-pill"><input type="radio" name="cruisesCount" value="0" id="cc0"><label for="cc0">0 (planning/research content)</label></div>
+        <div class="radio-pill"><input type="radio" name="cruisesCount" value="1-3" id="cc1"><label for="cc1">1–3</label></div>
+        <div class="radio-pill"><input type="radio" name="cruisesCount" value="4-10" id="cc2"><label for="cc2">4–10</label></div>
+        <div class="radio-pill"><input type="radio" name="cruisesCount" value="10+" id="cc3"><label for="cc3">10+</label></div>
+      </div>
+
+      <label class="field-label">Which ships have you experienced?</label>
+      <div class="check-grid" data-group="shipsExperienced">
+        <label class="check-item"><input type="checkbox" value="Disney Magic"> Disney Magic</label>
+        <label class="check-item"><input type="checkbox" value="Disney Wonder"> Disney Wonder</label>
+        <label class="check-item"><input type="checkbox" value="Disney Dream"> Disney Dream</label>
+        <label class="check-item"><input type="checkbox" value="Disney Fantasy"> Disney Fantasy</label>
+        <label class="check-item"><input type="checkbox" value="Disney Wish"> Disney Wish</label>
+        <label class="check-item"><input type="checkbox" value="Disney Treasure"> Disney Treasure</label>
+        <label class="check-item"><input type="checkbox" value="Disney Destiny"> Disney Destiny</label>
+        <label class="check-item"><input type="checkbox" value="Disney Adventure"> Disney Adventure</label>
+      </div>
+      <input type="text" name="shipsOther" placeholder="Other" style="margin-top:10px;">
+
+      <label class="field-label">What are you most knowledgeable about?</label>
+      <div class="check-grid" data-group="expertiseAreas">
+        <label class="check-item"><input type="checkbox" value="Ship tours"> Ship tours</label>
+        <label class="check-item"><input type="checkbox" value="Dining"> Dining</label>
+        <label class="check-item"><input type="checkbox" value="Staterooms"> Staterooms</label>
+        <label class="check-item"><input type="checkbox" value="Kids/family cruising"> Kids/family cruising</label>
+        <label class="check-item"><input type="checkbox" value="Adult cruising"> Adult cruising</label>
+        <label class="check-item"><input type="checkbox" value="Port adventures"> Port adventures</label>
+        <label class="check-item"><input type="checkbox" value="Packing tips"> Packing tips</label>
+        <label class="check-item"><input type="checkbox" value="Fish extenders"> Fish extenders</label>
+        <label class="check-item"><input type="checkbox" value="Onboard activities"> Onboard activities</label>
+        <label class="check-item"><input type="checkbox" value="Cruise planning"> Cruise planning</label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Creator Partnership Opportunities</legend>
+
+      <label class="field-label">How would you like to participate?</label>
+      <div class="check-grid" data-group="participationInterests">
+        <label class="check-item"><input type="checkbox" value="Provide ship tips and recommendations"> Provide ship tips and recommendations</label>
+        <label class="check-item"><input type="checkbox" value="Share port adventure reviews"> Share port adventure reviews</label>
+        <label class="check-item"><input type="checkbox" value="Create app content"> Create app content</label>
+        <label class="check-item"><input type="checkbox" value="Participate in launch promotion"> Participate in launch promotion</label>
+        <label class="check-item"><input type="checkbox" value="Be featured as a cruise expert"> Be featured as a cruise expert</label>
+        <label class="check-item"><input type="checkbox" value="Review new app features"> Review new app features</label>
+      </div>
+      <input type="text" name="participationOther" placeholder="Other" style="margin-top:10px;">
+
+      <label class="field-label" for="bestTip">What's one Disney Cruise tip you wish every first-time cruiser knew?</label>
+      <textarea id="bestTip" name="bestTip"></textarea>
+
+      <label class="field-label" for="uniqueness">What makes your content unique?</label>
+      <textarea id="uniqueness" name="uniqueness"></textarea>
+
+      <label class="field-label">Would you be interested in:</label>
+      <div class="check-grid" data-group="partnershipInterests">
+        <label class="check-item"><input type="checkbox" value="Affiliate opportunities"> Affiliate opportunities</label>
+        <label class="check-item"><input type="checkbox" value="Sponsored content"> Sponsored content</label>
+        <label class="check-item"><input type="checkbox" value="Featured creator profile"> Featured creator profile</label>
+        <label class="check-item"><input type="checkbox" value="Exclusive community access"> Exclusive community access</label>
+        <label class="check-item"><input type="checkbox" value="Providing expert recommendations"> Providing expert recommendations</label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Final Question</legend>
+      <label class="field-label" for="whyJoin">Why would you like to join Cruising Cove?</label>
+      <textarea id="whyJoin" name="whyJoin"></textarea>
+    </fieldset>
+
+    <button type="submit" class="submit-btn" id="submit-btn">Submit Creator Application</button>
+    <p class="submit-error" id="submit-error">Something went wrong submitting your application. Please try again.</p>
+  </form>
+
+  <div class="success-card" id="success-card" style="display:none;">
+    <h2>🎉 Thank you for applying!</h2>
+    <p>Our team will review your application and reach out with next steps.<br>Founding Creators will receive:</p>
+    <div class="badge-list">
+      <div class="badge-chip">⭐ Early access</div>
+      <div class="badge-chip">🚢 Featured placement</div>
+      <div class="badge-chip">🎥 Creator profile</div>
+      <div class="badge-chip">💬 Community recognition</div>
+      <div class="badge-chip">🤝 Future partnership opportunities</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  const form = document.getElementById('creator-form');
+  const submitBtn = document.getElementById('submit-btn');
+  const errorEl = document.getElementById('submit-error');
+  const successCard = document.getElementById('success-card');
+
+  function checkedValues(group) {
+    const container = form.querySelector('[data-group="' + group + '"]');
+    return Array.from(container.querySelectorAll('input:checked')).map(function(i){ return i.value; });
+  }
+
+  function numOrUndefined(name) {
+    const val = form.querySelector('[name="' + name + '"]').value;
+    return val ? Number(val) : undefined;
+  }
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    errorEl.style.display = 'none';
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+
+    const payload = {
+      name: form.name.value.trim(),
+      creatorName: form.creatorName.value.trim(),
+      email: form.email.value.trim(),
+      website: form.website.value.trim(),
+      youtubeUrl: form.youtubeUrl.value.trim(),
+      instagramUrl: form.instagramUrl.value.trim(),
+      tiktokUrl: form.tiktokUrl.value.trim(),
+      facebookUrl: form.facebookUrl.value.trim(),
+      contentTypes: checkedValues('contentTypes'),
+      contentTypesOther: form.contentTypesOther.value.trim(),
+      youtubeFollowers: numOrUndefined('youtubeFollowers'),
+      instagramFollowers: numOrUndefined('instagramFollowers'),
+      tiktokFollowers: numOrUndefined('tiktokFollowers'),
+      otherFollowers: numOrUndefined('otherFollowers'),
+      avgViews: numOrUndefined('avgViews'),
+      cruisesCount: (form.querySelector('input[name="cruisesCount"]:checked') || {}).value,
+      shipsExperienced: checkedValues('shipsExperienced'),
+      shipsOther: form.shipsOther.value.trim(),
+      expertiseAreas: checkedValues('expertiseAreas'),
+      participationInterests: checkedValues('participationInterests'),
+      participationOther: form.participationOther.value.trim(),
+      bestTip: form.bestTip.value.trim(),
+      uniqueness: form.uniqueness.value.trim(),
+      partnershipInterests: checkedValues('partnershipInterests'),
+      whyJoin: form.whyJoin.value.trim(),
+    };
+
+    try {
+      const res = await fetch('/api/creator-application', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error('Request failed');
+
+      form.style.display = 'none';
+      successCard.style.display = 'block';
+      successCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (err) {
+      errorEl.style.display = 'block';
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit Creator Application';
+    }
+  });
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-top">
+      <a class="logo" href="/">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M1 8c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0" stroke="#c9a24b" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </span>
+        Cruising Cove
+      </a>
+      <div class="foot-links">
+        <a href="/ships/">Ships</a>
+        <a href="/ports/">Ports</a>
+        <a href="/dining/">Dining</a>
+        <a href="/entertainment/">Entertainment</a>
+        <a href="/planning/disney-cruise-cost.html">Plan Your Sailing</a>
+        <a href="/agents/">Find an Agent</a>
+      </div>
+    </div>
+    <p class="disclaimer">Cruising Cove is an independent planning guide and is not affiliated with, endorsed by, or sponsored by The Walt Disney Company, Disney Cruise Line, or any of their affiliates. All ship names are used for reference purposes only.</p>
+  </div>
+</footer>
+<script>
+  (function(){
+    var btn=document.querySelector('.nav-toggle');
+    var menu=document.getElementById('primaryNav');
+    if(btn&&menu){
+      btn.addEventListener('click',function(){
+        var open=menu.classList.toggle('open');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    }
+    var path=location.pathname.replace(/\/+/g,'/');
+    document.querySelectorAll('.site-nav-bar .nav-links a').forEach(function(a){
+      var href=a.getAttribute('href');
+      if(!href) return;
+      if(path===href || (href!=='/' && path.indexOf(href.replace(/\.html$/,''))===0)){
+        a.classList.add('current');
+      }
+    });
+  })();
+</script>
+
+<script src="/assets/creators-data.js"></script>
+<script>
+  (function(){
+    var grid=document.getElementById('creatorGrid');
+    var empty=document.getElementById('creatorEmpty');
+    var creators=window.CC_CREATORS||[];
+    if(!grid) return;
+    if(!creators.length){
+      if(empty) empty.style.display='block';
+      return;
+    }
+    if(empty) empty.style.display='none';
+    creators.forEach(function(c){
+      var card=document.createElement('article');
+      card.className='creator-card';
+      card.innerHTML=
+        '<h3>'+c.name+'</h3>'+
+        '<p class="meta">'+(c.channel||'')+'</p>'+
+        '<p class="bio">'+(c.bio||'')+'</p>'+
+        '<div class="creator-tags">'+(c.specialties||[]).map(function(s){return '<span class="creator-tag">'+s+'</span>';}).join('')+'</div>'+
+        '<div class="creator-card-actions">'+
+          '<a class="btn btn-outline" href="/marketplace/creators/profile.html?id='+encodeURIComponent(c.id)+'">View profile</a>'+
+          (c.youtubeUrl?'<a class="btn btn-gold" href="'+c.youtubeUrl+'" target="_blank" rel="noopener noreferrer">YouTube</a>':'')+
+        '</div>';
+      grid.appendChild(card);
+    });
+  })();
+</script>
+<script src="/assets/chat-widget.js" defer></script>
+</body>
+</html>
