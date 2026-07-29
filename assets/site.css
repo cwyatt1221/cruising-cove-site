@@ -262,6 +262,53 @@ ul.plain li:last-child{margin-bottom:0;}
   font-size:0.95rem;
 }
 .callout .label{margin-bottom:0.4rem;}
+.callout p{margin:0;}
+
+.table-wrap{
+  overflow-x:auto;
+  margin:1.4rem 0;
+  border:1px solid rgba(26,42,74,.12);
+  border-radius:4px;
+  -webkit-overflow-scrolling:touch;
+}
+.compare-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:0.9rem;
+  min-width:520px;
+}
+.compare-table th,
+.compare-table td{
+  padding:0.75rem 1rem;
+  text-align:left;
+  vertical-align:top;
+  border-bottom:1px solid rgba(26,42,74,.1);
+}
+.compare-table th{
+  font-family:var(--font-sans);
+  font-size:0.68rem;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+  font-weight:700;
+  color:var(--muted);
+  background:rgba(26,42,74,.04);
+  white-space:nowrap;
+}
+.compare-table td{color:var(--ink);}
+.compare-table tr:last-child td{border-bottom:none;}
+.compare-table .num{font-variant-numeric:tabular-nums;white-space:nowrap;}
+.compare-table .note{
+  display:block;
+  margin-top:0.25rem;
+  font-size:0.8rem;
+  color:var(--muted);
+}
+.fine-print{
+  font-size:0.82rem;
+  color:var(--muted);
+  margin:0.4rem 0 0;
+  max-width:70ch;
+}
 
 .fleet-grid{
   display:grid;

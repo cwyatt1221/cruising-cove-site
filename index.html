@@ -134,6 +134,8 @@
     transition:transform .25s ease, box-shadow .25s ease;
   }
   .card:hover{transform:translateY(-3px);box-shadow:0 16px 28px -18px rgba(15,28,51,.35);}
+  .card a,.cards a.card{color:inherit;text-decoration:none;display:block;}
+  .cards a.card:hover{transform:translateY(-3px);box-shadow:0 16px 28px -18px rgba(15,28,51,.35);}
   .card-media{
     height:130px;overflow:hidden;
     background:linear-gradient(135deg,#dbe3ea,#c3ceda);
@@ -327,27 +329,27 @@
     <p class="section-label reveal">Free, port by port</p>
     <h2 class="reveal">Every port explained — from the day you dock to the day you fly home.</h2>
     <div class="cards cards-3">
-      <div class="card reveal">
+      <a class="card reveal" href="/ports/adventures.html">
         <div class="card-media aqua" aria-hidden="true"></div>
         <div class="card-body">
           <h3>Port Adventures</h3>
           <p>Which excursion actually fits your family? Filter by toddler-friendly, wheelchair accessible, adventurous, beach day, budget, or Disney-run vs. independent — so you're comparing real options, not scrolling everything.</p>
         </div>
-      </div>
-      <div class="card reveal">
+      </a>
+      <a class="card reveal" href="/ports/guides.html">
         <div class="card-media clay" aria-hidden="true"></div>
         <div class="card-body">
           <h3>Port Guides</h3>
           <p>Everything you need before you step off the ship — transportation, food, shopping, safety, timing, and the one thing locals say not to miss.</p>
         </div>
-      </div>
-      <div class="card reveal">
+      </a>
+      <a class="card reveal" href="/ports/departure-ports.html">
         <div class="card-media slate" aria-hidden="true"></div>
         <div class="card-body">
           <h3>Departure ports</h3>
           <p>The nearest airports, where to stay the night before, and parking, rideshare, and transfer options compared by real cost and time — so the trip starts smooth, not scrambled.</p>
         </div>
-      </div>
+      </a>
     </div>
   </div>
 </section>
