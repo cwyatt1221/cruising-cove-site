@@ -14,12 +14,10 @@ interface SellerApplicationInput {
   photoUrls?: string[];
   productCategories?: string[];
   productCategoriesOther?: string;
-  confirmNoUnlicensedCharacterMerch?: boolean;
   instagramUrl?: string;
   tiktokUrl?: string;
   facebookUrl?: string;
   audienceSize?: string;
-  whyFeature?: string;
   willingToBarter?: string; // "yes" | "no" | "maybe"
   otherNotes?: string;
 }
@@ -59,15 +57,6 @@ export async function submitSellerApplication(request: HttpRequest, context: Inv
     return { status: 400, jsonBody: { error: "Upload at least one product photo." } };
   }
 
-  // Required attestation — matches the site's category restriction policy: featured
-  // placement is limited to non-Disney-IP items, whether the arrangement is paid or barter.
-  if (body.confirmNoUnlicensedCharacterMerch !== true) {
-    return {
-      status: 400,
-      jsonBody: { error: "You must confirm the items submitted for featured placement don't include unlicensed Disney character merchandise." },
-    };
-  }
-
   if (!body.productCategories || body.productCategories.length === 0) {
     return { status: 400, jsonBody: { error: "Select at least one product category." } };
   }
@@ -89,12 +78,10 @@ export async function submitSellerApplication(request: HttpRequest, context: Inv
       photoUrls: csv(photoUrls),
       productCategories: csv(body.productCategories),
       productCategoriesOther: body.productCategoriesOther ?? "",
-      confirmNoUnlicensedCharacterMerch: true,
       instagramUrl: body.instagramUrl ?? "",
       tiktokUrl: body.tiktokUrl ?? "",
       facebookUrl: body.facebookUrl ?? "",
       audienceSize: body.audienceSize ?? "",
-      whyFeature: body.whyFeature ?? "",
       willingToBarter: body.willingToBarter ?? "",
       otherNotes: body.otherNotes ?? "",
       submittedAt: now.toISOString(),

@@ -96,12 +96,6 @@
   .check-item{display:flex;align-items:flex-start;gap:8px;font-size:0.92rem;line-height:1.4;}
   .check-item input{width:auto;margin-top:3px;flex-shrink:0;}
 
-  .attestation{
-    background:var(--cream-2);border-radius:6px;padding:14px 16px;margin-top:18px;
-    display:flex;align-items:flex-start;gap:10px;font-size:0.88rem;line-height:1.5;
-  }
-  .attestation input{margin-top:3px;flex-shrink:0;}
-
   .radio-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px;}
   .radio-pill{position:relative;}
   .radio-pill input{position:absolute;opacity:0;}
@@ -157,6 +151,7 @@
         <a href="/entertainment/">Entertainment</a>
         <a href="/excursions/">Excursions</a>
         <a href="/faq/">FAQ</a>
+        <a href="/community/">Community</a>
         <a href="/marketplace/" class="current">Marketplace</a>
       </div>
       <div class="nav-cta">
@@ -203,8 +198,6 @@
       <li><strong>Product photos</strong> — up to 4 images of items for your listing (required).</li>
     </ul>
     <p style="margin-top:14px;">Applications are reviewed by hand. Founding partners get a 30-day trial, then <strong>$39/month</strong> locked for the first year. Cancel anytime during the trial with nothing owed.</p>
-    <h2 style="margin-top:22px;">Eligible products</h2>
-    <p style="margin-bottom:10px;">Featured placement is limited to items that don’t use Disney characters or artwork — for example packing organizers, cabin magnets, lanyards, luggage tags, nautical decor, personalized name signs, and fish extender bases without character art.</p>
     <p style="margin-top:12px;"><a href="/marketplace/">See open spots on the Curated 10 page →</a></p>
   </div>
 
@@ -266,12 +259,7 @@
         <label class="check-item"><input type="checkbox" value="Apparel"> Apparel</label>
         <label class="check-item"><input type="checkbox" value="Printables"> Printables</label>
       </div>
-      <input type="text" name="productCategoriesOther" placeholder="Other (no Disney character art)" style="margin-top:10px;">
-
-      <div class="attestation">
-        <input type="checkbox" id="attestation" name="confirmNoUnlicensedCharacterMerch" required>
-        <label for="attestation">I confirm the items I’m submitting for featured placement don’t include unlicensed Disney character merchandise or artwork. <span class="req">*</span></label>
-      </div>
+      <input type="text" name="productCategoriesOther" placeholder="Other product types" style="margin-top:10px;">
     </fieldset>
 
     <fieldset>
@@ -283,9 +271,6 @@
         <div class="radio-pill"><input type="radio" name="willingToBarter" value="maybe" id="wb-maybe"><label for="wb-maybe">Maybe — tell me more</label></div>
         <div class="radio-pill"><input type="radio" name="willingToBarter" value="no" id="wb-no"><label for="wb-no">No</label></div>
       </div>
-
-      <label class="field-label" for="whyFeature">Why should we feature your shop?</label>
-      <textarea id="whyFeature" name="whyFeature"></textarea>
 
       <label class="field-label" for="otherNotes">Anything else we should know? (optional)</label>
       <textarea id="otherNotes" name="otherNotes"></textarea>
@@ -458,9 +443,7 @@
       audienceSize: form.audienceSize.value.trim(),
       productCategories: categories,
       productCategoriesOther: otherCat,
-      confirmNoUnlicensedCharacterMerch: form.confirmNoUnlicensedCharacterMerch.checked,
       willingToBarter: (form.querySelector('input[name="willingToBarter"]:checked') || {}).value || '',
-      whyFeature: form.whyFeature.value.trim(),
       otherNotes: form.otherNotes.value.trim(),
     };
 
