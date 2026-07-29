@@ -179,18 +179,17 @@ export async function deleteSignup(request: HttpRequest, context: InvocationCont
   }
 }
 
-app.http("listSignups", {
-  methods: ["GET", "OPTIONS"],
-  authLevel: "anonymous",
-  route: "community/sailings/{sailingKey}/signups",
-  handler: listSignups,
-});
+async function signupsCollection(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
+  if (request.method === "GET") return listSignups(request, context);
+  if (request.method === "POST") return createSignup(request, context);
+  return corsJson(204, {});
+}
 
-app.http("createSignup", {
-  methods: ["POST", "OPTIONS"],
+app.http("signupsCollection", {
+  methods: ["GET", "POST", "OPTIONS"],
   authLevel: "anonymous",
   route: "community/sailings/{sailingKey}/signups",
-  handler: createSignup,
+  handler: signupsCollection,
 });
 
 app.http("deleteSignup", {

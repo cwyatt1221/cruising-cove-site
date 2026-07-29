@@ -114,16 +114,15 @@ export async function createPost(request: HttpRequest, context: InvocationContex
   }
 }
 
-app.http("listPosts", {
-  methods: ["GET", "OPTIONS"],
-  authLevel: "anonymous",
-  route: "community/sailings/{sailingKey}/posts",
-  handler: listPosts,
-});
+async function postsCollection(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
+  if (request.method === "GET") return listPosts(request, context);
+  if (request.method === "POST") return createPost(request, context);
+  return corsJson(204, {});
+}
 
-app.http("createPost", {
-  methods: ["POST", "OPTIONS"],
+app.http("postsCollection", {
+  methods: ["GET", "POST", "OPTIONS"],
   authLevel: "anonymous",
   route: "community/sailings/{sailingKey}/posts",
-  handler: createPost,
+  handler: postsCollection,
 });

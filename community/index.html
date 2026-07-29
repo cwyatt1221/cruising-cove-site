@@ -179,8 +179,9 @@
       shipSelect.appendChild(opt);
     });
     renderSailings(data.sailings || []);
-  }).catch(function(){
-    listEl.innerHTML = '<p class="empty-state">Could not load sailings. The community API may need Azure Storage configured.</p>';
+  }).catch(function(err){
+    var detail = (err && err.message) ? err.message : 'Could not load sailings.';
+    listEl.innerHTML = '<p class="empty-state">' + CC.escapeHtml(detail) + ' Try refreshing in a minute.</p>';
   });
 
   joinForm.addEventListener('submit', function(e){

@@ -196,18 +196,18 @@ export async function getSailing(request: HttpRequest, context: InvocationContex
   }
 }
 
-app.http("listSailings", {
-  methods: ["GET", "OPTIONS"],
-  authLevel: "anonymous",
-  route: "community/sailings",
-  handler: listSailings,
-});
+// SWA managed Functions only keep one registration per route — combine methods.
+async function sailingsCollection(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
+  if (request.method === "GET") return listSailings(request, context);
+  if (request.method === "POST") return createOrJoinSailing(request, context);
+  return corsJson(204, {});
+}
 
-app.http("createOrJoinSailing", {
-  methods: ["POST", "OPTIONS"],
+app.http("sailingsCollection", {
+  methods: ["GET", "POST", "OPTIONS"],
   authLevel: "anonymous",
   route: "community/sailings",
-  handler: createOrJoinSailing,
+  handler: sailingsCollection,
 });
 
 app.http("getSailing", {
