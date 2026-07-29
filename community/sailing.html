@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sailing board — Community | Cruising Cove</title>
+<meta name="description" content="Disney Cruise sailing community board — posts from guests on the same ship and embarkation date.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/community.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <nav class="site-nav-bar" aria-label="Primary">
+      <a class="logo" href="/">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M1 8c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0" stroke="#c9a24b" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </span>
+        Cruising Cove
+      </a>
+      <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primaryNav">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="primaryNav">
+        <a href="/ships/">Ships</a>
+        <a href="/ports/">Ports</a>
+        <a href="/dining/">Dining</a>
+        <a href="/entertainment/">Entertainment</a>
+        <a href="/excursions/">Excursions</a>
+        <a href="/faq/">FAQ</a>
+        <a href="/community/" class="current">Community</a>
+        <a href="/marketplace/">Marketplace</a>
+      </div>
+      <div class="nav-cta">
+        <a href="/agents/" class="btn btn-outline">Find an Agent</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <span class="eyebrow mono" id="heroEyebrow">Sailing board</span>
+    <h1 id="heroTitle">Loading…</h1>
+    <p class="lede" id="heroLede">Ship · embarkation date</p>
+  </div>
+  <div class="tide" aria-hidden="true">
+    <svg viewBox="0 0 1200 56" preserveAspectRatio="none">
+      <path d="M0,28 C150,50 300,6 450,28 C600,50 750,6 900,28 C1050,50 1150,18 1200,26 L1200,56 L0,56 Z" fill="#faf7ee"></path>
+    </svg>
+  </div>
+</div>
+
+<main>
+  <div class="community-auth-bar" id="authBar"></div>
+
+  <section id="status">
+    <span class="label mono">&mdash; Membership</span>
+    <h2 id="statusTitle">Join to post</h2>
+    <p id="statusCopy">Members of this sailing can share planning tips, meet-up ideas, and questions — plus Fish Extender and Pixie Dust sign-ups.</p>
+    <p class="actions" id="statusActions" style="margin-top:1rem;"></p>
+  </section>
+
+  <section id="gifts">
+    <span class="label mono">&mdash; Gift exchanges</span>
+    <h2>Fish Extender &amp; Pixie Dust</h2>
+    <p>Sign up after you join this sailing board. Cabin numbers are only shown to people on this board — still don’t post passport or payment info.</p>
+    <div class="signup-grid">
+      <div class="signup-panel" id="fePanel">
+        <p class="signup-count" id="feCount">Fish Extender · 0 signed up</p>
+        <h3>Fish Extender</h3>
+        <p class="blurb">Organized cabin-to-cabin gift exchange. You’ll need a hanging fish extender and a cabin number so your group can deliver gifts.</p>
+        <ul class="signup-list" id="feList"><li class="notes">Loading…</li></ul>
+        <div class="actions" id="feActions"></div>
+        <form class="community-form" id="feForm" hidden style="margin-top:1rem;padding:1rem;">
+          <div class="field">
+            <label for="feCabin">Cabin number</label>
+            <input type="text" id="feCabin" required maxlength="20" placeholder="e.g. 8024">
+          </div>
+          <div class="field">
+            <label for="feNotes">Notes (optional)</label>
+            <input type="text" id="feNotes" maxlength="280" placeholder="Kids ages, allergies, themes you’re bringing">
+          </div>
+          <div class="actions">
+            <button type="submit" class="btn btn-gold">Join Fish Extender</button>
+          </div>
+          <p class="form-msg" id="feMsg" hidden></p>
+        </form>
+      </div>
+      <div class="signup-panel" id="pdPanel">
+        <p class="signup-count" id="pdCount">Pixie Dust · 0 signed up</p>
+        <h3>Pixie Dust</h3>
+        <p class="blurb">Optional “pay it forward” gifts — leave anonymous surprises for others on the sailing. Cabin optional if you want dust left for you too.</p>
+        <ul class="signup-list" id="pdList"><li class="notes">Loading…</li></ul>
+        <div class="actions" id="pdActions"></div>
+        <form class="community-form" id="pdForm" hidden style="margin-top:1rem;padding:1rem;">
+          <div class="field">
+            <label for="pdCabin">Cabin number (optional)</label>
+            <input type="text" id="pdCabin" maxlength="20" placeholder="So others can leave dust for you">
+          </div>
+          <div class="field">
+            <label for="pdNotes">Notes (optional)</label>
+            <input type="text" id="pdNotes" maxlength="280" placeholder="Leaving dust / happy to receive / deck tips">
+          </div>
+          <div class="actions">
+            <button type="submit" class="btn btn-gold">Join Pixie Dust</button>
+          </div>
+          <p class="form-msg" id="pdMsg" hidden></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section id="compose" hidden>
+    <span class="label mono">&mdash; New post</span>
+    <h2>Say something useful</h2>
+    <form class="community-form" id="postForm">
+      <div class="field">
+        <label for="postBody">Your note</label>
+        <textarea id="postBody" maxlength="2000" required placeholder="Port adventures you’re booking, cabin tips, dinner seating questions…"></textarea>
+      </div>
+      <div class="actions">
+        <button type="submit" class="btn btn-gold">Post</button>
+      </div>
+      <p class="form-msg" id="postMsg" hidden></p>
+    </form>
+  </section>
+
+  <section id="feed">
+    <span class="label mono">&mdash; Board</span>
+    <h2>Recent posts</h2>
+    <div class="post-list" id="postList">
+      <p class="empty-state">Loading posts…</p>
+    </div>
+  </section>
+
+  <p style="margin:2rem 0 1rem;"><a href="/community/" style="color:var(--teal);text-decoration:underline;">← All sailings</a></p>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-top">
+      <a class="logo" href="/">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M1 8c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0" stroke="#c9a24b" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </span>
+        Cruising Cove
+      </a>
+      <div class="foot-links">
+        <a href="/community/">Community</a>
+        <a href="/agents/">Find an Agent</a>
+      </div>
+    </div>
+    <p class="disclaimer">Cruising Cove community boards are independent and not affiliated with Disney Cruise Line. Do not share sensitive personal or payment information in posts.</p>
+  </div>
+</footer>
+
+<script src="/assets/community.js"></script>
+<script>
+(function(){
+  var btn=document.querySelector('.nav-toggle');
+  var menu=document.getElementById('primaryNav');
+  if(btn&&menu){
+    btn.addEventListener('click',function(){
+      var open=menu.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  }
+
+  var CC = window.CCCommunity;
+  CC.renderAuthBar(document.getElementById('authBar'));
+
+  var key = new URLSearchParams(location.search).get('key') || '';
+  var compose = document.getElementById('compose');
+  var postList = document.getElementById('postList');
+  var statusActions = document.getElementById('statusActions');
+  var sailingMeta = null;
+  var isMember = false;
+
+  function renderPosts(posts) {
+    if (!posts || !posts.length) {
+      postList.innerHTML = '<p class="empty-state">No posts yet — say hello and ask what others are planning.</p>';
+      return;
+    }
+    postList.innerHTML = posts.map(function(p){
+      return (
+        '<article class="post-card">' +
+          '<p class="by">' + CC.escapeHtml(p.displayName) + '</p>' +
+          '<p class="when">' + CC.escapeHtml(CC.formatDate(p.createdAt)) + '</p>' +
+          '<p class="body">' + CC.escapeHtml(p.body) + '</p>' +
+        '</article>'
+      );
+    }).join('');
+  }
+
+  function renderSignupList(el, items, showCabin) {
+    if (!items || !items.length) {
+      el.innerHTML = '<li class="notes">Nobody signed up yet.</li>';
+      return;
+    }
+    el.innerHTML = items.map(function(s){
+      var line = '<span class="name">' + CC.escapeHtml(s.displayName) + '</span>';
+      if (showCabin && s.cabin) line += ' · <span class="cabin">Cabin ' + CC.escapeHtml(s.cabin) + '</span>';
+      else if (!showCabin && s.cabin) line += ' · <span class="cabin">Cabin ' + CC.escapeHtml(s.cabin) + '</span>';
+      if (s.notes) line += '<span class="notes">' + CC.escapeHtml(s.notes) + '</span>';
+      return '<li>' + line + '</li>';
+    }).join('');
+  }
+
+  function loadSignups() {
+    return CC.api('/community/sailings/' + encodeURIComponent(key) + '/signups').then(function(data){
+      var fe = data.fishExtender || [];
+      var pd = data.pixieDust || [];
+      document.getElementById('feCount').textContent = 'Fish Extender · ' + fe.length + ' signed up';
+      document.getElementById('pdCount').textContent = 'Pixie Dust · ' + pd.length + ' signed up';
+      renderSignupList(document.getElementById('feList'), fe, true);
+      renderSignupList(document.getElementById('pdList'), pd, true);
+      setSignupActions(!!data.myFishExtender, !!data.myPixieDust);
+    }).catch(function(){
+      document.getElementById('feList').innerHTML = '<li class="notes">Could not load Fish Extender list.</li>';
+      document.getElementById('pdList').innerHTML = '<li class="notes">Could not load Pixie Dust list.</li>';
+    });
+  }
+
+  function setSignupActions(myFish, myPixie) {
+    var signedIn = !!(CC.getToken() && CC.getUser());
+    var feActions = document.getElementById('feActions');
+    var pdActions = document.getElementById('pdActions');
+    var feForm = document.getElementById('feForm');
+    var pdForm = document.getElementById('pdForm');
+    feForm.hidden = true;
+    pdForm.hidden = true;
+
+    if (!signedIn) {
+      var loginUrl = '/community/login.html?next=' + encodeURIComponent(location.pathname + location.search);
+      feActions.innerHTML = '<a class="btn btn-outline" href="' + loginUrl + '">Sign in to join</a>';
+      pdActions.innerHTML = '<a class="btn btn-outline" href="' + loginUrl + '">Sign in to join</a>';
+      return;
+    }
+    if (!isMember) {
+      feActions.innerHTML = '<span class="notes">Join this sailing board first, then sign up here.</span>';
+      pdActions.innerHTML = '<span class="notes">Join this sailing board first, then sign up here.</span>';
+      return;
+    }
+
+    if (myFish) {
+      feActions.innerHTML = '<button type="button" class="btn btn-outline" id="leaveFe">Leave Fish Extender</button>';
+      document.getElementById('leaveFe').addEventListener('click', function(){
+        CC.api('/community/sailings/' + encodeURIComponent(key) + '/signups/fish-extender', { method: 'DELETE' })
+          .then(loadSignups)
+          .catch(function(err){ alert(err.message || 'Could not leave.'); });
+      });
+    } else {
+      feActions.innerHTML = '<button type="button" class="btn btn-gold" id="openFe">Sign up for Fish Extender</button>';
+      document.getElementById('openFe').addEventListener('click', function(){ feForm.hidden = false; });
+    }
+
+    if (myPixie) {
+      pdActions.innerHTML = '<button type="button" class="btn btn-outline" id="leavePd">Leave Pixie Dust</button>';
+      document.getElementById('leavePd').addEventListener('click', function(){
+        CC.api('/community/sailings/' + encodeURIComponent(key) + '/signups/pixie-dust', { method: 'DELETE' })
+          .then(loadSignups)
+          .catch(function(err){ alert(err.message || 'Could not leave.'); });
+      });
+    } else {
+      pdActions.innerHTML = '<button type="button" class="btn btn-gold" id="openPd">Sign up for Pixie Dust</button>';
+      document.getElementById('openPd').addEventListener('click', function(){ pdForm.hidden = false; });
+    }
+  }
+
+  function setMembershipUI(member) {
+    isMember = !!member;
+    var signedIn = !!(CC.getToken() && CC.getUser());
+    if (isMember) {
+      document.getElementById('statusTitle').textContent = "You're a member";
+      document.getElementById('statusCopy').textContent = (sailingMeta.memberCount || 0) + ' members · ' + (sailingMeta.postCount || 0) + ' posts — join Fish Extender or Pixie Dust below.';
+      statusActions.innerHTML = '';
+      compose.hidden = false;
+    } else if (signedIn) {
+      document.getElementById('statusTitle').textContent = 'Join to post & gift lists';
+      statusActions.innerHTML = '<button type="button" class="btn btn-gold" id="joinBtn">Join this sailing</button>';
+      compose.hidden = true;
+      document.getElementById('joinBtn').addEventListener('click', function(){
+        CC.api('/community/sailings', {
+          method: 'POST',
+          body: {
+            shipSlug: sailingMeta.shipSlug,
+            embarkDate: sailingMeta.embarkDate,
+            departurePort: sailingMeta.departurePort,
+            nights: sailingMeta.nights
+          }
+        }).then(function(){ location.reload(); })
+          .catch(function(err){ alert(err.message || 'Could not join.'); });
+      });
+    } else {
+      document.getElementById('statusTitle').textContent = 'Sign in to join';
+      statusActions.innerHTML = '<a class="btn btn-gold" href="/community/login.html?next=' + encodeURIComponent(location.pathname + location.search) + '">Sign in / Register</a>';
+      compose.hidden = true;
+    }
+    loadSignups();
+  }
+
+  if (!key) {
+    document.getElementById('heroTitle').textContent = 'Missing sailing';
+    postList.innerHTML = '<p class="empty-state"><a href="/community/" style="color:var(--teal)">Back to Community</a></p>';
+    return;
+  }
+
+  document.getElementById('feForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var msg = document.getElementById('feMsg');
+    CC.api('/community/sailings/' + encodeURIComponent(key) + '/signups', {
+      method: 'POST',
+      body: {
+        type: 'fish-extender',
+        cabin: document.getElementById('feCabin').value,
+        notes: document.getElementById('feNotes').value
+      }
+    }).then(function(){
+      msg.hidden = false; msg.className = 'form-msg ok'; msg.textContent = 'You’re on the Fish Extender list.';
+      document.getElementById('feForm').hidden = true;
+      return loadSignups();
+    }).catch(function(err){
+      msg.hidden = false; msg.className = 'form-msg error'; msg.textContent = err.message || 'Could not sign up.';
+    });
+  });
+
+  document.getElementById('pdForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var msg = document.getElementById('pdMsg');
+    CC.api('/community/sailings/' + encodeURIComponent(key) + '/signups', {
+      method: 'POST',
+      body: {
+        type: 'pixie-dust',
+        cabin: document.getElementById('pdCabin').value,
+        notes: document.getElementById('pdNotes').value
+      }
+    }).then(function(){
+      msg.hidden = false; msg.className = 'form-msg ok'; msg.textContent = 'You’re on the Pixie Dust list.';
+      document.getElementById('pdForm').hidden = true;
+      return loadSignups();
+    }).catch(function(err){
+      msg.hidden = false; msg.className = 'form-msg error'; msg.textContent = err.message || 'Could not sign up.';
+    });
+  });
+
+  CC.api('/community/sailings/' + encodeURIComponent(key)).then(function(data){
+    sailingMeta = data.sailing;
+    document.title = (sailingMeta.title || sailingMeta.shipName) + ' — Community | Cruising Cove';
+    document.getElementById('heroEyebrow').textContent = sailingMeta.shipName;
+    document.getElementById('heroTitle').textContent = sailingMeta.title || (sailingMeta.shipName + ' · ' + sailingMeta.embarkDate);
+    document.getElementById('heroLede').textContent =
+      'Embarks ' + sailingMeta.embarkDate +
+      (sailingMeta.departurePort ? ' · ' + sailingMeta.departurePort : '') +
+      (sailingMeta.nights ? ' · ' + sailingMeta.nights + ' nights' : '');
+    setMembershipUI(!!data.isMember);
+  }).catch(function(){
+    document.getElementById('heroTitle').textContent = 'Sailing not found';
+    document.getElementById('statusCopy').textContent = 'This board may not exist yet. Start it from the Community hub.';
+  });
+
+  CC.api('/community/sailings/' + encodeURIComponent(key) + '/posts')
+    .then(function(data){ renderPosts(data.posts || []); })
+    .catch(function(){ postList.innerHTML = '<p class="empty-state">Could not load posts.</p>'; });
+
+  document.getElementById('postForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var msg = document.getElementById('postMsg');
+    CC.api('/community/sailings/' + encodeURIComponent(key) + '/posts', {
+      method: 'POST',
+      body: { body: document.getElementById('postBody').value }
+    }).then(function(){
+      document.getElementById('postBody').value = '';
+      msg.hidden = false;
+      msg.className = 'form-msg ok';
+      msg.textContent = 'Posted.';
+      return CC.api('/community/sailings/' + encodeURIComponent(key) + '/posts');
+    }).then(function(data){
+      renderPosts(data.posts || []);
+    }).catch(function(err){
+      msg.hidden = false;
+      msg.className = 'form-msg error';
+      msg.textContent = err.message || 'Could not post.';
+    });
+  });
+})();
+</script>
+<script src="/assets/chat-widget.js" defer></script>
+</body>
+</html>

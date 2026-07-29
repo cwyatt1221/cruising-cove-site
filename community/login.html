@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign in — Community | Cruising Cove</title>
+<meta name="description" content="Create a Cruising Cove community account to join Disney Cruise sailing boards.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/community.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <nav class="site-nav-bar" aria-label="Primary">
+      <a class="logo" href="/">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M1 8c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0" stroke="#c9a24b" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </span>
+        Cruising Cove
+      </a>
+      <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primaryNav">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="primaryNav">
+        <a href="/ships/">Ships</a>
+        <a href="/ports/">Ports</a>
+        <a href="/dining/">Dining</a>
+        <a href="/entertainment/">Entertainment</a>
+        <a href="/excursions/">Excursions</a>
+        <a href="/faq/">FAQ</a>
+        <a href="/community/" class="current">Community</a>
+        <a href="/marketplace/">Marketplace</a>
+      </div>
+      <div class="nav-cta">
+        <a href="/agents/" class="btn btn-outline">Find an Agent</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <span class="eyebrow mono">Community account</span>
+    <h1>Sign in or <em>register.</em></h1>
+    <p class="lede">One account for every sailing board you join. Passwords are hashed; we never ask for Disney login credentials.</p>
+  </div>
+  <div class="tide" aria-hidden="true">
+    <svg viewBox="0 0 1200 56" preserveAspectRatio="none">
+      <path d="M0,28 C150,50 300,6 450,28 C600,50 750,6 900,28 C1050,50 1150,18 1200,26 L1200,56 L0,56 Z" fill="#faf7ee"></path>
+    </svg>
+  </div>
+</div>
+
+<main>
+  <section id="login">
+    <span class="label mono">&mdash; Returning</span>
+    <h2>Sign in</h2>
+    <form class="community-form" id="loginForm">
+      <div class="field">
+        <label for="loginEmail">Email</label>
+        <input type="email" id="loginEmail" required autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" required autocomplete="current-password" minlength="8">
+      </div>
+      <div class="actions">
+        <button type="submit" class="btn btn-gold">Sign in</button>
+      </div>
+      <p class="form-msg" id="loginMsg" hidden></p>
+    </form>
+  </section>
+
+  <section id="register">
+    <span class="label mono">&mdash; New here</span>
+    <h2>Create an account</h2>
+    <form class="community-form" id="registerForm">
+      <div class="field">
+        <label for="regName">Display name</label>
+        <input type="text" id="regName" required minlength="2" maxlength="40" autocomplete="nickname" placeholder="How you’ll appear on boards">
+      </div>
+      <div class="field">
+        <label for="regEmail">Email</label>
+        <input type="email" id="regEmail" required autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="regPassword">Password (8+ characters)</label>
+        <input type="password" id="regPassword" required autocomplete="new-password" minlength="8">
+      </div>
+      <div class="actions">
+        <button type="submit" class="btn btn-gold">Register</button>
+        <a class="btn btn-outline" href="/community/">Back to Community</a>
+      </div>
+      <p class="form-msg" id="regMsg" hidden></p>
+    </form>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-top">
+      <a class="logo" href="/">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M1 8c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0" stroke="#c9a24b" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </span>
+        Cruising Cove
+      </a>
+      <div class="foot-links">
+        <a href="/community/">Community</a>
+        <a href="/agents/">Find an Agent</a>
+      </div>
+    </div>
+    <p class="disclaimer">Cruising Cove is an independent planning guide and is not affiliated with Disney Cruise Line.</p>
+  </div>
+</footer>
+
+<script src="/assets/community.js"></script>
+<script>
+(function(){
+  var btn=document.querySelector('.nav-toggle');
+  var menu=document.getElementById('primaryNav');
+  if(btn&&menu){
+    btn.addEventListener('click',function(){
+      var open=menu.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  }
+
+  var CC = window.CCCommunity;
+  var next = new URLSearchParams(location.search).get('next') || '/community/';
+
+  function go(){ location.href = next; }
+
+  if (CC.getToken() && CC.getUser()) go();
+
+  function show(el, text, ok) {
+    el.hidden = false;
+    el.textContent = text;
+    el.className = 'form-msg ' + (ok ? 'ok' : 'error');
+  }
+
+  document.getElementById('loginForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var msg = document.getElementById('loginMsg');
+    CC.api('/community/login', {
+      method: 'POST',
+      body: {
+        email: document.getElementById('loginEmail').value,
+        password: document.getElementById('loginPassword').value
+      }
+    }).then(function(data){
+      CC.setSession(data.token, data.user);
+      show(msg, 'Signed in — taking you in…', true);
+      go();
+    }).catch(function(err){
+      show(msg, err.message || 'Sign-in failed.', false);
+    });
+  });
+
+  document.getElementById('registerForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var msg = document.getElementById('regMsg');
+    CC.api('/community/register', {
+      method: 'POST',
+      body: {
+        displayName: document.getElementById('regName').value,
+        email: document.getElementById('regEmail').value,
+        password: document.getElementById('regPassword').value
+      }
+    }).then(function(data){
+      CC.setSession(data.token, data.user);
+      show(msg, 'Account created — taking you in…', true);
+      go();
+    }).catch(function(err){
+      show(msg, err.message || 'Could not register.', false);
+    });
+  });
+})();
+</script>
+<script src="/assets/chat-widget.js" defer></script>
+</body>
+</html>

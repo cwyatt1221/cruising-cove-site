@@ -4,6 +4,30 @@ An Azure Function (`POST /api/chat`) that answers visitor questions using Claude
 and logs every question + answer to Azure Table Storage so you can find frequently-asked
 questions later and add the good ones to the FAQ page.
 
+## Community (Phase 1)
+
+On-site sailing boards keyed by Disney ship + embarkation date:
+
+| Route | Purpose |
+| --- | --- |
+| `POST /api/community/register` | Create account (email + password, scrypt hash) |
+| `POST /api/community/login` | Sign in → session token |
+| `GET /api/community/me` | Current user |
+| `GET /api/community/sailings` | List boards |
+| `POST /api/community/sailings` | Create/join a board (auth required) |
+| `GET /api/community/sailings/{key}` | Board metadata + membership |
+| `GET/POST /api/community/sailings/{key}/posts` | Message board |
+| `GET/POST /api/community/sailings/{key}/signups` | Fish Extender & Pixie Dust lists |
+| `DELETE /api/community/sailings/{key}/signups/{type}` | Leave a gift list (`fish-extender` \| `pixie-dust`) |
+
+Tables: `CommunityUsers`, `CommunitySessions`, `CommunitySailings`, `CommunityMembers`, `CommunityPosts`, `CommunitySignups`.
+
+Requires the same `STORAGE_CONNECTION_STRING` as the rest of the API. Frontend: `/community/`.
+
+Fish Extender sign-ups require a cabin number. Pixie Dust cabin is optional. Cabin and display name are visible to that sailing’s board viewers.
+
+Phase 2 (not built): live chat, DMs, moderation queue, email verification, FE matchmaking pairs.
+
 ## What this does NOT do yet
 - No aggregation/report of top questions — that's the natural next piece to build.
 - No content moderation or per-IP rate limiting beyond a basic question-length cap.

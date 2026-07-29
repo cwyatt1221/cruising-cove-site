@@ -6,3 +6,7 @@ import "./functions/sellerApplication";
 import "./functions/listSellerApplications";
 import "./functions/uploadSellerPhoto";
 import "./functions/agentLead";
+import "./functions/communityAuth";
+import "./functions/communitySailings";
+import "./functions/communityPosts";
+import "./functions/communitySignups";
