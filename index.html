@@ -73,12 +73,17 @@
   /* ---------- HERO ---------- */
   .hero{
     position:relative;min-height:560px;display:flex;align-items:center;overflow:hidden;
+    padding:0;
     background:
-      linear-gradient(100deg, rgba(15,28,51,.92) 0%, rgba(15,28,51,.72) 48%, rgba(15,28,51,.42) 100%),
+      linear-gradient(100deg, rgba(15,28,51,.94) 0%, rgba(15,28,51,.88) 55%, rgba(15,28,51,.78) 100%),
       url('/assets/hero-ocean.jpg') center 40% / cover no-repeat;
   }
-  .hero-content{position:relative;z-index:2;padding:72px 40px;max-width:640px;}
-  @media (max-width:700px){ .hero-content{padding:56px 22px;} }
+  .hero-inner{
+    position:relative;z-index:2;width:100%;
+    display:grid;grid-template-columns:minmax(0,1.05fr) minmax(260px,0.95fr);
+    gap:48px;align-items:center;padding:72px 0;
+  }
+  .hero-content{max-width:560px;}
   .eyebrow,.section-label{
     font-size:0.75rem;font-weight:700;letter-spacing:.12em;
     text-transform:uppercase;color:var(--gold);margin:0 0 16px;
@@ -88,10 +93,62 @@
     line-height:1.08;color:var(--cream);margin:0 0 20px;font-weight:400;
   }
   .hero h1 em{font-style:italic;color:var(--gold);}
-  .hero p{
+  .hero-content > p{
     font-size:1.05rem;line-height:1.6;color:#d7dae3;margin:0 0 28px;max-width:480px;
   }
   .hero-ctas{display:flex;gap:14px;flex-wrap:wrap;}
+
+  .hero-articles{
+    border-left:1px solid rgba(245,240,225,.18);
+    padding:8px 0 8px 40px;
+    max-width:440px;
+    justify-self:end;
+  }
+  .hero-articles .eyebrow{margin-bottom:12px;}
+  .hero-articles h2{
+    font-family:var(--font-serif);font-size:clamp(1.55rem,2.6vw,2rem);
+    font-weight:400;line-height:1.2;color:var(--cream);margin:0 0 14px;max-width:none;
+  }
+  .hero-articles .excerpt{
+    font-size:0.98rem;line-height:1.6;color:#c5cad6;margin:0 0 22px;
+  }
+  .hero-articles .week-actions{
+    display:flex;flex-wrap:wrap;gap:14px;align-items:center;
+  }
+  .hero-articles .archive-link{
+    font-size:0.9rem;color:rgba(245,240,225,.85);
+    border-bottom:1px solid rgba(201,162,75,.55);padding-bottom:1px;
+  }
+  .hero-articles .archive-link:hover{color:var(--gold);}
+  .week-pager{
+    display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:22px;
+  }
+  .week-pager-btn{
+    background:transparent;border:1px solid rgba(245,240,225,.35);color:var(--cream);
+    font:inherit;font-size:0.82rem;font-weight:600;padding:7px 12px;border-radius:2px;
+    cursor:pointer;transition:border-color .15s ease, color .15s ease;
+  }
+  .week-pager-btn:hover:not(:disabled){border-color:var(--gold);color:var(--gold);}
+  .week-pager-btn:disabled{opacity:0.35;cursor:default;}
+  .week-dots{display:flex;gap:8px;align-items:center;}
+  .week-dot{
+    width:8px;height:8px;border-radius:50%;border:0;padding:0;cursor:pointer;
+    background:rgba(245,240,225,.28);
+  }
+  .week-dot[aria-current="true"]{background:var(--gold);}
+  .week-count{font-size:0.8rem;color:#9aa3b5;letter-spacing:.04em;}
+  @media (max-width:960px){
+    .hero-inner{grid-template-columns:1fr;gap:36px;padding:56px 0 48px;}
+    .hero-articles{
+      justify-self:stretch;max-width:none;
+      border-left:none;border-top:1px solid rgba(245,240,225,.18);
+      padding:28px 0 0;
+    }
+  }
+  @media (max-width:700px){
+    .hero{min-height:0;}
+    .hero-inner{padding:48px 0 40px;}
+  }
 
   /* ---------- MARQUEE ---------- */
   .marquee-strip{
@@ -157,55 +214,6 @@
   .why-section,.ship-section,.port-section{background:var(--cream-2);}
   .save-section{background:#c7cdd6;}
   .save-note{font-size:0.875rem;color:var(--muted);margin-top:20px;max-width:70ch;}
-
-  /* ---------- WEEKLY ARTICLE ---------- */
-  .week-article{
-    background:var(--cream-2);
-    padding:64px 0 20px;
-  }
-  .week-feature{
-    display:grid;grid-template-columns:1.15fr 0.85fr;gap:36px;align-items:end;
-    padding-bottom:8px;
-  }
-  .week-feature h2{
-    font-family:var(--font-serif);font-size:clamp(1.85rem,3.4vw,2.55rem);
-    font-weight:400;line-height:1.18;color:var(--navy);margin:0 0 16px;max-width:18ch;
-  }
-  .week-feature .excerpt{
-    font-size:1.05rem;line-height:1.65;color:var(--muted);margin:0 0 24px;max-width:46ch;
-  }
-  .week-feature .week-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;}
-  .week-feature .archive-link{
-    font-size:0.9rem;color:var(--navy);border-bottom:1px solid rgba(201,162,75,.55);
-    padding-bottom:1px;
-  }
-  .week-feature .archive-link:hover{color:var(--gold);}
-  .week-pager{
-    display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:22px;
-  }
-  .week-pager-btn{
-    background:transparent;border:1px solid rgba(26,42,74,.25);color:var(--navy);
-    font:inherit;font-size:0.85rem;font-weight:600;padding:8px 14px;border-radius:2px;
-    cursor:pointer;transition:border-color .15s ease, color .15s ease;
-  }
-  .week-pager-btn:hover:not(:disabled){border-color:var(--gold);color:var(--gold);}
-  .week-pager-btn:disabled{opacity:0.35;cursor:default;}
-  .week-dots{display:flex;gap:8px;align-items:center;}
-  .week-dot{
-    width:8px;height:8px;border-radius:50%;border:0;padding:0;cursor:pointer;
-    background:rgba(26,42,74,.2);
-  }
-  .week-dot[aria-current="true"]{background:var(--gold);}
-  .week-count{font-size:0.82rem;color:var(--muted);letter-spacing:.04em;}
-  .week-aside{
-    border-left:1px solid rgba(26,42,74,.12);padding:8px 0 8px 28px;
-  }
-  .week-aside p{margin:0;font-size:0.92rem;line-height:1.55;color:var(--muted);}
-  .week-aside strong{color:var(--navy);font-weight:600;}
-  @media (max-width:800px){
-    .week-feature{grid-template-columns:1fr;gap:22px;}
-    .week-aside{border-left:none;border-top:1px solid rgba(26,42,74,.12);padding:18px 0 0;}
-  }
 
   /* ---------- FAMILY ---------- */
   .family-block{
@@ -284,21 +292,38 @@
         <a href="/marketplace/">Marketplace</a>
       </div>
       <div class="nav-cta">
-        <a href="/agents/" class="btn btn-outline">Find an Agent</a>
+        <a href="/agents/" class="btn btn-gold">Find an Agent</a>
       </div>
     </nav>
   </div>
 </header>
 
 <section class="hero" id="top">
-  <div class="hero-content">
-    <p class="eyebrow">Disney Cruise Line, decoded</p>
-    <h1>Chart your course<br>before you ever <em>board</em>.</h1>
-    <p>Every ship, every stateroom, every port — all in one place, so you can plan with confidence, whether you're booking a year out or just a few weeks away.</p>
-    <div class="hero-ctas">
-      <a href="/planning/disney-cruise-cost.html" class="btn btn-gold">Start planning</a>
-      <a href="/planning/disney-cruise-packing-list.html" class="btn btn-outline-light">Packing list</a>
+  <div class="wrap hero-inner">
+    <div class="hero-content">
+      <p class="eyebrow">Disney Cruise Line, decoded</p>
+      <h1>Chart your course<br>before you ever <em>board</em>.</h1>
+      <p>Every ship, every stateroom, every port — all in one place, so you can plan with confidence, whether you're booking a year out or just a few weeks away.</p>
+      <div class="hero-ctas">
+        <a href="/planning/disney-cruise-cost.html" class="btn btn-gold">Start planning</a>
+        <a href="/planning/disney-cruise-packing-list.html" class="btn btn-outline-light">Packing list</a>
+      </div>
     </div>
+    <aside class="hero-articles" id="weekFeature" aria-label="Featured articles">
+      <p class="eyebrow">Featured articles</p>
+      <h2 id="weekTitle">Loading featured articles…</h2>
+      <p class="excerpt" id="weekExcerpt"></p>
+      <div class="week-actions">
+        <a class="btn btn-gold" id="weekCta" href="/articles/">Read the article</a>
+        <a class="archive-link" href="/articles/">All articles</a>
+      </div>
+      <div class="week-pager" id="weekPager" hidden>
+        <button type="button" class="week-pager-btn" id="weekPrev" aria-label="Previous article">Previous</button>
+        <div class="week-dots" id="weekDots" role="tablist" aria-label="Featured articles"></div>
+        <button type="button" class="week-pager-btn" id="weekNext" aria-label="Next article">Next</button>
+        <span class="week-count" id="weekCount"></span>
+      </div>
+    </aside>
   </div>
 </section>
 
@@ -308,31 +333,6 @@
     <span><b>MAGIC</b> · WONDER · <b>DREAM</b> · FANTASY · <b>WISH</b> · TREASURE · <b>DESTINY</b> · ADVENTURE · <b>MAGIC</b> · WONDER · <b>DREAM</b> · FANTASY · <b>WISH</b> · TREASURE · <b>DESTINY</b> · ADVENTURE ·&nbsp;</span>
   </div>
 </div>
-
-<section class="week-article" id="this-week">
-  <div class="wrap">
-    <p class="section-label reveal">Featured articles</p>
-    <div class="week-feature reveal" id="weekFeature">
-      <div>
-        <h2 id="weekTitle">Loading featured articles…</h2>
-        <p class="excerpt" id="weekExcerpt"></p>
-        <div class="week-actions">
-          <a class="btn btn-gold" id="weekCta" href="/articles/">Read the article</a>
-          <a class="archive-link" href="/articles/">Browse archived articles</a>
-        </div>
-        <div class="week-pager" id="weekPager" hidden>
-          <button type="button" class="week-pager-btn" id="weekPrev" aria-label="Previous article">Previous</button>
-          <div class="week-dots" id="weekDots" role="tablist" aria-label="Featured articles"></div>
-          <button type="button" class="week-pager-btn" id="weekNext" aria-label="Next article">Next</button>
-          <span class="week-count" id="weekCount"></span>
-        </div>
-      </div>
-      <aside class="week-aside">
-        <p><strong>Scroll five featured guides.</strong> Start with this week’s pick, then page through more tips — full archive lives under <a href="/articles/" style="color:var(--teal);text-decoration:underline;">Articles</a>.</p>
-      </aside>
-    </div>
-  </div>
-</section>
 
 <section class="why-section" id="ships">
   <div class="wrap">
