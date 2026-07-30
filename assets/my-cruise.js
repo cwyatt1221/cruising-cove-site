@@ -90,6 +90,7 @@
       partyAges: [],
       themes: ["none"],
       cabinCandidates: [],
+      customPackingItems: [],
       signupChecks: {},
       packingChecks: {},
       carryOnChecks: {},
@@ -108,16 +109,8 @@
     trip.castawayTier = $("mcTier").value;
     trip.destinationRegion = $("mcRegion").value;
     trip.title = ($("mcTitle").value || "").trim();
-    trip.ports = Array.prototype.slice
-      .call(document.querySelectorAll("#mcPorts input:checked"))
-      .map(function (el) {
-        return el.value;
-      });
-    trip.themes = Array.prototype.slice
-      .call(document.querySelectorAll("#mcThemes input:checked"))
-      .map(function (el) {
-        return el.value;
-      });
+    trip.ports = selectedValues($("mcPorts"));
+    trip.themes = selectedValues($("mcThemes"));
     if (!trip.themes.length) trip.themes = ["none"];
     var agesRaw = ($("mcAges").value || "").split(/[,\s]+/).filter(Boolean);
     trip.partyAges = agesRaw
@@ -148,11 +141,30 @@
     $("mcTitle").value = trip.title || "";
     $("mcAges").value = (trip.partyAges || []).join(", ");
     $("mcCabins").value = (trip.cabinCandidates || []).join("\n");
-    document.querySelectorAll("#mcPorts input").forEach(function (el) {
-      el.checked = (trip.ports || []).indexOf(el.value) !== -1;
+    setSelectedValues($("mcPorts"), trip.ports || []);
+    setSelectedValues($("mcThemes"), trip.themes || []);
+  }
+
+  function selectedValues(select) {
+    if (!select) return [];
+    return Array.prototype.slice
+      .call(select.options)
+      .filter(function (opt) {
+        return opt.selected;
+      })
+      .map(function (opt) {
+        return opt.value;
+      });
+  }
+
+  function setSelectedValues(select, values) {
+    if (!select) return;
+    var set = {};
+    (values || []).forEach(function (v) {
+      set[v] = true;
     });
-    document.querySelectorAll("#mcThemes input").forEach(function (el) {
-      el.checked = (trip.themes || []).indexOf(el.value) !== -1;
+    Array.prototype.slice.call(select.options).forEach(function (opt) {
+      opt.selected = !!set[opt.value];
     });
   }
 
@@ -245,34 +257,45 @@
     return items;
   }
 
-  function packingForTrip(trip) {
+  function itineraryTags(trip) {
     var tags = { all: true };
-    tags[trip.destinationRegion || "other"] = true;
+    var region = trip.destinationRegion || "other";
+    if (region) tags[region] = true;
+    (trip.ports || []).forEach(function (portId) {
+      var p = DATA.ports.find(function (x) {
+        return x.id === portId;
+      });
+      if (!p) return;
+      if (p.region) tags[p.region] = true;
+      if (p.island) tags.bahamas = true;
+    });
     (trip.themes || []).forEach(function (t) {
       if (t && t !== "none") tags[t] = true;
     });
-    if ((trip.ports || []).indexOf("castaway-cay") !== -1 || (trip.ports || []).indexOf("lookout-cay") !== -1) {
-      tags.bahamas = true;
-    }
     if ((trip.partyAges || []).some(function (a) {
       return a < 18;
     })) {
       tags.kids = true;
     }
-    // Pirate Night is common on warm-water itineraries
-    if (trip.destinationRegion === "bahamas" || trip.destinationRegion === "caribbean") {
-      tags.pirate = true;
-    }
+    if (tags.bahamas || tags.caribbean) tags.pirate = true;
+    return tags;
+  }
 
+  function packingForTrip(trip) {
+    var tags = itineraryTags(trip);
     var base = DATA.packingItems.filter(function (item) {
       return (item.tags || []).some(function (t) {
         return tags[t];
       });
     });
     var community = (state.communityPacking || []).filter(function (item) {
-      return (item.tags || []).some(function (t) {
-        return tags[t];
-      }) || (item.tags || []).indexOf("all") !== -1 || !(item.tags || []).length;
+      return (
+        (item.tags || []).some(function (t) {
+          return tags[t];
+        }) ||
+        (item.tags || []).indexOf("all") !== -1 ||
+        !(item.tags || []).length
+      );
     });
     return base.concat(
       community.map(function (c) {
@@ -284,6 +307,49 @@
           carryOn: !!c.carryOn,
         };
       })
+    );
+  }
+
+  function packingBasisText(trip) {
+    var bits = [];
+    var regionLabels = {
+      bahamas: "Bahamas",
+      caribbean: "Caribbean",
+      alaska: "Alaska",
+      europe: "Europe",
+      other: "general",
+    };
+    bits.push(regionLabels[trip.destinationRegion] || "general");
+    var ports = (trip.ports || [])
+      .map(portName)
+      .filter(function (n) {
+        return n && n !== "Other / not listed";
+      });
+    if (ports.length) bits.push(ports.slice(0, 4).join(", ") + (ports.length > 4 ? "…" : ""));
+    var themes = (trip.themes || []).filter(function (t) {
+      return t && t !== "none";
+    });
+    if (themes.length) {
+      bits.push(
+        themes
+          .map(function (id) {
+            var t = DATA.themes.find(function (x) {
+              return x.id === id;
+            });
+            return t ? t.name : id;
+          })
+          .join(", ")
+      );
+    }
+    if ((trip.partyAges || []).some(function (a) {
+      return a < 18;
+    })) {
+      bits.push("kids");
+    }
+    return (
+      "Default list for this itinerary (" +
+      bits.join(" · ") +
+      "). Check items off as you pack, then add anything extra to your own list."
     );
   }
 
@@ -405,8 +471,19 @@
   function renderPacking(trip) {
     var root = $("mcPackingList");
     var carry = $("mcCarryOnList");
-    if (!root || !carry) return;
+    var customRoot = $("mcCustomPackingList");
+    var basis = $("mcPackingBasis");
+    var progress = $("mcPackProgress");
+    if (!root || !carry || !customRoot) return;
+
+    if (!trip.customPackingItems) trip.customPackingItems = [];
+    if (!trip.packingChecks) trip.packingChecks = {};
+    if (!trip.carryOnChecks) trip.carryOnChecks = {};
+
+    if (basis) basis.textContent = packingBasisText(trip);
+
     var items = packingForTrip(trip);
+    var custom = trip.customPackingItems || [];
     var carryIds = {};
     DATA.carryOnEssentials.forEach(function (id) {
       carryIds[id] = true;
@@ -415,9 +492,12 @@
       if (item.carryOn) carryIds[item.id] = true;
     });
 
-    function listHtml(filterFn, checkMap, dataAttr) {
-      var subset = items.filter(filterFn);
-      if (!subset.length) return '<p class="mc-empty">Nothing in this list for your filters yet.</p>';
+    function listHtml(subset, checkMap, dataAttr, removable) {
+      if (!subset.length) {
+        return removable
+          ? '<p class="mc-empty">Nothing added yet — type an item and click Add to my list.</p>'
+          : '<p class="mc-empty">Save ports and destination to build your default list.</p>';
+      }
       return (
         '<ul class="mc-list">' +
         subset
@@ -441,9 +521,16 @@
               '">' +
               escapeHtml(item.label) +
               "</label>" +
-              '<p class="meta">' +
-              escapeHtml(item.category || "") +
-              "</p></div><span></span></li>"
+              (item.category
+                ? '<p class="meta">' + escapeHtml(item.category) + "</p>"
+                : "") +
+              "</div>" +
+              (removable
+                ? '<button type="button" class="mc-remove" data-remove-pack="' +
+                  escapeHtml(item.id) +
+                  '">Remove</button>'
+                : "<span></span>") +
+              "</li>"
             );
           })
           .join("") +
@@ -451,20 +538,67 @@
       );
     }
 
-    root.innerHTML = listHtml(
-      function () {
-        return true;
-      },
+    var byCat = {};
+    items.forEach(function (item) {
+      var cat = item.category || "essentials";
+      if (!byCat[cat]) byCat[cat] = [];
+      byCat[cat].push(item);
+    });
+    var catOrder = Object.keys(byCat).sort();
+    if (!items.length) {
+      root.innerHTML =
+        '<p class="mc-empty">Save your cruise details to generate a default packing list.</p>';
+    } else {
+      root.innerHTML = catOrder
+        .map(function (cat) {
+          return (
+            '<h4 class="mc-pack-cat">' +
+            escapeHtml(cat) +
+            "</h4>" +
+            listHtml(byCat[cat], trip.packingChecks, "pack", false)
+          );
+        })
+        .join("");
+    }
+
+    customRoot.innerHTML = listHtml(
+      custom.map(function (c) {
+        return { id: c.id, label: c.label, category: "yours" };
+      }),
       trip.packingChecks,
-      "pack"
+      "pack",
+      true
     );
+
     carry.innerHTML = listHtml(
-      function (item) {
+      items.filter(function (item) {
         return carryIds[item.id];
-      },
+      }),
       trip.carryOnChecks,
-      "carry"
+      "carry",
+      false
     );
+
+    if (progress) {
+      var allIds = items
+        .map(function (i) {
+          return i.id;
+        })
+        .concat(
+          custom.map(function (c) {
+            return c.id;
+          })
+        );
+      var done = allIds.filter(function (id) {
+        return trip.packingChecks && trip.packingChecks[id];
+      }).length;
+      if (allIds.length) {
+        progress.hidden = false;
+        progress.textContent = done + " of " + allIds.length + " packed";
+      } else {
+        progress.hidden = true;
+      }
+    }
   }
 
   function renderCharacters(trip) {
@@ -856,6 +990,9 @@
       trip.updatedAt = new Date().toISOString();
       saveLocal();
       pushTrip(trip);
+      if (t.getAttribute("data-pack") || t.getAttribute("data-carry")) {
+        renderPacking(trip);
+      }
     });
 
     $("mcDashboard").addEventListener("click", function (e) {
@@ -863,8 +1000,22 @@
       var down = e.target.getAttribute && e.target.getAttribute("data-down");
       var shortlist = e.target.getAttribute && e.target.getAttribute("data-shortlist");
       var reviews = e.target.getAttribute && e.target.getAttribute("data-reviews");
+      var removePack = e.target.getAttribute && e.target.getAttribute("data-remove-pack");
       if (up) movePriority(up, -1);
       if (down) movePriority(down, 1);
+      if (removePack) {
+        var tripRm = activeTrip();
+        if (!tripRm) return;
+        tripRm.customPackingItems = (tripRm.customPackingItems || []).filter(function (c) {
+          return c.id !== removePack;
+        });
+        if (tripRm.packingChecks) delete tripRm.packingChecks[removePack];
+        tripRm.updatedAt = new Date().toISOString();
+        saveLocal();
+        pushTrip(tripRm);
+        renderPacking(tripRm);
+        toast("Removed from your list.");
+      }
       if (shortlist) {
         var trip = activeTrip();
         if (!trip) return;
@@ -901,11 +1052,45 @@
         submitReview(form);
         return;
       }
+      if (e.target.id === "mcAddPackForm") {
+        e.preventDefault();
+        addCustomPackingItem(e.target);
+        return;
+      }
       if (e.target.id === "mcSuggestForm") {
         e.preventDefault();
         submitSuggestion(e.target);
       }
     });
+  }
+
+  function addCustomPackingItem(form) {
+    var trip = activeTrip();
+    if (!trip) {
+      toast("Save a cruise first.");
+      return;
+    }
+    var input = form.querySelector('[name="label"]') || $("mcAddPackItem");
+    var label = ((input && input.value) || "").trim().slice(0, 120);
+    if (label.length < 2) {
+      toast("Enter an item to add.");
+      return;
+    }
+    if (!trip.customPackingItems) trip.customPackingItems = [];
+    var exists = trip.customPackingItems.some(function (c) {
+      return c.label.toLowerCase() === label.toLowerCase();
+    });
+    if (exists) {
+      toast("That’s already on your list.");
+      return;
+    }
+    trip.customPackingItems.push({ id: "custom_" + uid(), label: label });
+    trip.updatedAt = new Date().toISOString();
+    if (input) input.value = "";
+    saveLocal();
+    pushTrip(trip);
+    renderPacking(trip);
+    toast("Added to your packing list.");
   }
 
   async function submitReview(form) {
@@ -977,24 +1162,12 @@
       .join("");
     $("mcPorts").innerHTML = DATA.ports
       .map(function (p) {
-        return (
-          '<label><input type="checkbox" value="' +
-          escapeHtml(p.id) +
-          '"> ' +
-          escapeHtml(p.name) +
-          "</label>"
-        );
+        return '<option value="' + escapeHtml(p.id) + '">' + escapeHtml(p.name) + "</option>";
       })
       .join("");
     $("mcThemes").innerHTML = DATA.themes
       .map(function (t) {
-        return (
-          '<label><input type="checkbox" value="' +
-          escapeHtml(t.id) +
-          '"> ' +
-          escapeHtml(t.name) +
-          "</label>"
-        );
+        return '<option value="' + escapeHtml(t.id) + '">' + escapeHtml(t.name) + "</option>";
       })
       .join("");
     var portFilter = $("mcExcPort");

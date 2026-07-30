@@ -89,6 +89,7 @@ export function tripToJson(entity: Record<string, unknown>) {
     partyAges: parseJsonArray(entity.partyAgesJson).map((n) => Number(n)).filter((n) => !Number.isNaN(n)),
     themes: parseJsonArray(entity.themesJson),
     cabinCandidates: parseJsonArray(entity.cabinCandidatesJson),
+    customPackingItems: parseCustomPacking(entity.customPackingJson),
     signupChecks: parseJsonObject(entity.signupChecksJson),
     packingChecks: parseJsonObject(entity.packingChecksJson),
     carryOnChecks: parseJsonObject(entity.carryOnChecksJson),
@@ -98,4 +99,28 @@ export function tripToJson(entity: Record<string, unknown>) {
     updatedAt: String(entity.updatedAt ?? ""),
     createdAt: String(entity.createdAt ?? ""),
   };
+}
+
+export function parseCustomPacking(value: unknown): { id: string; label: string }[] {
+  let raw: unknown[] = [];
+  if (Array.isArray(value)) raw = value;
+  else if (typeof value === "string" && value.trim()) {
+    try {
+      const parsed = JSON.parse(value);
+      if (Array.isArray(parsed)) raw = parsed;
+    } catch {
+      return [];
+    }
+  }
+  return raw
+    .map((row) => {
+      if (!row || typeof row !== "object") return null;
+      const obj = row as Record<string, unknown>;
+      const id = String(obj.id ?? "").trim().slice(0, 64);
+      const label = String(obj.label ?? "").trim().slice(0, 120);
+      if (!id || !label) return null;
+      return { id, label };
+    })
+    .filter((row): row is { id: string; label: string } => Boolean(row))
+    .slice(0, 60);
 }

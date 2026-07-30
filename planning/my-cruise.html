@@ -104,12 +104,14 @@
         <input id="mcAges" type="text" placeholder="3, 7, 35, 37">
       </div>
       <div class="mc-field">
-        <label>Ports of call</label>
-        <div class="mc-checkgrid" id="mcPorts"></div>
+        <label for="mcPorts">Ports of call</label>
+        <select id="mcPorts" multiple size="6" aria-describedby="mcPortsHint"></select>
+        <p class="mc-field-hint" id="mcPortsHint">Hold Cmd/Ctrl to select more than one.</p>
       </div>
       <div class="mc-field">
-        <label>Themes</label>
-        <div class="mc-checkgrid" id="mcThemes"></div>
+        <label for="mcThemes">Themes</label>
+        <select id="mcThemes" multiple size="5" aria-describedby="mcThemesHint"></select>
+        <p class="mc-field-hint" id="mcThemesHint">Hold Cmd/Ctrl to select more than one.</p>
       </div>
       <div class="mc-field">
         <label for="mcCabins">Stateroom shortlist</label>
@@ -196,20 +198,31 @@
 
         <section class="mc-panel" id="mc-packing">
           <h2>Packing checklist</h2>
-          <p class="mc-sub">Personalized by destination, themes, and kids. Day-1 carry-on is separate so embarkation stays sane.</p>
+          <p class="mc-sub" id="mcPackingBasis">A default list for your itinerary — check items off as you pack. Add anything extra below.</p>
+          <p class="mc-pack-progress" id="mcPackProgress" hidden></p>
           <div class="mc-two">
             <div>
-              <h3 style="font-family:var(--font-serif);font-weight:500;color:var(--navy);margin:0 0 8px;">Full packing list</h3>
+              <h3 class="mc-h3">Default for this itinerary</h3>
               <div id="mcPackingList"></div>
+              <div class="mc-add-pack">
+                <h3 class="mc-h3">Your added items</h3>
+                <div id="mcCustomPackingList"></div>
+                <form id="mcAddPackForm" class="mc-add-pack-form">
+                  <label class="visually-hidden" for="mcAddPackItem">New packing item</label>
+                  <input id="mcAddPackItem" name="label" type="text" maxlength="120" required placeholder="Add something to your list…">
+                  <button type="submit" class="btn btn-gold">Add to my list</button>
+                </form>
+              </div>
             </div>
             <div>
-              <h3 style="font-family:var(--font-serif);font-weight:500;color:var(--navy);margin:0 0 8px;">Day-1 carry-on kit</h3>
+              <h3 class="mc-h3">Day-1 carry-on kit</h3>
+              <p class="mc-sub" style="margin-top:0;">Keep these with you — checked bags can be late to the cabin.</p>
               <div id="mcCarryOnList"></div>
             </div>
           </div>
           <form class="mc-suggest" id="mcSuggestForm">
-            <h3 style="font-family:var(--font-serif);font-weight:500;color:var(--navy);margin:0 0 8px;">Suggest a packing item</h3>
-            <p class="mc-sub">Ideas are reviewed before they appear for everyone.</p>
+            <h3 class="mc-h3">Suggest an item for everyone</h3>
+            <p class="mc-sub">Want it on the sitewide default lists? Submit here — it’s reviewed before it goes live for all users.</p>
             <div class="mc-field">
               <label for="mcSugItem">Item</label>
               <input id="mcSugItem" name="item" required maxlength="120" placeholder="e.g. Magnetic whiteboard for dinner plans">
@@ -222,7 +235,7 @@
               <label for="mcSugTags">Tags (optional)</label>
               <input id="mcSugTags" name="tags" placeholder="kids, alaska, caribbean">
             </div>
-            <button type="submit" class="btn btn-gold">Submit for review</button>
+            <button type="submit" class="btn btn-outline">Submit for review</button>
           </form>
         </section>
 

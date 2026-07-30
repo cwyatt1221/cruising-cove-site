@@ -6,6 +6,7 @@ import {
   newId,
   parseJsonArray,
   parseJsonObject,
+  parseCustomPacking,
   requireUser,
   table,
   tripToJson,
@@ -28,6 +29,7 @@ function readTripBody(body: Record<string, unknown>) {
   const cabinCandidates = parseJsonArray(body.cabinCandidates).slice(0, 20);
   const excursionShortlist = parseJsonArray(body.excursionShortlist).slice(0, 40);
   const signupPriority = parseJsonArray(body.signupPriority).slice(0, 40);
+  const customPackingItems = parseCustomPacking(body.customPackingItems);
   const partyAges = (Array.isArray(body.partyAges) ? body.partyAges : parseJsonArray(body.partyAges))
     .map((n) => Number(n))
     .filter((n) => !Number.isNaN(n) && n >= 0 && n <= 120)
@@ -49,6 +51,7 @@ function readTripBody(body: Record<string, unknown>) {
     partyAges,
     themes,
     cabinCandidates,
+    customPackingItems,
     excursionShortlist,
     signupPriority,
     signupChecks: parseJsonObject(body.signupChecks),
@@ -122,6 +125,7 @@ export async function plannerUpsertTrip(request: HttpRequest, context: Invocatio
         partyAgesJson: JSON.stringify(parsed.partyAges),
         themesJson: JSON.stringify(parsed.themes),
         cabinCandidatesJson: JSON.stringify(parsed.cabinCandidates),
+        customPackingJson: JSON.stringify(parsed.customPackingItems),
         excursionShortlistJson: JSON.stringify(parsed.excursionShortlist),
         signupPriorityJson: JSON.stringify(parsed.signupPriority),
         signupChecksJson: JSON.stringify(parsed.signupChecks),
