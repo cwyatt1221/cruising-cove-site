@@ -64,8 +64,11 @@ Agents submit a profile card for manual review:
 | `POST /api/agent-application` | Submit card application |
 | `POST /api/agent-photo-upload` | Profile photo → `agent-photos` blob container |
 | `GET /api/agent-applications?key=…` | List apps (`REPORT_ACCESS_KEY`) |
+| `POST /api/agent-applications/{id}?key=…` | Approve / reject / unpublish (`REPORT_ACCESS_KEY`) |
+| `GET /api/agents` | Public published directory cards |
+| `GET /api/agents/{id}` | Public published agent profile |
 
-Table: `AgentApplications`. Frontend: `/agents/apply.html`. Approved cards are still published manually into `assets/agents-data.js` + profile HTML for now.
+Tables: `AgentApplications`, `PublishedAgents`. Frontend: `/agents/apply.html`, admin review/publish at `/agents/admin.html`, dynamic profiles at `/agents/profile.html?id=…`. Sample cards remain in `assets/agents-data.js` until at least one live agent is published.
 
 ## Analytics
 

@@ -35,8 +35,11 @@ export async function listAgentApplications(request: HttpRequest, context: Invoc
 
       applications.push({
         id: entity.rowKey,
+        partitionKey: entity.partitionKey,
         submittedAt: entity.submittedAt,
         status: entity.status,
+        publishedAgentId: entity.publishedAgentId || null,
+        featured: Boolean(entity.featured),
         fullName: entity.fullName,
         agency: entity.agency,
         location: entity.location,

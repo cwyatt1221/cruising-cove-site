@@ -56,7 +56,7 @@
   <div class="page-hero-inner">
     <span class="eyebrow mono">Booking help</span>
     <h1>Disney cruise agents.<br>Paid by Disney, <em>not by you.</em></h1>
-    <p class="lede">We’re building a directory of Disney-specialist planners. Public matching isn’t open yet — sample cards below show the format. If you plan Disney cruises for families, apply to be considered. Guests pay the same fare as booking direct — Disney pays the commission.</p>
+    <p class="lede">Browse Disney-specialist planners and request the one who fits your sailing. Guests pay the same fare as booking direct — Disney pays the commission. If you plan Disney cruises for families, you can apply to be listed.</p>
   </div>
   <div class="tide" aria-hidden="true">
     <svg viewBox="0 0 1200 56" preserveAspectRatio="none">
@@ -69,7 +69,7 @@
   <section id="directory">
     <span class="label mono">&mdash; Directory</span>
     <h2>Disney-specialist agents</h2>
-    <p class="agent-directory-note">Sample founding profiles show how the directory works. Live partner cards replace these as real EarMarked agents are approved — each advertises specialties so families can choose who to contact.</p>
+    <p class="agent-directory-note" id="directoryNote">Loading agent cards…</p>
     <div class="agent-agent-cta">
       <p><strong>Are you a Disney cruise travel agent?</strong> Create your directory card — photo, specialties, credentials, and fee transparency. We review every application before it goes live.</p>
       <a class="btn btn-gold" href="/agents/apply.html">Create your agent card</a>
@@ -118,34 +118,65 @@
       });
     }
 
-    function initials(name){
-      return name.split(/\s+/).slice(0,2).map(function(p){return p[0];}).join('').toUpperCase();
+    function escapeHtml(str){
+      return String(str==null?'':str)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;');
     }
 
-    var grid=document.getElementById('agentGrid');
-    (window.CC_AGENTS||[]).forEach(function(agent){
-      var card=document.createElement('article');
-      card.className='agent-card'+(agent.featured?' featured':'')+(agent.sample?' sample':'');
-      card.innerHTML=
-        '<div class="agent-card-top">'+
-          '<div class="agent-avatar" aria-hidden="true">'+initials(agent.name)+'</div>'+
-          '<div>'+
-            '<h3>'+agent.name+'</h3>'+
-            '<p class="agent-meta">'+agent.agency+' · '+agent.location+'</p>'+
-            '<div class="agent-badges">'+
-              (agent.sample?'<span class="agent-badge sample-badge">Sample</span>':'')+
-              (agent.earmarked?'<span class="agent-badge">EarMarked</span>':'')+
-              (agent.featured?'<span class="agent-badge teal">Featured</span>':'')+
+    function initials(name){
+      return String(name||'').split(/\s+/).slice(0,2).map(function(p){return p[0]||'';}).join('').toUpperCase();
+    }
+
+    function avatarHtml(agent){
+      if(agent.photoUrl){
+        return '<div class="agent-avatar agent-avatar-photo"><img src="'+escapeHtml(agent.photoUrl)+'" alt=""></div>';
+      }
+      return '<div class="agent-avatar" aria-hidden="true">'+escapeHtml(initials(agent.name))+'</div>';
+    }
+
+    function renderAgents(agents, fromLive){
+      var note=document.getElementById('directoryNote');
+      if(fromLive){
+        note.textContent='Live partner cards — each advertises specialties so families can choose who to contact. Profiles are reviewed before they go public.';
+      }else{
+        note.textContent='Sample founding profiles show how the directory works. Live partner cards replace these as real agents are approved.';
+      }
+
+      var grid=document.getElementById('agentGrid');
+      grid.innerHTML='';
+      agents.forEach(function(agent){
+        var card=document.createElement('article');
+        card.className='agent-card'+(agent.featured?' featured':'')+(agent.sample?' sample':'');
+        var profileHref=window.CC_profilePath(agent);
+        card.innerHTML=
+          '<div class="agent-card-top">'+
+            avatarHtml(agent)+
+            '<div>'+
+              '<h3>'+escapeHtml(agent.name)+'</h3>'+
+              '<p class="agent-meta">'+escapeHtml(agent.agency)+' · '+escapeHtml(agent.location)+'</p>'+
+              '<div class="agent-badges">'+
+                (agent.sample?'<span class="agent-badge sample-badge">Sample</span>':'')+
+                (agent.earmarked?'<span class="agent-badge">EarMarked</span>':'')+
+                (agent.featured?'<span class="agent-badge teal">Featured</span>':'')+
+              '</div>'+
             '</div>'+
           '</div>'+
-        '</div>'+
-        '<p class="agent-pitch">'+agent.pitch+'</p>'+
-        '<div class="agent-tags">'+agent.specialties.map(function(s){return '<span class="agent-tag">'+s+'</span>';}).join('')+'</div>'+
-        '<div class="agent-card-actions">'+
-          '<a class="btn btn-outline" href="/agents/'+agent.id+'.html">View profile</a>'+
-          '<a class="btn btn-gold" href="/agents/request.html?agent='+agent.id+'">Request this agent</a>'+
-        '</div>';
-      grid.appendChild(card);
+          '<p class="agent-pitch">'+escapeHtml(agent.pitch)+'</p>'+
+          '<div class="agent-tags">'+(agent.specialties||[]).map(function(s){return '<span class="agent-tag">'+escapeHtml(s)+'</span>';}).join('')+'</div>'+
+          '<div class="agent-card-actions">'+
+            '<a class="btn btn-outline" href="'+escapeHtml(profileHref)+'">View profile</a>'+
+            '<a class="btn btn-gold" href="/agents/request.html?agent='+encodeURIComponent(agent.id)+'">Request this agent</a>'+
+          '</div>';
+        grid.appendChild(card);
+      });
+    }
+
+    window.CC_loadDirectoryAgents().then(function(agents){
+      var fromLive=agents.length && !agents[0].sample;
+      renderAgents(agents, fromLive);
     });
   })();
 </script>

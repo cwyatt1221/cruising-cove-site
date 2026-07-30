@@ -146,27 +146,32 @@
     var preview=document.getElementById('agentPreview');
     var params=new URLSearchParams(location.search);
     var preselect=params.get('agent')||'';
-
-    (window.CC_AGENTS||[]).forEach(function(agent){
-      var opt=document.createElement('option');
-      opt.value=agent.id;
-      opt.textContent=agent.name+' — '+agent.agency;
-      if(agent.id===preselect) opt.selected=true;
-      select.appendChild(opt);
-    });
+    var agentMap={};
 
     function updatePreview(){
-      var agent=window.CC_getAgent(select.value);
+      var agent=agentMap[select.value] || (window.CC_getAgent && window.CC_getAgent(select.value));
       if(!agent){
         preview.className='agent-preview';
         preview.innerHTML='';
         return;
       }
       preview.className='agent-preview visible';
-      preview.innerHTML='<strong>'+agent.name+'</strong><p>'+agent.pitch+'</p><p style="margin-top:8px"><a href="/agents/'+agent.id+'.html">View full profile →</a></p>';
+      preview.innerHTML='<strong>'+agent.name+'</strong><p>'+agent.pitch+'</p><p style="margin-top:8px"><a href="'+window.CC_profilePath(agent)+'">View full profile →</a></p>';
     }
+
+    window.CC_loadDirectoryAgents().then(function(agents){
+      agents.forEach(function(agent){
+        agentMap[agent.id]=agent;
+        var opt=document.createElement('option');
+        opt.value=agent.id;
+        opt.textContent=agent.name+' — '+agent.agency;
+        if(agent.id===preselect) opt.selected=true;
+        select.appendChild(opt);
+      });
+      updatePreview();
+    });
+
     select.addEventListener('change', updatePreview);
-    updatePreview();
 
     var form=document.getElementById('leadForm');
     var statusEl=document.getElementById('formStatus');
@@ -179,7 +184,7 @@
 
       if(!form.reportValidity()) return;
 
-      var agent=window.CC_getAgent(select.value);
+      var agent=agentMap[select.value] || (window.CC_getAgent && window.CC_getAgent(select.value));
       var payload={
         agentId: select.value,
         agentName: agent ? agent.name : '',

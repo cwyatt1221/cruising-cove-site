@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent applications admin | Cruising Cove</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/agents.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <nav class="site-nav-bar" aria-label="Primary">
+      <a class="logo" href="/">Cruising Cove</a>
+      <div class="nav-cta">
+        <a href="/agents/" class="btn btn-outline">Directory</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main class="agent-admin-shell">
+  <div class="wrap" style="max-width:960px;">
+    <section class="agent-admin-panel">
+      <h1>Travel agent applications</h1>
+      <p class="agent-admin-sub">Enter your <code>REPORT_ACCESS_KEY</code>, review submissions, and publish approved agents to the public directory.</p>
+      <div class="agent-admin-key">
+        <label for="adminKey">Admin key</label>
+        <input id="adminKey" type="password" autocomplete="off">
+      </div>
+      <div class="agent-admin-actions">
+        <button type="button" class="btn btn-gold" id="loadPending">Pending</button>
+        <button type="button" class="btn btn-outline" id="loadApproved">Approved</button>
+        <button type="button" class="btn btn-outline" id="loadAll">All</button>
+        <button type="button" class="btn btn-outline" id="loadLive">Live directory</button>
+      </div>
+      <p class="agent-admin-status" id="adminStatus" hidden></p>
+      <div id="adminList" class="agent-admin-list"></div>
+    </section>
+  </div>
+</main>
+
+<script>
+(function () {
+  var list = document.getElementById("adminList");
+  var statusEl = document.getElementById("adminStatus");
+  var keyInput = document.getElementById("adminKey");
+  try {
+    var saved = sessionStorage.getItem("cc_agent_admin_key");
+    if (saved) keyInput.value = saved;
+  } catch (_) {}
+
+  function key() {
+    var k = (keyInput.value || "").trim();
+    try { if (k) sessionStorage.setItem("cc_agent_admin_key", k); } catch (_) {}
+    return k;
+  }
+
+  function escapeHtml(str) {
+    return String(str == null ? "" : str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function showStatus(msg, ok) {
+    statusEl.hidden = false;
+    statusEl.textContent = msg;
+    statusEl.className = "agent-admin-status " + (ok ? "ok" : "err");
+  }
+
+  function slugPreview(name) {
+    return String(name || "agent")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 60) || "agent";
+  }
+
+  function highlightsHtml(text) {
+    return String(text || "")
+      .split(/\r?\n/)
+      .map(function (l) { return l.replace(/^[-•*\s]+/, "").trim(); })
+      .filter(Boolean)
+      .map(function (l) { return "<li>" + escapeHtml(l) + "</li>"; })
+      .join("");
+  }
+
+  function renderApps(rows, title) {
+    if (!rows.length) {
+      list.innerHTML = "<p class='agent-admin-empty'>No applications.</p>";
+      return;
+    }
+    list.innerHTML =
+      "<h2>" + escapeHtml(title) + " <span>(" + rows.length + ")</span></h2>" +
+      rows.map(function (a) {
+        var pending = a.status === "pending";
+        var approved = a.status === "approved";
+        var profile = a.publishedAgentId
+          ? "/agents/profile.html?id=" + encodeURIComponent(a.publishedAgentId)
+          : "";
+        return (
+          '<article class="agent-admin-card" data-id="' + escapeHtml(a.id) + '" data-pk="' + escapeHtml(a.partitionKey) + '">' +
+            '<div class="agent-admin-card-top">' +
+              (a.photoUrl
+                ? '<img class="agent-admin-photo" src="' + escapeHtml(a.photoUrl) + '" alt="">'
+                : '<div class="agent-avatar" aria-hidden="true">?</div>') +
+              '<div>' +
+                "<h3>" + escapeHtml(a.fullName) +
+                ' <span class="agent-badge">' + escapeHtml(a.status || "pending") + "</span></h3>" +
+                '<p class="agent-meta">' + escapeHtml(a.agency) + " · " + escapeHtml(a.location) + "</p>" +
+                '<p class="agent-meta">' + escapeHtml(a.email) + " · " + escapeHtml(a.phone) + "</p>" +
+                '<p class="agent-meta">Submitted ' + escapeHtml(a.submittedAt || "") + "</p>" +
+              "</div>" +
+            "</div>" +
+            '<p class="agent-pitch">' + escapeHtml(a.pitch) + "</p>" +
+            "<p>" + escapeHtml(a.bio) + "</p>" +
+            '<div class="agent-tags">' +
+              (a.specialties || []).map(function (s) {
+                return '<span class="agent-tag">' + escapeHtml(s) + "</span>";
+              }).join("") +
+              (a.specialtiesOther
+                ? '<span class="agent-tag">' + escapeHtml(a.specialtiesOther) + "</span>"
+                : "") +
+            "</div>" +
+            "<p><strong>Why choose me:</strong> " + escapeHtml(a.whyChooseMe || "") + "</p>" +
+            (a.highlights
+              ? "<ul>" + highlightsHtml(a.highlights) + "</ul>"
+              : "") +
+            '<p class="agent-meta">EarMarked: ' + escapeHtml(a.earmarked || "") +
+              " · Fees: " + escapeHtml(a.chargesFees || "") +
+              (a.feeNotes ? " (" + escapeHtml(a.feeNotes) + ")" : "") +
+              " · Years: " + escapeHtml(a.yearsExperience || "—") +
+              " · Sailings: " + escapeHtml(a.sailingsPlanned || "—") +
+            "</p>" +
+            (a.credentialsNotes
+              ? "<p class='agent-meta'>Credentials: " + escapeHtml(a.credentialsNotes) + "</p>"
+              : "") +
+            (a.otherNotes
+              ? "<p class='agent-meta'>Notes: " + escapeHtml(a.otherNotes) + "</p>"
+              : "") +
+            (profile
+              ? '<p class="agent-meta"><a href="' + escapeHtml(profile) + '">View live profile →</a></p>'
+              : "") +
+            (pending || approved
+              ? '<div class="agent-admin-card-actions">' +
+                  (pending || approved
+                    ? '<label class="agent-admin-check"><input type="checkbox" data-featured ' +
+                      (a.featured ? "checked" : "") +
+                      "> Featured on directory</label>" +
+                      '<label class="agent-admin-slug">Card URL id' +
+                      '<input type="text" data-agent-id value="' +
+                      escapeHtml(a.publishedAgentId || slugPreview(a.fullName)) +
+                      '" ' + (a.publishedAgentId ? "readonly" : "") + ">" +
+                      "</label>" +
+                      '<button type="button" class="btn btn-gold" data-action="approve">' +
+                      (approved ? "Update / re-publish" : "Publish to directory") +
+                      "</button>"
+                    : "") +
+                  (pending
+                    ? '<button type="button" class="btn btn-outline" data-action="reject">Reject</button>'
+                    : "") +
+                  (approved
+                    ? '<button type="button" class="btn btn-outline" data-action="unpublish">Unpublish</button>'
+                    : "") +
+                "</div>"
+              : "") +
+          "</article>"
+        );
+      }).join("");
+  }
+
+  async function loadApps(status) {
+    if (!key()) {
+      list.innerHTML = "<p class='agent-admin-empty'>Enter your admin key.</p>";
+      return;
+    }
+    list.innerHTML = "<p class='agent-admin-empty'>Loading…</p>";
+    statusEl.hidden = true;
+    try {
+      var url = "/api/agent-applications?key=" + encodeURIComponent(key());
+      if (status) url += "&status=" + encodeURIComponent(status);
+      var res = await fetch(url);
+      var data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to load");
+      var title = status ? status.charAt(0).toUpperCase() + status.slice(1) : "All applications";
+      renderApps(data.applications || [], title);
+    } catch (err) {
+      list.innerHTML = "<p class='agent-admin-empty'>" + escapeHtml(err.message) + "</p>";
+    }
+  }
+
+  async function loadLive() {
+    list.innerHTML = "<p class='agent-admin-empty'>Loading live directory…</p>";
+    statusEl.hidden = true;
+    try {
+      var res = await fetch("/api/agents");
+      var data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed");
+      var agents = data.agents || [];
+      if (!agents.length) {
+        list.innerHTML = "<p class='agent-admin-empty'>No live agents published yet.</p>";
+        return;
+      }
+      list.innerHTML =
+        "<h2>Live directory <span>(" + agents.length + ")</span></h2>" +
+        agents.map(function (a) {
+          return (
+            '<article class="agent-admin-card">' +
+              '<div class="agent-admin-card-top">' +
+                (a.photoUrl
+                  ? '<img class="agent-admin-photo" src="' + escapeHtml(a.photoUrl) + '" alt="">'
+                  : '<div class="agent-avatar" aria-hidden="true">?</div>') +
+                "<div><h3>" + escapeHtml(a.name) +
+                (a.featured ? ' <span class="agent-badge teal">Featured</span>' : "") +
+                "</h3>" +
+                '<p class="agent-meta">' + escapeHtml(a.agency) + " · " + escapeHtml(a.location) + "</p>" +
+                '<p class="agent-meta"><a href="/agents/profile.html?id=' +
+                encodeURIComponent(a.id) +
+                '">/agents/profile.html?id=' +
+                escapeHtml(a.id) +
+                "</a></p></div></div>" +
+              '<p class="agent-pitch">' + escapeHtml(a.pitch) + "</p>" +
+            "</article>"
+          );
+        }).join("");
+    } catch (err) {
+      list.innerHTML = "<p class='agent-admin-empty'>" + escapeHtml(err.message) + "</p>";
+    }
+  }
+
+  async function moderate(card, action) {
+    var id = card.getAttribute("data-id");
+    var pk = card.getAttribute("data-pk");
+    var featuredEl = card.querySelector("[data-featured]");
+    var idEl = card.querySelector("[data-agent-id]");
+    var payload = {
+      partitionKey: pk,
+      action: action,
+      featured: featuredEl ? featuredEl.checked : false,
+      agentId: idEl ? idEl.value.trim() : ""
+    };
+    var res = await fetch(
+      "/api/agent-applications/" + encodeURIComponent(id) + "?key=" + encodeURIComponent(key()),
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }
+    );
+    var data = await res.json().catch(function () { return {}; });
+    if (!res.ok) throw new Error(data.error || "Update failed");
+    return data;
+  }
+
+  document.getElementById("loadPending").addEventListener("click", function () { loadApps("pending"); });
+  document.getElementById("loadApproved").addEventListener("click", function () { loadApps("approved"); });
+  document.getElementById("loadAll").addEventListener("click", function () { loadApps(""); });
+  document.getElementById("loadLive").addEventListener("click", loadLive);
+
+  list.addEventListener("click", async function (e) {
+    var btn = e.target.closest("[data-action]");
+    if (!btn) return;
+    var card = btn.closest(".agent-admin-card");
+    if (!card) return;
+    var action = btn.getAttribute("data-action");
+    btn.disabled = true;
+    try {
+      var data = await moderate(card, action);
+      if (action === "approve" && data.profilePath) {
+        showStatus("Published — live at " + data.profilePath, true);
+      } else if (action === "reject") {
+        showStatus("Application rejected.", true);
+      } else if (action === "unpublish") {
+        showStatus("Removed from the public directory.", true);
+      } else {
+        showStatus("Updated.", true);
+      }
+      loadApps(action === "approve" ? "approved" : "pending");
+    } catch (err) {
+      showStatus(err.message || "Something went wrong.", false);
+      btn.disabled = false;
+    }
+  });
+})();
+</script>
+</body>
+</html>

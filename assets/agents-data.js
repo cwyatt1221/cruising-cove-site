@@ -1,6 +1,6 @@
 /**
  * Cruising Cove — founding agent directory data.
- * Replace these example profiles with real EarMarked agents as they onboard.
+ * Sample placeholders stay in CC_AGENTS. Live approved agents load from /api/agents.
  * Keep sample: true on placeholders so cards show a SAMPLE watermark.
  */
 window.CC_AGENTS = [
@@ -88,4 +88,25 @@ window.CC_AGENTS = [
 
 window.CC_getAgent = function (id) {
   return (window.CC_AGENTS || []).find(function (a) { return a.id === id; }) || null;
+};
+
+window.CC_profilePath = function (agent) {
+  if (!agent) return "/agents/";
+  if (agent.sample) return "/agents/" + agent.id + ".html";
+  return "/agents/profile.html?id=" + encodeURIComponent(agent.id);
+};
+
+window.CC_loadDirectoryAgents = async function () {
+  var live = [];
+  try {
+    var res = await fetch("/api/agents");
+    if (res.ok) {
+      var data = await res.json();
+      live = data.agents || [];
+    }
+  } catch (_) {}
+
+  var samples = (window.CC_AGENTS || []).filter(function (a) { return a.sample; });
+  if (live.length) return live;
+  return samples;
 };

@@ -3,5 +3,6 @@ Allow: /
 
 # Admin / internal tools
 Disallow: /planning/my-cruise-admin.html
+Disallow: /agents/admin.html
 
 Sitemap: https://www.cruisingcove.com/sitemap.xml
