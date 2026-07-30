@@ -9,49 +9,68 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/site.css">
-<meta name="description" content="Browse Disney Cruise Line ports of call — what to do, what to pack, and honest guest reviews.">
+<meta name="description" content="Browse Disney Cruise Line ports of call — Bahamas, Eastern and Western Caribbean, and Alaska — with guides for what to do ashore.">
 <style>
-  :root{
-    --navy-deep:#0f1c33; --navy-mid:var(--navy); --teal:var(--teal);
-    --seafoam:var(--cream); --page-bg:var(--cream-2); --white:var(--cream);
-    --brass:var(--gold); --brass-light:var(--gold-light);
-    --ink:#2c2c2a; --ink-soft:var(--muted);
-    --shadow: 0 12px 30px -14px rgba(10,39,51,0.35);
-  }
-  *{box-sizing:border-box;}
-  body{margin:0;background:var(--cream-2);color:var(--ink);font-family:var(--font-sans);-webkit-font-smoothing:antialiased;}
-  a{color:inherit;text-decoration:none;}
-  h1,h2,h3{font-family:var(--font-serif);margin:0;color:var(--ink);letter-spacing:-0.01em;}
-  .eyebrow{font-family:var(--font-sans);font-weight:700;letter-spacing:0.2em;text-transform:uppercase;font-size:0.76rem;color:var(--gold);}
-
   .hub-hero{max-width:900px;margin:0 auto;padding:56px 28px 20px;text-align:center;}
-  .hub-hero h1{font-size:clamp(2rem,4vw,2.7rem);margin:14px 0 12px;font-weight:600;}
+  .hub-hero h1{
+    font-family:var(--font-serif);font-size:clamp(2rem,4vw,2.7rem);
+    margin:14px 0 12px;font-weight:600;color:var(--navy);
+  }
   .hub-hero p{color:var(--muted);font-size:1.02rem;line-height:1.6;max-width:60ch;margin:0 auto;}
+  .hub-hero .eyebrow{
+    font-family:var(--font-sans);font-weight:700;letter-spacing:0.2em;
+    text-transform:uppercase;font-size:0.76rem;color:var(--gold);margin:0;
+  }
 
-  .grid-wrap{max-width:1180px;margin:0 auto;padding:36px 28px 90px;}
+  .grid-wrap{max-width:1180px;margin:0 auto;padding:36px 28px 40px;}
+  .port-region{margin-top:48px;}
+  .port-region:first-of-type{margin-top:12px;}
+  .port-region-head{margin:0 0 18px;max-width:52ch;}
+  .port-region-head .eyebrow{
+    font-family:var(--font-sans);font-weight:700;letter-spacing:0.14em;
+    text-transform:uppercase;font-size:0.72rem;color:var(--gold);margin:0 0 8px;
+  }
+  .port-region-head h2{
+    font-family:var(--font-serif);font-size:clamp(1.55rem,2.8vw,1.95rem);
+    font-weight:500;color:var(--navy);margin:0 0 8px;line-height:1.2;
+  }
+  .port-region-head p{margin:0;color:var(--muted);font-size:0.95rem;line-height:1.5;}
+
   .card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
   @media (max-width:860px){ .card-grid{grid-template-columns:repeat(2,1fr);} }
   @media (max-width:560px){ .card-grid{grid-template-columns:1fr;} }
 
   .port-card{
-    background:var(--cream);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);
-    border:1px solid rgba(10,39,51,0.08); display:flex; flex-direction:column;
+    background:var(--cream);border-radius:12px;overflow:hidden;
+    box-shadow:0 12px 30px -14px rgba(10,39,51,0.35);
+    border:1px solid rgba(10,39,51,0.08);display:flex;flex-direction:column;
     transition:transform .18s ease, box-shadow .18s ease;
+    color:inherit;text-decoration:none;
   }
-  .port-card:hover{transform:translateY(-4px);box-shadow:0 18px 36px -14px rgba(10,39,51,0.45);}
-  .port-card.soon:hover{transform:none;box-shadow:var(--shadow);}
-  .port-card-top{background:linear-gradient(135deg, var(--teal), var(--navy));padding:24px 20px 18px;color:var(--cream);}
-  .port-card.soon .port-card-top{background:linear-gradient(135deg, #8FAFAE, #5C7679);}
-  .port-card-top svg{width:34px;height:34px;color:var(--gold-light);margin-bottom:8px;}
-  .port-card-top h3{color:var(--cream);font-size:1.15rem;font-weight:600;}
+  a.port-card:hover{transform:translateY(-4px);box-shadow:0 18px 36px -14px rgba(10,39,51,0.45);}
+  .port-card.soon{cursor:default;}
+  .port-card.soon:hover{transform:none;box-shadow:0 12px 30px -14px rgba(10,39,51,0.35);}
+  .port-card-top{
+    background:linear-gradient(135deg, #1e5c5c, #1a2a4a);
+    padding:22px 20px 16px;color:var(--cream);
+  }
+  .port-card.soon .port-card-top{background:linear-gradient(135deg, #8fafae, #5c7679);}
+  .port-card-top svg{width:30px;height:30px;color:#d4b05a;margin-bottom:10px;display:block;}
+  .port-card-top h3{
+    font-family:var(--font-serif);color:var(--cream);
+    font-size:1.25rem;font-weight:600;margin:0;line-height:1.2;
+  }
   .port-card-body{padding:16px 20px 20px;flex:1;display:flex;flex-direction:column;}
   .port-card-body p{font-size:0.88rem;color:var(--muted);line-height:1.5;margin:0 0 14px;flex:1;}
-  .port-card-cta{font-family:var(--font-sans);font-weight:700;font-size:0.8rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--teal);}
+  .port-card-cta{
+    font-family:var(--font-sans);font-weight:700;font-size:0.8rem;
+    letter-spacing:0.05em;text-transform:uppercase;color:#1e5c5c;
+  }
   .port-card-cta::after{content:' →';}
   .soon-badge{
     display:inline-block;font-family:var(--font-sans);font-weight:700;font-size:0.68rem;
     letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);background:var(--cream-2);
-    padding:4px 10px;border-radius:20px;
+    padding:4px 10px;border-radius:20px;align-self:flex-start;
   }
 </style>
 </head>
@@ -119,76 +138,248 @@
   </div>
 </div>
 
-<div class="grid-wrap">
-  <div class="card-grid">
+<div class="grid-wrap" style="padding-top:8px;padding-bottom:90px;">
 
-    <a class="port-card" href="/ports/castaway-cay.html">
-      <div class="port-card-top">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
-        <h3>Castaway Cay</h3>
-      </div>
-      <div class="port-card-body">
-        <p>Disney's original private island in the Bahamas — beaches, bike trails, and a dedicated kids' area.</p>
-        <span class="port-card-cta">View port guide</span>
-      </div>
-    </a>
+  <section class="port-region" id="bahamas" aria-labelledby="bahamas-heading">
+    <div class="port-region-head">
+      <p class="eyebrow">Bahamas</p>
+      <h2 id="bahamas-heading">Private islands &amp; Nassau</h2>
+      <p>Disney’s own island days plus the classic short-itinerary stop.</p>
+    </div>
+    <div class="card-grid">
+      <a class="port-card" href="/ports/castaway-cay.html">
+        <div class="port-card-top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
+          <h3>Castaway Cay</h3>
+        </div>
+        <div class="port-card-body">
+          <p>Disney's original private island in the Bahamas — beaches, bike trails, and a dedicated kids' area.</p>
+          <span class="port-card-cta">View port guide</span>
+        </div>
+      </a>
+      <a class="port-card" href="/ports/lookout-cay.html">
+        <div class="port-card-top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
+          <h3>Lookout Cay</h3>
+        </div>
+        <div class="port-card-body">
+          <p>Disney's newer private port destination at Lighthouse Point, Bahamas.</p>
+          <span class="port-card-cta">View port guide</span>
+        </div>
+      </a>
+      <a class="port-card" href="/ports/nassau.html">
+        <div class="port-card-top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
+          <h3>Nassau</h3>
+        </div>
+        <div class="port-card-body">
+          <p>A common Bahamian port stop on shorter itineraries — town, beach, or Atlantis.</p>
+          <span class="port-card-cta">View port guide</span>
+        </div>
+      </a>
+    </div>
+  </section>
 
-    <a class="port-card" href="/ports/lookout-cay.html">
-      <div class="port-card-top">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
-        <h3>Lookout Cay</h3>
+  <section class="port-region" id="western-caribbean" aria-labelledby="western-heading">
+    <div class="port-region-head">
+      <p class="eyebrow">Western Caribbean</p>
+      <h2 id="western-heading">Mexico, Cayman &amp; beyond</h2>
+      <p>Beach clubs, reef days, and tender ports that show up on many Western itineraries.</p>
+    </div>
+    <div class="card-grid">
+      <a class="port-card" href="/ports/cozumel.html">
+        <div class="port-card-top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
+          <h3>Cozumel</h3>
+        </div>
+        <div class="port-card-body">
+          <p>A frequent stop on Western Caribbean sailings — beach clubs, snorkeling, and downtown.</p>
+          <span class="port-card-cta">View port guide</span>
+        </div>
+      </a>
+      <div class="port-card soon">
+        <div class="port-card-top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
+          <h3>Grand Cayman</h3>
+        </div>
+        <div class="port-card-body">
+          <p>Often a tender port — Stingray City, Seven Mile Beach, and tight return timing.</p>
+          <span class="soon-badge">Guide coming soon</span>
+        </div>
       </div>
-      <div class="port-card-body">
-        <p>Disney's newer private port destination at Lighthouse Point, Bahamas.</p>
-        <span class="port-card-cta">View port guide</span>
+      <div class="port-card soon">
+        <div class="port-card-top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
+          <h3>Costa Maya</h3>
+        </div>
+        <div class="port-card-body">
+          <p>Mexican Caribbean stop for beach clubs, ruins day trips, and pier-area shopping.</p>
+          <span class="soon-badge">Guide coming soon</span>
+        </div>
       </div>
-    </a>
-
-    <a class="port-card" href="/ports/nassau.html">
-      <div class="port-card-top">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
-        <h3>Nassau</h3>
+      <div class="port-card soon">
+        <div class="port-card-top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
+          <h3>Falmouth</h3>
+        </div>
+        <div class="port-card-body">
+          <p>Jamaica call for Dunn’s River, beach clubs, and longer transfers inland.</p>
+          <span class="soon-badge">Guide coming soon</span>
+        </div>
       </div>
-      <div class="port-card-body">
-        <p>A common Bahamian port stop on shorter itineraries — town, beach, or Atlantis.</p>
-        <span class="port-card-cta">View port guide</span>
-      </div>
-    </a>
-
-    <a class="port-card" href="/ports/cozumel.html">
-      <div class="port-card-top">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
-        <h3>Cozumel</h3>
-      </div>
-      <div class="port-card-body">
-        <p>A frequent stop on Western Caribbean sailings — beach clubs, snorkeling, and downtown.</p>
-        <span class="port-card-cta">View port guide</span>
-      </div>
-    </a>
-
-    <a class="port-card" href="/ports/san-juan.html">
-      <div class="port-card-top">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
-        <h3>San Juan</h3>
-      </div>
-      <div class="port-card-body">
-        <p>A regular stop on Eastern Caribbean itineraries — Old San Juan forts, plazas, and cafés.</p>
-        <span class="port-card-cta">View port guide</span>
-      </div>
-    </a>
-
-    <div class="port-card soon">
-      <div class="port-card-top">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
-        <h3>More ports</h3>
-      </div>
-      <div class="port-card-body">
-        <p>We're adding port guides as sailings and research allow.</p>
-        <span class="soon-badge">More coming soon</span>
+      <div class="port-card soon">
+        <div class="port-card-top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
+          <h3>Roatán</h3>
+        </div>
+        <div class="port-card-body">
+          <p>Honduras island stop known for reefs, West Bay beaches, and zip-line days.</p>
+          <span class="soon-badge">Guide coming soon</span>
+        </div>
       </div>
     </div>
+  </section>
 
-  </div>
+  <section class="port-region" id="eastern-caribbean" aria-labelledby="eastern-heading">
+    <div class="port-region-head">
+      <p class="eyebrow">Eastern Caribbean</p>
+      <h2 id="eastern-heading">Islands &amp; Old San Juan</h2>
+      <p>Walkable towns, beach clubs, and sail-and-snorkel days on longer Eastern routes.</p>
+    </div>
+    <div class="card-grid">
+      <a class="port-card" href="/ports/san-juan.html">
+        <div class="port-card-top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
+          <h3>San Juan</h3>
+        </div>
+        <div class="port-card-body">
+          <p>A regular stop on Eastern Caribbean itineraries — Old San Juan forts, plazas, and cafés.</p>
+          <span class="port-card-cta">View port guide</span>
+        </div>
+      </a>
+      <div class="port-card soon">
+        <div class="port-card-top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
+          <h3>St. Thomas</h3>
+        </div>
+        <div class="port-card-body">
+          <p>U.S. Virgin Islands favorite for Magens Bay, beach clubs, and snorkel sails.</p>
+          <span class="soon-badge">Guide coming soon</span>
+        </div>
+      </div>
+      <div class="port-card soon">
+        <div class="port-card-top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
+          <h3>St. Maarten</h3>
+        </div>
+        <div class="port-card-body">
+          <p>French and Dutch sides — beach clubs, shopping, and Maho plane-spotting beaches.</p>
+          <span class="soon-badge">Guide coming soon</span>
+        </div>
+      </div>
+      <div class="port-card soon">
+        <div class="port-card-top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
+          <h3>Tortola</h3>
+        </div>
+        <div class="port-card-body">
+          <p>British Virgin Islands stop for beach days, sailing, and island viewpoints.</p>
+          <span class="soon-badge">Guide coming soon</span>
+        </div>
+      </div>
+      <div class="port-card soon">
+        <div class="port-card-top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
+          <h3>Antigua</h3>
+        </div>
+        <div class="port-card-body">
+          <p>Classic Eastern beach-and-bay day with fort views and calm swim spots.</p>
+          <span class="soon-badge">Guide coming soon</span>
+        </div>
+      </div>
+      <div class="port-card soon">
+        <div class="port-card-top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
+          <h3>St. Kitts</h3>
+        </div>
+        <div class="port-card-body">
+          <p>Scenic island call for beaches, Brimstone Hill, and scenic railway days.</p>
+          <span class="soon-badge">Guide coming soon</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="port-region" id="alaska" aria-labelledby="alaska-heading">
+    <div class="port-region-head">
+      <p class="eyebrow">Alaska</p>
+      <h2 id="alaska-heading">Inside Passage ports</h2>
+      <p>Glacier country stops — wildlife, trains, and cool-weather packing that Caribbean sailings don’t need.</p>
+    </div>
+    <div class="card-grid">
+      <div class="port-card soon">
+        <div class="port-card-top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
+          <h3>Juneau</h3>
+        </div>
+        <div class="port-card-body">
+          <p>Capital city call for Mendenhall Glacier, whale watching, and tram views.</p>
+          <span class="soon-badge">Guide coming soon</span>
+        </div>
+      </div>
+      <div class="port-card soon">
+        <div class="port-card-top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
+          <h3>Skagway</h3>
+        </div>
+        <div class="port-card-body">
+          <p>Gold Rush town known for the White Pass train and easy downtown walking.</p>
+          <span class="soon-badge">Guide coming soon</span>
+        </div>
+      </div>
+      <div class="port-card soon">
+        <div class="port-card-top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
+          <h3>Ketchikan</h3>
+        </div>
+        <div class="port-card-body">
+          <p>Creek Street, totem parks, and rain-forest days on many Alaska itineraries.</p>
+          <span class="soon-badge">Guide coming soon</span>
+        </div>
+      </div>
+      <div class="port-card soon">
+        <div class="port-card-top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
+          <h3>Icy Strait Point</h3>
+        </div>
+        <div class="port-card-body">
+          <p>Hoonah-area stop for wildlife, zip adventures, and a quieter Alaska day.</p>
+          <span class="soon-badge">Guide coming soon</span>
+        </div>
+      </div>
+      <div class="port-card soon">
+        <div class="port-card-top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
+          <h3>Sitka</h3>
+        </div>
+        <div class="port-card-body">
+          <p>Historic Russian Alaska town with wildlife tours and walkable shoreline.</p>
+          <span class="soon-badge">Guide coming soon</span>
+        </div>
+      </div>
+      <div class="port-card soon">
+        <div class="port-card-top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2v20M6 8h12l-2 6H8z"/></svg>
+          <h3>Victoria, B.C.</h3>
+        </div>
+        <div class="port-card-body">
+          <p>Often the final evening call — Butchart Gardens, downtown, and short-time pacing.</p>
+          <span class="soon-badge">Guide coming soon</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </div>
 
 <footer class="site-footer">
