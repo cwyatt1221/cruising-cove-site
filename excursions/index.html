@@ -9,7 +9,81 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/site.css">
-<meta name="description" content="Should you book Disney's own Port Adventures or an independent excursion? The real comparison, including the one detail that decides it for most families.">
+<meta name="description" content="Should you book Disney's own Port Adventures or an independent excursion? Filter side-by-side comparisons by destination — with price gaps and ship-wait risk flagged.">
+<style>
+  #comparisons .dest-filter{
+    display:flex;flex-wrap:wrap;gap:8px;margin:1.5rem 0 0.4rem;
+  }
+  #comparisons .dest-filter button{
+    font:inherit;font-size:0.88rem;font-weight:600;
+    padding:8px 14px;border:1px solid rgba(26,42,74,.22);
+    background:transparent;color:var(--navy);cursor:pointer;border-radius:2px;
+    transition:background .15s ease,border-color .15s ease,color .15s ease;
+  }
+  #comparisons .dest-filter button:hover{
+    border-color:var(--gold);color:var(--gold);
+  }
+  #comparisons .dest-filter button[aria-pressed="true"]{
+    background:var(--navy);color:var(--cream);border-color:var(--navy);
+  }
+  #comparisons .dest-filter button[aria-pressed="true"]:hover{
+    background:var(--navy-deep);color:var(--cream);border-color:var(--navy-deep);
+  }
+  #comparisons .dest-meta{
+    font-size:0.9rem;color:var(--muted);margin:0.75rem 0 1.4rem;
+  }
+  .xc-list{margin-top:0.5rem;}
+  .xc-item{
+    border-top:1px solid rgba(26,42,74,.12);
+    padding:1.6rem 0 1.4rem;
+  }
+  .xc-item:first-child{border-top:none;padding-top:0.4rem;}
+  .xc-item h3{
+    font-family:var(--font-serif);font-size:1.35rem;font-weight:500;
+    color:var(--navy);margin:0 0 0.25rem;line-height:1.25;
+  }
+  .xc-duration{
+    font-size:0.82rem;color:var(--muted);margin:0 0 1rem;
+  }
+  .xc-cols{
+    display:grid;grid-template-columns:1fr 1fr;gap:1rem 1.5rem;margin-bottom:1rem;
+  }
+  .xc-side{
+    border-top:3px solid var(--teal);
+    padding-top:0.75rem;
+  }
+  .xc-side.indie{border-top-color:var(--gold);}
+  .xc-side .who{
+    font-size:0.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--muted);margin:0 0 0.35rem;
+  }
+  .xc-side .detail{
+    font-size:0.95rem;color:var(--ink);margin:0 0 0.45rem;line-height:1.45;
+  }
+  .xc-side .price{
+    font-family:var(--font-serif);font-size:1.15rem;font-weight:600;
+    color:var(--navy);margin:0;
+  }
+  .xc-flags{
+    display:grid;grid-template-columns:1fr 1fr;gap:0.85rem 1.25rem;
+    margin:0 0 0.9rem;
+  }
+  .xc-flag .k{
+    display:block;font-size:0.68rem;font-weight:700;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:0.2rem;
+  }
+  .xc-flag .v{font-size:0.95rem;color:var(--ink);margin:0;line-height:1.4;}
+  .xc-risk-high{color:#8a3b2b;font-weight:600;}
+  .xc-risk-medium{color:#8a6a28;font-weight:600;}
+  .xc-risk-low{color:var(--teal);font-weight:600;}
+  .xc-tip{
+    margin:0;font-size:0.95rem;line-height:1.55;color:var(--ink);
+    border-left:3px solid var(--teal);padding-left:0.9rem;
+  }
+  @media (max-width:700px){
+    .xc-cols,.xc-flags{grid-template-columns:1fr;}
+  }
+</style>
 </head>
 <body>
 
@@ -86,10 +160,14 @@
     <ul class='plain'><li>You're traveling with young kids and want zero logistics risk</li><li>It's a longer excursion (multi-hour, further from port) where a delay would be costly</li><li>You value not having to research and vet an unfamiliar operator yourself</li><li>Peace of mind is worth more to you than the price difference</li></ul>
   </section>
 
-  <section id="coming-soon">
-    <span class="label mono">&mdash; Coming soon</span>
+  <section id="comparisons">
+    <span class="label mono">&mdash; Compare by port</span>
     <h2>Side-by-side excursion comparisons</h2>
-    <div class='callout'><span class='label mono'>&mdash; In progress</span><p>Port-by-port comparisons of specific Disney Port Adventures against verified independent alternatives &mdash; with real price gaps and the ship-wait risk flagged for each &mdash; are being built out as this section grows.</p></div>
+    <p>Filter by destination to see typical Disney Port Adventures matched against independent patterns &mdash; with approximate price gaps and ship-wait risk flagged for each.</p>
+    <div class="dest-filter" id="destFilter" role="group" aria-label="Filter by destination"></div>
+    <p class="dest-meta" id="destMeta"></p>
+    <div class="xc-list" id="comparisonResults" aria-live="polite"></div>
+    <p class="fine-print">Prices are approximate adult ranges in USD and change by sailing, season, and package details. Confirm live options in the Disney Cruise Line app and with any independent operator before you book. Private islands (Castaway Cay, Lookout Cay) are Disney-run days &mdash; see the <a href="/ports/adventures.html#castaway" style="color:var(--teal);text-decoration:underline;">Port Adventures guide</a> rather than Disney vs. independent.</p>
   </section>
 
 </main>
@@ -133,6 +211,130 @@
         a.classList.add('current');
       }
     });
+  })();
+</script>
+<script src="/assets/excursion-comparisons.js"></script>
+<script>
+  (function () {
+    var destinations = window.CC_EXCURSION_DESTINATIONS || [];
+    var labels = window.CC_SHIP_WAIT_LABELS || {};
+    var filter = document.getElementById("destFilter");
+    var meta = document.getElementById("destMeta");
+    var results = document.getElementById("comparisonResults");
+    if (!filter || !results || !destinations.length) return;
+
+    function readPort() {
+      var params = new URLSearchParams(window.location.search);
+      var q = params.get("port");
+      if (q && window.CC_excursionDestination(q)) return q;
+      var hash = (window.location.hash || "").replace(/^#/, "");
+      if (hash && hash !== "comparisons" && window.CC_excursionDestination(hash)) return hash;
+      return destinations[0].id;
+    }
+
+    function setUrl(portId) {
+      var url = new URL(window.location.href);
+      url.searchParams.set("port", portId);
+      url.hash = "comparisons";
+      window.history.replaceState(null, "", url.pathname + url.search + url.hash);
+    }
+
+    function riskClass(level) {
+      if (level === "high") return "xc-risk-high";
+      if (level === "medium") return "xc-risk-medium";
+      return "xc-risk-low";
+    }
+
+    function render(portId) {
+      var dest = window.CC_excursionDestination(portId);
+      var rows = window.CC_excursionByDestination(portId) || [];
+      Array.prototype.forEach.call(filter.querySelectorAll("button"), function (btn) {
+        btn.setAttribute("aria-pressed", btn.getAttribute("data-port") === portId ? "true" : "false");
+      });
+      if (meta && dest) {
+        meta.textContent =
+          dest.name +
+          (dest.region ? " · " + dest.region : "") +
+          " — " +
+          rows.length +
+          " comparison" +
+          (rows.length === 1 ? "" : "s");
+      }
+      if (!rows.length) {
+        results.innerHTML =
+          '<div class="callout"><span class="label mono">&mdash; Coming soon</span><p>Comparisons for this port are still being added.</p></div>';
+        return;
+      }
+      results.innerHTML = rows
+        .map(function (row) {
+          return (
+            '<article class="xc-item">' +
+            "<h3>" +
+            row.activity +
+            "</h3>" +
+            '<p class="xc-duration">' +
+            (row.duration || "") +
+            "</p>" +
+            '<div class="xc-cols">' +
+            '<div class="xc-side">' +
+            '<p class="who">' +
+            row.disney.label +
+            "</p>" +
+            '<p class="detail">' +
+            row.disney.detail +
+            "</p>" +
+            '<p class="price">' +
+            row.disney.price +
+            "</p>" +
+            "</div>" +
+            '<div class="xc-side indie">' +
+            '<p class="who">' +
+            row.independent.label +
+            "</p>" +
+            '<p class="detail">' +
+            row.independent.detail +
+            "</p>" +
+            '<p class="price">' +
+            row.independent.price +
+            "</p>" +
+            "</div>" +
+            "</div>" +
+            '<div class="xc-flags">' +
+            '<div class="xc-flag"><span class="k">Price gap</span><p class="v">' +
+            row.priceGap +
+            "</p></div>" +
+            '<div class="xc-flag"><span class="k">Ship-wait risk if independent</span><p class="v ' +
+            riskClass(row.shipWait) +
+            '">' +
+            (labels[row.shipWait] || row.shipWait) +
+            "</p>" +
+            '<p class="v" style="margin-top:0.35rem;color:var(--muted);font-size:0.9rem;">' +
+            row.shipWaitNote +
+            "</p></div>" +
+            "</div>" +
+            '<p class="xc-tip">' +
+            row.tip +
+            "</p>" +
+            "</article>"
+          );
+        })
+        .join("");
+    }
+
+    destinations.forEach(function (dest) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.textContent = dest.name;
+      btn.setAttribute("data-port", dest.id);
+      btn.setAttribute("aria-pressed", "false");
+      btn.addEventListener("click", function () {
+        setUrl(dest.id);
+        render(dest.id);
+      });
+      filter.appendChild(btn);
+    });
+
+    render(readPort());
   })();
 </script>
 <script src="/assets/site-nav.js" defer></script>

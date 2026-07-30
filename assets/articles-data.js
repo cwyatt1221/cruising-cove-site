@@ -1,10 +1,12 @@
 /**
  * Cruising Cove articles — homepage carousel (up to 5) + archive.
  * Keep newest first in CC_ARTICLES for the archive list.
- * Homepage carousel starts on this week's featured piece, then pages through up to 5.
+ * Homepage carousel starts on CAROUSEL_START_ID (or this week's pick if unset), then pages through up to 5.
  */
 (function (global) {
   var FEATURED_SLOTS = 5;
+  /** Pin the first homepage carousel slide. Set to null to rotate by ISO week. */
+  var CAROUSEL_START_ID = "10-hidden-disney-cruise-secrets";
 
   var articles = [
     {
@@ -59,12 +61,18 @@
 
   function featuredArticle(now) {
     if (!articles.length) return null;
+    if (CAROUSEL_START_ID) {
+      var pinned = articles.find(function (a) {
+        return a.id === CAROUSEL_START_ID;
+      });
+      if (pinned) return pinned;
+    }
     var week = isoWeek(now || new Date());
     var idx = (week - 1) % articles.length;
     return articles[idx];
   }
 
-  /** Up to 5 articles for homepage paging, starting with this week's feature. */
+  /** Up to 5 articles for homepage paging, starting with the featured piece. */
   function featuredCarousel(now) {
     if (!articles.length) return [];
     var start = articles.indexOf(featuredArticle(now));
