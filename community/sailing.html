@@ -76,6 +76,7 @@
     <span class="label mono">&mdash; Gift exchanges</span>
     <h2>Fish Extender &amp; Pixie Dust</h2>
     <p>Sign up after you join this sailing board. Cabin numbers are only shown to people on this board — still don’t post passport or payment info.</p>
+    <p class="marketplace-link">Need an extender, magnets, or Pixie Dust supplies? <a href="/marketplace/">Browse the marketplace</a>.</p>
     <div class="signup-grid">
       <div class="signup-panel" id="fePanel">
         <p class="signup-count" id="feCount">Fish Extender · 0 signed up</p>
@@ -170,20 +171,81 @@
   var sailingMeta = null;
   var isMember = false;
 
+  function loadPosts() {
+    return CC.api('/community/sailings/' + encodeURIComponent(key) + '/posts')
+      .then(function(data){ renderPosts(data.posts || []); })
+      .catch(function(){ postList.innerHTML = '<p class="empty-state">Could not load posts.</p>'; });
+  }
+
   function renderPosts(posts) {
     if (!posts || !posts.length) {
       postList.innerHTML = '<p class="empty-state">No posts yet — say hello and ask what others are planning.</p>';
       return;
     }
+    var me = CC.getUser();
+    var myId = me && me.userId ? me.userId : '';
     postList.innerHTML = posts.map(function(p){
+      var mine = myId && p.userId === myId;
+      var when = CC.formatDate(p.createdAt);
+      if (p.updatedAt) when += ' · edited';
+      var actions = mine
+        ? ('<div class="post-actions">' +
+            '<button type="button" class="post-action" data-edit="' + CC.escapeHtml(p.id) + '">Edit</button>' +
+            '<button type="button" class="post-action danger" data-delete="' + CC.escapeHtml(p.id) + '">Delete</button>' +
+          '</div>')
+        : '';
       return (
-        '<article class="post-card">' +
+        '<article class="post-card" data-post-id="' + CC.escapeHtml(p.id) + '">' +
           '<p class="by">' + CC.escapeHtml(p.displayName) + '</p>' +
-          '<p class="when">' + CC.escapeHtml(CC.formatDate(p.createdAt)) + '</p>' +
-          '<p class="body">' + CC.escapeHtml(p.body) + '</p>' +
+          '<p class="when">' + CC.escapeHtml(when) + '</p>' +
+          '<p class="body" data-body>' + CC.escapeHtml(p.body) + '</p>' +
+          actions +
         '</article>'
       );
     }).join('');
+
+    postList.querySelectorAll('[data-edit]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var id = btn.getAttribute('data-edit');
+        var card = postList.querySelector('[data-post-id="' + id + '"]');
+        if (!card || card.querySelector('textarea')) return;
+        var bodyEl = card.querySelector('[data-body]');
+        var current = bodyEl ? bodyEl.textContent : '';
+        var form = document.createElement('div');
+        form.className = 'post-edit';
+        form.innerHTML =
+          '<textarea maxlength="2000" aria-label="Edit post"></textarea>' +
+          '<div class="post-actions">' +
+            '<button type="button" class="btn btn-gold post-save">Save</button>' +
+            '<button type="button" class="post-action post-cancel">Cancel</button>' +
+          '</div>';
+        var ta = form.querySelector('textarea');
+        ta.value = current || '';
+        if (bodyEl) bodyEl.hidden = true;
+        var actionsEl = card.querySelector('.post-actions');
+        if (actionsEl) actionsEl.hidden = true;
+        card.appendChild(form);
+        form.querySelector('.post-cancel').addEventListener('click', function(){ loadPosts(); });
+        form.querySelector('.post-save').addEventListener('click', function(){
+          var text = ta.value.trim();
+          if (text.length < 2) { alert('Post something a little longer.'); return; }
+          CC.api('/community/sailings/' + encodeURIComponent(key) + '/posts/' + encodeURIComponent(id), {
+            method: 'PATCH',
+            body: { body: text }
+          }).then(loadPosts).catch(function(err){ alert(err.message || 'Could not save.'); });
+        });
+      });
+    });
+
+    postList.querySelectorAll('[data-delete]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var id = btn.getAttribute('data-delete');
+        if (!confirm('Delete this post?')) return;
+        CC.api('/community/sailings/' + encodeURIComponent(key) + '/posts/' + encodeURIComponent(id), {
+          method: 'DELETE'
+        }).then(loadPosts).catch(function(err){ alert(err.message || 'Could not delete.'); });
+      });
+    });
   }
 
   function renderSignupList(el, items, showCabin) {
@@ -410,9 +472,7 @@
       msg.hidden = false;
       msg.className = 'form-msg ok';
       msg.textContent = 'Posted.';
-      return CC.api('/community/sailings/' + encodeURIComponent(key) + '/posts');
-    }).then(function(data){
-      renderPosts(data.posts || []);
+      return loadPosts();
     }).catch(function(err){
       msg.hidden = false;
       msg.className = 'form-msg error';
