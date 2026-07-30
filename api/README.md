@@ -4,6 +4,24 @@ An Azure Function (`POST /api/chat`) that answers visitor questions using Claude
 and logs every question + answer to Azure Table Storage so you can find frequently-asked
 questions later and add the good ones to the FAQ page.
 
+## My Cruise planner
+
+Personalized sailing dashboard (localStorage + optional account sync):
+
+| Route | Purpose |
+| --- | --- |
+| `GET/POST /api/planner/trips` | List / upsert trips for the signed-in user |
+| `DELETE /api/planner/trips/{tripId}` | Delete a trip |
+| `GET/POST /api/planner/reviews` | List approved reviews / create a review (`?type=&id=`) |
+| `POST /api/planner/packing-suggestions` | Submit packing item (pending moderation) |
+| `GET /api/planner/packing-items` | Approved community packing items |
+| `GET /api/planner/admin/packing-suggestions?key=` | Admin queue (`REPORT_ACCESS_KEY`) |
+| `POST /api/planner/admin/packing-suggestions/{id}?key=` | Approve / reject (`{ action }`) |
+
+Tables: `PlannerTrips`, `PlannerReviews`, `PlannerSuggestions`, `PlannerPackingItems`.
+
+Frontend: `/planning/my-cruise.html`. Admin UI: `/planning/my-cruise-admin.html`.
+
 ## Community (Phase 1)
 
 On-site sailing boards keyed by Disney ship + embarkation date:

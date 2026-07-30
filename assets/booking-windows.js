@@ -3,7 +3,7 @@
  * Official activity windows: First-time 75 · Silver 90 · Gold 105 · Platinum 120 · Pearl 123.
  * Concierge often matches Pearl online (~123); phone Concierge can be slightly earlier.
  */
-(function () {
+(function (global) {
   var WINDOWS = {
     cabana: {
       concierge: 123,
@@ -174,4 +174,16 @@
   } else {
     init();
   }
-})();
+
+  global.CCBookingWindows = {
+    WINDOWS: WINDOWS,
+    TIER_LABELS: TIER_LABELS,
+    parseDate: parseDate,
+    addDays: addDays,
+    formatDate: formatDate,
+    daysUntil: daysUntil,
+    compute: compute,
+    statusLabel: statusLabel,
+    render: render,
+  };
+})(typeof window !== "undefined" ? window : globalThis);

@@ -13,5 +13,8 @@ import "./functions/communityAuth";
 import "./functions/communitySailings";
 import "./functions/communityPosts";
 import "./functions/communitySignups";
+import "./functions/plannerTrips";
+import "./functions/plannerReviews";
+import "./functions/plannerSuggestions";
 import "./functions/trackEvent";
 import "./functions/listEvents";
