@@ -101,20 +101,47 @@
   .hero-aside{
     border-left:1px solid rgba(245,240,225,.18);
     padding:8px 0 8px 40px;
-    max-width:480px;
+    max-width:520px;
     justify-self:end;
   }
   .hero-aside .eyebrow{margin-bottom:16px;}
   .hero-aside h2{
-    font-family:var(--font-serif);font-size:clamp(2.2rem,4.2vw,3rem);
-    font-weight:400;line-height:1.1;color:var(--cream);margin:0 0 20px;max-width:none;
+    font-family:var(--font-serif);font-size:clamp(1.85rem,3.4vw,2.55rem);
+    font-weight:400;line-height:1.15;color:var(--cream);margin:0 0 16px;max-width:none;
   }
   .hero-aside h2 em{font-style:italic;color:var(--gold);}
   .hero-aside h2 a{color:inherit;text-decoration:none;}
   .hero-aside h2 a:hover{color:var(--gold);}
   .hero-aside h2 a:hover em{color:var(--cream);}
   .hero-aside .excerpt{
-    font-size:1.05rem;line-height:1.6;color:#d7dae3;margin:0;
+    font-size:0.98rem;line-height:1.6;color:#d7dae3;margin:0 0 12px;
+  }
+  .hero-aside .excerpt:last-of-type{margin-bottom:18px;}
+  .hero-aside .aside-cta{
+    display:inline-block;margin:0 0 22px;font-size:0.95rem;font-weight:600;
+    color:var(--gold);border-bottom:1px solid rgba(201,162,75,.55);padding-bottom:1px;
+  }
+  .hero-aside .aside-cta:hover{color:var(--cream);border-bottom-color:var(--cream);}
+  .hero-aside-perks{
+    display:grid;grid-template-columns:1fr 1fr;gap:14px 16px;
+    margin:0;padding:0;list-style:none;
+  }
+  .hero-aside-perks li{
+    margin:0;padding:12px 12px 12px 0;
+    border-top:1px solid rgba(245,240,225,.14);
+  }
+  .hero-aside-perks .perk-icon{
+    display:block;font-size:1.05rem;line-height:1;margin-bottom:6px;
+  }
+  .hero-aside-perks strong{
+    display:block;font-size:0.82rem;letter-spacing:.04em;text-transform:uppercase;
+    color:var(--cream);margin:0 0 4px;font-weight:700;
+  }
+  .hero-aside-perks span{
+    display:block;font-size:0.84rem;line-height:1.45;color:#c7cbd6;
+  }
+  @media (max-width:520px){
+    .hero-aside-perks{grid-template-columns:1fr;}
   }
   .week-feature{
     max-width:720px;
@@ -327,8 +354,31 @@
     </div>
     <aside class="hero-aside" id="agents" aria-label="Travel agents">
       <p class="eyebrow">Travel agents</p>
-      <h2><a href="/agents/">Disney-specialist<br><em>agents</em> — coming soon.</a></h2>
-      <p class="excerpt">Booking through an agent costs you nothing extra — Disney pays their commission. We’re onboarding real EarMarked partners before we open the public directory. Agents can <a href="/agents/apply.html" style="color:var(--gold);text-decoration:underline;">apply now</a>.</p>
+      <h2><a href="/agents/">Expert guidance.<br>Exclusive knowledge.<br><em>No extra cost.</em></a></h2>
+      <p class="excerpt">Disney-specialist travel agents are Disney experts who help you plan the vacation you actually want—at no additional cost to you. Whether you're hoping to secure a Royal Gathering, choose the best stateroom, celebrate a special occasion, or simply avoid costly mistakes, your agent is there every step of the way. Disney pays their commission, so you receive personalized planning without paying more.</p>
+      <a class="aside-cta" href="/agents/">Find the right Disney-specialist for your next cruise →</a>
+      <ul class="hero-aside-perks">
+        <li>
+          <span class="perk-icon" aria-hidden="true">✨</span>
+          <strong>No Extra Cost</strong>
+          <span>Disney pays the commission—not you.</span>
+        </li>
+        <li>
+          <span class="perk-icon" aria-hidden="true">👑</span>
+          <strong>Hard-to-Get Reservations</strong>
+          <span>Help booking Royal Gathering and other popular experiences.</span>
+        </li>
+        <li>
+          <span class="perk-icon" aria-hidden="true">🚢</span>
+          <strong>Disney Cruise Experts</strong>
+          <span>Cabin recommendations, itineraries, and insider tips.</span>
+        </li>
+        <li>
+          <span class="perk-icon" aria-hidden="true">💬</span>
+          <strong>Personal Support</strong>
+          <span>One person to answer questions before, during, and after booking.</span>
+        </li>
+      </ul>
     </aside>
   </div>
 </section>
