@@ -53,6 +53,8 @@ export async function listAgentApplications(request: HttpRequest, context: Invoc
         specialtiesOther: entity.specialtiesOther || "",
         yearsExperience: entity.yearsExperience || "",
         sailingsPlanned: entity.sailingsPlanned || "",
+        sailingsSailed: entity.sailingsSailed || "",
+        shipsSailed: entity.shipsSailed || "",
         earmarked: entity.earmarked,
         credentialsNotes: entity.credentialsNotes || "",
         whyChooseMe: entity.whyChooseMe || "",

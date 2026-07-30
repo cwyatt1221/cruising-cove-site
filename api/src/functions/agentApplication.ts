@@ -18,6 +18,8 @@ interface AgentApplicationInput {
   specialtiesOther?: string;
   yearsExperience?: string;
   sailingsPlanned?: string;
+  sailingsSailed?: string;
+  shipsSailed?: string;
   earmarked?: string; // "yes" | "no" | "in-progress"
   credentialsNotes?: string;
   whyChooseMe?: string;
@@ -77,6 +79,12 @@ export async function submitAgentApplication(request: HttpRequest, context: Invo
   if (!body.earmarked) {
     return { status: 400, jsonBody: { error: "Please tell us about your EarMarked / Disney specialist status." } };
   }
+  if (!body.sailingsSailed?.trim()) {
+    return { status: 400, jsonBody: { error: "Please tell us how many sailings you have been on." } };
+  }
+  if (!body.shipsSailed?.trim()) {
+    return { status: 400, jsonBody: { error: "Please tell us which ships you have sailed on." } };
+  }
 
   try {
     const client = await getTableClient();
@@ -98,6 +106,8 @@ export async function submitAgentApplication(request: HttpRequest, context: Invo
       specialtiesOther: (body.specialtiesOther ?? "").trim().slice(0, 200),
       yearsExperience: (body.yearsExperience ?? "").trim().slice(0, 20),
       sailingsPlanned: (body.sailingsPlanned ?? "").trim().slice(0, 40),
+      sailingsSailed: (body.sailingsSailed ?? "").trim().slice(0, 80),
+      shipsSailed: (body.shipsSailed ?? "").trim().slice(0, 300),
       earmarked: body.earmarked,
       credentialsNotes: (body.credentialsNotes ?? "").trim().slice(0, 800),
       whyChooseMe: body.whyChooseMe.trim().slice(0, 800),

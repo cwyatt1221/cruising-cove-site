@@ -74,6 +74,7 @@
         <h2 id="profileAgency" style="font-family:var(--font-serif);font-weight:500;text-transform:none;font-size:1.6rem;color:var(--navy);margin:0 0 12px;"></h2>
         <p id="profileBio"></p>
         <p class="agent-meta" id="profileMeta" style="margin-top:14px;"></p>
+        <p class="agent-meta" id="profileSailingMeta" style="margin-top:6px;" hidden></p>
         <div class="agent-tags" id="profileTags" style="margin-top:16px;"></div>
       </section>
       <section style="border:none;padding-top:8px;" id="highlightsSection" hidden>
@@ -143,6 +144,17 @@
     document.getElementById("profileAgency").textContent = agent.agency || "";
     document.getElementById("profileBio").textContent = agent.bio || "";
     document.getElementById("profileMeta").textContent = metaLine(agent);
+    var sailingMeta = document.getElementById("profileSailingMeta");
+    var sailingBits = [];
+    if (agent.sailingsSailed) sailingBits.push("Personal sailings: " + agent.sailingsSailed);
+    if (agent.shipsSailed) sailingBits.push("Ships sailed: " + agent.shipsSailed);
+    if (sailingBits.length) {
+      sailingMeta.hidden = false;
+      sailingMeta.textContent = sailingBits.join(" · ");
+    } else {
+      sailingMeta.hidden = true;
+      sailingMeta.textContent = "";
+    }
 
     var badges = [];
     if (agent.sample) badges.push('<span class="agent-badge sample-badge">Sample</span>');

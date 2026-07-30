@@ -142,8 +142,19 @@
           <input id="yearsExperience" name="yearsExperience" type="text" placeholder="e.g. 8">
         </div>
         <div>
-          <label for="sailingsPlanned">Approx. Disney sailings planned</label>
+          <label for="sailingsPlanned">Approx. Disney sailings planned for clients</label>
           <input id="sailingsPlanned" name="sailingsPlanned" type="text" placeholder="e.g. 40+">
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div>
+          <label for="sailingsSailed">How many sailings have you been on? <span class="req">*</span></label>
+          <input id="sailingsSailed" name="sailingsSailed" type="text" placeholder="e.g. 12 personal DCL sailings" required>
+        </div>
+        <div>
+          <label for="shipsSailed">What ships have you sailed on? <span class="req">*</span></label>
+          <input id="shipsSailed" name="shipsSailed" type="text" placeholder="e.g. Wish, Treasure, Dream, Magic" required>
         </div>
       </div>
 
@@ -371,6 +382,8 @@
       specialtiesOther: form.specialtiesOther.value.trim(),
       yearsExperience: form.yearsExperience.value.trim(),
       sailingsPlanned: form.sailingsPlanned.value.trim(),
+      sailingsSailed: form.sailingsSailed.value.trim(),
+      shipsSailed: form.shipsSailed.value.trim(),
       earmarked: radioValue('earmarked'),
       credentialsNotes: form.credentialsNotes.value.trim(),
       whyChooseMe: form.whyChooseMe.value.trim(),

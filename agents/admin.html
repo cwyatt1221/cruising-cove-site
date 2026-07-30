@@ -136,7 +136,10 @@
               " · Fees: " + escapeHtml(a.chargesFees || "") +
               (a.feeNotes ? " (" + escapeHtml(a.feeNotes) + ")" : "") +
               " · Years: " + escapeHtml(a.yearsExperience || "—") +
-              " · Sailings: " + escapeHtml(a.sailingsPlanned || "—") +
+              " · Planned for clients: " + escapeHtml(a.sailingsPlanned || "—") +
+            "</p>" +
+            '<p class="agent-meta">Personal sailings: ' + escapeHtml(a.sailingsSailed || "—") +
+              " · Ships sailed: " + escapeHtml(a.shipsSailed || "—") +
             "</p>" +
             (a.credentialsNotes
               ? "<p class='agent-meta'>Credentials: " + escapeHtml(a.credentialsNotes) + "</p>"

@@ -147,6 +147,8 @@ export async function moderateAgentApplication(
       specialtiesOther: String(application.specialtiesOther || "").trim(),
       yearsExperience: String(application.yearsExperience || "").trim(),
       sailingsPlanned: String(application.sailingsPlanned || "").trim(),
+      sailingsSailed: String(application.sailingsSailed || "").trim(),
+      shipsSailed: String(application.shipsSailed || "").trim(),
       years: yearsNumber(application.yearsExperience) ?? 0,
       sailings: sailingsNumber(application.sailingsPlanned) ?? 0,
       earmarked: earmarkedBool(application.earmarked),

@@ -68,6 +68,8 @@ export function toPublicAgent(entity: Record<string, unknown>) {
     location: String(entity.location ?? ""),
     years: typeof entity.years === "number" ? entity.years : yearsNumber(entity.yearsExperience),
     sailings: typeof entity.sailings === "number" ? entity.sailings : sailingsNumber(entity.sailingsPlanned),
+    sailingsSailed: entity.sailingsSailed ? String(entity.sailingsSailed) : null,
+    shipsSailed: entity.shipsSailed ? String(entity.shipsSailed) : null,
     earmarked: Boolean(entity.earmarked),
     featured: Boolean(entity.featured),
     sample: false,
