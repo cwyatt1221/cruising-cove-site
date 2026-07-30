@@ -129,7 +129,7 @@
 .agent-form .form-status.err{color:#8a3a2a;}
 
 .dir-cta-band{
-  background:var(--navy);color:var(--cream);padding:36px 28px;border-radius:8px;margin:40px 0 20px;
+  background:var(--navy);color:var(--cream);padding:36px 28px;border-radius:8px;margin:16px 0 28px;
 }
 .dir-cta-band h2{font-family:var(--font-serif);font-weight:400;font-size:1.6rem;color:var(--cream);margin:0 0 10px;}
 .dir-cta-band p{color:#c7cbd6;margin:0 0 18px;max-width:52ch;line-height:1.55;}
