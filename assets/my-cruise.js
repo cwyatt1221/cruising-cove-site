@@ -3,6 +3,7 @@
  */
 (function () {
   var DATA = window.CC_MY_CRUISE;
+  var CATALOG = window.CC_SAILING_CATALOG;
   var BW = window.CCBookingWindows;
   var Community = window.CCCommunity;
   var STORAGE_KEY = "cc_my_cruise_trips";
@@ -852,7 +853,77 @@
       '<div class="mc-field"><label>Your review</label><textarea name="body" required minlength="20" placeholder="What ages thrived, what you’d skip, timing tips…"></textarea></div>' +
       '<div class="mc-field"><label>Ages on your sailing (optional)</label><input name="agesNote" maxlength="120" placeholder="e.g. 3, 7, adults"></div>' +
       '<button type="submit" class="btn btn-gold">Submit review</button>' +
-      '<p class="meta" style="margin-top:8px;">Requires a free community account.</p></form>';
+          '<p class="meta" style="margin-top:8px;">Requires a free community account. Reviews are moderated before they appear.</p></form>';
+  }
+
+  async function renderPortReviews(trip) {
+    var root = $("mcPortReviews");
+    if (!root) return;
+    var ports = (trip.ports || []).filter(function (id) {
+      return id && id !== "other";
+    });
+    if (!ports.length) {
+      root.innerHTML = '<p class="mc-empty">Add ports to your cruise to see and write port reviews.</p>';
+      return;
+    }
+
+    root.innerHTML = ports
+      .map(function (portId) {
+        return (
+          '<article class="mc-exc" data-port="' +
+          escapeHtml(portId) +
+          '"><h3>' +
+          escapeHtml(portName(portId)) +
+          '</h3><div class="mc-review-box" id="portrev_' +
+          escapeHtml(portId) +
+          '"><p class="mc-empty">Loading…</p></div>' +
+          '<form class="mc-suggest" data-port-review="' +
+          escapeHtml(portId) +
+          '">' +
+          '<h4 style="margin:0 0 8px;font-family:var(--font-serif);color:var(--navy);">Add a port review</h4>' +
+          '<div class="mc-field"><label>Rating</label><select name="rating"><option value="5">5</option><option value="4">4</option><option value="3">3</option><option value="2">2</option><option value="1">1</option></select></div>' +
+          '<div class="mc-field"><label>Title</label><input name="title" maxlength="80" placeholder="Easy DIY day"></div>' +
+          '<div class="mc-field"><label>Your review</label><textarea name="body" required minlength="20" placeholder="What worked for your ages, timing tips, what you’d skip…"></textarea></div>' +
+          '<div class="mc-field"><label>Ages on your sailing (optional)</label><input name="agesNote" maxlength="120"></div>' +
+          '<button type="submit" class="btn btn-gold">Submit for review</button>' +
+          '<p class="meta" style="margin-top:8px;">Moderated before it goes live.</p></form></article>'
+        );
+      })
+      .join("");
+
+    for (var i = 0; i < ports.length; i++) {
+      await fillPortReviews(ports[i]);
+    }
+  }
+
+  async function fillPortReviews(portId) {
+    var box = document.getElementById("portrev_" + portId);
+    if (!box) return;
+    try {
+      var data = await Community.api("/planner/reviews?type=port&id=" + encodeURIComponent(portId));
+      if (!data.count) {
+        box.innerHTML = '<p class="mc-empty">No approved reviews yet.</p>';
+        return;
+      }
+      box.innerHTML = data.reviews
+        .map(function (r) {
+          return (
+            '<div class="mc-review"><div class="mc-stars">' +
+            "★".repeat(r.rating) +
+            "☆".repeat(5 - r.rating) +
+            "</div><strong>" +
+            escapeHtml(r.title || "Review") +
+            "</strong> · " +
+            escapeHtml(r.displayName) +
+            "<p>" +
+            escapeHtml(r.body) +
+            "</p></div>"
+          );
+        })
+        .join("");
+    } catch (e) {
+      box.innerHTML = '<p class="mc-empty">Could not load reviews.</p>';
+    }
   }
 
   function renderBanner(trip) {
@@ -895,6 +966,7 @@
     renderAgent(trip);
     renderCommunity(trip);
     renderExcursions(trip);
+    renderPortReviews(trip);
     var cost = $("mcCostLink");
     if (cost) cost.href = "/planning/disney-cruise-cost.html";
   }
@@ -950,8 +1022,26 @@
     });
 
     $("mcPrint").addEventListener("click", function () {
+      document.body.classList.add("mc-printing");
       window.print();
+      setTimeout(function () {
+        document.body.classList.remove("mc-printing");
+      }, 500);
     });
+
+    var shareBtn = $("mcShare");
+    if (shareBtn) {
+      shareBtn.addEventListener("click", function () {
+        shareTrip();
+      });
+    }
+
+    var catalog = $("mcCatalog");
+    if (catalog) {
+      catalog.addEventListener("change", function () {
+        applyCatalog(catalog.value);
+      });
+    }
 
     $("mcTripList").addEventListener("click", function (e) {
       var load = e.target.getAttribute && e.target.getAttribute("data-load");
@@ -1046,6 +1136,12 @@
     });
 
     $("mcDashboard").addEventListener("submit", function (e) {
+      var portForm = e.target.closest("[data-port-review]");
+      if (portForm) {
+        e.preventDefault();
+        submitPortReview(portForm);
+        return;
+      }
       var form = e.target.closest("[data-review-form]");
       if (form) {
         e.preventDefault();
@@ -1057,11 +1153,85 @@
         addCustomPackingItem(e.target);
         return;
       }
+      if (e.target.id === "mcRemindForm") {
+        e.preventDefault();
+        submitReminder(e.target);
+        return;
+      }
       if (e.target.id === "mcSuggestForm") {
         e.preventDefault();
         submitSuggestion(e.target);
       }
     });
+  }
+
+  async function shareTrip() {
+    var trip = activeTrip();
+    if (!trip || !trip.embarkDate) {
+      toast("Save a cruise with an embarkation date first.");
+      return;
+    }
+    try {
+      var data = await Community.api("/planner/shares", { method: "POST", body: { trip: trip } });
+      var url = location.origin + (data.urlPath || "/planning/my-cruise.html?share=" + data.token);
+      if (navigator.clipboard) {
+        await navigator.clipboard.writeText(url);
+        toast("Share link copied.");
+      } else {
+        toast(url);
+      }
+    } catch (err) {
+      toast(err.message || "Could not create share link.");
+    }
+  }
+
+  async function submitReminder(form) {
+    var trip = activeTrip();
+    if (!trip || !trip.embarkDate) {
+      toast("Save a cruise with an embarkation date first.");
+      return;
+    }
+    var email = (form.email && form.email.value) || ($("mcRemindEmail") && $("mcRemindEmail").value) || "";
+    try {
+      var data = await Community.api("/planner/reminders", {
+        method: "POST",
+        body: {
+          email: email,
+          shipSlug: trip.shipSlug,
+          embarkDate: trip.embarkDate,
+          castawayTier: trip.castawayTier,
+          title: trip.title || "",
+        },
+      });
+      toast(data.message || "Reminder saved.");
+      form.reset();
+    } catch (err) {
+      toast(err.message || "Could not save reminder.");
+    }
+  }
+
+  function applyCatalog(id) {
+    if (!CATALOG || !CATALOG.templates) return;
+    var t = CATALOG.templates.find(function (x) {
+      return x.id === id;
+    });
+    if (!t || t.id === "custom") return;
+    var trip = activeTrip();
+    if (!trip) {
+      trip = emptyTrip();
+      state.trips.unshift(trip);
+      state.activeId = trip.id;
+    }
+    if (t.shipSlug) trip.shipSlug = t.shipSlug;
+    trip.nights = t.nights || trip.nights;
+    trip.destinationRegion = t.destinationRegion || trip.destinationRegion;
+    trip.ports = (t.ports || []).slice();
+    trip.updatedAt = new Date().toISOString();
+    fillForm(trip);
+    saveLocal();
+    var note = $("mcCatalogNote");
+    if (note) note.textContent = t.note || "Confirm ports in the official app.";
+    toast("Itinerary template applied — add your embarkation date and save.");
   }
 
   function addCustomPackingItem(form) {
@@ -1116,8 +1286,37 @@
         },
       });
       delete state.reviewCache[excId];
-      toast("Review published — thank you.");
+      toast(data.message || "Review submitted for moderation.");
       openReviews(excId);
+    } catch (err) {
+      toast(err.message || "Could not save review.");
+    }
+  }
+
+  async function submitPortReview(form) {
+    if (!Community || !Community.getToken()) {
+      toast("Sign in via Community to leave a review.");
+      return;
+    }
+    var trip = activeTrip() || {};
+    var portId = form.getAttribute("data-port-review");
+    var fd = new FormData(form);
+    try {
+      var data = await Community.api("/planner/reviews", {
+        method: "POST",
+        body: {
+          targetType: "port",
+          targetId: portId,
+          rating: Number(fd.get("rating")),
+          title: fd.get("title"),
+          body: fd.get("body"),
+          agesNote: fd.get("agesNote"),
+          shipSlug: trip.shipSlug || "",
+          embarkDate: trip.embarkDate || "",
+        },
+      });
+      toast(data.message || "Review submitted for moderation.");
+      form.reset();
     } catch (err) {
       toast(err.message || "Could not save review.");
     }
@@ -1160,6 +1359,14 @@
         return '<option value="' + t.id + '">' + escapeHtml(t.label) + "</option>";
       })
       .join("");
+    var catalog = $("mcCatalog");
+    if (catalog && CATALOG && CATALOG.templates) {
+      catalog.innerHTML = CATALOG.templates
+        .map(function (t) {
+          return '<option value="' + escapeHtml(t.id) + '">' + escapeHtml(t.label) + "</option>";
+        })
+        .join("");
+    }
     $("mcPorts").innerHTML = DATA.ports
       .map(function (p) {
         return '<option value="' + escapeHtml(p.id) + '">' + escapeHtml(p.name) + "</option>";
@@ -1226,12 +1433,34 @@
     }
   }
 
+  async function loadSharedTrip() {
+    var params = new URLSearchParams(location.search);
+    var token = params.get("share");
+    if (!token || !Community) return;
+    try {
+      var data = await Community.api("/planner/shares/" + encodeURIComponent(token));
+      var trip = Object.assign(emptyTrip(), data.trip || {});
+      trip.id = trip.id || "share_" + token;
+      var idx = state.trips.findIndex(function (t) {
+        return t.id === trip.id;
+      });
+      if (idx >= 0) state.trips[idx] = trip;
+      else state.trips.unshift(trip);
+      state.activeId = trip.id;
+      saveLocal();
+      toast("Opened shared cruise plan.");
+    } catch (e) {
+      toast("Could not open that share link.");
+    }
+  }
+
   async function init() {
     if (!DATA) return;
     populateStaticFilters();
     loadLocal();
     bind();
     renderAuth();
+    await loadSharedTrip();
     await syncFromServer();
     await loadCommunityPacking();
     renderAll();

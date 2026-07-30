@@ -16,5 +16,7 @@ import "./functions/communitySignups";
 import "./functions/plannerTrips";
 import "./functions/plannerReviews";
 import "./functions/plannerSuggestions";
+import "./functions/plannerShares";
+import "./functions/plannerReminders";
 import "./functions/trackEvent";
 import "./functions/listEvents";

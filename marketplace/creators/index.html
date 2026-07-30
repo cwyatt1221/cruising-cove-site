@@ -163,12 +163,11 @@
   <div class="boarding-pass">
     <div class="bp-main">
       <p class="eyebrow">Founding Cruise Experts</p>
-      <h1>Your video. On the page where they’re deciding.</h1>
-      <p class="lede" style="max-width:52ch;color:var(--muted);font-size:1.02rem;line-height:1.55;">Creator placements open as founding partners are approved. Apply to be considered — featured videos will appear on ship, port, and planning guides once live.</p>
-      <p>You already have the views. We put your best Disney cruise videos <strong>inside ship, port, and planning guides</strong> — credited, linked to your channel, with a Cruising Cove expert profile. High-intent families, not random scrollers.</p>
-      <a href="#apply" class="apply-btn">Apply to join</a>
+      <h1>Creator placements are paused.</h1>
+      <p class="lede" style="max-width:52ch;color:var(--muted);font-size:1.02rem;line-height:1.55;">We’re not featuring YouTube creators on guide pages yet. Check back later — or browse the <a href="/marketplace/" style="color:var(--teal);">Curated 10 marketplace</a> for shops.</p>
+      <a href="/marketplace/" class="apply-btn">Back to Marketplace</a>
     </div>
-    <div class="bp-stub">
+    <div class="bp-stub" hidden>
       <div class="stub-block">
         <div class="label">Placement</div>
         <div class="value">On Guides</div>
@@ -188,7 +187,7 @@
     </div>
   </div>
 
-  <div class="creator-value">
+  <div class="creator-value" hidden>
     <div class="item">
       <h3>Guide embeds</h3>
       <p>Wish tour on the Wish page. Castaway tips on Castaway Cay. Cost videos on the planning guide — not buried in a generic feed.</p>
@@ -203,14 +202,14 @@
     </div>
   </div>
 
-  <p class="intro-copy">We’re inviting a small founding group. You keep ownership of your content; we embed with credit and a link back to YouTube. As Cruising Cove grows, Founding Experts keep preferred placement.</p>
+  <p class="intro-copy" hidden>We’re inviting a small founding group. You keep ownership of your content; we embed with credit and a link back to YouTube. As Cruising Cove grows, Founding Experts keep preferred placement.</p>
 
-  <h2 style="font-size:1.4rem;margin:0 0 8px;">Featured experts</h2>
-  <p class="creator-hub-note" id="creatorEmpty">Founding Cruise Experts will appear here once approved. Apply below to be considered for the first cohort.</p>
-  <div class="creator-grid" id="creatorGrid"></div>
+  <h2 style="font-size:1.4rem;margin:0 0 8px;" hidden>Featured experts</h2>
+  <p class="creator-hub-note" id="creatorEmpty" hidden>Founding Cruise Experts will appear here once approved. Apply below to be considered for the first cohort.</p>
+  <div class="creator-grid" id="creatorGrid" hidden></div>
 
-  <a id="apply"></a>
-  <form id="creator-form">
+  <a id="apply" hidden></a>
+  <form id="creator-form" hidden>
     <fieldset>
       <legend>Creator Information</legend>
 

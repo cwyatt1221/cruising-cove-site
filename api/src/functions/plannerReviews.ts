@@ -9,6 +9,11 @@ import {
   table,
 } from "../lib/planner";
 
+function adminKeyOk(request: HttpRequest): boolean {
+  const key = request.query.get("key") || request.headers.get("x-cc-admin-key") || "";
+  return Boolean(process.env.REPORT_ACCESS_KEY && key === process.env.REPORT_ACCESS_KEY);
+}
+
 function reviewToJson(entity: Record<string, unknown>) {
   return {
     id: String(entity.rowKey),
@@ -21,9 +26,10 @@ function reviewToJson(entity: Record<string, unknown>) {
     shipSlug: String(entity.shipSlug ?? ""),
     embarkDate: String(entity.embarkDate ?? ""),
     displayName: String(entity.displayName ?? "Guest"),
-    status: String(entity.status ?? "approved"),
+    status: String(entity.status ?? "pending"),
     createdAt: String(entity.createdAt ?? ""),
     userId: String(entity.userId ?? ""),
+    partitionKey: String(entity.partitionKey ?? ""),
   };
 }
 
@@ -42,8 +48,6 @@ export async function plannerListReviews(request: HttpRequest, context: Invocati
     const list = [];
     for await (const entity of reviews.listEntities({ queryOptions: { filter: `PartitionKey eq '${pk}'` } })) {
       const row = reviewToJson(entity as Record<string, unknown>);
-      if (row.status !== "approved" && row.status !== "pending") continue;
-      // Public list only shows approved; authors still see own pending via separate call if needed.
       if (row.status === "approved") list.push(row);
     }
     list.sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
@@ -112,15 +116,94 @@ export async function plannerCreateReview(request: HttpRequest, context: Invocat
       embarkDate,
       displayName: user.displayName,
       userId: user.userId,
-      // Auto-publish for v1; swap to pending if spam becomes an issue.
-      status: "approved",
+      status: "pending",
       createdAt: now,
     });
-    const saved = await reviews.getEntity(pk, id);
-    return corsJson(200, { success: true, review: reviewToJson(saved as Record<string, unknown>) });
+    return corsJson(200, {
+      success: true,
+      message: "Thanks — your review is pending moderation and will appear once approved.",
+      review: {
+        id,
+        targetType,
+        targetId,
+        rating,
+        title,
+        status: "pending",
+      },
+    });
   } catch (err) {
     context.error("plannerCreateReview failed:", err);
     return corsJson(500, { error: "Could not save your review." });
+  }
+}
+
+export async function plannerAdminListReviews(
+  request: HttpRequest,
+  context: InvocationContext
+): Promise<HttpResponseInit> {
+  if (request.method === "OPTIONS") return corsJson(204, {});
+  if (!adminKeyOk(request)) return corsJson(401, { error: "Missing or invalid admin key." });
+
+  const statusFilter = request.query.get("status") || "pending";
+
+  try {
+    const reviews = await table(REVIEWS_TABLE);
+    const list = [];
+    for await (const entity of reviews.listEntities()) {
+      const row = reviewToJson(entity as Record<string, unknown>);
+      if (statusFilter !== "all" && row.status !== statusFilter) continue;
+      list.push(row);
+    }
+    list.sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
+    return corsJson(200, { reviews: list });
+  } catch (err) {
+    context.error("plannerAdminListReviews failed:", err);
+    return corsJson(500, { error: "Could not list reviews." });
+  }
+}
+
+export async function plannerAdminModerateReview(
+  request: HttpRequest,
+  context: InvocationContext
+): Promise<HttpResponseInit> {
+  if (request.method === "OPTIONS") return corsJson(204, {});
+  if (!adminKeyOk(request)) return corsJson(401, { error: "Missing or invalid admin key." });
+
+  const reviewId = request.params.reviewId?.trim();
+  if (!reviewId) return corsJson(400, { error: "Review id is required." });
+
+  let body: Record<string, unknown>;
+  try {
+    body = (await request.json()) as Record<string, unknown>;
+  } catch {
+    return corsJson(400, { error: "Request body must be valid JSON." });
+  }
+
+  const action = String(body.action ?? "").trim();
+  const partitionKey = String(body.partitionKey ?? "").trim();
+  if (action !== "approve" && action !== "reject") {
+    return corsJson(400, { error: "action must be approve or reject." });
+  }
+  if (!partitionKey) return corsJson(400, { error: "partitionKey is required." });
+
+  try {
+    const reviews = await table(REVIEWS_TABLE);
+    const existing = await reviews.getEntity(partitionKey, reviewId);
+    await reviews.updateEntity(
+      {
+        partitionKey,
+        rowKey: reviewId,
+        etag: existing.etag,
+        status: action === "approve" ? "approved" : "rejected",
+        reviewedAt: new Date().toISOString(),
+      },
+      "Merge"
+    );
+    const saved = await reviews.getEntity(partitionKey, reviewId);
+    return corsJson(200, { success: true, review: reviewToJson(saved as Record<string, unknown>) });
+  } catch (err) {
+    context.error("plannerAdminModerateReview failed:", err);
+    return corsJson(500, { error: "Could not moderate that review." });
   }
 }
 
@@ -136,4 +219,18 @@ app.http("plannerCreateReview", {
   authLevel: "anonymous",
   route: "planner/reviews",
   handler: plannerCreateReview,
+});
+
+app.http("plannerAdminListReviews", {
+  methods: ["GET", "OPTIONS"],
+  authLevel: "anonymous",
+  route: "planner/admin/reviews",
+  handler: plannerAdminListReviews,
+});
+
+app.http("plannerAdminModerateReview", {
+  methods: ["POST", "OPTIONS"],
+  authLevel: "anonymous",
+  route: "planner/admin/reviews/{reviewId}",
+  handler: plannerAdminModerateReview,
 });

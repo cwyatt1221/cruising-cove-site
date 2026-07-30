@@ -67,8 +67,13 @@
   <div class="wrap mc-grid">
     <aside class="mc-panel mc-sticky" aria-label="Choose your cruise">
       <h2>Your cruise</h2>
-      <p class="mc-sub">Saved on this device. Sign in to sync across browsers.</p>
+      <p class="mc-sub">Pick a catalog itinerary to autofill ports &amp; nights, or enter details manually.</p>
 
+      <div class="mc-field">
+        <label for="mcCatalog">Sailing catalog</label>
+        <select id="mcCatalog"></select>
+        <p class="mc-field-hint" id="mcCatalogNote">Templates based on common Disney itineraries — confirm your exact ports in the official app.</p>
+      </div>
       <div class="mc-field">
         <label for="mcTitle">Nickname (optional)</label>
         <input id="mcTitle" type="text" maxlength="80" placeholder="Spring Break Wish">
@@ -120,6 +125,7 @@
       <div class="mc-actions">
         <button type="button" class="btn btn-gold" id="mcSave">Save cruise</button>
         <button type="button" class="btn btn-outline" id="mcNew">New cruise</button>
+        <button type="button" class="btn btn-outline" id="mcShare">Share link</button>
         <button type="button" class="btn btn-outline" id="mcPrint">Print / PDF</button>
       </div>
       <ul class="mc-trip-list" id="mcTripList"></ul>
@@ -133,6 +139,7 @@
           <a href="#mc-windows">Windows</a>
           <a href="#mc-signup">Sign-ups</a>
           <a href="#mc-excursions">Excursions</a>
+          <a href="#mc-ports">Port reviews</a>
           <a href="#mc-characters">Characters</a>
           <a href="#mc-packing">Packing</a>
           <a href="#mc-island">Island plan</a>
@@ -147,6 +154,15 @@
             <h2 id="mcBannerTitle">Your cruise</h2>
             <p class="mc-sub" id="mcBannerMeta" style="margin:0;"></p>
             <div class="mc-countdown" id="mcCountdown"></div>
+            <form class="mc-remind" id="mcRemindForm">
+              <h3 class="mc-h3">Email me when my window opens</h3>
+              <p class="mc-sub" style="margin-top:0;">We’ll remind you the morning your Castaway Club booking window opens (midnight ET).</p>
+              <div class="mc-add-pack-form">
+                <label class="visually-hidden" for="mcRemindEmail">Email</label>
+                <input id="mcRemindEmail" name="email" type="email" required placeholder="you@email.com">
+                <button type="submit" class="btn btn-gold">Set reminder</button>
+              </div>
+            </form>
           </div>
           <div class="mc-actions">
             <a class="btn btn-outline" id="mcCostLink" href="/planning/disney-cruise-cost.html">Cost calculator</a>
@@ -179,6 +195,12 @@
             <input id="mcExcQ" type="search" placeholder="Search…" aria-label="Search excursions">
           </div>
           <div class="mc-exc-grid" id="mcExcursions"></div>
+        </section>
+
+        <section class="mc-panel" id="mc-ports">
+          <h2>Port reviews</h2>
+          <p class="mc-sub">Guest notes for the ports on your itinerary. New reviews are moderated before they go live.</p>
+          <div id="mcPortReviews"></div>
         </section>
 
         <section class="mc-panel" id="mc-characters">
@@ -275,6 +297,7 @@
 <script src="/assets/nav.js"></script>
 <script src="/assets/community.js"></script>
 <script src="/assets/booking-windows.js"></script>
+<script src="/assets/sailings-catalog.js"></script>
 <script src="/assets/my-cruise-data.js"></script>
 <script src="/assets/my-cruise.js"></script>
 </body>

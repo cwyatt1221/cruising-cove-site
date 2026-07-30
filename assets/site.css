@@ -69,6 +69,20 @@ img,svg{display:block;max-width:100%;}
   font-family:var(--font-serif);font-size:1.25rem;font-weight:700;
   color:var(--navy);flex-shrink:0;letter-spacing:0.01em;
 }
+.brand{
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+}
+.logo-mail{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:28px;height:28px;color:var(--navy);
+  border:1px solid rgba(26,42,74,.18);border-radius:50%;
+  transition:color .15s ease,border-color .15s ease,background .15s ease;
+}
+.logo-mail:hover{
+  color:var(--gold);border-color:var(--gold);
+  background:rgba(201,162,75,.08);
+}
+.logo-mail svg{width:14px;height:14px;display:block;}
 .logo .mark{
   width:26px;height:26px;border:2px solid var(--gold);border-radius:50%;
   display:flex;align-items:center;justify-content:center;flex-shrink:0;
@@ -214,6 +228,12 @@ img,svg{display:block;max-width:100%;}
   padding-bottom:28px;border-bottom:1px solid rgba(255,255,255,.08);gap:20px;flex-wrap:wrap;
 }
 .site-footer .logo{color:var(--cream);}
+.site-footer .logo-mail{
+  color:var(--cream);border-color:rgba(245,240,225,.28);
+}
+.site-footer .logo-mail:hover{
+  color:var(--gold);border-color:var(--gold);background:rgba(201,162,75,.12);
+}
 .site-footer .foot-links{display:flex;gap:22px;font-size:0.875rem;color:#c7cbd6;flex-wrap:wrap;}
 .site-footer .foot-links a:hover{color:var(--gold);}
 .site-footer .disclaimer{font-size:0.8rem;line-height:1.6;padding-top:24px;max-width:900px;margin:0;}

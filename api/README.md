@@ -15,10 +15,16 @@ Personalized sailing dashboard (localStorage + optional account sync):
 | `GET/POST /api/planner/reviews` | List approved reviews / create a review (`?type=&id=`) |
 | `POST /api/planner/packing-suggestions` | Submit packing item (pending moderation) |
 | `GET /api/planner/packing-items` | Approved community packing items |
-| `GET /api/planner/admin/packing-suggestions?key=` | Admin queue (`REPORT_ACCESS_KEY`) |
-| `POST /api/planner/admin/packing-suggestions/{id}?key=` | Approve / reject (`{ action }`) |
+| `POST /api/planner/shares` | Create a shareable trip snapshot link |
+| `GET /api/planner/shares/{token}` | Load a shared trip |
+| `POST /api/planner/reminders` | Email reminder for booking-window open |
+| `GET /api/planner/reminders/unsubscribe?token=` | Cancel a reminder |
+| `GET /api/planner/admin/reviews?key=` | Admin review queue |
+| `POST /api/planner/admin/reviews/{id}?key=` | Approve / reject review |
 
-Tables: `PlannerTrips`, `PlannerReviews`, `PlannerSuggestions`, `PlannerPackingItems`.
+Email reminders require SWA app settings `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, and optionally `PUBLIC_SITE_URL`. A timer job runs hourly to send due reminders.
+
+Tables: `PlannerTrips`, `PlannerReviews`, `PlannerSuggestions`, `PlannerPackingItems`, `PlannerShares`, `PlannerReminders`.
 
 Frontend: `/planning/my-cruise.html`. Admin UI: `/planning/my-cruise-admin.html`.
 

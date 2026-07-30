@@ -5,6 +5,9 @@
     "FUNCTIONS_WORKER_RUNTIME": "node",
     "ANTHROPIC_API_KEY": "paste-your-anthropic-api-key-here",
     "STORAGE_CONNECTION_STRING": "paste-your-azure-storage-account-connection-string-here",
-    "REPORT_ACCESS_KEY": "make-up-a-long-random-string-here-only-you-know"
+    "REPORT_ACCESS_KEY": "make-up-a-long-random-string-here-only-you-know",
+    "RESEND_API_KEY": "optional-resend-api-key-for-booking-window-emails",
+    "RESEND_FROM_EMAIL": "Cruising Cove <hello@yourdomain.com>",
+    "PUBLIC_SITE_URL": "https://www.cruisingcove.com"
   }
 }
