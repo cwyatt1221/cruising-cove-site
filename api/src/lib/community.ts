@@ -8,6 +8,11 @@ export const MEMBERS_TABLE = "CommunityMembers";
 export const POSTS_TABLE = "CommunityPosts";
 export const SIGNUPS_TABLE = "CommunitySignups";
 
+/** Bump to retire prior Fish Extender / Pixie Dust test sign-ups. */
+export const SIGNUP_GENERATION = 2;
+/** Fish Extender groups fill to this many cabins, then a new group opens. */
+export const FE_GROUP_SIZE = 5;
+
 export type SignupType = "fish-extender" | "pixie-dust";
 
 export function isSignupType(value: string): value is SignupType {
@@ -15,7 +20,7 @@ export function isSignupType(value: string): value is SignupType {
 }
 
 export function signupRowKey(type: SignupType, userId: string): string {
-  return `${type}_${userId}`;
+  return `${type}_g${SIGNUP_GENERATION}_${userId}`;
 }
 
 const clients = new Map<string, TableClient>();

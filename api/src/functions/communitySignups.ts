@@ -1,7 +1,9 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import {
+  FE_GROUP_SIZE,
   MEMBERS_TABLE,
   SIGNUPS_TABLE,
+  SIGNUP_GENERATION,
   SignupType,
   corsJson,
   isSignupType,
@@ -10,6 +12,23 @@ import {
   signupRowKey,
   table,
 } from "../lib/community";
+
+type SignupView = {
+  type: string;
+  userId: string;
+  displayName: string;
+  cabin: string;
+  notes: string;
+  joinedAt: string;
+  groupNumber: number | null;
+};
+
+type FishGroup = {
+  groupNumber: number;
+  members: SignupView[];
+  capacity: number;
+  open: boolean;
+};
 
 async function assertMember(sailingKey: string, userId: string): Promise<boolean> {
   try {
@@ -20,7 +39,12 @@ async function assertMember(sailingKey: string, userId: string): Promise<boolean
   }
 }
 
-function serializeSignup(entity: Record<string, unknown>) {
+function serializeSignup(entity: Record<string, unknown>): SignupView {
+  const groupRaw = entity.groupNumber;
+  const groupNumber =
+    groupRaw === undefined || groupRaw === null || groupRaw === ""
+      ? null
+      : Number(groupRaw);
   return {
     type: String(entity.type ?? ""),
     userId: String(entity.userId ?? ""),
@@ -28,7 +52,60 @@ function serializeSignup(entity: Record<string, unknown>) {
     cabin: String(entity.cabin ?? ""),
     notes: String(entity.notes ?? ""),
     joinedAt: String(entity.joinedAt ?? ""),
+    groupNumber: Number.isFinite(groupNumber as number) ? (groupNumber as number) : null,
   };
+}
+
+function isCurrentGeneration(entity: Record<string, unknown>): boolean {
+  const gen = Number(entity.generation ?? 0);
+  return gen === SIGNUP_GENERATION;
+}
+
+function buildFishGroups(fish: SignupView[]): FishGroup[] {
+  const byGroup = new Map<number, SignupView[]>();
+  for (const member of fish) {
+    const n = member.groupNumber && member.groupNumber > 0 ? member.groupNumber : 1;
+    const list = byGroup.get(n) || [];
+    list.push(member);
+    byGroup.set(n, list);
+  }
+
+  const numbers = Array.from(byGroup.keys()).sort((a, b) => a - b);
+  if (!numbers.length) {
+    return [{ groupNumber: 1, members: [], capacity: FE_GROUP_SIZE, open: true }];
+  }
+
+  const groups: FishGroup[] = numbers.map((n) => {
+    const members = (byGroup.get(n) || []).slice().sort((a, b) => a.joinedAt.localeCompare(b.joinedAt));
+    return {
+      groupNumber: n,
+      members,
+      capacity: FE_GROUP_SIZE,
+      open: false,
+    };
+  });
+
+  const last = groups[groups.length - 1];
+  if (last.members.length >= FE_GROUP_SIZE) {
+    last.open = false;
+    groups.push({
+      groupNumber: last.groupNumber + 1,
+      members: [],
+      capacity: FE_GROUP_SIZE,
+      open: true,
+    });
+  } else {
+    last.open = true;
+  }
+
+  return groups;
+}
+
+function nextFishGroupNumber(fish: SignupView[]): number {
+  if (!fish.length) return 1;
+  const maxGroup = Math.max(...fish.map((s) => s.groupNumber || 1));
+  const inMax = fish.filter((s) => (s.groupNumber || 1) === maxGroup).length;
+  return inMax >= FE_GROUP_SIZE ? maxGroup + 1 : maxGroup;
 }
 
 export async function listSignups(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
@@ -42,38 +119,57 @@ export async function listSignups(request: HttpRequest, context: InvocationConte
   }
 
   try {
-    const fish: ReturnType<typeof serializeSignup>[] = [];
-    const pixie: ReturnType<typeof serializeSignup>[] = [];
+    const fish: SignupView[] = [];
+    const pixie: SignupView[] = [];
     const client = await table(SIGNUPS_TABLE);
     const iter = client.listEntities({ queryOptions: { filter: `PartitionKey eq '${key}'` } });
     for await (const entity of iter) {
-      const item = serializeSignup(entity as Record<string, unknown>);
+      const raw = entity as Record<string, unknown>;
+      // Prior generation (test entries) stay in storage but are hidden from the boards.
+      if (!isCurrentGeneration(raw)) continue;
+      const item = serializeSignup(raw);
       if (item.type === "fish-extender") fish.push(item);
       if (item.type === "pixie-dust") pixie.push(item);
     }
-    fish.sort((a, b) => a.displayName.localeCompare(b.displayName));
+    fish.sort((a, b) => a.joinedAt.localeCompare(b.joinedAt) || a.displayName.localeCompare(b.displayName));
     pixie.sort((a, b) => a.displayName.localeCompare(b.displayName));
+
+    const fishGroups = buildFishGroups(fish);
+    const openGroup = fishGroups.find((g) => g.open) || fishGroups[fishGroups.length - 1];
 
     const user = await requireUser(request.headers);
     let myFish = false;
     let myPixie = false;
+    let myFishGroup: number | null = null;
     if (user) {
-      myFish = fish.some((s) => s.userId === user.userId);
+      const mine = fish.find((s) => s.userId === user.userId);
+      myFish = !!mine;
+      myFishGroup = mine?.groupNumber ?? null;
       myPixie = pixie.some((s) => s.userId === user.userId);
     }
 
-    if (typeFilter === "fish-extender") {
-      return corsJson(200, { fishExtender: fish, pixieDust: [], myFishExtender: myFish, myPixieDust: myPixie });
-    }
-    if (typeFilter === "pixie-dust") {
-      return corsJson(200, { fishExtender: [], pixieDust: pixie, myFishExtender: myFish, myPixieDust: myPixie });
-    }
-    return corsJson(200, {
+    const payload = {
       fishExtender: fish,
+      fishExtenderGroups: fishGroups,
+      fishExtenderGroupSize: FE_GROUP_SIZE,
+      openFishExtenderGroup: openGroup?.groupNumber ?? 1,
       pixieDust: pixie,
       myFishExtender: myFish,
+      myFishExtenderGroup: myFishGroup,
       myPixieDust: myPixie,
-    });
+    };
+
+    if (typeFilter === "fish-extender") {
+      return corsJson(200, { ...payload, pixieDust: [] });
+    }
+    if (typeFilter === "pixie-dust") {
+      return corsJson(200, {
+        ...payload,
+        fishExtender: [],
+        fishExtenderGroups: [],
+      });
+    }
+    return corsJson(200, payload);
   } catch (err) {
     context.error("listSignups failed:", err);
     return corsJson(500, { error: "Could not load sign-ups." });
@@ -130,10 +226,25 @@ export async function createSignup(request: HttpRequest, context: InvocationCont
       /* not signed up yet */
     }
 
+    let groupNumber: number | null = null;
+    if (type === "fish-extender") {
+      const existingFish: SignupView[] = [];
+      const iter = client.listEntities({ queryOptions: { filter: `PartitionKey eq '${key}'` } });
+      for await (const entity of iter) {
+        const raw = entity as Record<string, unknown>;
+        if (!isCurrentGeneration(raw)) continue;
+        const item = serializeSignup(raw);
+        if (item.type === "fish-extender") existingFish.push(item);
+      }
+      groupNumber = nextFishGroupNumber(existingFish);
+    }
+
     await client.createEntity({
       partitionKey: key,
       rowKey,
       type,
+      generation: SIGNUP_GENERATION,
+      groupNumber: groupNumber ?? undefined,
       userId: user.userId,
       displayName: user.displayName,
       email: user.email,
@@ -151,6 +262,7 @@ export async function createSignup(request: HttpRequest, context: InvocationCont
         cabin,
         notes,
         joinedAt: now,
+        groupNumber,
       },
     });
   } catch (err) {
@@ -171,7 +283,19 @@ export async function deleteSignup(request: HttpRequest, context: InvocationCont
   if (!isSignupType(typeRaw)) return corsJson(400, { error: "type must be fish-extender or pixie-dust." });
 
   try {
-    await (await table(SIGNUPS_TABLE)).deleteEntity(key, signupRowKey(typeRaw, user.userId));
+    const client = await table(SIGNUPS_TABLE);
+    // Delete current-generation row; also sweep legacy row keys from earlier tests.
+    const keys = [signupRowKey(typeRaw, user.userId), `${typeRaw}_${user.userId}`];
+    let deleted = false;
+    for (const rowKey of keys) {
+      try {
+        await client.deleteEntity(key, rowKey);
+        deleted = true;
+      } catch {
+        /* not present */
+      }
+    }
+    if (!deleted) return corsJson(404, { error: "You were not on that list." });
     return corsJson(200, { success: true });
   } catch (err) {
     context.error("deleteSignup failed:", err);
@@ -179,14 +303,42 @@ export async function deleteSignup(request: HttpRequest, context: InvocationCont
   }
 }
 
+/** Admin: wipe all Fish Extender + Pixie Dust rows for a sailing (current + legacy). */
+export async function clearSignups(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
+  if (request.method === "OPTIONS") return corsJson(204, {});
+
+  const adminKey = request.query.get("key") || "";
+  if (!process.env.REPORT_ACCESS_KEY || adminKey !== process.env.REPORT_ACCESS_KEY) {
+    return corsJson(401, { error: "Unauthorized." });
+  }
+
+  const key = request.params.sailingKey;
+  if (!key || !parseSailingKey(key)) return corsJson(400, { error: "Invalid sailing key." });
+
+  try {
+    const client = await table(SIGNUPS_TABLE);
+    let deleted = 0;
+    const iter = client.listEntities({ queryOptions: { filter: `PartitionKey eq '${key}'` } });
+    for await (const entity of iter) {
+      await client.deleteEntity(key, String(entity.rowKey));
+      deleted += 1;
+    }
+    return corsJson(200, { success: true, deleted });
+  } catch (err) {
+    context.error("clearSignups failed:", err);
+    return corsJson(500, { error: "Could not clear sign-ups." });
+  }
+}
+
 async function signupsCollection(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   if (request.method === "GET") return listSignups(request, context);
   if (request.method === "POST") return createSignup(request, context);
+  if (request.method === "DELETE") return clearSignups(request, context);
   return corsJson(204, {});
 }
 
 app.http("signupsCollection", {
-  methods: ["GET", "POST", "OPTIONS"],
+  methods: ["GET", "POST", "DELETE", "OPTIONS"],
   authLevel: "anonymous",
   route: "community/sailings/{sailingKey}/signups",
   handler: signupsCollection,

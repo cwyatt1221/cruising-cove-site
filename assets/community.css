@@ -70,6 +70,18 @@
 .signup-list .notes{display:block;margin-top:.2rem;font-size:0.82rem;color:var(--muted);}
 .signup-panel .actions{margin-top:1rem;display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
 .signup-count{font-size:0.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);font-weight:700;margin:0 0 .5rem;}
+.fe-group{
+  margin:0 0 1rem;padding:0.75rem 0 0;
+  border-top:1px solid rgba(26,42,74,.1);
+}
+.fe-group:first-child{border-top:none;padding-top:0;}
+.fe-group-label{
+  font-size:0.72rem;letter-spacing:.08em;text-transform:uppercase;
+  font-weight:700;color:var(--navy);margin:0 0 .35rem;
+}
+.fe-group.open .fe-group-label{color:var(--teal);}
+.fe-group .signup-list{margin:0;}
+.fe-group .notes{font-size:0.85rem;color:var(--muted);margin:0;}
 
 .phase-note{
   font-size:0.85rem;color:var(--muted);margin:0.8rem 0 0;max-width:62ch;

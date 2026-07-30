@@ -80,8 +80,8 @@
       <div class="signup-panel" id="fePanel">
         <p class="signup-count" id="feCount">Fish Extender · 0 signed up</p>
         <h3>Fish Extender</h3>
-        <p class="blurb">Organized cabin-to-cabin gift exchange. You’ll need a hanging fish extender and a cabin number so your group can deliver gifts.</p>
-        <ul class="signup-list" id="feList"><li class="notes">Loading…</li></ul>
+        <p class="blurb">Organized cabin-to-cabin gift exchange in groups of 5. When a group fills, a new group opens automatically — every group stays visible below.</p>
+        <div id="feGroups"><p class="notes">Loading…</p></div>
         <div class="actions" id="feActions"></div>
         <form class="community-form" id="feForm" hidden style="margin-top:1rem;padding:1rem;">
           <div class="field">
@@ -200,22 +200,59 @@
     }).join('');
   }
 
+  function renderFishGroups(groups, groupSize) {
+    var wrap = document.getElementById('feGroups');
+    if (!wrap) return;
+    var size = groupSize || 5;
+    var list = groups && groups.length ? groups : [{ groupNumber: 1, members: [], capacity: size, open: true }];
+    wrap.innerHTML = list.map(function(g){
+      var members = g.members || [];
+      var cap = g.capacity || size;
+      var status = g.open
+        ? (members.length ? members.length + ' of ' + cap + ' · open' : 'Open · up to ' + cap + ' cabins')
+        : 'Full · ' + members.length + ' cabins';
+      var body;
+      if (!members.length) {
+        body = '<li class="notes">Nobody in this group yet — join to start it.</li>';
+      } else {
+        body = members.map(function(s){
+          var line = '<span class="name">' + CC.escapeHtml(s.displayName) + '</span>';
+          if (s.cabin) line += ' · <span class="cabin">Cabin ' + CC.escapeHtml(s.cabin) + '</span>';
+          if (s.notes) line += '<span class="notes">' + CC.escapeHtml(s.notes) + '</span>';
+          return '<li>' + line + '</li>';
+        }).join('');
+      }
+      return (
+        '<div class="fe-group' + (g.open ? ' open' : '') + '">' +
+          '<p class="fe-group-label">Group ' + g.groupNumber + ' · ' + status + '</p>' +
+          '<ul class="signup-list">' + body + '</ul>' +
+        '</div>'
+      );
+    }).join('');
+  }
+
   function loadSignups() {
     return CC.api('/community/sailings/' + encodeURIComponent(key) + '/signups').then(function(data){
       var fe = data.fishExtender || [];
       var pd = data.pixieDust || [];
-      document.getElementById('feCount').textContent = 'Fish Extender · ' + fe.length + ' signed up';
+      var groups = data.fishExtenderGroups || [];
+      var groupSize = data.fishExtenderGroupSize || 5;
+      var openGroup = data.openFishExtenderGroup || 1;
+      document.getElementById('feCount').textContent =
+        'Fish Extender · ' + fe.length + ' signed up · groups of ' + groupSize +
+        (fe.length ? ' · joining Group ' + openGroup : '');
       document.getElementById('pdCount').textContent = 'Pixie Dust · ' + pd.length + ' signed up';
-      renderSignupList(document.getElementById('feList'), fe, true);
+      renderFishGroups(groups, groupSize);
       renderSignupList(document.getElementById('pdList'), pd, true);
-      setSignupActions(!!data.myFishExtender, !!data.myPixieDust);
+      setSignupActions(!!data.myFishExtender, !!data.myPixieDust, data.myFishExtenderGroup);
     }).catch(function(){
-      document.getElementById('feList').innerHTML = '<li class="notes">Could not load Fish Extender list.</li>';
+      var wrap = document.getElementById('feGroups');
+      if (wrap) wrap.innerHTML = '<p class="notes">Could not load Fish Extender list.</p>';
       document.getElementById('pdList').innerHTML = '<li class="notes">Could not load Pixie Dust list.</li>';
     });
   }
 
-  function setSignupActions(myFish, myPixie) {
+  function setSignupActions(myFish, myPixie, myFishGroup) {
     var signedIn = !!(CC.getToken() && CC.getUser());
     var feActions = document.getElementById('feActions');
     var pdActions = document.getElementById('pdActions');
@@ -237,7 +274,9 @@
     }
 
     if (myFish) {
-      feActions.innerHTML = '<button type="button" class="btn btn-outline" id="leaveFe">Leave Fish Extender</button>';
+      feActions.innerHTML =
+        '<span class="notes">You’re in Group ' + (myFishGroup || 1) + '.</span>' +
+        '<button type="button" class="btn btn-outline" id="leaveFe">Leave Fish Extender</button>';
       document.getElementById('leaveFe').addEventListener('click', function(){
         CC.api('/community/sailings/' + encodeURIComponent(key) + '/signups/fish-extender', { method: 'DELETE' })
           .then(loadSignups)
@@ -309,8 +348,12 @@
         cabin: document.getElementById('feCabin').value,
         notes: document.getElementById('feNotes').value
       }
-    }).then(function(){
-      msg.hidden = false; msg.className = 'form-msg ok'; msg.textContent = 'You’re on the Fish Extender list.';
+    }).then(function(data){
+      var group = data.signup && data.signup.groupNumber ? data.signup.groupNumber : '';
+      msg.hidden = false; msg.className = 'form-msg ok';
+      msg.textContent = group
+        ? ('You’re in Fish Extender Group ' + group + '.')
+        : 'You’re on the Fish Extender list.';
       document.getElementById('feForm').hidden = true;
       return loadSignups();
     }).catch(function(err){
