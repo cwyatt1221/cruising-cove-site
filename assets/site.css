@@ -548,3 +548,18 @@ footer:not(.site-footer) .disclaimer{
   html{scroll-behavior:auto;}
   .btn:hover{transform:none;}
 }
+
+
+/* Slim legal strip (no nav footer) */
+.site-legal{
+  background:var(--navy-deep);
+  color:#8b93a8;
+  padding:28px 0 32px;
+  margin-top:48px;
+}
+.site-legal .disclaimer{
+  font-size:0.8rem;
+  line-height:1.6;
+  max-width:900px;
+  margin:0;
+}

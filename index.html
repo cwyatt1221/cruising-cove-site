@@ -250,18 +250,11 @@
   .agent-section h2{color:var(--cream);max-width:640px;}
   .agent-section p{color:#c7cbd6;font-size:1.05rem;line-height:1.65;max-width:560px;margin:0 0 28px;}
 
-  /* ---------- FOOTER ---------- */
-  footer{background:var(--navy-deep);color:#8b93a8;padding:50px 0 40px;}
-  .foot-top{
-    display:flex;justify-content:space-between;align-items:center;
-    padding-bottom:28px;border-bottom:1px solid rgba(255,255,255,.08);gap:20px;flex-wrap:wrap;
-  }
-  footer .logo{color:var(--cream);}
-  .foot-links{display:flex;gap:28px;font-size:0.875rem;color:#c7cbd6;flex-wrap:wrap;}
-  .foot-links a:hover{color:var(--gold);}
-  .disclaimer{font-size:0.8rem;line-height:1.6;padding-top:24px;max-width:900px;margin:0;}
+  .site-legal{background:var(--navy-deep);color:#8b93a8;padding:28px 0 32px;margin-top:0;}
+  .site-legal .disclaimer{font-size:0.8rem;line-height:1.6;max-width:900px;margin:0;}
 
   /* ---------- MOTION ---------- */
+
   .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s ease, transform .55s ease;}
   .reveal.in{opacity:1;transform:none;}
   @media (prefers-reduced-motion: reduce){ .reveal{opacity:1;transform:none;transition:none;} }
@@ -496,31 +489,11 @@
   </div>
 </section>
 
-<footer>
+<aside class="site-legal" aria-label="Legal">
   <div class="wrap">
-    <div class="foot-top">
-      <a class="logo" href="#top">
-        <span class="mark" aria-hidden="true">
-          <svg viewBox="0 0 14 14" fill="none">
-            <path d="M1 8c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0" stroke="#c9a24b" stroke-width="1.4" stroke-linecap="round"/>
-          </svg>
-        </span>
-        Cruising Cove
-      </a>
-      <div class="foot-links">
-        <a href="/ships/">Ships</a>
-        <a href="/ports/">Ports</a>
-        <a href="/dining/">Dining</a>
-        <a href="/entertainment/">Entertainment</a>
-        <a href="/articles/">Articles</a>
-        <a href="/planning/disney-cruise-cost.html">Plan Your Sailing</a>
-        <a href="/planning/disney-cruise-packing-list.html">Packing list</a>
-        <a href="/agents/">Find an Agent</a>
-      </div>
-    </div>
     <p class="disclaimer">Cruising Cove is an independent planning guide and is not affiliated with, endorsed by, or sponsored by The Walt Disney Company, Disney Cruise Line, or any of their affiliates. All ship names are used for reference purposes only.</p>
   </div>
-</footer>
+</aside>
 
 <script>
   const items = document.querySelectorAll('.reveal');
