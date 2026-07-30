@@ -99,8 +99,8 @@
       <input id="website" name="website" type="url" placeholder="https://">
 
       <label for="photoInput">Profile photo <span class="req">*</span></label>
-      <p class="field-hint">One clear headshot — JPEG, PNG, or WEBP. Resized automatically.</p>
-      <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp">
+      <p class="field-hint">One clear headshot (phone photos are fine). We’ll resize it automatically. Prefer JPEG or PNG — convert HEIC/Live Photos in Photos first if upload fails.</p>
+      <input type="file" id="photoInput" accept="image/*,.jpg,.jpeg,.png,.webp,.heic,.heif">
       <div id="photoStatus" class="field-hint" style="margin-top:6px;"></div>
       <div id="photoPreview" class="agent-photo-preview" hidden></div>
 
@@ -247,12 +247,18 @@
 
   function compressImage(file) {
     return new Promise(function(resolve, reject){
+      var name = (file.name || '').toLowerCase();
+      var type = (file.type || '').toLowerCase();
+      if (type.includes('heic') || type.includes('heif') || /\.heic$|\.heif$/.test(name)) {
+        reject(new Error('Please convert HEIC photos to JPEG in your Photos app, then try again.'));
+        return;
+      }
       var img = new Image();
-      var reader = new FileReader();
-      reader.onload = function(e){ img.src = e.target.result; };
-      reader.onerror = reject;
+      var objectUrl = URL.createObjectURL(file);
       img.onload = function(){
+        URL.revokeObjectURL(objectUrl);
         var w = img.width, h = img.height;
+        if (!w || !h) { reject(new Error('Could not read that image.')); return; }
         if (w > MAX_DIMENSION || h > MAX_DIMENSION) {
           var scale = MAX_DIMENSION / Math.max(w, h);
           w = Math.round(w * scale);
@@ -266,8 +272,11 @@
           resolve(blob);
         }, 'image/jpeg', JPEG_QUALITY);
       };
-      img.onerror = reject;
-      reader.readAsDataURL(file);
+      img.onerror = function(){
+        URL.revokeObjectURL(objectUrl);
+        reject(new Error('Could not read that image. Try a JPEG or PNG.'));
+      };
+      img.src = objectUrl;
     });
   }
 
@@ -297,8 +306,10 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ fileName: file.name, contentType: 'image/jpeg', base64Data: base64Data })
       });
-      if (!res.ok) throw new Error('Upload failed');
-      var data = await res.json();
+      var data = {};
+      try { data = await res.json(); } catch (_) {}
+      if (!res.ok) throw new Error((data && data.error) || 'Upload failed');
+      if (!data.url) throw new Error('Upload failed — no photo URL returned.');
       photoUrl = data.url;
       photoPreview.hidden = false;
       photoPreview.innerHTML = '<img src="' + data.url + '" alt="Profile preview"><button type="button" class="thumb-remove" id="clearPhoto">Remove</button>';
@@ -310,7 +321,7 @@
       photoStatus.textContent = '';
     } catch (err) {
       photoUrl = '';
-      photoStatus.textContent = 'Photo upload failed. Please try again.';
+      photoStatus.textContent = (err && err.message) ? err.message : 'Photo upload failed. Please try again.';
     } finally {
       uploading = false;
       submitBtn.disabled = false;

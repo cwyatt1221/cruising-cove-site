@@ -1,29 +1,10 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
-import { BlobServiceClient } from "@azure/storage-blob";
-import { randomUUID } from "crypto";
-
-const CONTAINER_NAME = "seller-photos";
-const MAX_BYTES = 5 * 1024 * 1024; // 5MB per image, after client-side compression
-const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
-
-let containerClientPromise: ReturnType<BlobServiceClient["getContainerClient"]> | null = null;
-async function getContainerClient() {
-  if (!containerClientPromise) {
-    const connectionString = process.env.STORAGE_CONNECTION_STRING;
-    if (!connectionString) throw new Error("STORAGE_CONNECTION_STRING is not set.");
-    const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
-    const container = blobServiceClient.getContainerClient(CONTAINER_NAME);
-    // Public "blob" access so images can be displayed directly in a future directory listing.
-    await container.createIfNotExists({ access: "blob" });
-    containerClientPromise = container as any;
-  }
-  return containerClientPromise!;
-}
+import { ALLOWED_IMAGE_TYPES, uploadPublicImage } from "../lib/blobUpload";
 
 interface UploadInput {
   fileName?: string;
   contentType?: string;
-  base64Data?: string; // raw base64, no "data:image/..;base64," prefix
+  base64Data?: string;
 }
 
 export async function uploadSellerPhoto(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
@@ -37,28 +18,27 @@ export async function uploadSellerPhoto(request: HttpRequest, context: Invocatio
   if (!body.base64Data || !body.contentType) {
     return { status: 400, jsonBody: { error: "contentType and base64Data are required." } };
   }
-  if (!ALLOWED_TYPES.has(body.contentType)) {
+  if (!ALLOWED_IMAGE_TYPES.has(body.contentType)) {
     return { status: 400, jsonBody: { error: "Only JPEG, PNG, or WEBP images are allowed." } };
   }
 
-  const buffer = Buffer.from(body.base64Data, "base64");
-  if (buffer.length > MAX_BYTES) {
-    return { status: 400, jsonBody: { error: "Image is too large (max 5MB after compression)." } };
-  }
-
-  const extension = body.contentType === "image/png" ? "png" : body.contentType === "image/webp" ? "webp" : "jpg";
-  const blobName = `${randomUUID()}.${extension}`;
-
   try {
-    const container = await getContainerClient();
-    const blockBlobClient = container.getBlockBlobClient(blobName);
-    await blockBlobClient.uploadData(buffer, {
-      blobHTTPHeaders: { blobContentType: body.contentType },
+    const result = await uploadPublicImage({
+      containerName: "seller-photos",
+      contentType: body.contentType,
+      base64Data: body.base64Data,
     });
-
-    return { status: 200, jsonBody: { url: blockBlobClient.url } };
+    return { status: 200, jsonBody: result };
   } catch (err) {
+    const message = err instanceof Error ? err.message : "Failed to upload image.";
     context.error("uploadSellerPhoto error:", err);
+    if (
+      message.includes("too large") ||
+      message.includes("Only JPEG") ||
+      message.includes("empty")
+    ) {
+      return { status: 400, jsonBody: { error: message } };
+    }
     return { status: 500, jsonBody: { error: "Failed to upload image. Please try again." } };
   }
 }

@@ -1,6 +1,7 @@
 /**
  * Cruising Cove — founding agent directory data.
  * Replace these example profiles with real EarMarked agents as they onboard.
+ * Keep sample: true on placeholders so cards show a SAMPLE watermark.
  */
 window.CC_AGENTS = [
   {
@@ -12,6 +13,7 @@ window.CC_AGENTS = [
     sailings: 40,
     earmarked: true,
     featured: true,
+    sample: true,
     specialties: ["First-timers", "Wish-class", "Family groups"],
     pitch: "I help first-time Disney cruisers feel booked and ready — stateroom strategy, dining windows, and the messy details between deposit and sail-away.",
     bio: "Jordan has planned Disney cruises for families of every size, with a focus on Wish-class ships and Port Canaveral sailings. Expect clear timelines, booking-window reminders, and someone who answers when plans change.",
@@ -31,6 +33,7 @@ window.CC_AGENTS = [
     sailings: 55,
     earmarked: true,
     featured: true,
+    sample: true,
     specialties: ["Castaway Cay", "Lookout Cay", "Adult sailings"],
     pitch: "Beach-day planning is my specialty — cabanas, tender timing, and which ports are worth the independent adventure.",
     bio: "Samira specializes in Bahamas itineraries and private-island days. If your group cares about cabanas, adult beaches, and getting the most out of a short sailing, she's the fit.",
@@ -50,6 +53,7 @@ window.CC_AGENTS = [
     sailings: 28,
     earmarked: true,
     featured: false,
+    sample: true,
     specialties: ["Dream-class", "Alaska", "Large groups"],
     pitch: "Big groups, interlocking staterooms, and itineraries that aren't just the Bahamas — I keep the paperwork from becoming the vacation.",
     bio: "Chris works with reunions and multi-generation groups sailing Dream-class and Alaska. Strong on connecting rooms, payment schedules, and keeping every cabin on the same page.",
@@ -69,6 +73,7 @@ window.CC_AGENTS = [
     sailings: 22,
     earmarked: true,
     featured: false,
+    sample: true,
     specialties: ["Budget planning", "Gift-card strategies", "First-timers"],
     pitch: "You're excited — and a little sticker-shocked. I help you spend where it matters and skip what doesn't.",
     bio: "Ava is known for transparent cost planning: deposit timelines, gift-card stacking awareness, and helping first-timers avoid surprise onboard spend.",

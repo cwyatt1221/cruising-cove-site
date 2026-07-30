@@ -125,7 +125,7 @@
     var grid=document.getElementById('agentGrid');
     (window.CC_AGENTS||[]).forEach(function(agent){
       var card=document.createElement('article');
-      card.className='agent-card'+(agent.featured?' featured':'');
+      card.className='agent-card'+(agent.featured?' featured':'')+(agent.sample?' sample':'');
       card.innerHTML=
         '<div class="agent-card-top">'+
           '<div class="agent-avatar" aria-hidden="true">'+initials(agent.name)+'</div>'+
@@ -133,6 +133,7 @@
             '<h3>'+agent.name+'</h3>'+
             '<p class="agent-meta">'+agent.agency+' · '+agent.location+'</p>'+
             '<div class="agent-badges">'+
+              (agent.sample?'<span class="agent-badge sample-badge">Sample</span>':'')+
               (agent.earmarked?'<span class="agent-badge">EarMarked</span>':'')+
               (agent.featured?'<span class="agent-badge teal">Featured</span>':'')+
             '</div>'+
