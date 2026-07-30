@@ -84,7 +84,14 @@
       <div class="row">
         <div class="field">
           <label for="departurePort">Departure port (optional)</label>
-          <input type="text" id="departurePort" name="departurePort" placeholder="Port Canaveral">
+          <select id="departurePort" name="departurePort">
+            <option value="">Select port…</option>
+            <option value="Port Canaveral">Port Canaveral</option>
+            <option value="PortMiami">PortMiami</option>
+            <option value="Port Everglades (Fort Lauderdale)">Port Everglades (Fort Lauderdale)</option>
+            <option value="Galveston">Galveston</option>
+            <option value="San Diego">San Diego</option>
+          </select>
         </div>
         <div class="field">
           <label for="nights">Nights (optional)</label>
@@ -206,6 +213,7 @@
   });
 })();
 </script>
+<script src="/assets/site-search.js" defer></script>
 <script src="/assets/chat-widget.js" defer></script>
 </body>
 </html>

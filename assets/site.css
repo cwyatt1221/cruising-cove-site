@@ -85,6 +85,69 @@ img,svg{display:block;max-width:100%;}
 .site-nav-bar .nav-links a:hover{color:var(--gold);}
 .site-nav-bar .nav-links a.current{color:var(--gold);border-bottom-color:var(--gold);}
 .site-nav-bar .nav-cta{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+
+/* ---------- Site search (nav) ---------- */
+.cc-site-search{
+  position:relative;
+  flex:0 1 220px;
+  min-width:140px;
+  max-width:240px;
+}
+.cc-site-search-label{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
+}
+.cc-site-search-box{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(26,42,74,.04);
+  border:1px solid rgba(26,42,74,.14);
+  border-radius:2px;
+  padding:7px 10px;
+  transition:border-color .15s ease, background .15s ease;
+}
+.cc-site-search-box:focus-within{
+  border-color:var(--gold);
+  background:#fff;
+}
+.cc-site-search-icon{
+  width:15px;height:15px;color:var(--muted);flex-shrink:0;
+}
+.cc-site-search-box input{
+  border:0;outline:0;background:transparent;width:100%;
+  font:inherit;font-size:0.88rem;color:var(--navy);
+  min-width:0;
+}
+.cc-site-search-box input::placeholder{color:var(--muted);}
+.cc-site-search-results{
+  position:absolute;top:calc(100% + 8px);right:0;left:auto;
+  width:min(360px, calc(100vw - 32px));
+  background:var(--cream);
+  border:1px solid rgba(26,42,74,.12);
+  border-radius:2px;
+  box-shadow:0 16px 40px -18px rgba(15,28,51,.45);
+  padding:6px;
+  z-index:60;
+  max-height:min(70vh, 420px);
+  overflow:auto;
+}
+.cc-site-search-item{
+  display:block;padding:10px 12px;border-radius:2px;
+  color:var(--navy);
+}
+.cc-site-search-item:hover,
+.cc-site-search-item:focus{
+  background:rgba(26,42,74,.06);outline:none;
+}
+.cc-site-search-item strong{
+  display:block;font-size:0.92rem;font-weight:600;margin-bottom:2px;
+}
+.cc-site-search-item span{
+  display:block;font-size:0.8rem;line-height:1.4;color:var(--muted);
+}
+.cc-site-search-empty{
+  margin:0;padding:12px;font-size:0.88rem;color:var(--muted);
+}
+
 .nav-toggle{
   display:none;background:none;border:none;cursor:pointer;padding:6px;
   flex-direction:column;gap:4px;
@@ -100,6 +163,11 @@ img,svg{display:block;max-width:100%;}
   }
   .site-nav-bar .nav-links.open{display:flex;}
   .site-nav-bar{flex-wrap:wrap;}
+  .cc-site-search{
+    order:4;flex:1 1 100%;max-width:none;min-width:0;
+    margin-top:4px;
+  }
+  .cc-site-search-results{left:0;right:0;width:100%;}
 }
 
 /* ---------- Shared footer ---------- */
