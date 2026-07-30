@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Admin / internal tools
+Disallow: /planning/my-cruise-admin.html
+
+Sitemap: https://www.cruisingcove.com/sitemap.xml

@@ -308,7 +308,7 @@
         <a href="/marketplace/">Marketplace</a>
       </div>
       <div class="nav-cta">
-        <a href="/agents/" class="btn btn-gold">Find an Agent</a>
+        <a href="/agents/apply.html" class="btn btn-gold">Agent apply</a>
       </div>
     </nav>
   </div>
@@ -325,18 +325,18 @@
         <a href="/planning/my-cruise.html" class="btn btn-outline-light">My Cruise planner</a>
       </div>
     </div>
-    <aside class="hero-aside" id="agents" aria-label="Find an agent">
-      <p class="eyebrow">Find an agent</p>
-      <h2><a href="/agents/">Disney-specialist<br><em>agents</em> — directory growing.</a></h2>
-      <p class="excerpt">Booking through an agent costs you nothing extra — Disney pays their commission. Our directory is onboarding real EarMarked partners now; browse what’s live, or apply if you plan Disney cruises for families.</p>
+    <aside class="hero-aside" id="agents" aria-label="Travel agents">
+      <p class="eyebrow">Travel agents</p>
+      <h2><a href="/agents/">Disney-specialist<br><em>agents</em> — coming soon.</a></h2>
+      <p class="excerpt">Booking through an agent costs you nothing extra — Disney pays their commission. We’re onboarding real EarMarked partners before we open the public directory. Agents can <a href="/agents/apply.html" style="color:var(--gold);text-decoration:underline;">apply now</a>.</p>
     </aside>
   </div>
 </section>
 
 <div class="marquee-strip" aria-hidden="true">
   <div class="marquee-track">
-    <span><b>MAGIC</b> · WONDER · <b>DREAM</b> · FANTASY · <b>WISH</b> · TREASURE · <b>DESTINY</b> · ADVENTURE · <b>MAGIC</b> · WONDER · <b>DREAM</b> · FANTASY · <b>WISH</b> · TREASURE · <b>DESTINY</b> · ADVENTURE ·&nbsp;</span>
-    <span><b>MAGIC</b> · WONDER · <b>DREAM</b> · FANTASY · <b>WISH</b> · TREASURE · <b>DESTINY</b> · ADVENTURE · <b>MAGIC</b> · WONDER · <b>DREAM</b> · FANTASY · <b>WISH</b> · TREASURE · <b>DESTINY</b> · ADVENTURE ·&nbsp;</span>
+    <span><b>MAGIC</b> · WONDER · <b>DREAM</b> · FANTASY · <b>WISH</b> · TREASURE · <b>DESTINY</b> · ADVENTURE ·&nbsp;</span>
+    <span><b>MAGIC</b> · WONDER · <b>DREAM</b> · FANTASY · <b>WISH</b> · TREASURE · <b>DESTINY</b> · ADVENTURE ·&nbsp;</span>
   </div>
 </div>
 
@@ -344,10 +344,10 @@
   <div class="wrap">
     <div class="week-feature" id="weekFeature" aria-label="Featured articles">
       <p class="section-label">Featured articles</p>
-      <h2 id="weekTitle">Loading featured articles…</h2>
-      <p class="excerpt" id="weekExcerpt"></p>
+      <h2 id="weekTitle">10 Hidden Disney Cruise Secrets Most First-Time Guests Never Discover</h2>
+      <p class="excerpt" id="weekExcerpt">Many first-time cruisers focus on the big attractions. Some of the best Disney Cruise experiences are the lesser-known perks hidden throughout the ships.</p>
       <div class="week-actions">
-        <a class="btn btn-gold" id="weekCta" href="/articles/">Read the article</a>
+        <a class="btn btn-gold" id="weekCta" href="/articles/10-hidden-disney-cruise-secrets.html">Read the article</a>
         <a class="archive-link" href="/articles/">All articles</a>
       </div>
       <div class="week-pager" id="weekPager" hidden>
@@ -487,6 +487,7 @@
       </div>
     </div>
     <p class="save-note">Card terms and retailer discounts change often — we'll keep this page current, and it's always worth confirming the offer at checkout.</p>
+    <p class="last-updated">Last updated: <time datetime="2026-07-30">July 30, 2026</time></p>
   </div>
 </section>
 
@@ -537,7 +538,15 @@
 <script>
   (function(){
     var slides = (window.CC_featuredCarousel && window.CC_featuredCarousel()) || [];
-    if (!slides.length) return;
+    if (!slides.length) {
+      if (document.getElementById('weekTitle')) {
+        document.getElementById('weekTitle').textContent = 'Featured articles';
+      }
+      if (document.getElementById('weekExcerpt')) {
+        document.getElementById('weekExcerpt').textContent = 'Browse the full archive for planning guides and ship comparisons.';
+      }
+      return;
+    }
 
     var idx = 0;
     var title = document.getElementById('weekTitle');

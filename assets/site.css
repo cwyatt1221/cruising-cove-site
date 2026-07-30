@@ -448,6 +448,13 @@ ul.plain li:last-child{margin-bottom:0;}
   margin:0.4rem 0 0;
   max-width:70ch;
 }
+.last-updated{
+  font-size:0.82rem;color:var(--muted);margin:10px 0 0;letter-spacing:.02em;
+}
+.last-updated time{font-weight:600;color:var(--navy);}
+.page-hero .last-updated{color:rgba(245,240,225,.72);margin-top:14px;}
+.page-hero .last-updated time{color:var(--gold);}
+.save-section .last-updated{margin-top:8px;}
 
 .fleet-grid{
   display:grid;
