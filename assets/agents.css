@@ -39,7 +39,12 @@
 }
 .agent-avatar-lg{width:88px;height:88px;font-size:1.6rem;}
 .agent-avatar-photo{padding:0;background:var(--cream-2);}
-.agent-avatar-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+.agent-avatar-photo img{
+  width:100%;height:100%;object-fit:cover;object-position:30% 32%;display:block;
+}
+.agent-side-card .agent-avatar{
+  margin-left:auto;margin-right:auto;
+}
 .agent-card h3{font-family:var(--font-serif);font-size:1.35rem;font-weight:500;color:var(--navy);margin:0 0 4px;}
 .agent-meta{font-size:0.88rem;color:var(--muted);margin:0;}
 .agent-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
@@ -168,7 +173,7 @@
   margin-top:10px;display:flex;align-items:center;gap:12px;
 }
 .agent-photo-preview img{
-  width:88px;height:88px;object-fit:cover;border-radius:50%;
+  width:88px;height:88px;object-fit:cover;object-position:30% 32%;border-radius:50%;
   border:2px solid rgba(201,162,75,.45);
 }
 .agent-photo-preview .thumb-remove{
@@ -218,7 +223,7 @@
 }
 .agent-admin-card-top{display:flex;gap:14px;align-items:flex-start;margin-bottom:12px;}
 .agent-admin-photo{
-  width:72px;height:72px;border-radius:50%;object-fit:cover;flex-shrink:0;
+  width:72px;height:72px;border-radius:50%;object-fit:cover;object-position:30% 32%;flex-shrink:0;
   border:2px solid rgba(201,162,75,.4);
 }
 .agent-admin-card-actions{
