@@ -6,9 +6,17 @@
 (function (global) {
   var FEATURED_SLOTS = 5;
   /** Pin the first homepage carousel slide. Set to null to rotate by ISO week. */
-  var CAROUSEL_START_ID = "10-hidden-disney-cruise-secrets";
+  var CAROUSEL_START_ID = "welcome-aboard-rebekah";
 
   var articles = [
+    {
+      id: "welcome-aboard-rebekah",
+      title: "Welcome Aboard Rebekah — Our Newest Travel Agent",
+      excerpt:
+        "Meet Rebekah Lukins of Best Day Ever with Bek — a Disney Cruise specialist for families with young kids, private islands, and Alaska sailings.",
+      date: "2026-07-30",
+      url: "/articles/welcome-aboard-rebekah.html",
+    },
     {
       id: "bluey-on-disney-cruise-line-2026",
       title: "Bluey and Bingo Are Setting Sail: What to Know About Bluey on Disney Cruise Line in 2026",
