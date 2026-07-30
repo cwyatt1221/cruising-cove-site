@@ -28,6 +28,18 @@ Fish Extender sign-ups require a cabin number. Pixie Dust cabin is optional. Cab
 
 Phase 2 (not built): live chat, DMs, moderation queue, email verification, FE matchmaking pairs.
 
+## Agent directory applications
+
+Agents submit a profile card for manual review:
+
+| Route | Purpose |
+| --- | --- |
+| `POST /api/agent-application` | Submit card application |
+| `POST /api/agent-photo-upload` | Profile photo → `agent-photos` blob container |
+| `GET /api/agent-applications?key=…` | List apps (`REPORT_ACCESS_KEY`) |
+
+Table: `AgentApplications`. Frontend: `/agents/apply.html`. Approved cards are still published manually into `assets/agents-data.js` + profile HTML for now.
+
 ## What this does NOT do yet
 - No aggregation/report of top questions — that's the natural next piece to build.
 - No content moderation or per-IP rate limiting beyond a basic question-length cap.

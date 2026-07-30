@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Your Agent Card | Cruising Cove</title>
+<meta name="description" content="Apply to join the Cruising Cove Disney cruise travel agent directory. Submit your photo, bio, specialties, and credentials for review.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/agents.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <nav class="site-nav-bar" aria-label="Primary">
+      <a class="logo" href="/">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M1 8c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0" stroke="#c9a24b" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </span>
+        Cruising Cove
+      </a>
+      <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primaryNav">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="primaryNav">
+        <a href="/ships/">Ships</a>
+        <a href="/ports/">Ports</a>
+        <a href="/dining/">Dining</a>
+        <a href="/entertainment/">Entertainment</a>
+        <a href="/excursions/">Excursions</a>
+        <a href="/faq/">FAQ</a>
+        <a href="/community/">Community</a>
+        <a href="/marketplace/">Marketplace</a>
+      </div>
+      <div class="nav-cta">
+        <a href="/agents/" class="btn btn-outline current">Find an Agent</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="agent-request-wrap agent-apply-wrap">
+  <p class="eyebrow">For travel agents</p>
+  <h1>Create your agent card</h1>
+  <p class="intro">Submit the profile families will see in our directory. Applications are reviewed by hand — once approved, you’ll get a live card and lead requests through Cruising Cove.</p>
+
+  <div class="agent-apply-terms">
+    <h2>What you’ll get</h2>
+    <ul>
+      <li>A directory card with your photo, pitch, specialties, and profile page</li>
+      <li>Lead requests from families who choose you (you unlock contact details when ready)</li>
+      <li>Placement alongside Disney-specialist / EarMarked planners</li>
+    </ul>
+    <p>Cards go live only after approval. Please use a real headshot and accurate credentials.</p>
+  </div>
+
+  <form class="agent-form" id="applyForm" novalidate>
+    <fieldset>
+      <legend>Basics</legend>
+      <label for="fullName">Full name <span class="req">*</span></label>
+      <input id="fullName" name="fullName" type="text" autocomplete="name" required>
+
+      <div class="field-row">
+        <div>
+          <label for="agency">Agency / DBA <span class="req">*</span></label>
+          <input id="agency" name="agency" type="text" required>
+        </div>
+        <div>
+          <label for="location">Location <span class="req">*</span></label>
+          <input id="location" name="location" type="text" placeholder="e.g. Orlando, FL or Remote · US" required>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div>
+          <label for="email">Email <span class="req">*</span></label>
+          <input id="email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div>
+          <label for="phone">Phone <span class="req">*</span></label>
+          <input id="phone" name="phone" type="tel" autocomplete="tel" required>
+        </div>
+      </div>
+
+      <label for="website">Website (optional)</label>
+      <input id="website" name="website" type="url" placeholder="https://">
+
+      <label for="photoInput">Profile photo <span class="req">*</span></label>
+      <p class="field-hint">One clear headshot — JPEG, PNG, or WEBP. Resized automatically.</p>
+      <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp">
+      <div id="photoStatus" class="field-hint" style="margin-top:6px;"></div>
+      <div id="photoPreview" class="agent-photo-preview" hidden></div>
+
+      <label for="pitch">Short pitch (shown on your card) <span class="req">*</span></label>
+      <p class="field-hint">1–2 sentences — what families should know first. Max 280 characters.</p>
+      <textarea id="pitch" name="pitch" maxlength="280" required></textarea>
+
+      <label for="bio">Full bio <span class="req">*</span></label>
+      <p class="field-hint">A short paragraph for your profile page.</p>
+      <textarea id="bio" name="bio" maxlength="1200" required></textarea>
+    </fieldset>
+
+    <fieldset>
+      <legend>Specialties</legend>
+      <p class="field-hint">Pick what you want families to filter on. Choose at least one.</p>
+      <div class="check-grid" data-group="specialties">
+        <label class="check-item"><input type="checkbox" value="First-timers"> First-timers</label>
+        <label class="check-item"><input type="checkbox" value="Wish-class"> Wish-class</label>
+        <label class="check-item"><input type="checkbox" value="Dream-class"> Dream-class</label>
+        <label class="check-item"><input type="checkbox" value="Family groups"> Family groups</label>
+        <label class="check-item"><input type="checkbox" value="Large groups"> Large groups</label>
+        <label class="check-item"><input type="checkbox" value="Adult sailings"> Adult sailings</label>
+        <label class="check-item"><input type="checkbox" value="Castaway Cay"> Castaway Cay</label>
+        <label class="check-item"><input type="checkbox" value="Lookout Cay"> Lookout Cay</label>
+        <label class="check-item"><input type="checkbox" value="Alaska"> Alaska</label>
+        <label class="check-item"><input type="checkbox" value="Europe"> Europe</label>
+        <label class="check-item"><input type="checkbox" value="Budget planning"> Budget planning</label>
+        <label class="check-item"><input type="checkbox" value="Accessibility"> Accessibility</label>
+      </div>
+      <label for="specialtiesOther">Other specialties (optional)</label>
+      <input id="specialtiesOther" name="specialtiesOther" type="text" placeholder="e.g. Special occasions, accessible cabins">
+    </fieldset>
+
+    <fieldset>
+      <legend>Credentials</legend>
+      <div class="field-row">
+        <div>
+          <label for="yearsExperience">Years specializing in Disney / DCL</label>
+          <input id="yearsExperience" name="yearsExperience" type="text" placeholder="e.g. 8">
+        </div>
+        <div>
+          <label for="sailingsPlanned">Approx. Disney sailings planned</label>
+          <input id="sailingsPlanned" name="sailingsPlanned" type="text" placeholder="e.g. 40+">
+        </div>
+      </div>
+
+      <label>EarMarked / Disney specialist status <span class="req">*</span></label>
+      <div class="radio-row" data-group="earmarked">
+        <label class="radio-pill"><input type="radio" name="earmarked" value="yes" required> Yes — EarMarked</label>
+        <label class="radio-pill"><input type="radio" name="earmarked" value="in-progress"> In progress</label>
+        <label class="radio-pill"><input type="radio" name="earmarked" value="no"> Not currently</label>
+      </div>
+
+      <label for="credentialsNotes">Credentials notes (optional)</label>
+      <p class="field-hint">Agency, host, College of Disney Knowledge, CLIA, etc.</p>
+      <textarea id="credentialsNotes" name="credentialsNotes" maxlength="800"></textarea>
+
+      <label for="whyChooseMe">Why should families choose you? <span class="req">*</span></label>
+      <textarea id="whyChooseMe" name="whyChooseMe" maxlength="800" required></textarea>
+
+      <label for="highlights">What you can expect (optional)</label>
+      <p class="field-hint">One highlight per line — shown as bullets on your profile.</p>
+      <textarea id="highlights" name="highlights" maxlength="800" placeholder="Stateroom shortlists before booking&#10;Dining &amp; excursion window reminders&#10;Multi-cabin family coordination"></textarea>
+    </fieldset>
+
+    <fieldset>
+      <legend>Planning fees</legend>
+      <label>Do you charge planning or service fees? <span class="req">*</span></label>
+      <div class="radio-row" data-group="chargesFees">
+        <label class="radio-pill"><input type="radio" name="chargesFees" value="no" required> No — commission only</label>
+        <label class="radio-pill"><input type="radio" name="chargesFees" value="sometimes"> Sometimes / depends</label>
+        <label class="radio-pill"><input type="radio" name="chargesFees" value="yes"> Yes — I charge fees</label>
+      </div>
+      <label for="feeNotes">Fee details (optional)</label>
+      <p class="field-hint">Families appreciate clarity — even if fees only apply in rare cases.</p>
+      <textarea id="feeNotes" name="feeNotes" maxlength="400"></textarea>
+    </fieldset>
+
+    <fieldset>
+      <legend>Social links</legend>
+      <label for="instagramUrl">Instagram</label>
+      <input id="instagramUrl" name="instagramUrl" type="url" placeholder="https://instagram.com/...">
+      <label for="facebookUrl">Facebook</label>
+      <input id="facebookUrl" name="facebookUrl" type="url" placeholder="https://facebook.com/...">
+      <label for="tiktokUrl">TikTok</label>
+      <input id="tiktokUrl" name="tiktokUrl" type="url" placeholder="https://tiktok.com/@...">
+
+      <label for="otherNotes">Anything else we should know? (optional)</label>
+      <textarea id="otherNotes" name="otherNotes" maxlength="800"></textarea>
+    </fieldset>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-gold" id="submitBtn">Submit application</button>
+      <p class="form-note">You’ll hear from us by email after review. Profiles are not published until approved.</p>
+      <p class="form-status" id="formStatus" hidden></p>
+    </div>
+  </form>
+
+  <div class="agent-apply-success" id="successCard" hidden>
+    <h2>Thanks — we got your application</h2>
+    <p>We’ll review your card and email you if it’s a fit. In the meantime you can browse how profiles look in the <a href="/agents/">directory</a>.</p>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-top">
+      <a class="logo" href="/">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M1 8c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0" stroke="#c9a24b" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </span>
+        Cruising Cove
+      </a>
+      <div class="foot-links">
+        <a href="/ships/">Ships</a>
+        <a href="/ports/">Ports</a>
+        <a href="/agents/">Find an Agent</a>
+        <a href="/agents/apply.html">Agent apply</a>
+      </div>
+    </div>
+    <p class="disclaimer">Cruising Cove is an independent planning guide and is not affiliated with, endorsed by, or sponsored by The Walt Disney Company, Disney Cruise Line, or any of their affiliates.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var btn=document.querySelector('.nav-toggle');
+  var menu=document.getElementById('primaryNav');
+  if(btn&&menu){
+    btn.addEventListener('click',function(){
+      var open=menu.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  }
+
+  var form = document.getElementById('applyForm');
+  var submitBtn = document.getElementById('submitBtn');
+  var statusEl = document.getElementById('formStatus');
+  var successCard = document.getElementById('successCard');
+  var photoInput = document.getElementById('photoInput');
+  var photoStatus = document.getElementById('photoStatus');
+  var photoPreview = document.getElementById('photoPreview');
+  var photoUrl = '';
+  var uploading = false;
+  var MAX_DIMENSION = 1200;
+  var JPEG_QUALITY = 0.82;
+
+  function showStatus(msg, ok) {
+    statusEl.hidden = false;
+    statusEl.textContent = msg;
+    statusEl.className = 'form-status ' + (ok ? 'ok' : 'err');
+  }
+
+  function checkedValues(group) {
+    var container = form.querySelector('[data-group="' + group + '"]');
+    if (!container) return [];
+    return Array.from(container.querySelectorAll('input:checked')).map(function(i){ return i.value; });
+  }
+
+  function radioValue(name) {
+    var el = form.querySelector('input[name="' + name + '"]:checked');
+    return el ? el.value : '';
+  }
+
+  function compressImage(file) {
+    return new Promise(function(resolve, reject){
+      var img = new Image();
+      var reader = new FileReader();
+      reader.onload = function(e){ img.src = e.target.result; };
+      reader.onerror = reject;
+      img.onload = function(){
+        var w = img.width, h = img.height;
+        if (w > MAX_DIMENSION || h > MAX_DIMENSION) {
+          var scale = MAX_DIMENSION / Math.max(w, h);
+          w = Math.round(w * scale);
+          h = Math.round(h * scale);
+        }
+        var canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        canvas.toBlob(function(blob){
+          if (!blob) { reject(new Error('Compression failed')); return; }
+          resolve(blob);
+        }, 'image/jpeg', JPEG_QUALITY);
+      };
+      img.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function blobToBase64(blob) {
+    return new Promise(function(resolve, reject){
+      var reader = new FileReader();
+      reader.onload = function(){ resolve(reader.result.split(',')[1]); };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  photoInput.addEventListener('change', async function(){
+    var file = (photoInput.files || [])[0];
+    photoInput.value = '';
+    if (!file) return;
+
+    uploading = true;
+    submitBtn.disabled = true;
+    photoStatus.textContent = 'Uploading photo…';
+
+    try {
+      var blob = await compressImage(file);
+      var base64Data = await blobToBase64(blob);
+      var res = await fetch('/api/agent-photo-upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fileName: file.name, contentType: 'image/jpeg', base64Data: base64Data })
+      });
+      if (!res.ok) throw new Error('Upload failed');
+      var data = await res.json();
+      photoUrl = data.url;
+      photoPreview.hidden = false;
+      photoPreview.innerHTML = '<img src="' + data.url + '" alt="Profile preview"><button type="button" class="thumb-remove" id="clearPhoto">Remove</button>';
+      document.getElementById('clearPhoto').addEventListener('click', function(){
+        photoUrl = '';
+        photoPreview.hidden = true;
+        photoPreview.innerHTML = '';
+      });
+      photoStatus.textContent = '';
+    } catch (err) {
+      photoUrl = '';
+      photoStatus.textContent = 'Photo upload failed. Please try again.';
+    } finally {
+      uploading = false;
+      submitBtn.disabled = false;
+    }
+  });
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    statusEl.hidden = true;
+
+    if (uploading) {
+      showStatus('Please wait for the photo upload to finish.', false);
+      return;
+    }
+    if (!photoUrl) {
+      showStatus('Please upload a profile photo.', false);
+      return;
+    }
+    var specialties = checkedValues('specialties');
+    if (!specialties.length) {
+      showStatus('Select at least one specialty.', false);
+      return;
+    }
+    if (!radioValue('earmarked')) {
+      showStatus('Please share your EarMarked / Disney specialist status.', false);
+      return;
+    }
+    if (!radioValue('chargesFees')) {
+      showStatus('Please tell us whether you charge planning fees.', false);
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting…';
+
+    var payload = {
+      fullName: form.fullName.value.trim(),
+      agency: form.agency.value.trim(),
+      location: form.location.value.trim(),
+      email: form.email.value.trim(),
+      phone: form.phone.value.trim(),
+      website: form.website.value.trim(),
+      photoUrl: photoUrl,
+      pitch: form.pitch.value.trim(),
+      bio: form.bio.value.trim(),
+      specialties: specialties,
+      specialtiesOther: form.specialtiesOther.value.trim(),
+      yearsExperience: form.yearsExperience.value.trim(),
+      sailingsPlanned: form.sailingsPlanned.value.trim(),
+      earmarked: radioValue('earmarked'),
+      credentialsNotes: form.credentialsNotes.value.trim(),
+      whyChooseMe: form.whyChooseMe.value.trim(),
+      highlights: form.highlights.value.trim(),
+      chargesFees: radioValue('chargesFees'),
+      feeNotes: form.feeNotes.value.trim(),
+      instagramUrl: form.instagramUrl.value.trim(),
+      facebookUrl: form.facebookUrl.value.trim(),
+      tiktokUrl: form.tiktokUrl.value.trim(),
+      otherNotes: form.otherNotes.value.trim()
+    };
+
+    try {
+      var res = await fetch('/api/agent-application', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      var body = await res.json().catch(function(){ return {}; });
+      if (!res.ok) throw new Error(body.error || 'Request failed');
+      form.hidden = true;
+      successCard.hidden = false;
+      successCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (err) {
+      showStatus(err.message || 'Something went wrong. Please try again.', false);
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit application';
+    }
+  });
+})();
+</script>
+<script src="/assets/site-search.js" defer></script>
+<script src="/assets/chat-widget.js" defer></script>
+</body>
+</html>
