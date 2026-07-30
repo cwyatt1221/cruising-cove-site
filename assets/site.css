@@ -356,6 +356,18 @@ ul.plain li:last-child{margin-bottom:0;}
   font-weight:600;
   font-size:1.25rem;
   color:var(--navy);
+  display:block;
+  line-height:1.2;
+}
+.stat-grid .stat .note{
+  display:block;
+  margin-top:0.35rem;
+  font-size:0.8rem;
+  color:var(--muted);
+  line-height:1.35;
+  font-weight:400;
+  text-transform:none;
+  letter-spacing:0;
 }
 
 .callout{

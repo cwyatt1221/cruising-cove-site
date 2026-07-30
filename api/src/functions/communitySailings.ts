@@ -53,7 +53,7 @@ export async function listSailings(request: HttpRequest, context: InvocationCont
 export async function createOrJoinSailing(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   if (request.method === "OPTIONS") return corsJson(204, {});
 
-  const user = await requireUser(request.headers.get("authorization"));
+  const user = await requireUser(request.headers);
   if (!user) return corsJson(401, { error: "Sign in to join a sailing community." });
 
   let body: {
@@ -165,7 +165,7 @@ export async function getSailing(request: HttpRequest, context: InvocationContex
   try {
     const sailings = await table(SAILINGS_TABLE);
     const meta = await sailings.getEntity("sailing", key);
-    const user = await requireUser(request.headers.get("authorization"));
+    const user = await requireUser(request.headers);
     let isMember = false;
     if (user) {
       try {

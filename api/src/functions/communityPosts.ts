@@ -48,7 +48,7 @@ export async function listPosts(request: HttpRequest, context: InvocationContext
 export async function createPost(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   if (request.method === "OPTIONS") return corsJson(204, {});
 
-  const user = await requireUser(request.headers.get("authorization"));
+  const user = await requireUser(request.headers);
   if (!user) return corsJson(401, { error: "Sign in to post." });
 
   const key = request.params.sailingKey;

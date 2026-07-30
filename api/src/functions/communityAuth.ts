@@ -128,7 +128,7 @@ export async function communityLogin(request: HttpRequest, context: InvocationCo
 
 export async function communityMe(request: HttpRequest): Promise<HttpResponseInit> {
   if (request.method === "OPTIONS") return corsJson(204, {});
-  const user = await requireUser(request.headers.get("authorization"));
+  const user = await requireUser(request.headers);
   if (!user) return corsJson(401, { error: "Not signed in." });
   return corsJson(200, { user });
 }

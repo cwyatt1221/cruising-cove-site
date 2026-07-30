@@ -54,7 +54,7 @@ export async function listSignups(request: HttpRequest, context: InvocationConte
     fish.sort((a, b) => a.displayName.localeCompare(b.displayName));
     pixie.sort((a, b) => a.displayName.localeCompare(b.displayName));
 
-    const user = await requireUser(request.headers.get("authorization"));
+    const user = await requireUser(request.headers);
     let myFish = false;
     let myPixie = false;
     if (user) {
@@ -83,7 +83,7 @@ export async function listSignups(request: HttpRequest, context: InvocationConte
 export async function createSignup(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   if (request.method === "OPTIONS") return corsJson(204, {});
 
-  const user = await requireUser(request.headers.get("authorization"));
+  const user = await requireUser(request.headers);
   if (!user) return corsJson(401, { error: "Sign in to join Fish Extender or Pixie Dust." });
 
   const key = request.params.sailingKey;
@@ -162,7 +162,7 @@ export async function createSignup(request: HttpRequest, context: InvocationCont
 export async function deleteSignup(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   if (request.method === "OPTIONS") return corsJson(204, {});
 
-  const user = await requireUser(request.headers.get("authorization"));
+  const user = await requireUser(request.headers);
   if (!user) return corsJson(401, { error: "Sign in to leave a sign-up list." });
 
   const key = request.params.sailingKey;

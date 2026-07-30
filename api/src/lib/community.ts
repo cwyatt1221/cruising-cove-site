@@ -85,13 +85,18 @@ export function shipLabel(slug: string): string {
   return map[slug] ?? slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-export async function requireUser(authHeader: string | null): Promise<{
+export async function requireUser(headers: {
+  get(name: string): string | null;
+}): Promise<{
   userId: string;
   email: string;
   displayName: string;
 } | null> {
-  if (!authHeader?.startsWith("Bearer ")) return null;
-  const token = authHeader.slice(7).trim();
+  // Azure Static Web Apps overwrites Authorization for managed Functions —
+  // prefer the custom community token header in production.
+  const custom = headers.get("x-cc-token")?.trim() || "";
+  const auth = headers.get("authorization") || "";
+  const token = custom || (auth.startsWith("Bearer ") ? auth.slice(7).trim() : "");
   if (!token) return null;
 
   const sessions = await table(SESSIONS_TABLE);
@@ -122,7 +127,7 @@ export function corsJson(status: number, body: unknown): {
     jsonBody: body,
     headers: {
       "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization, X-CC-Token",
       "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
     },
   };

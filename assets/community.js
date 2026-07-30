@@ -37,7 +37,11 @@
     options = options || {};
     var headers = Object.assign({ "Content-Type": "application/json" }, options.headers || {});
     var token = getToken();
-    if (token) headers.Authorization = "Bearer " + token;
+    if (token) {
+      // SWA managed Functions overwrite Authorization — also send a custom header.
+      headers.Authorization = "Bearer " + token;
+      headers["X-CC-Token"] = token;
+    }
     var res = await fetch(apiBase() + path, {
       method: options.method || "GET",
       headers: headers,
