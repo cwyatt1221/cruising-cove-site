@@ -69,7 +69,6 @@
   <section id="directory">
     <span class="label mono">&mdash; Directory</span>
     <h2>Disney-specialist agents</h2>
-    <p class="agent-directory-note" id="directoryNote">Loading agent cards…</p>
     <div class="agent-agent-cta">
       <p><strong>Are you a Disney cruise travel agent?</strong> Create your directory card — photo, specialties, credentials, and fee transparency. We review every application before it goes live.</p>
       <a class="btn btn-gold" href="/agents/apply.html">Create your agent card</a>
@@ -137,14 +136,7 @@
       return '<div class="agent-avatar" aria-hidden="true">'+escapeHtml(initials(agent.name))+'</div>';
     }
 
-    function renderAgents(agents, fromLive){
-      var note=document.getElementById('directoryNote');
-      if(fromLive){
-        note.textContent='Live partner cards — each advertises specialties so families can choose who to contact. Profiles are reviewed before they go public.';
-      }else{
-        note.textContent='Sample founding profiles show how the directory works. Live partner cards replace these as real agents are approved.';
-      }
-
+    function renderAgents(agents){
       var grid=document.getElementById('agentGrid');
       grid.innerHTML='';
       agents.forEach(function(agent){
@@ -175,8 +167,7 @@
     }
 
     window.CC_loadDirectoryAgents().then(function(agents){
-      var fromLive=agents.length && !agents[0].sample;
-      renderAgents(agents, fromLive);
+      renderAgents(agents);
     });
   })();
 </script>
