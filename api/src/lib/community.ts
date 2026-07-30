@@ -6,6 +6,7 @@ export const SESSIONS_TABLE = "CommunitySessions";
 export const SAILINGS_TABLE = "CommunitySailings";
 export const MEMBERS_TABLE = "CommunityMembers";
 export const POSTS_TABLE = "CommunityPosts";
+export const REPLIES_TABLE = "CommunityReplies";
 export const SIGNUPS_TABLE = "CommunitySignups";
 
 /** Bump to retire prior Fish Extender / Pixie Dust test sign-ups. */

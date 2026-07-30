@@ -34,6 +34,8 @@
         <div class="nav-dropdown">
           <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">Guides</button>
           <div class="nav-dropdown-menu">
+            <a href="/planning/disney-cruise-cost.html">What it costs</a>
+            <a href="/planning/booking-windows.html">Booking windows</a>
             <a href="/excursions/">Excursions</a>
             <a href="/faq/">FAQ</a>
             <a href="/articles/">Articles</a>
@@ -94,7 +96,32 @@
   <section id="cabanas">
     <span class="label mono">&mdash; Worth booking early</span>
     <h2>Cabanas</h2>
-    <p>Castaway Cay has 20 private cabanas split between the family beach and Serenity Bay &mdash; roughly 325 square feet each, with lounge chairs, a hammock, a stocked cooler, and complimentary snorkel gear. Family beach cabanas run roughly $450&ndash;600/day; Serenity Bay cabanas start around $600+/day. They're genuinely worth it for a large group wanting guaranteed shade and privacy, but they sell out within minutes of the booking window opening &mdash; typically 75 days before sailing for the general public, earlier for higher Castaway Club tiers.</p><div class='callout'><span class='label mono'>&mdash; Coming soon</span><p>A day-by-day countdown showing exactly when your cabana booking window opens, based on your sail date and Castaway Club tier, is part of what this site is being built to do.</p></div>
+    <p>Castaway Cay has roughly 20&ndash;21 family beach cabanas plus about six adult cabanas at Serenity Bay &mdash; roughly 325 square feet each, with lounge chairs, a hammock, a stocked cooler, and complimentary snorkel gear. Family beach cabanas run roughly $450&ndash;600/day; Serenity Bay cabanas start around $600+/day. They're genuinely worth it for a large group wanting guaranteed shade and privacy, but they sell out within minutes of the booking window opening &mdash; typically 75 days before sailing for the general public, earlier for higher Castaway Club tiers.</p>
+    <div class="callout" id="cabana-countdown">
+      <span class="label mono">&mdash; Cabana countdown</span>
+      <p>Enter your sail date and Castaway Club tier to see when cabana booking typically opens.</p>
+      <form class="cc-booking-form" id="cabanaCountdownForm" style="margin:1rem 0 0;padding:0;border:none;background:transparent;max-width:none;">
+        <div class="cc-calc-grid">
+          <label class="cc-field">
+            <span class="cc-label">Sail date</span>
+            <input type="date" name="sailDate" required>
+          </label>
+          <label class="cc-field">
+            <span class="cc-label">Tier</span>
+            <select name="tier">
+              <option value="concierge">Concierge</option>
+              <option value="platinum">Platinum</option>
+              <option value="gold">Gold</option>
+              <option value="silver">Silver</option>
+              <option value="pearl" selected>First-time / Pearl</option>
+            </select>
+          </label>
+        </div>
+        <button type="submit" class="btn btn-gold">Show cabana window</button>
+      </form>
+      <div id="bookingWindowResult" aria-live="polite" style="margin-top:1rem;"></div>
+      <p class="fine-print" style="margin-top:0.75rem;">Full Port Adventures + specialty dining windows: <a href="/planning/booking-windows.html" style="color:var(--teal);text-decoration:underline;">Booking window helper</a>.</p>
+    </div>
   </section>
 
   <section id="compare">
@@ -150,6 +177,7 @@
 <script src="/assets/site-nav.js" defer></script>
 <script src="/assets/analytics.js" defer></script>
 <script src="/assets/site-search.js" defer></script>
+<script src="/assets/booking-windows.js" defer></script>
 <script src="/assets/chat-widget.js" defer></script>
 </body>
 </html>

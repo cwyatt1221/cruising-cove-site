@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Disney Cruise Booking Windows — Cabanas, Dining & Port Adventures | Cruising Cove</title>
+<meta name="description" content="Castaway Club booking-window helper for Disney Cruise Line — cabana countdown, Port Adventures, and specialty dining by tier.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <nav class="site-nav-bar" aria-label="Primary">
+      <a class="logo" href="/">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M1 8c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0" stroke="#c9a24b" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </span>
+        Cruising Cove
+      </a>
+      <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primaryNav">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="primaryNav">
+        <a href="/ships/">Ships</a>
+        <a href="/ports/">Ports</a>
+        <a href="/dining/">Dining</a>
+        <a href="/entertainment/">Entertainment</a>
+        <div class="nav-dropdown">
+          <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">Guides</button>
+          <div class="nav-dropdown-menu">
+            <a href="/planning/disney-cruise-cost.html">What it costs</a>
+            <a href="/planning/booking-windows.html" class="current">Booking windows</a>
+            <a href="/excursions/">Excursions</a>
+            <a href="/faq/">FAQ</a>
+            <a href="/articles/">Articles</a>
+            <a href="/planning/disney-cruise-packing-list.html">Packing list</a>
+          </div>
+        </div>
+        <a href="/community/">Community</a>
+        <a href="/marketplace/">Marketplace</a>
+      </div>
+      <div class="nav-cta">
+        <a href="/agents/" class="btn btn-gold">Find an Agent</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <span class="eyebrow mono">Plan your sailing</span>
+    <h1>Booking windows, by <em>Castaway Club</em> tier.</h1>
+    <p class="lede">Enter your sail date and tier to see when cabanas, Port Adventures, and specialty dining typically open — then be ready the morning your window hits.</p>
+  </div>
+  <div class="tide" aria-hidden="true">
+    <svg viewBox="0 0 1200 56" preserveAspectRatio="none">
+      <path d="M0,28 C150,50 300,6 450,28 C600,50 750,6 900,28 C1050,50 1150,18 1200,26 L1200,56 L0,56 Z" fill="#faf7ee"></path>
+    </svg>
+  </div>
+</div>
+
+<main>
+
+  <section id="helper">
+    <span class="label mono">&mdash; Countdown</span>
+    <h2>When does your window open?</h2>
+    <form class="cc-booking-form" id="bookingWindowForm">
+      <div class="cc-calc-grid">
+        <label class="cc-field">
+          <span class="cc-label">Sail date</span>
+          <input type="date" name="sailDate" required>
+        </label>
+        <label class="cc-field">
+          <span class="cc-label">Castaway Club / booking tier</span>
+          <select name="tier">
+            <option value="concierge">Concierge</option>
+            <option value="platinum">Platinum</option>
+            <option value="gold">Gold</option>
+            <option value="silver">Silver</option>
+            <option value="pearl" selected>First-time / Pearl</option>
+          </select>
+        </label>
+      </div>
+      <button type="submit" class="btn btn-gold">Calculate windows</button>
+    </form>
+    <div id="bookingWindowResult" aria-live="polite"></div>
+  </section>
+
+  <section id="priority">
+    <span class="label mono">&mdash; Grab list</span>
+    <h2>What to book first when the window opens</h2>
+    <ol class="plain" style="padding-left:1.2rem;">
+      <li><strong>Cabanas</strong> at Castaway Cay or Lookout Cay — if you want one, treat this as minute-one.</li>
+      <li><strong>High-demand Port Adventures</strong> (Atlantis, Stingray City boats, glacier flights, White Pass train).</li>
+      <li><strong>Specialty dining</strong> — Palo / Palo Steakhouse, Remy, Enchanté; brunch slots go fast on short sailings.</li>
+      <li><strong>Spa / adult spa day</strong> if that’s your priority — after the three above for most families.</li>
+    </ol>
+    <p><a class="btn btn-outline" href="/planning/disney-cruise-cost.html#calculator">Run the cost calculator</a>
+    <a class="btn btn-outline" href="/ports/castaway-cay.html#cabanas" style="margin-left:0.5rem;">Castaway cabanas</a></p>
+  </section>
+
+  <section id="tiers">
+    <span class="label mono">&mdash; Reference</span>
+    <h2>Typical days-before-sailing</h2>
+    <div class="table-wrap">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Tier</th>
+            <th>Cabanas</th>
+            <th>Port Adventures</th>
+            <th>Specialty dining</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Concierge</strong></td>
+            <td class="num">~123 days</td>
+            <td class="num">~120 days</td>
+            <td class="num">~120 days</td>
+          </tr>
+          <tr>
+            <td><strong>Platinum</strong></td>
+            <td class="num">~108 days</td>
+            <td class="num">~105 days</td>
+            <td class="num">~105 days</td>
+          </tr>
+          <tr>
+            <td><strong>Gold</strong></td>
+            <td class="num">~93 days</td>
+            <td class="num">~90 days</td>
+            <td class="num">~90 days</td>
+          </tr>
+          <tr>
+            <td><strong>Silver</strong></td>
+            <td class="num">~90 days</td>
+            <td class="num">~90 days</td>
+            <td class="num">~90 days</td>
+          </tr>
+          <tr>
+            <td><strong>First-time / Pearl</strong></td>
+            <td class="num">~75 days</td>
+            <td class="num">~75 days</td>
+            <td class="num">~75 days</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="fine-print">Numbers are the common U.S. sailing pattern used by most planners. Disney can adjust by itinerary — confirm in the app.</p>
+  </section>
+
+</main>
+
+<aside class="site-legal" aria-label="Legal">
+  <div class="wrap">
+    <p class="disclaimer">Cruising Cove is an independent planning guide and is not affiliated with, endorsed by, or sponsored by The Walt Disney Company, Disney Cruise Line, or any of their affiliates. Booking windows are approximate planning aids — always confirm in the Disney Cruise Line app.</p>
+  </div>
+</aside>
+<script src="/assets/booking-windows.js" defer></script>
+<script src="/assets/site-nav.js" defer></script>
+<script src="/assets/analytics.js" defer></script>
+<script src="/assets/site-search.js" defer></script>
+<script src="/assets/chat-widget.js" defer></script>
+</body>
+</html>

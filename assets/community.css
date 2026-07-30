@@ -58,6 +58,24 @@
   padding:0.7rem 0.8rem;border:1px solid rgba(26,42,74,.18);border-radius:2px;
   background:var(--cream-2);color:var(--ink);
 }
+.reply-list{
+  margin-top:0.9rem;padding-top:0.85rem;border-top:1px solid rgba(26,42,74,.08);
+  display:flex;flex-direction:column;gap:10px;
+}
+.reply-list:empty{display:none;margin:0;padding:0;border:0;}
+.reply-card{
+  background:var(--cream-2);border-left:3px solid rgba(30,92,92,.35);
+  border-radius:0 2px 2px 0;padding:0.75rem 0.9rem;
+}
+.reply-card .by{font-size:0.74rem;font-weight:700;color:var(--navy);margin:0 0 .15rem;}
+.reply-card .when{font-size:0.72rem;color:var(--muted);margin:0 0 .4rem;}
+.reply-card .body{margin:0;white-space:pre-wrap;font-size:0.9rem;line-height:1.5;}
+.reply-compose{margin-top:0.35rem;}
+.reply-compose textarea{
+  width:100%;min-height:72px;resize:vertical;font:inherit;font-size:0.9rem;
+  padding:0.65rem 0.75rem;border:1px solid rgba(26,42,74,.18);border-radius:2px;
+  background:#fff;color:var(--ink);
+}
 .marketplace-link{font-size:0.95rem;margin:0.6rem 0 1.1rem;max-width:58ch;}
 .marketplace-link a{color:var(--teal);text-decoration:underline;text-underline-offset:2px;}
 .marketplace-link a:hover{color:var(--gold);}

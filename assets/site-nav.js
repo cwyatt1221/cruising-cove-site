@@ -42,6 +42,7 @@
       "/articles/",
       "/planning/disney-cruise-packing-list.html",
       "/planning/disney-cruise-cost.html",
+      "/planning/booking-windows.html",
       "/pirate-night/",
     ];
     var onGuides = guideHrefs.some(function (h) {

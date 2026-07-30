@@ -330,15 +330,17 @@ ul.plain li:last-child{margin-bottom:0;}
 .stat-grid{
   display:grid;
   grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));
-  gap:1px;
-  background:rgba(26,42,74,.1);
-  border:1px solid rgba(26,42,74,.1);
-  border-radius:4px;
-  overflow:hidden;
+  gap:12px;
+  background:transparent;
+  border:none;
+  border-radius:0;
+  overflow:visible;
   margin:1.6rem 0;
 }
 .stat-grid .stat{
   background:var(--cream);
+  border:1px solid rgba(26,42,74,.1);
+  border-radius:4px;
   padding:1.1rem 1.2rem;
 }
 .stat-grid .stat .k{
@@ -575,3 +577,46 @@ footer:not(.site-footer) .disclaimer{
   max-width:900px;
   margin:0;
 }
+
+/* Cost calculator + booking window forms */
+.cc-calc,.cc-booking-form{
+  background:var(--cream);
+  border:1px solid rgba(26,42,74,.1);
+  border-radius:4px;
+  padding:1.4rem 1.5rem 1.6rem;
+  margin:1.4rem 0 1.2rem;
+  max-width:720px;
+}
+.cc-calc-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:1rem 1.1rem;
+  margin-bottom:1.15rem;
+}
+@media (max-width:640px){
+  .cc-calc-grid{grid-template-columns:1fr;}
+}
+.cc-field{display:flex;flex-direction:column;gap:0.35rem;margin:0;}
+.cc-label{
+  font-family:var(--font-sans);
+  font-size:0.68rem;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+.cc-calc select,.cc-calc input,.cc-booking-form select,.cc-booking-form input{
+  font:inherit;
+  font-size:0.95rem;
+  color:var(--ink);
+  background:#fff;
+  border:1px solid rgba(26,42,74,.2);
+  border-radius:2px;
+  padding:0.55rem 0.7rem;
+  width:100%;
+}
+.cc-calc select:focus,.cc-calc input:focus,.cc-booking-form select:focus,.cc-booking-form input:focus{
+  outline:2px solid rgba(201,162,75,.45);
+  border-color:var(--gold);
+}
+.cc-calc-result{margin-top:0.5rem;max-width:720px;}

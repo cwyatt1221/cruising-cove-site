@@ -16,11 +16,14 @@ On-site sailing boards keyed by Disney ship + embarkation date:
 | `GET /api/community/sailings` | List boards |
 | `POST /api/community/sailings` | Create/join a board (auth required) |
 | `GET /api/community/sailings/{key}` | Board metadata + membership |
-| `GET/POST /api/community/sailings/{key}/posts` | Message board |
+| `GET/POST /api/community/sailings/{key}/posts` | Message board (GET includes nested `replies`) |
+| `PATCH/DELETE /api/community/sailings/{key}/posts/{postId}` | Edit / delete own post (delete removes replies) |
+| `POST /api/community/sailings/{key}/posts/{postId}/replies` | Reply to a post (members only) |
+| `PATCH/DELETE /api/community/sailings/{key}/posts/{postId}/replies/{replyId}` | Edit / delete own reply |
 | `GET/POST /api/community/sailings/{key}/signups` | Fish Extender & Pixie Dust lists |
 | `DELETE /api/community/sailings/{key}/signups/{type}` | Leave a gift list (`fish-extender` \| `pixie-dust`) |
 
-Tables: `CommunityUsers`, `CommunitySessions`, `CommunitySailings`, `CommunityMembers`, `CommunityPosts`, `CommunitySignups`.
+Tables: `CommunityUsers`, `CommunitySessions`, `CommunitySailings`, `CommunityMembers`, `CommunityPosts`, `CommunityReplies`, `CommunitySignups`.
 
 Requires the same `STORAGE_CONNECTION_STRING` as the rest of the API. Frontend: `/community/`.
 
