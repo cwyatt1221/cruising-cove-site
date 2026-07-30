@@ -132,7 +132,7 @@
   background:var(--navy);color:var(--cream);padding:36px 28px;border-radius:8px;margin:16px 0 28px;
 }
 .dir-cta-band h2{font-family:var(--font-serif);font-weight:400;font-size:1.6rem;color:var(--cream);margin:0 0 10px;}
-.dir-cta-band p{color:#c7cbd6;margin:0 0 18px;max-width:52ch;line-height:1.55;}
+.dir-cta-band p{color:#c7cbd6;margin:0;max-width:52ch;line-height:1.55;}
 
 .agent-agent-cta{
   display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;
