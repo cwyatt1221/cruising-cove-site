@@ -8,6 +8,14 @@
 
   var articles = [
     {
+      id: "bluey-on-disney-cruise-line-2026",
+      title: "Bluey and Bingo Are Setting Sail: What to Know About Bluey on Disney Cruise Line in 2026",
+      excerpt:
+        "Where to find Bluey and Bingo at sea in 2026 — Wonder, Dream, and Wish — plus Wakey Wakey, meet-and-greets, Pyjama Bash, and booking tips.",
+      date: "2026-07-30",
+      url: "/articles/bluey-on-disney-cruise-line-2026.html",
+    },
+    {
       id: "disney-wish-vs-disney-treasure",
       title: "Disney Wish vs. Disney Treasure: Which Disney Cruise Ship Is Better?",
       excerpt:
