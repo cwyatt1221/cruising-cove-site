@@ -8,6 +8,14 @@
 
   var articles = [
     {
+      id: "disney-wish-vs-disney-treasure",
+      title: "Disney Wish vs. Disney Treasure: Which Disney Cruise Ship Is Better?",
+      excerpt:
+        "Same Wish-class layout, different themes — Arendelle vs Plaza de Coco, Hyperspace Lounge vs Haunted Mansion Parlor, and which ship fits your family.",
+      date: "2026-07-30",
+      url: "/articles/disney-wish-vs-disney-treasure.html",
+    },
+    {
       id: "castaway-cay-vs-lookout-cay",
       title: "Castaway Cay vs. Lookout Cay: Which Disney Private Island Is Better?",
       excerpt:
