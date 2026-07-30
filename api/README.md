@@ -40,6 +40,15 @@ Agents submit a profile card for manual review:
 
 Table: `AgentApplications`. Frontend: `/agents/apply.html`. Approved cards are still published manually into `assets/agents-data.js` + profile HTML for now.
 
+## Analytics
+
+| Route | Purpose |
+| --- | --- |
+| `POST /api/events` | First-party click events (etsy / agent CTAs) |
+| `GET /api/events-report?key=…&days=30` | Counts + recent events (`REPORT_ACCESS_KEY`) |
+
+Table: `SiteEvents`. Frontend loads Clarity + click tracker via `/assets/analytics.js`. Heatmaps/recordings: https://clarity.microsoft.com
+
 ## What this does NOT do yet
 - No aggregation/report of top questions — that's the natural next piece to build.
 - No content moderation or per-IP rate limiting beyond a basic question-length cap.

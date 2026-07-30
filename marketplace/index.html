@@ -141,7 +141,7 @@
           '<h3>'+shop.name+'</h3>'+
           '<p>'+(shop.description||'')+'</p>'+
           '<div class="mp-card-actions">'+
-            '<a class="btn btn-gold" href="'+shop.etsyUrl+'" target="_blank" rel="noopener noreferrer">Visit Etsy shop</a>'+
+            '<a class="btn btn-gold" href="'+shop.etsyUrl+'" target="_blank" rel="noopener noreferrer" data-cc-event="etsy_click" data-cc-id="'+(shop.id||'')+'" data-shop-id="'+(shop.id||'')+'">Visit Etsy shop</a>'+
           '</div>'+
         '</div>';
       grid.appendChild(card);
@@ -165,6 +165,7 @@
     }
   })();
 </script>
+<script src="/assets/analytics.js" defer></script>
 <script src="/assets/site-search.js" defer></script>
 <script src="/assets/chat-widget.js" defer></script>
 </body>

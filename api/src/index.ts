@@ -13,3 +13,5 @@ import "./functions/communityAuth";
 import "./functions/communitySailings";
 import "./functions/communityPosts";
 import "./functions/communitySignups";
+import "./functions/trackEvent";
+import "./functions/listEvents";
