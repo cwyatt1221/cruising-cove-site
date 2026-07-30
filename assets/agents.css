@@ -29,7 +29,10 @@
 .agent-card.sample .agent-badge.sample-badge{
   background:rgba(26,42,74,.1);color:var(--navy);
 }
-.agent-card-top{display:flex;gap:14px;align-items:flex-start;}
+.agent-card-top{
+  display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;
+}
+.agent-card-top > div:last-child{width:100%;}
 .agent-avatar{
   width:56px;height:56px;border-radius:50%;flex-shrink:0;
   background:linear-gradient(135deg,var(--navy),var(--navy-deep));
@@ -37,17 +40,23 @@
   font-family:var(--font-serif);font-size:1.2rem;font-weight:600;
   overflow:hidden;
 }
-.agent-avatar-lg{width:88px;height:88px;font-size:1.6rem;}
+.agent-card .agent-avatar{
+  width:96px;height:96px;font-size:1.6rem;
+}
+.agent-avatar-lg{width:96px;height:96px;font-size:1.6rem;}
 .agent-avatar-photo{padding:0;background:var(--cream-2);}
 .agent-avatar-photo img{
-  width:100%;height:100%;object-fit:cover;object-position:30% 32%;display:block;
+  width:100%;height:100%;object-fit:cover;object-position:18% 22%;display:block;
 }
 .agent-side-card .agent-avatar{
   margin-left:auto;margin-right:auto;
 }
 .agent-card h3{font-family:var(--font-serif);font-size:1.35rem;font-weight:500;color:var(--navy);margin:0 0 4px;}
 .agent-meta{font-size:0.88rem;color:var(--muted);margin:0;}
-.agent-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+.agent-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;justify-content:center;}
+.agent-card .agent-tags{justify-content:center;}
+.agent-card .agent-card-actions{justify-content:center;}
+.agent-card .agent-pitch{text-align:left;}
 .agent-badge{
   font-size:0.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
   padding:4px 8px;border-radius:2px;background:rgba(201,162,75,.15);color:var(--navy);
@@ -173,7 +182,7 @@
   margin-top:10px;display:flex;align-items:center;gap:12px;
 }
 .agent-photo-preview img{
-  width:88px;height:88px;object-fit:cover;object-position:30% 32%;border-radius:50%;
+  width:88px;height:88px;object-fit:cover;object-position:18% 22%;border-radius:50%;
   border:2px solid rgba(201,162,75,.45);
 }
 .agent-photo-preview .thumb-remove{
@@ -223,7 +232,7 @@
 }
 .agent-admin-card-top{display:flex;gap:14px;align-items:flex-start;margin-bottom:12px;}
 .agent-admin-photo{
-  width:72px;height:72px;border-radius:50%;object-fit:cover;object-position:30% 32%;flex-shrink:0;
+  width:72px;height:72px;border-radius:50%;object-fit:cover;object-position:18% 22%;flex-shrink:0;
   border:2px solid rgba(201,162,75,.4);
 }
 .agent-admin-card-actions{
