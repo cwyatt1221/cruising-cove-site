@@ -8,6 +8,14 @@
 
   var articles = [
     {
+      id: "castaway-cay-vs-lookout-cay",
+      title: "Castaway Cay vs. Lookout Cay: Which Disney Private Island Is Better?",
+      excerpt:
+        "Two exclusive Bahamas islands, two very different days — beaches, snorkeling, Disney magic, culture, and which one fits your family.",
+      date: "2026-07-30",
+      url: "/articles/castaway-cay-vs-lookout-cay.html",
+    },
+    {
       id: "midship-detective-agency",
       title: "What Is the Midship Detective Agency?",
       excerpt:
