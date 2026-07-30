@@ -72,31 +72,43 @@
   
   /* ---------- HERO ---------- */
   .hero{
-    position:relative;min-height:min(72vh, 620px);display:flex;align-items:center;overflow:hidden;
+    position:relative;min-height:min(68vh, 580px);display:flex;align-items:center;overflow:hidden;
     background:
-      linear-gradient(100deg,
+      linear-gradient(105deg,
         #071018 0%,
-        rgba(7,16,24,.94) 34%,
-        rgba(8,28,48,.55) 52%,
-        rgba(12,90,130,.18) 68%,
-        transparent 82%),
-      linear-gradient(180deg, rgba(8,40,70,.15) 0%, transparent 45%),
-      #0c5f8a;
+        #0a1628 38%,
+        #0c3558 58%,
+        #0e6f9a 78%,
+        #14a0c8 100%);
   }
   .hero-media{
-    position:absolute;inset:0;z-index:1;pointer-events:none;
+    position:absolute;z-index:1;pointer-events:none;
+    right:0;top:50%;transform:translateY(-50%);
+    width:min(46vw, 560px);
+    max-width:46%;
+    padding-right:clamp(8px, 2vw, 28px);
   }
   .hero-media img{
-    width:100%;height:100%;object-fit:cover;object-position:72% 45%;
-    display:block;
+    width:100%;height:auto;display:block;
+    object-fit:contain;object-position:right center;
+    /* Avoid soft browser upscaling artifacts where possible */
+    image-rendering:auto;
+    filter:contrast(1.04) saturate(1.05);
   }
-  .hero-content{position:relative;z-index:2;padding:72px 40px;max-width:560px;}
-  @media (max-width:900px){
+  .hero-content{position:relative;z-index:2;padding:72px 40px;max-width:520px;}
+  @media (max-width:1000px){
+    .hero-media{width:min(42vw, 420px);max-width:42%;opacity:0.95;}
+  }
+  @media (max-width:800px){
     .hero{min-height:520px;}
-    .hero-media img{object-position:80% 40%;}
+    .hero-media{
+      width:min(88%, 420px);max-width:none;right:50%;
+      transform:translate(50%, -42%);
+      top:58%;opacity:0.35;
+    }
     .hero::before{
       content:"";position:absolute;inset:0;z-index:1;
-      background:linear-gradient(180deg, rgba(7,16,24,.72) 0%, rgba(7,16,24,.55) 45%, rgba(7,16,24,.78) 100%);
+      background:linear-gradient(180deg, rgba(7,16,24,.55) 0%, rgba(7,16,24,.72) 55%, rgba(7,16,24,.88) 100%);
       pointer-events:none;
     }
   }
