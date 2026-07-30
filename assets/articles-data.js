@@ -1,10 +1,20 @@
 /**
- * Cruising Cove articles — weekly homepage rotation + archive.
- * Add new posts to the front of CC_ARTICLES (newest first) for archive order.
- * Homepage feature rotates by ISO week across the array.
+ * Cruising Cove articles — homepage carousel (up to 5) + archive.
+ * Keep newest first in CC_ARTICLES for the archive list.
+ * Homepage carousel starts on this week's featured piece, then pages through up to 5.
  */
 (function (global) {
+  var FEATURED_SLOTS = 5;
+
   var articles = [
+    {
+      id: "midship-detective-agency",
+      title: "What Is the Midship Detective Agency?",
+      excerpt:
+        "A free interactive mystery on the Disney Dream and Fantasy — clue cards, enchanted artwork, and ship-wide detective work most guests walk right past.",
+      date: "2026-07-30",
+      url: "/articles/midship-detective-agency.html",
+    },
     {
       id: "10-hidden-disney-cruise-secrets",
       title: "10 Hidden Disney Cruise Secrets Most First-Time Guests Never Discover",
@@ -30,13 +40,30 @@
     return articles[idx];
   }
 
+  /** Up to 5 articles for homepage paging, starting with this week's feature. */
+  function featuredCarousel(now) {
+    if (!articles.length) return [];
+    var start = articles.indexOf(featuredArticle(now));
+    if (start < 0) start = 0;
+    var out = [];
+    var n = Math.min(FEATURED_SLOTS, articles.length);
+    for (var i = 0; i < n; i++) {
+      out.push(articles[(start + i) % articles.length]);
+    }
+    return out;
+  }
+
   function byId(id) {
-    return articles.find(function (a) {
-      return a.id === id;
-    }) || null;
+    return (
+      articles.find(function (a) {
+        return a.id === id;
+      }) || null
+    );
   }
 
   global.CC_ARTICLES = articles;
+  global.CC_FEATURED_SLOTS = FEATURED_SLOTS;
   global.CC_featuredArticle = featuredArticle;
+  global.CC_featuredCarousel = featuredCarousel;
   global.CC_getArticle = byId;
 })(typeof window !== "undefined" ? window : globalThis);
