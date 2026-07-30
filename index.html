@@ -158,6 +158,38 @@
   .save-section{background:#c7cdd6;}
   .save-note{font-size:0.875rem;color:var(--muted);margin-top:20px;max-width:70ch;}
 
+  /* ---------- WEEKLY ARTICLE ---------- */
+  .week-article{
+    background:var(--cream-2);
+    padding:64px 0 20px;
+  }
+  .week-feature{
+    display:grid;grid-template-columns:1.15fr 0.85fr;gap:36px;align-items:end;
+    padding-bottom:8px;
+  }
+  .week-feature h2{
+    font-family:var(--font-serif);font-size:clamp(1.85rem,3.4vw,2.55rem);
+    font-weight:400;line-height:1.18;color:var(--navy);margin:0 0 16px;max-width:18ch;
+  }
+  .week-feature .excerpt{
+    font-size:1.05rem;line-height:1.65;color:var(--muted);margin:0 0 24px;max-width:46ch;
+  }
+  .week-feature .week-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;}
+  .week-feature .archive-link{
+    font-size:0.9rem;color:var(--navy);border-bottom:1px solid rgba(201,162,75,.55);
+    padding-bottom:1px;
+  }
+  .week-feature .archive-link:hover{color:var(--gold);}
+  .week-aside{
+    border-left:1px solid rgba(26,42,74,.12);padding:8px 0 8px 28px;
+  }
+  .week-aside p{margin:0;font-size:0.92rem;line-height:1.55;color:var(--muted);}
+  .week-aside strong{color:var(--navy);font-weight:600;}
+  @media (max-width:800px){
+    .week-feature{grid-template-columns:1fr;gap:22px;}
+    .week-aside{border-left:none;border-top:1px solid rgba(26,42,74,.12);padding:18px 0 0;}
+  }
+
   /* ---------- FAMILY ---------- */
   .family-block{
     background:var(--navy);border-radius:8px;display:flex;gap:0;
@@ -224,6 +256,7 @@
         <a href="/entertainment/">Entertainment</a>
         <a href="/excursions/">Excursions</a>
         <a href="/faq/">FAQ</a>
+        <a href="/articles/">Articles</a>
         <a href="/community/">Community</a>
         <a href="/marketplace/">Marketplace</a>
       </div>
@@ -252,6 +285,25 @@
     <span><b>MAGIC</b> · WONDER · <b>DREAM</b> · FANTASY · <b>WISH</b> · TREASURE · <b>DESTINY</b> · ADVENTURE · <b>MAGIC</b> · WONDER · <b>DREAM</b> · FANTASY · <b>WISH</b> · TREASURE · <b>DESTINY</b> · ADVENTURE ·&nbsp;</span>
   </div>
 </div>
+
+<section class="week-article" id="this-week">
+  <div class="wrap">
+    <p class="section-label reveal">This week</p>
+    <div class="week-feature reveal" id="weekFeature">
+      <div>
+        <h2 id="weekTitle">Loading this week’s article…</h2>
+        <p class="excerpt" id="weekExcerpt"></p>
+        <div class="week-actions">
+          <a class="btn btn-gold" id="weekCta" href="/articles/">Read the article</a>
+          <a class="archive-link" href="/articles/">Browse archived articles</a>
+        </div>
+      </div>
+      <aside class="week-aside">
+        <p><strong>New every week.</strong> First-timer tips, packing tricks, and sailing secrets — past features stay in the <a href="/articles/" style="color:var(--teal);text-decoration:underline;">articles archive</a>.</p>
+      </aside>
+    </div>
+  </div>
+</section>
 
 <section class="why-section" id="ships">
   <div class="wrap">
@@ -388,10 +440,10 @@
     <div class="family-block reveal">
       <div class="family-media" aria-hidden="true"></div>
       <div class="family-text">
-        <p class="section-label">Coming soon</p>
+        <p class="section-label">Community</p>
         <h2>Find your sailing family</h2>
         <p>Join conversations with guests on your exact sailing — share plans, coordinate fish extenders, meet families before you set sail.</p>
-        <a href="#" class="btn btn-gold">Find my sailing</a>
+        <a href="/community/" class="btn btn-gold">Find my sailing</a>
       </div>
     </div>
   </div>
@@ -422,6 +474,7 @@
         <a href="/ports/">Ports</a>
         <a href="/dining/">Dining</a>
         <a href="/entertainment/">Entertainment</a>
+        <a href="/articles/">Articles</a>
         <a href="/planning/disney-cruise-cost.html">Plan Your Sailing</a>
         <a href="/planning/disney-cruise-packing-list.html">Packing list</a>
         <a href="/agents/">Find an Agent</a>
@@ -451,6 +504,22 @@
         var open=menu.classList.toggle('open');
         btn.setAttribute('aria-expanded', open ? 'true' : 'false');
       });
+    }
+  })();
+</script>
+<script src="/assets/articles-data.js"></script>
+<script>
+  (function(){
+    var article = window.CC_featuredArticle && window.CC_featuredArticle();
+    if (!article) return;
+    var title = document.getElementById('weekTitle');
+    var excerpt = document.getElementById('weekExcerpt');
+    var cta = document.getElementById('weekCta');
+    if (title) title.textContent = article.title;
+    if (excerpt) excerpt.textContent = article.excerpt || '';
+    if (cta) {
+      cta.href = article.url;
+      cta.textContent = 'Read this week’s article';
     }
   })();
 </script>

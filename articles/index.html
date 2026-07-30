@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Disney Cruise Articles &amp; Tips Archive | Cruising Cove</title>
+<meta name="description" content="Archived Disney Cruise Line planning articles from Cruising Cove — weekly tips, first-timer secrets, packing, and sailing advice.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+  .article-archive{display:flex;flex-direction:column;gap:0;margin-top:8px;}
+  .article-archive a{
+    display:block;padding:22px 0;border-bottom:1px solid rgba(26,42,74,.1);
+    color:inherit;text-decoration:none;
+  }
+  .article-archive a:hover h3{color:var(--gold);}
+  .article-archive .date{
+    font-size:0.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--gold);margin:0 0 8px;
+  }
+  .article-archive h3{
+    font-family:var(--font-serif);font-size:1.45rem;font-weight:500;
+    color:var(--navy);margin:0 0 8px;line-height:1.25;
+  }
+  .article-archive p{margin:0;color:var(--muted);line-height:1.55;max-width:62ch;}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <nav class="site-nav-bar" aria-label="Primary">
+      <a class="logo" href="/">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M1 8c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0" stroke="#c9a24b" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </span>
+        Cruising Cove
+      </a>
+      <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primaryNav">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="primaryNav">
+        <a href="/ships/">Ships</a>
+        <a href="/ports/">Ports</a>
+        <a href="/dining/">Dining</a>
+        <a href="/entertainment/">Entertainment</a>
+        <a href="/excursions/">Excursions</a>
+        <a href="/faq/">FAQ</a>
+        <a href="/articles/" class="current">Articles</a>
+        <a href="/community/">Community</a>
+        <a href="/marketplace/">Marketplace</a>
+      </div>
+      <div class="nav-cta">
+        <a href="/agents/" class="btn btn-outline">Find an Agent</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <span class="eyebrow mono">Archive</span>
+    <h1>Disney Cruise <em>articles</em>.</h1>
+    <p class="lede">Past weekly features and planning tips — everything we’ve published, in one place.</p>
+  </div>
+  <div class="tide" aria-hidden="true">
+    <svg viewBox="0 0 1200 56" preserveAspectRatio="none">
+      <path d="M0,28 C150,50 300,6 450,28 C600,50 750,6 900,28 C1050,50 1150,18 1200,26 L1200,56 L0,56 Z" fill="#faf7ee"></path>
+    </svg>
+  </div>
+</div>
+
+<main>
+  <section>
+    <span class="label mono">&mdash; All posts</span>
+    <h2>Browse the archive</h2>
+    <div class="article-archive" id="archiveList">
+      <p class="empty-state" style="color:var(--muted);">Loading articles…</p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-top">
+      <a class="logo" href="/">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M1 8c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0" stroke="#c9a24b" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </span>
+        Cruising Cove
+      </a>
+      <div class="foot-links">
+        <a href="/articles/">Articles</a>
+        <a href="/ships/">Ships</a>
+        <a href="/ports/">Ports</a>
+        <a href="/agents/">Find an Agent</a>
+      </div>
+    </div>
+    <p class="disclaimer">Cruising Cove is an independent planning guide and is not affiliated with, endorsed by, or sponsored by The Walt Disney Company, Disney Cruise Line, or any of their affiliates.</p>
+  </div>
+</footer>
+
+<script src="/assets/articles-data.js"></script>
+<script>
+(function(){
+  var btn=document.querySelector('.nav-toggle');
+  var menu=document.getElementById('primaryNav');
+  if(btn&&menu){
+    btn.addEventListener('click',function(){
+      var open=menu.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  }
+
+  var list = document.getElementById('archiveList');
+  var articles = window.CC_ARTICLES || [];
+  if (!articles.length) {
+    list.innerHTML = '<p style="color:var(--muted);">No articles yet.</p>';
+    return;
+  }
+  list.innerHTML = articles.map(function(a){
+    var d = a.date ? new Date(a.date + 'T12:00:00') : null;
+    var dateLabel = d ? d.toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' }) : '';
+    return (
+      '<a href="' + a.url + '">' +
+        (dateLabel ? '<p class="date">' + dateLabel + '</p>' : '') +
+        '<h3>' + a.title + '</h3>' +
+        '<p>' + (a.excerpt || '') + '</p>' +
+      '</a>'
+    );
+  }).join('');
+})();
+</script>
+<script src="/assets/analytics.js" defer></script>
+<script src="/assets/site-search.js" defer></script>
+<script src="/assets/chat-widget.js" defer></script>
+</body>
+</html>
