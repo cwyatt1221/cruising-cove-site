@@ -1,38 +1,43 @@
 /**
  * Castaway Club booking-window helpers (approximate Disney windows; confirm in app).
+ * Official activity windows: First-time 75 · Silver 90 · Gold 105 · Platinum 120 · Pearl 123.
+ * Concierge often matches Pearl online (~123); phone Concierge can be slightly earlier.
  */
 (function () {
-  // Days before sailing when the window typically opens
   var WINDOWS = {
     cabana: {
       concierge: 123,
-      platinum: 108,
-      gold: 93,
+      pearl: 123,
+      platinum: 120,
+      gold: 105,
       silver: 90,
-      pearl: 75,
+      firstTime: 75,
     },
     portAdventures: {
-      concierge: 120,
-      platinum: 105,
-      gold: 90,
+      concierge: 123,
+      pearl: 123,
+      platinum: 120,
+      gold: 105,
       silver: 90,
-      pearl: 75,
+      firstTime: 75,
     },
     specialtyDining: {
-      concierge: 120,
-      platinum: 105,
-      gold: 90,
+      concierge: 123,
+      pearl: 123,
+      platinum: 120,
+      gold: 105,
       silver: 90,
-      pearl: 75,
+      firstTime: 75,
     },
   };
 
   var TIER_LABELS = {
     concierge: "Concierge",
+    pearl: "Pearl Castaway Club (25+ sailings)",
     platinum: "Platinum Castaway Club",
     gold: "Gold Castaway Club",
     silver: "Silver Castaway Club",
-    pearl: "First-time / Pearl",
+    firstTime: "First-time guest",
   };
 
   function parseDate(value) {
@@ -135,7 +140,7 @@
       statusLabel(data.specialtyDining) +
       " · typically with PA window</span></div>" +
       "</div>" +
-      '<p class="fine-print">Approximate Castaway Club windows used by most U.S. Disney sailings. Concierge and club tiers can shift; always confirm the exact open time in the Disney Cruise Line app or with your agent.</p>';
+      '<p class="fine-print">Approximate Castaway Club windows for most U.S. Disney sailings (Pearl = 25+ completed sailings; first-time guests are not Pearl). Concierge may get slightly earlier access by phone. Always confirm the exact open time in the Disney Cruise Line app.</p>';
     root.innerHTML = html;
   }
 
@@ -145,7 +150,8 @@
     function update(e) {
       if (e) e.preventDefault();
       var sail = parseDate(form.sailDate.value);
-      var tier = form.tier.value || "pearl";
+      var tier = form.tier.value || "firstTime";
+      if (!WINDOWS.portAdventures[tier]) tier = "firstTime";
       if (!sail) {
         out.innerHTML =
           '<p class="fine-print">Enter your sail date to see cabana, Port Adventure, and specialty dining windows.</p>';
