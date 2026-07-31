@@ -9,6 +9,7 @@ import {
   shortId,
   table,
 } from "../lib/planner";
+import { adminAuthOk as adminKeyOk } from "../lib/adminAuth";
 
 function suggestionToJson(entity: Record<string, unknown>) {
   return {
@@ -35,11 +36,6 @@ function packingItemToJson(entity: Record<string, unknown>) {
     sourceSuggestionId: String(entity.sourceSuggestionId ?? ""),
     createdAt: String(entity.createdAt ?? ""),
   };
-}
-
-function adminKeyOk(request: HttpRequest): boolean {
-  const key = request.query.get("key") || request.headers.get("x-cc-admin-key") || "";
-  return Boolean(process.env.REPORT_ACCESS_KEY && key === process.env.REPORT_ACCESS_KEY);
 }
 
 export async function plannerSubmitSuggestion(
@@ -111,7 +107,7 @@ export async function plannerAdminListSuggestions(
   context: InvocationContext
 ): Promise<HttpResponseInit> {
   if (request.method === "OPTIONS") return corsJson(204, {});
-  if (!adminKeyOk(request)) return corsJson(401, { error: "Missing or invalid admin key." });
+  if (!(await adminKeyOk(request))) return corsJson(401, { error: "Missing or invalid admin key." });
 
   const statusFilter = request.query.get("status") || "pending";
 
@@ -138,7 +134,7 @@ export async function plannerAdminModerateSuggestion(
   context: InvocationContext
 ): Promise<HttpResponseInit> {
   if (request.method === "OPTIONS") return corsJson(204, {});
-  if (!adminKeyOk(request)) return corsJson(401, { error: "Missing or invalid admin key." });
+  if (!(await adminKeyOk(request))) return corsJson(401, { error: "Missing or invalid admin key." });
 
   const suggestionId = request.params.suggestionId?.trim();
   if (!suggestionId) return corsJson(400, { error: "Suggestion id is required." });

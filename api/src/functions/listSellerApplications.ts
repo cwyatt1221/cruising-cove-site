@@ -5,7 +5,7 @@ export async function listSellerApplications(
   request: HttpRequest,
   context: InvocationContext
 ): Promise<HttpResponseInit> {
-  if (!adminKeyOk(request)) {
+  if (!(await adminKeyOk(request))) {
     return { status: 401, jsonBody: { error: "Missing or invalid 'key' query parameter." } };
   }
 

@@ -1,5 +1,6 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import { TableClient } from "@azure/data-tables";
+import { adminAuthOk } from "../lib/adminAuth";
 
 const TABLE_NAME = "CreatorApplications";
 
@@ -19,10 +20,7 @@ function splitCsv(value: unknown): string[] {
 }
 
 export async function listCreatorApplications(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
-  // Reuses REPORT_ACCESS_KEY — same admin-only gate as the top-questions report,
-  // to avoid piling up separate secrets for the same person (you).
-  const key = request.query.get("key");
-  if (!process.env.REPORT_ACCESS_KEY || key !== process.env.REPORT_ACCESS_KEY) {
+  if (!(await adminAuthOk(request))) {
     return { status: 401, jsonBody: { error: "Missing or invalid 'key' query parameter." } };
   }
 

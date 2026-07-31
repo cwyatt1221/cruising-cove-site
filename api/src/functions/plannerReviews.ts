@@ -8,11 +8,7 @@ import {
   reviewPartition,
   table,
 } from "../lib/planner";
-
-function adminKeyOk(request: HttpRequest): boolean {
-  const key = request.query.get("key") || request.headers.get("x-cc-admin-key") || "";
-  return Boolean(process.env.REPORT_ACCESS_KEY && key === process.env.REPORT_ACCESS_KEY);
-}
+import { adminAuthOk as adminKeyOk } from "../lib/adminAuth";
 
 function reviewToJson(entity: Record<string, unknown>) {
   return {
@@ -142,7 +138,7 @@ export async function plannerAdminListReviews(
   context: InvocationContext
 ): Promise<HttpResponseInit> {
   if (request.method === "OPTIONS") return corsJson(204, {});
-  if (!adminKeyOk(request)) return corsJson(401, { error: "Missing or invalid admin key." });
+  if (!(await adminKeyOk(request))) return corsJson(401, { error: "Missing or invalid admin key." });
 
   const statusFilter = request.query.get("status") || "pending";
 
@@ -167,7 +163,7 @@ export async function plannerAdminModerateReview(
   context: InvocationContext
 ): Promise<HttpResponseInit> {
   if (request.method === "OPTIONS") return corsJson(204, {});
-  if (!adminKeyOk(request)) return corsJson(401, { error: "Missing or invalid admin key." });
+  if (!(await adminKeyOk(request))) return corsJson(401, { error: "Missing or invalid admin key." });
 
   const reviewId = request.params.reviewId?.trim();
   if (!reviewId) return corsJson(400, { error: "Review id is required." });

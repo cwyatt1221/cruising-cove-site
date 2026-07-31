@@ -12,6 +12,7 @@ import {
   signupRowKey,
   table,
 } from "../lib/community";
+import { adminAuthOk } from "../lib/adminAuth";
 
 type SignupView = {
   type: string;
@@ -307,8 +308,7 @@ export async function deleteSignup(request: HttpRequest, context: InvocationCont
 export async function clearSignups(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   if (request.method === "OPTIONS") return corsJson(204, {});
 
-  const adminKey = request.query.get("key") || "";
-  if (!process.env.REPORT_ACCESS_KEY || adminKey !== process.env.REPORT_ACCESS_KEY) {
+  if (!(await adminAuthOk(request))) {
     return corsJson(401, { error: "Unauthorized." });
   }
 

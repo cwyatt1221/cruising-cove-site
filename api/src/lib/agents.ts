@@ -3,15 +3,12 @@ import { TableClient } from "@azure/data-tables";
 export const APPLICATIONS_TABLE = "AgentApplications";
 export const PUBLISHED_TABLE = "PublishedAgents";
 
+export { adminAuthOk as adminKeyOk } from "./adminAuth";
+
 export function table(name: string): TableClient {
   const connectionString = process.env.STORAGE_CONNECTION_STRING;
   if (!connectionString) throw new Error("STORAGE_CONNECTION_STRING is not set.");
   return TableClient.fromConnectionString(connectionString, name);
-}
-
-export function adminKeyOk(request: { query: { get(name: string): string | null } }): boolean {
-  const key = request.query.get("key");
-  return Boolean(process.env.REPORT_ACCESS_KEY && key === process.env.REPORT_ACCESS_KEY);
 }
 
 export function slugifyName(name: string): string {

@@ -27,12 +27,14 @@
   <div class="wrap" style="max-width:960px;">
     <section class="agent-admin-panel">
       <h1>Travel agent applications</h1>
-      <p class="agent-admin-sub">Enter your <code>REPORT_ACCESS_KEY</code>, review submissions, and publish approved agents to the public directory.</p>
+      <p class="agent-admin-sub">Sign in with your admin password, then review submissions and publish approved agents to the public directory.</p>
       <div class="agent-admin-key">
-        <label for="adminKey">Admin key</label>
-        <input id="adminKey" type="password" autocomplete="off">
+        <label for="adminPassword">Admin password</label>
+        <input id="adminPassword" type="password" autocomplete="current-password">
       </div>
       <div class="agent-admin-actions">
+        <button type="button" class="btn btn-gold" id="adminLoginBtn">Sign in</button>
+        <button type="button" class="btn btn-outline" id="adminLogoutBtn" hidden>Sign out</button>
         <button type="button" class="btn btn-gold" id="loadPending">Pending</button>
         <button type="button" class="btn btn-outline" id="loadApproved">Approved</button>
         <button type="button" class="btn btn-outline" id="loadAll">All</button>
@@ -44,20 +46,14 @@
   </div>
 </main>
 
+<script src="/assets/admin-auth.js"></script>
 <script>
 (function () {
   var list = document.getElementById("adminList");
   var statusEl = document.getElementById("adminStatus");
-  var keyInput = document.getElementById("adminKey");
-  try {
-    var saved = sessionStorage.getItem("cc_agent_admin_key");
-    if (saved) keyInput.value = saved;
-  } catch (_) {}
 
   function key() {
-    var k = (keyInput.value || "").trim();
-    try { if (k) sessionStorage.setItem("cc_agent_admin_key", k); } catch (_) {}
-    return k;
+    return (window.CCAdminAuth && window.CCAdminAuth.getToken()) || "";
   }
 
   function escapeHtml(str) {
@@ -180,7 +176,7 @@
 
   async function loadApps(status) {
     if (!key()) {
-      list.innerHTML = "<p class='agent-admin-empty'>Enter your admin key.</p>";
+      list.innerHTML = "<p class='agent-admin-empty'>Sign in with your admin password.</p>";
       return;
     }
     list.innerHTML = "<p class='agent-admin-empty'>Loading…</p>";
@@ -289,6 +285,14 @@
       showStatus(err.message || "Something went wrong.", false);
       btn.disabled = false;
     }
+  });
+
+  window.CCAdminAuth.bind({
+    passwordInput: document.getElementById("adminPassword"),
+    loginBtn: document.getElementById("adminLoginBtn"),
+    logoutBtn: document.getElementById("adminLogoutBtn"),
+    statusEl: statusEl,
+    onReady: function () { loadApps("pending"); }
   });
 })();
 </script>

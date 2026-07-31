@@ -1,6 +1,7 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import Anthropic from "@anthropic-ai/sdk";
 import { TableClient, odata } from "@azure/data-tables";
+import { adminAuthOk } from "../lib/adminAuth";
 
 const TABLE_NAME = "ChatQuestions";
 const DEFAULT_DAYS = 30;
@@ -125,8 +126,7 @@ Sort by totalCount descending. Include at most 3 example questions per topic (us
 }
 
 export async function topQuestions(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
-  const key = request.query.get("key");
-  if (!process.env.REPORT_ACCESS_KEY || key !== process.env.REPORT_ACCESS_KEY) {
+  if (!(await adminAuthOk(request))) {
     return { status: 401, jsonBody: { error: "Missing or invalid 'key' query parameter." } };
   }
 

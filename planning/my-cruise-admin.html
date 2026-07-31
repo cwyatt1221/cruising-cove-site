@@ -27,29 +27,32 @@
   <div class="wrap" style="max-width:900px;">
     <section class="mc-panel">
       <h2>My Cruise moderation</h2>
-      <p class="mc-sub">Uses <code>REPORT_ACCESS_KEY</code>. Approve packing suggestions and reviews before they go public.</p>
+      <p class="mc-sub">Sign in with your admin password, then approve packing suggestions and reviews before they go public.</p>
       <div class="mc-field">
-        <label for="adminKey">Admin key</label>
-        <input id="adminKey" type="password" autocomplete="off">
+        <label for="adminPassword">Admin password</label>
+        <input id="adminPassword" type="password" autocomplete="current-password">
       </div>
       <div class="mc-actions">
+        <button type="button" class="btn btn-gold" id="adminLoginBtn">Sign in</button>
+        <button type="button" class="btn btn-outline" id="adminLogoutBtn" hidden>Sign out</button>
         <button type="button" class="btn btn-gold" id="loadPacking">Pending packing</button>
         <button type="button" class="btn btn-outline" id="loadReviews">Pending reviews</button>
         <button type="button" class="btn btn-outline" id="loadAllPacking">All packing</button>
         <button type="button" class="btn btn-outline" id="loadAllReviews">All reviews</button>
       </div>
+      <p class="mc-empty" id="adminStatus" hidden style="margin-top:10px;"></p>
       <div id="adminList" style="margin-top:18px;"></div>
     </section>
   </div>
 </main>
 
+<script src="/assets/admin-auth.js"></script>
 <script>
 (function () {
   var list = document.getElementById("adminList");
-  var keyInput = document.getElementById("adminKey");
 
   function key() {
-    return (keyInput.value || "").trim();
+    return (window.CCAdminAuth && window.CCAdminAuth.getToken()) || "";
   }
 
   function escapeHtml(str) {
@@ -62,7 +65,7 @@
 
   async function loadPacking(status) {
     if (!key()) {
-      list.innerHTML = "<p class='mc-empty'>Enter your admin key.</p>";
+      list.innerHTML = "<p class='mc-empty'>Sign in with your admin password.</p>";
       return;
     }
     list.innerHTML = "<p class='mc-empty'>Loading…</p>";
@@ -119,7 +122,7 @@
 
   async function loadReviews(status) {
     if (!key()) {
-      list.innerHTML = "<p class='mc-empty'>Enter your admin key.</p>";
+      list.innerHTML = "<p class='mc-empty'>Sign in with your admin password.</p>";
       return;
     }
     list.innerHTML = "<p class='mc-empty'>Loading…</p>";
@@ -245,6 +248,14 @@
     if (rr) moderateReview(rr, pk, "reject").catch(function (err) {
       alert(err.message);
     });
+  });
+
+  window.CCAdminAuth.bind({
+    passwordInput: document.getElementById("adminPassword"),
+    loginBtn: document.getElementById("adminLoginBtn"),
+    logoutBtn: document.getElementById("adminLogoutBtn"),
+    statusEl: document.getElementById("adminStatus"),
+    onReady: function () { loadPacking("pending"); }
   });
 })();
 </script>
