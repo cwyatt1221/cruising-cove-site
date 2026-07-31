@@ -1,12 +1,12 @@
 /**
  * Castaway Club booking-window helpers (approximate Disney windows; confirm in app).
  * Official activity windows: First-time 75 · Silver 90 · Gold 105 · Platinum 120 · Pearl 123.
- * Concierge often matches Pearl online (~123); phone Concierge can be slightly earlier.
+ * Concierge: often ~130 days via Shoreside Concierge phone; ~123 days online (matches Pearl).
  */
 (function (global) {
   var WINDOWS = {
     cabana: {
-      concierge: 123,
+      concierge: 130,
       pearl: 123,
       platinum: 120,
       gold: 105,
@@ -14,7 +14,7 @@
       firstTime: 75,
     },
     portAdventures: {
-      concierge: 123,
+      concierge: 130,
       pearl: 123,
       platinum: 120,
       gold: 105,
@@ -22,7 +22,7 @@
       firstTime: 75,
     },
     specialtyDining: {
-      concierge: 123,
+      concierge: 130,
       pearl: 123,
       platinum: 120,
       gold: 105,
@@ -140,7 +140,7 @@
       statusLabel(data.specialtyDining) +
       " · typically with PA window</span></div>" +
       "</div>" +
-      '<p class="fine-print">Approximate Castaway Club windows for most U.S. Disney sailings (Pearl = 25+ completed sailings; first-time guests are not Pearl). Concierge may get slightly earlier access by phone. Always confirm the exact open time in the Disney Cruise Line app.</p>';
+      '<p class="fine-print">Approximate Castaway Club windows for most U.S. Disney sailings (Pearl = 25+ completed sailings; first-time guests are not Pearl). Concierge often opens ~130 days by phone; online is commonly ~123. Always confirm the exact open time in the Disney Cruise Line app.</p>';
     root.innerHTML = html;
   }
 

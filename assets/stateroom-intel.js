@@ -38,7 +38,7 @@
         "Wish-class has hundreds of connecting doors (Wish ~451). Great for multi-cabin groups — still request explicitly.",
       noise: [
         "Cabins near AquaMouse / pool decks hear attraction and morning setup.",
-        "Rooms above or beside late lounges (Bayou, Nightingale’s corridor traffic) can get evening noise.",
+        "Rooms above or beside late lounges (Wish-class lounge corridors) can get evening noise.",
         "Guest tip pattern: true midship verandahs sit farther from both elevator banks (quieter, longer walk); near-forward or near-aft is more convenient.",
       ],
     },

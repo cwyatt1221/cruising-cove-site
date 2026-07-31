@@ -157,6 +157,10 @@
             name: "Haunted Mansion Parlor",
             tip: "Haunted Mansion lounge · same spot as Wish Hyperspace",
           },
+          "Nightingale's": {
+            name: "Scat Cat Lounge",
+            tip: "Aristocats-inspired lounge · same Grand Hall–area spot as Wish Nightingale's",
+          },
         },
         "5": {
           "Arendelle: A Frozen Dining Adventure": {
@@ -185,11 +189,19 @@
             name: "Haunted Mansion Parlor",
             tip: "Haunted Mansion lounge (Destiny version)",
           },
+          "Nightingale's": {
+            name: "De Vil's",
+            tip: "Cruella-inspired lounge · same Grand Hall–area spot as Wish Nightingale's",
+          },
         },
         "5": {
           "Arendelle: A Frozen Dining Adventure": {
             name: "Pride Lands: Feast of the Lion King",
             tip: "Rotational Lion King theatrical feast",
+          },
+          "Keg & Compass": {
+            name: "Cask & Cannon",
+            tip: "Destiny pub · same forward Deck 5 spot as Wish Keg & Compass",
           },
         },
       },
@@ -214,7 +226,7 @@
             V("Lobby Atrium", "service", "mid", "Character meets & embarkation hub"),
             V("Royal Palace", "dining", "aft", "Rotational princess / fairytale dining"),
             V("Animator's Palate", "dining", "aft", "Rotational · walls come alive"),
-            V("District nightlife (The Tube, Pink, Ooh La La, 687)", "adults", "fwd", "Adult lounges · evenings"),
+            V("District nightlife (Evolution, Pink, 687, Skyline)", "adults", "fwd", "Adult lounges · evenings"),
             V("Guest Services", "service", "mid", "Purser & Port Adventures desks"),
             V("D Lounge", "entertainment", "mid", "Family activities & game shows"),
           ],
@@ -293,7 +305,7 @@
             V("Mickey's Pool", "pool", "mid", "Main family pool · Funnel Vision"),
             V("Nemo's Reef", "pool", "mid", "Little-kid splash"),
             V("AquaDuck entrance", "entertainment", "mid", "Water coaster boarding"),
-            V("Flo's Café / quick service", "dining", "mid", "Pizza, grill, Ramone's Cantina, soft-serve"),
+            V("Flo's Café / quick service", "dining", "mid", "Pizza, grill, soft-serve · Dream also has Ramone's Cantina after 2024 dry dock"),
           ],
         },
         "14": {
@@ -517,6 +529,15 @@
       if (v.name === "Royal Palace") {
         v.name = "Royal Court";
         v.tip = "Rotational princess / fairytale dining (Fantasy)";
+      }
+      if (v.name.indexOf("District nightlife") === 0) {
+        v.name = "District nightlife (The Tube, Ooh La La, O'Gills, Skyline)";
+        v.tip = "Fantasy adult lounges · evenings";
+      }
+    });
+    fantasy.decks["13"].venues.forEach(function (v) {
+      if (v.name.indexOf("Flo's Café") === 0) {
+        v.tip = "Pizza, grill, soft-serve · confirm current stalls in Navigator";
       }
     });
     global.CC_DECK_PLANS["disney-fantasy"] = fantasy;
