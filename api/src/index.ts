@@ -4,6 +4,8 @@ import "./functions/creatorApplication";
 import "./functions/listCreatorApplications";
 import "./functions/sellerApplication";
 import "./functions/listSellerApplications";
+import "./functions/moderateSellerApplication";
+import "./functions/publishedSellers";
 import "./functions/uploadSellerPhoto";
 import "./functions/agentLead";
 import "./functions/agentApplication";

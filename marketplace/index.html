@@ -99,60 +99,74 @@
       });
     }
 
-    var shops=window.CC_SHOPS||[];
-    var max=window.CC_MAX_SHOPS||10;
-    document.getElementById('slotCount').textContent=shops.length+' of '+max+' spots filled';
-
     var grid=document.getElementById('shopGrid');
     var empty=document.getElementById('emptyState');
+    var slotCount=document.getElementById('slotCount');
 
-    if(!shops.length){
-      empty.hidden=false;
-    }
+    function render(shops, max){
+      max = max || window.CC_MAX_SHOPS || 10;
+      grid.innerHTML = '';
+      slotCount.textContent = shops.length + ' of ' + max + ' spots filled';
+      empty.hidden = shops.length > 0;
 
-    shops.forEach(function(shop){
-      var photos=(shop.photoUrls||[]).slice(0,3);
-      var photoClass='mp-card-photos'+(photos.length<=1?' single':'');
-      var photoHtml='<div class="'+photoClass+'" aria-hidden="true">';
-      if(!photos.length){
-        photoHtml+='<div class="ph"></div>';
-      } else {
-        photos.forEach(function(url){
-          photoHtml+='<div class="ph" style="background-image:url(\''+String(url).replace(/'/g,"%27")+'\')"></div>';
-        });
+      shops.forEach(function(shop){
+        var photos=(shop.photoUrls||[]).slice(0,3);
+        var photoClass='mp-card-photos'+(photos.length<=1?' single':'');
+        var photoHtml='<div class="'+photoClass+'" aria-hidden="true">';
+        if(!photos.length){
+          photoHtml+='<div class="ph"></div>';
+        } else {
+          photos.forEach(function(url){
+            photoHtml+='<div class="ph" style="background-image:url(\''+String(url).replace(/'/g,"%27")+'\')"></div>';
+          });
+        }
+        photoHtml+='</div>';
+
+        var card=document.createElement('article');
+        card.className='mp-card';
+        if(shop.id) card.id = shop.id;
+        card.innerHTML=
+          photoHtml+
+          '<div class="mp-card-body">'+
+            '<h3>'+shop.name+'</h3>'+
+            '<p>'+(shop.description||'')+'</p>'+
+            '<div class="mp-card-actions">'+
+              '<a class="btn btn-gold" href="'+shop.etsyUrl+'" target="_blank" rel="noopener noreferrer" data-cc-event="etsy_click" data-cc-id="'+(shop.id||'')+'" data-shop-id="'+(shop.id||'')+'">Visit Etsy shop</a>'+
+            '</div>'+
+          '</div>';
+        grid.appendChild(card);
+      });
+
+      var open = Math.max(0, max - shops.length);
+      for(var i=0;i<open;i++){
+        var openCard=document.createElement('article');
+        openCard.className='mp-card open';
+        openCard.innerHTML=
+          '<div class="mp-card-body">'+
+            '<p class="mp-open-label">Spot open</p>'+
+            '<h3>Founding partner slot</h3>'+
+            '<p>One of ten exclusive listings for Disney cruise families planning on Cruising Cove.</p>'+
+            '<div class="mp-card-actions">'+
+              '<a class="btn btn-outline" href="/marketplace/sellers/">Apply for a slot</a>'+
+            '</div>'+
+          '</div>';
+        grid.appendChild(openCard);
       }
-      photoHtml+='</div>';
-
-      var card=document.createElement('article');
-      card.className='mp-card';
-      card.innerHTML=
-        photoHtml+
-        '<div class="mp-card-body">'+
-          '<h3>'+shop.name+'</h3>'+
-          '<p>'+(shop.description||'')+'</p>'+
-          '<div class="mp-card-actions">'+
-            '<a class="btn btn-gold" href="'+shop.etsyUrl+'" target="_blank" rel="noopener noreferrer" data-cc-event="etsy_click" data-cc-id="'+(shop.id||'')+'" data-shop-id="'+(shop.id||'')+'">Visit Etsy shop</a>'+
-          '</div>'+
-        '</div>';
-      grid.appendChild(card);
-    });
-
-    // Show remaining open spots as simple placeholders (no categories)
-    var open=window.CC_openShopSlots();
-    for(var i=0;i<open;i++){
-      var openCard=document.createElement('article');
-      openCard.className='mp-card open';
-      openCard.innerHTML=
-        '<div class="mp-card-body">'+
-          '<p class="mp-open-label">Spot open</p>'+
-          '<h3>Founding partner slot</h3>'+
-          '<p>One of ten exclusive listings for Disney cruise families planning on Cruising Cove.</p>'+
-          '<div class="mp-card-actions">'+
-            '<a class="btn btn-outline" href="/marketplace/sellers/">Apply for a slot</a>'+
-          '</div>'+
-        '</div>';
-      grid.appendChild(openCard);
     }
+
+    async function load(){
+      try{
+        var res = await fetch('/api/sellers');
+        var data = await res.json();
+        if(res.ok && Array.isArray(data.sellers)){
+          render(data.sellers, data.max || 10);
+          return;
+        }
+      }catch(_){}
+      render(window.CC_SHOPS || [], window.CC_MAX_SHOPS || 10);
+    }
+
+    load();
   })();
 </script>
 

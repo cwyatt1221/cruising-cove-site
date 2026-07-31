@@ -70,6 +70,20 @@ Agents submit a profile card for manual review:
 
 Tables: `AgentApplications`, `PublishedAgents`. Frontend: `/agents/apply.html`, admin review/publish at `/agents/admin.html`, dynamic profiles at `/agents/profile.html?id=…`. Sample cards remain in `assets/agents-data.js` until at least one live agent is published.
 
+## Marketplace seller applications (Curated 10)
+
+Etsy shops apply for one of ten marketplace slots:
+
+| Route | Purpose |
+| --- | --- |
+| `POST /api/seller-application` | Submit shop application |
+| `POST /api/seller-photo-upload` | Product photos → `seller-photos` blob container |
+| `GET /api/seller-applications?key=…` | List apps (`REPORT_ACCESS_KEY`) |
+| `POST /api/seller-applications/{id}?key=…` | Approve / reject / unpublish (`REPORT_ACCESS_KEY`) |
+| `GET /api/sellers` | Public published marketplace cards (max 10) |
+
+Tables: `SellerApplications`, `PublishedSellers`. Frontend: `/marketplace/sellers/`, admin at `/marketplace/sellers/admin.html`, live directory at `/marketplace/`.
+
 ## Analytics
 
 | Route | Purpose |

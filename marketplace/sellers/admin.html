@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marketplace seller applications admin | Cruising Cove</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/agents.css">
+<style>
+  .seller-admin-photos{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 12px;}
+  .seller-admin-photos img{
+    width:88px;height:88px;object-fit:cover;border-radius:2px;
+    border:1px solid rgba(26,42,74,.12);background:var(--cream-2);
+  }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <nav class="site-nav-bar" aria-label="Primary">
+      <a class="logo" href="/">Cruising Cove</a>
+      <div class="nav-cta">
+        <a href="/marketplace/" class="btn btn-outline">Marketplace</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main class="agent-admin-shell">
+  <div class="wrap" style="max-width:960px;">
+    <section class="agent-admin-panel">
+      <h1>Marketplace seller applications</h1>
+      <p class="agent-admin-sub">Enter your <code>REPORT_ACCESS_KEY</code>, review Curated 10 submissions, and publish approved shops to the marketplace (max 10 live).</p>
+      <div class="agent-admin-key">
+        <label for="adminKey">Admin key</label>
+        <input id="adminKey" type="password" autocomplete="off">
+      </div>
+      <div class="agent-admin-actions">
+        <button type="button" class="btn btn-gold" id="loadPending">Pending</button>
+        <button type="button" class="btn btn-outline" id="loadApproved">Approved</button>
+        <button type="button" class="btn btn-outline" id="loadAll">All</button>
+        <button type="button" class="btn btn-outline" id="loadLive">Live marketplace</button>
+      </div>
+      <p class="agent-admin-status" id="adminStatus" hidden></p>
+      <div id="adminList" class="agent-admin-list"></div>
+    </section>
+  </div>
+</main>
+
+<script>
+(function () {
+  var list = document.getElementById("adminList");
+  var statusEl = document.getElementById("adminStatus");
+  var keyInput = document.getElementById("adminKey");
+  try {
+    var saved = sessionStorage.getItem("cc_seller_admin_key") || sessionStorage.getItem("cc_agent_admin_key");
+    if (saved) keyInput.value = saved;
+  } catch (_) {}
+
+  function key() {
+    var k = (keyInput.value || "").trim();
+    try { if (k) sessionStorage.setItem("cc_seller_admin_key", k); } catch (_) {}
+    return k;
+  }
+
+  function escapeHtml(str) {
+    return String(str == null ? "" : str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function showStatus(msg, ok) {
+    statusEl.hidden = false;
+    statusEl.textContent = msg;
+    statusEl.className = "agent-admin-status " + (ok ? "ok" : "err");
+  }
+
+  function slugPreview(name) {
+    return String(name || "shop")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 60) || "shop";
+  }
+
+  function photosHtml(urls) {
+    var list = urls || [];
+    if (!list.length) return "";
+    return (
+      '<div class="seller-admin-photos">' +
+      list.slice(0, 4).map(function (u) {
+        return '<img src="' + escapeHtml(u) + '" alt="">';
+      }).join("") +
+      "</div>"
+    );
+  }
+
+  function renderApps(rows, title) {
+    if (!rows.length) {
+      list.innerHTML = "<p class='agent-admin-empty'>No applications.</p>";
+      return;
+    }
+    list.innerHTML =
+      "<h2>" + escapeHtml(title) + " <span>(" + rows.length + ")</span></h2>" +
+      rows.map(function (a) {
+        var pending = a.status === "pending";
+        var approved = a.status === "approved";
+        var live = a.publishedSellerId
+          ? "/marketplace/#" + encodeURIComponent(a.publishedSellerId)
+          : "";
+        return (
+          '<article class="agent-admin-card" data-id="' + escapeHtml(a.id) + '" data-pk="' + escapeHtml(a.partitionKey) + '">' +
+            '<div class="agent-admin-card-top">' +
+              (a.photoUrls && a.photoUrls[0]
+                ? '<img class="agent-admin-photo" src="' + escapeHtml(a.photoUrls[0]) + '" alt="">'
+                : '<div class="agent-avatar" aria-hidden="true">?</div>') +
+              '<div>' +
+                "<h3>" + escapeHtml(a.shopName) +
+                ' <span class="agent-badge">' + escapeHtml(a.status || "pending") + "</span></h3>" +
+                '<p class="agent-meta">' + escapeHtml(a.ownerName) + " · " + escapeHtml(a.email) + "</p>" +
+                '<p class="agent-meta"><a href="' + escapeHtml(a.etsyShopUrl) + '" target="_blank" rel="noopener noreferrer">' +
+                escapeHtml(a.etsyShopUrl) + "</a></p>" +
+                '<p class="agent-meta">Submitted ' + escapeHtml(a.submittedAt || "") + "</p>" +
+              "</div>" +
+            "</div>" +
+            photosHtml(a.photoUrls) +
+            "<p>" + escapeHtml(a.shopDescription) + "</p>" +
+            '<div class="agent-tags">' +
+              (a.productCategories || []).map(function (s) {
+                return '<span class="agent-tag">' + escapeHtml(s) + "</span>";
+              }).join("") +
+              (a.productCategoriesOther
+                ? '<span class="agent-tag">' + escapeHtml(a.productCategoriesOther) + "</span>"
+                : "") +
+            "</div>" +
+            '<p class="agent-meta">Audience: ' + escapeHtml(a.audienceSize || "—") +
+              " · Barter: " + escapeHtml(a.willingToBarter || "—") +
+            "</p>" +
+            (a.socialLinks && (a.socialLinks.instagram || a.socialLinks.tiktok || a.socialLinks.facebook)
+              ? '<p class="agent-meta">Social: ' +
+                [a.socialLinks.instagram, a.socialLinks.tiktok, a.socialLinks.facebook]
+                  .filter(Boolean)
+                  .map(function (u) {
+                    return '<a href="' + escapeHtml(u) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(u) + "</a>";
+                  }).join(" · ") +
+                "</p>"
+              : "") +
+            (a.otherNotes
+              ? "<p class='agent-meta'>Notes: " + escapeHtml(a.otherNotes) + "</p>"
+              : "") +
+            (live
+              ? '<p class="agent-meta"><a href="' + escapeHtml(live) + '">View on marketplace →</a></p>'
+              : "") +
+            (pending || approved
+              ? '<div class="agent-admin-card-actions">' +
+                  '<label class="agent-admin-check"><input type="checkbox" data-featured ' +
+                    (a.featured ? "checked" : "") +
+                    "> Featured on marketplace</label>" +
+                  '<label class="agent-admin-slug">Shop URL id' +
+                  '<input type="text" data-seller-id value="' +
+                  escapeHtml(a.publishedSellerId || slugPreview(a.shopName)) +
+                  '" ' + (a.publishedSellerId ? "readonly" : "") + ">" +
+                  "</label>" +
+                  '<button type="button" class="btn btn-gold" data-action="approve">' +
+                  (approved ? "Update / re-publish" : "Publish to marketplace") +
+                  "</button>" +
+                  (pending
+                    ? '<button type="button" class="btn btn-outline" data-action="reject">Reject</button>'
+                    : "") +
+                  (approved
+                    ? '<button type="button" class="btn btn-outline" data-action="unpublish">Unpublish</button>'
+                    : "") +
+                "</div>"
+              : "") +
+          "</article>"
+        );
+      }).join("");
+  }
+
+  async function loadApps(status) {
+    if (!key()) {
+      list.innerHTML = "<p class='agent-admin-empty'>Enter your admin key.</p>";
+      return;
+    }
+    list.innerHTML = "<p class='agent-admin-empty'>Loading…</p>";
+    statusEl.hidden = true;
+    try {
+      var url = "/api/seller-applications?key=" + encodeURIComponent(key());
+      if (status) url += "&status=" + encodeURIComponent(status);
+      var res = await fetch(url);
+      var data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to load");
+      var title = status ? status.charAt(0).toUpperCase() + status.slice(1) : "All applications";
+      renderApps(data.applications || [], title);
+    } catch (err) {
+      list.innerHTML = "<p class='agent-admin-empty'>" + escapeHtml(err.message) + "</p>";
+    }
+  }
+
+  async function loadLive() {
+    list.innerHTML = "<p class='agent-admin-empty'>Loading live marketplace…</p>";
+    statusEl.hidden = true;
+    try {
+      var res = await fetch("/api/sellers");
+      var data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed");
+      var sellers = data.sellers || [];
+      if (!sellers.length) {
+        list.innerHTML = "<p class='agent-admin-empty'>No live shops published yet.</p>";
+        return;
+      }
+      list.innerHTML =
+        "<h2>Live marketplace <span>(" + sellers.length + " of " + (data.max || 10) + ")</span></h2>" +
+        sellers.map(function (s) {
+          return (
+            '<article class="agent-admin-card">' +
+              '<div class="agent-admin-card-top">' +
+                (s.photoUrls && s.photoUrls[0]
+                  ? '<img class="agent-admin-photo" src="' + escapeHtml(s.photoUrls[0]) + '" alt="">'
+                  : '<div class="agent-avatar" aria-hidden="true">?</div>') +
+                "<div><h3>" + escapeHtml(s.name) +
+                (s.featured ? ' <span class="agent-badge teal">Featured</span>' : "") +
+                "</h3>" +
+                '<p class="agent-meta"><a href="' + escapeHtml(s.etsyUrl) + '" target="_blank" rel="noopener noreferrer">' +
+                escapeHtml(s.etsyUrl) + "</a></p>" +
+                '<p class="agent-meta"><a href="/marketplace/#' + encodeURIComponent(s.id) +
+                '">/marketplace/#' + escapeHtml(s.id) + "</a></p></div></div>" +
+              "<p>" + escapeHtml(s.description) + "</p>" +
+            "</article>"
+          );
+        }).join("");
+    } catch (err) {
+      list.innerHTML = "<p class='agent-admin-empty'>" + escapeHtml(err.message) + "</p>";
+    }
+  }
+
+  async function moderate(card, action) {
+    var id = card.getAttribute("data-id");
+    var pk = card.getAttribute("data-pk");
+    var featuredEl = card.querySelector("[data-featured]");
+    var idEl = card.querySelector("[data-seller-id]");
+    var payload = {
+      partitionKey: pk,
+      action: action,
+      featured: featuredEl ? featuredEl.checked : false,
+      sellerId: idEl ? idEl.value.trim() : ""
+    };
+    var res = await fetch(
+      "/api/seller-applications/" + encodeURIComponent(id) + "?key=" + encodeURIComponent(key()),
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }
+    );
+    var data = await res.json().catch(function () { return {}; });
+    if (!res.ok) throw new Error(data.error || "Update failed");
+    return data;
+  }
+
+  document.getElementById("loadPending").addEventListener("click", function () { loadApps("pending"); });
+  document.getElementById("loadApproved").addEventListener("click", function () { loadApps("approved"); });
+  document.getElementById("loadAll").addEventListener("click", function () { loadApps(""); });
+  document.getElementById("loadLive").addEventListener("click", loadLive);
+
+  list.addEventListener("click", async function (e) {
+    var btn = e.target.closest("[data-action]");
+    if (!btn) return;
+    var card = btn.closest(".agent-admin-card");
+    if (!card) return;
+    var action = btn.getAttribute("data-action");
+    btn.disabled = true;
+    try {
+      var data = await moderate(card, action);
+      if (action === "approve") {
+        showStatus("Published — live on the marketplace" + (data.marketplacePath ? " (" + data.marketplacePath + ")" : ""), true);
+      } else if (action === "reject") {
+        showStatus("Application rejected.", true);
+      } else if (action === "unpublish") {
+        showStatus("Removed from the public marketplace.", true);
+      } else {
+        showStatus("Updated.", true);
+      }
+      loadApps(action === "approve" ? "approved" : "pending");
+    } catch (err) {
+      showStatus(err.message || "Something went wrong.", false);
+      btn.disabled = false;
+    }
+  });
+})();
+</script>
+</body>
+</html>
