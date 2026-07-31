@@ -123,6 +123,11 @@
   }
   .hero-aside .aside-cta:hover{color:var(--cream);border-bottom-color:var(--cream);}
 
+  .hero-perks a.perk-link{
+    color:inherit;text-decoration:none;display:block;
+  }
+  .hero-perks a.perk-link:hover strong{color:var(--gold);}
+  .hero-perks a.perk-link:hover span{color:#e4e7ee;}
   .hero-perks{
     display:grid;grid-template-columns:1fr 1fr;gap:0;
     margin:0;padding:0;list-style:none;
@@ -337,6 +342,8 @@
           <div class="nav-dropdown-menu">
             <a href="/planning/my-cruise.html">My Cruise planner</a>
             <a href="/planning/disney-cruise-cost.html">What it costs</a>
+            <a href="/planning/stateroom-guides.html">Stateroom guides</a>
+            <a href="/planning/compare-sailings.html">Compare sailings</a>
             <a href="/planning/booking-windows.html">Booking windows</a>
             <a href="/planning/castaway-club.html">Castaway Club</a>
             <a href="/excursions/">Excursions</a>
@@ -367,32 +374,40 @@
       </div>
       <ul class="hero-perks">
         <li>
-          <span class="perk-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M3 15.5 12 6l9 9.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 18h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8.5 18V12.5M12 18v-8M15.5 18v-5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          </span>
-          <strong>Every Ship</strong>
-          <span>Full specs, deck plans, and what makes each one different.</span>
+          <a class="perk-link" href="/ships/">
+            <span class="perk-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M3 15.5 12 6l9 9.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 18h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8.5 18V12.5M12 18v-8M15.5 18v-5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </span>
+            <strong>Every Ship</strong>
+            <span>Full specs and what makes each one different.</span>
+          </a>
         </li>
         <li>
-          <span class="perk-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s6-5.2 6-10a6 6 0 1 0-12 0c0 4.8 6 10 6 10Z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="11" r="2.2" stroke="currentColor" stroke-width="1.6"/></svg>
-          </span>
-          <strong>Key Ports</strong>
-          <span>Guides for the destinations Disney sails to most.</span>
+          <a class="perk-link" href="/ports/">
+            <span class="perk-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s6-5.2 6-10a6 6 0 1 0-12 0c0 4.8 6 10 6 10Z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="11" r="2.2" stroke="currentColor" stroke-width="1.6"/></svg>
+            </span>
+            <strong>Key Ports</strong>
+            <span>Guides for the destinations Disney sails to most.</span>
+          </a>
         </li>
         <li>
-          <span class="perk-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M4 18V9.5A2.5 2.5 0 0 1 6.5 7H17a3 3 0 0 1 3 3v8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M3 18h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8 11h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          </span>
-          <strong>Stateroom Guides</strong>
-          <span>See what each category offers so you find the right fit.</span>
+          <a class="perk-link" href="/planning/stateroom-guides.html">
+            <span class="perk-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M4 18V9.5A2.5 2.5 0 0 1 6.5 7H17a3 3 0 0 1 3 3v8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M3 18h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8 11h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </span>
+            <strong>Stateroom Guides</strong>
+            <span>See what each category offers so you find the right fit.</span>
+          </a>
         </li>
         <li>
-          <span class="perk-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="15" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M8 3.5V7M16 3.5V7M4 10h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          </span>
-          <strong>Plan Ahead</strong>
-          <span>Save favorites and compare itineraries side by side.</span>
+          <a class="perk-link" href="/planning/compare-sailings.html">
+            <span class="perk-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="15" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M8 3.5V7M16 3.5V7M4 10h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </span>
+            <strong>Plan Ahead</strong>
+            <span>Save favorites and compare itineraries side by side.</span>
+          </a>
         </li>
       </ul>
     </div>

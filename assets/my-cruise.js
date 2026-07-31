@@ -1454,6 +1454,15 @@
     }
   }
 
+  function loadTemplateFromQuery() {
+    var params = new URLSearchParams(location.search);
+    var templateId = params.get("template");
+    if (!templateId) return;
+    applyCatalog(templateId);
+    var catalog = $("mcCatalog");
+    if (catalog) catalog.value = templateId;
+  }
+
   async function init() {
     if (!DATA) return;
     populateStaticFilters();
@@ -1464,6 +1473,7 @@
     await syncFromServer();
     await loadCommunityPacking();
     renderAll();
+    loadTemplateFromQuery();
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
