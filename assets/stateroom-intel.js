@@ -31,7 +31,7 @@
     },
     wish: {
       elevators:
-        "Wish-class elevators are busy midship. If you’re noise-sensitive, prefer a room a few doors off the lobby on your deck.",
+        "Wish-class has forward and aft elevator banks only — no midship bank (the Grand Hall takes that space). If you’re noise-sensitive, skip cabins right next to either lobby and pick a few doors down the corridor.",
       obstructed:
         "Check for obstructed verandah labels and rooms under AquaMouse structure. Concierge forward/aft has different view tradeoffs — compare deck plans.",
       connecting:
@@ -39,7 +39,7 @@
       noise: [
         "Cabins near AquaMouse / pool decks hear attraction and morning setup.",
         "Rooms above or beside late lounges (Bayou, Nightingale’s corridor traffic) can get evening noise.",
-        "Guest tip pattern: midship verandahs a few doors from elevators balance walkability and quiet.",
+        "Guest tip pattern: true midship verandahs sit farther from both elevator banks (quieter, longer walk); near-forward or near-aft is more convenient.",
       ],
     },
     adventure: {
