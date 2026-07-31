@@ -6,9 +6,17 @@
 (function (global) {
   var FEATURED_SLOTS = 5;
   /** Pin the first homepage carousel slide. Set to null to rotate by ISO week. */
-  var CAROUSEL_START_ID = "welcome-aboard-rebekah";
+  var CAROUSEL_START_ID = "welcome-aboard-shana";
 
   var articles = [
+    {
+      id: "welcome-aboard-shana",
+      title: "Welcome Aboard Shana — Our Newest Travel Agent",
+      excerpt:
+        "Meet Shana Matos of Friend Like Me Travel Co — a Disney Cruise specialist for families, gluten-free travel, and autism-friendly sailings.",
+      date: "2026-07-31",
+      url: "/articles/welcome-aboard-shana.html",
+    },
     {
       id: "welcome-aboard-rebekah",
       title: "Welcome Aboard Rebekah — Our Newest Travel Agent",
