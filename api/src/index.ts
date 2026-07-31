@@ -1,6 +1,5 @@
 import "./functions/chat";
 import "./functions/topQuestions";
-import "./functions/adminLogin";
 import "./functions/creatorApplication";
 import "./functions/listCreatorApplications";
 import "./functions/sellerApplication";

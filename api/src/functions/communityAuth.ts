@@ -11,6 +11,7 @@ import {
   table,
   verifyPassword,
 } from "../lib/community";
+import { createAdminSession, revokeAdminSession } from "../lib/adminAuth";
 
 const SESSION_DAYS = 30;
 
@@ -88,11 +89,41 @@ export async function communityRegister(request: HttpRequest, context: Invocatio
 export async function communityLogin(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   if (request.method === "OPTIONS") return corsJson(204, {});
 
-  let body: { email?: string; password?: string };
+  let body: {
+    email?: string;
+    password?: string;
+    scope?: string;
+    action?: string;
+    token?: string;
+  };
   try {
     body = (await request.json()) as typeof body;
   } catch {
     return corsJson(400, { error: "Request body must be valid JSON." });
+  }
+
+  // Site admin password login/logout — reuses this existing SWA route because
+  // new app.http() registrations are currently dropped (managed Functions cap).
+  if (String(body.scope || "") === "site-admin") {
+    const action = String(body.action || "login");
+    try {
+      if (action === "logout") {
+        await revokeAdminSession(String(body.token || ""));
+        return corsJson(200, { success: true });
+      }
+      const result = await createAdminSession(String(body.password || ""));
+      if (!result.ok) {
+        return corsJson(result.status, { error: result.error });
+      }
+      return corsJson(200, {
+        success: true,
+        token: result.token,
+        expiresAt: result.expiresAt,
+      });
+    } catch (err) {
+      context.error("site-admin login failed:", err);
+      return corsJson(500, { error: "Could not start an admin session." });
+    }
   }
 
   const email = normalizeEmail(body.email ?? "");

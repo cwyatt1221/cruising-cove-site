@@ -36,10 +36,16 @@
   }
 
   async function login(password) {
-    var res = await fetch("/api/admin-login", {
+    // Uses existing /api/community/login (scope=site-admin). Dedicated /api/admin-login
+    // is not registered on this SWA due to the managed Functions route cap.
+    var res = await fetch("/api/community/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password: password || "" }),
+      body: JSON.stringify({
+        scope: "site-admin",
+        action: "login",
+        password: password || "",
+      }),
     });
     var data = await res.json().catch(function () {
       return {};
@@ -54,10 +60,14 @@
     clearToken();
     if (!token) return;
     try {
-      await fetch("/api/admin-logout", {
+      await fetch("/api/community/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: token }),
+        body: JSON.stringify({
+          scope: "site-admin",
+          action: "logout",
+          token: token,
+        }),
       });
     } catch (_) {}
   }
