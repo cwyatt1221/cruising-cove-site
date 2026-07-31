@@ -11,6 +11,7 @@
     { id: "kids", label: "Kids & teens" },
     { id: "adults", label: "Adults" },
     { id: "spa", label: "Spa" },
+    { id: "laundry", label: "Laundry" },
     { id: "service", label: "Services" },
   ];
 
@@ -22,6 +23,7 @@
     kids: "Kids & teens",
     adults: "Adults",
     spa: "Spa",
+    laundry: "Laundry",
     service: "Services",
   };
 

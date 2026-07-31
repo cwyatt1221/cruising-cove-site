@@ -713,6 +713,7 @@ footer:not(.site-footer) .disclaimer{
 .cc-deck-dot.cat-kids{background:#7ec98a;}
 .cc-deck-dot.cat-adults{background:#d4836a;}
 .cc-deck-dot.cat-spa{background:#9b8fd4;}
+.cc-deck-dot.cat-laundry{background:#6ec4b8;}
 .cc-deck-dot.cat-service{background:#a8b0bc;}
 .cc-deck-empty{color:rgba(245,240,225,.35);font-size:0.85rem;}
 .cc-deck-map-caption{
@@ -739,6 +740,7 @@ footer:not(.site-footer) .disclaimer{
 .cc-deck-cat.cat-kids{background:rgba(126,201,138,.2);color:#7ec98a;}
 .cc-deck-cat.cat-adults{background:rgba(212,131,106,.2);color:#e0a090;}
 .cc-deck-cat.cat-spa{background:rgba(155,143,212,.2);color:#b8aee0;}
+.cc-deck-cat.cat-laundry{background:rgba(110,196,184,.22);color:#6ec4b8;}
 .cc-deck-cat.cat-service{background:rgba(168,176,188,.2);color:#c5cad3;}
 .cc-deck-venue-list strong{
   display:block;font-family:var(--font-serif);font-size:1.12rem;

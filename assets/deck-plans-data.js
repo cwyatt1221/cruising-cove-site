@@ -51,6 +51,12 @@
           V("Triton Lounge", "adults", "fwd", "Quiet lounge near spa / forward elevators"),
         ],
       },
+      "8": {
+        blurb: "Cabin decks — centralized guest laundry.",
+        venues: [
+          V("Fairytale Fresh Laundry", "laundry", "fwd", "Self-service washers/dryers · Key to the World · irons only in laundry rooms · full-service bag pickup from your stateroom also available"),
+        ],
+      },
       "11": {
         blurb: "Family pool deck and Marceline Market buffet.",
         venues: [
@@ -199,6 +205,7 @@
           blurb: "Enchanted Garden and lower public spaces.",
           venues: [
             V("Enchanted Garden", "dining", "aft", "Rotational restaurant · garden conservatory vibe"),
+            V("Self-service laundry", "laundry", "mid", "One of several Dream-class launderettes · Key to the World · typically 24 hours"),
           ],
         },
         "3": {
@@ -228,6 +235,37 @@
             V("It's a Small World Nursery", "kids", "mid", "Fee + reservation"),
             V("Buena Vista Theatre", "entertainment", "aft", "Feature films"),
             V("Edge", "kids", "mid", "Tween club ~11–14"),
+            V("Self-service laundry", "laundry", "mid", "Launderette on this cabin deck · Key to the World"),
+          ],
+        },
+        "6": {
+          blurb: "Mostly staterooms — guest laundry on this deck.",
+          venues: [
+            V("Self-service laundry", "laundry", "mid", "Launderette on this cabin deck · Key to the World"),
+          ],
+        },
+        "7": {
+          blurb: "Mostly staterooms — guest laundry on this deck.",
+          venues: [
+            V("Self-service laundry", "laundry", "mid", "Launderette on this cabin deck · Key to the World"),
+          ],
+        },
+        "8": {
+          blurb: "Mostly staterooms — guest laundry on this deck.",
+          venues: [
+            V("Self-service laundry", "laundry", "mid", "Launderette on this cabin deck · Key to the World"),
+          ],
+        },
+        "9": {
+          blurb: "Mostly staterooms — guest laundry on this deck.",
+          venues: [
+            V("Self-service laundry", "laundry", "mid", "Launderette on this cabin deck · Key to the World"),
+          ],
+        },
+        "10": {
+          blurb: "Mostly staterooms — guest laundry on this deck.",
+          venues: [
+            V("Self-service laundry", "laundry", "mid", "Launderette on this cabin deck · Key to the World"),
           ],
         },
         "11": {
@@ -287,6 +325,12 @@
           blurb: "Health center and tender access.",
           venues: [V("Health Center", "service", "fwd", "Medical / first aid")],
         },
+        "2": {
+          blurb: "Mostly staterooms — guest laundry on this deck.",
+          venues: [
+            V("Self-service laundry", "laundry", "mid", "Launderette · Key to the World · typically 24 hours · irons only in laundry rooms"),
+          ],
+        },
         "3": {
           blurb: "Atrium, Lumière’s, After Hours lounges, Rapunzel’s.",
           venues: [
@@ -315,6 +359,18 @@
             V("Disney's Oceaneer Club", "kids", "aft", "Ages ~3–12 · connected to Lab"),
             V("It's a Small World Nursery", "kids", "aft", "Fee + reservation"),
             V("Buena Vista Theatre", "entertainment", "aft", "Movies"),
+          ],
+        },
+        "6": {
+          blurb: "Mostly staterooms — guest laundry on this deck.",
+          venues: [
+            V("Self-service laundry", "laundry", "mid", "Launderette · Key to the World · typically 24 hours"),
+          ],
+        },
+        "7": {
+          blurb: "Mostly staterooms — guest laundry on this deck.",
+          venues: [
+            V("Self-service laundry", "laundry", "mid", "Launderette · Key to the World · typically 24 hours"),
           ],
         },
         "9": {
@@ -422,9 +478,10 @@
           ],
         },
         "16": {
-          blurb: "Wayfinder Bay — Moana-inspired outdoor retreat.",
+          blurb: "Wayfinder Bay — Moana-inspired outdoor retreat · guest laundry.",
           venues: [
             V("Wayfinder Bay", "pool", "aft", "Moana-themed outdoor pool / lounge area"),
+            V("Fairytale Fresh Laundry", "laundry", "mid", "Self-service laundry · Key to the World · check Navigator for hours"),
           ],
         },
         "17": {
