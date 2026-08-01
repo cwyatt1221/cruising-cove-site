@@ -43,6 +43,15 @@
       <p class="agent-admin-status" id="adminStatus" hidden></p>
       <div id="adminList" class="agent-admin-list"></div>
     </section>
+
+    <section class="agent-admin-panel" style="margin-top:28px;">
+      <h2 style="font-family:var(--font-serif);font-weight:500;font-size:1.45rem;margin:0 0 8px;">Guest request locks</h2>
+      <p class="agent-admin-sub">After a signed-in guest requests one agent, other request buttons stay locked until you unlock them here.</p>
+      <div class="agent-admin-actions">
+        <button type="button" class="btn btn-gold" id="loadLocks">Load locked guests</button>
+      </div>
+      <div id="locksList" class="agent-admin-list"></div>
+    </section>
   </div>
 </main>
 
@@ -287,12 +296,91 @@
     }
   });
 
+  var locksList = document.getElementById("locksList");
+
+  async function loadLocks() {
+    if (!key()) {
+      locksList.innerHTML = "<p class='agent-admin-empty'>Sign in with your admin password.</p>";
+      return;
+    }
+    locksList.innerHTML = "<p class='agent-admin-empty'>Loading…</p>";
+    try {
+      var res = await fetch("/api/agent-lead?key=" + encodeURIComponent(key()));
+      var data = await res.json().catch(function () { return {}; });
+      if (!res.ok) throw new Error(data.error || "Could not load locks");
+      var rows = data.locks || [];
+      if (!rows.length) {
+        locksList.innerHTML = "<p class='agent-admin-empty'>No locked guest requests.</p>";
+        return;
+      }
+      locksList.innerHTML = rows
+        .map(function (row) {
+          return (
+            '<article class="agent-admin-card" data-user-id="' +
+            escapeHtml(row.userId) +
+            '" data-lead-id="' +
+            escapeHtml(row.leadId || "") +
+            '" data-agent-id="' +
+            escapeHtml(row.agentId || "") +
+            '">' +
+            "<h3>" +
+            escapeHtml(row.guestName || row.email || "Guest") +
+            "</h3>" +
+            '<p class="agent-meta">' +
+            escapeHtml(row.email || "") +
+            " · requested " +
+            escapeHtml(row.agentName || row.agentId || "agent") +
+            (row.submittedAt ? " · " + escapeHtml(row.submittedAt) : "") +
+            "</p>" +
+            '<div class="agent-admin-card-actions">' +
+            '<button type="button" class="btn btn-gold" data-unlock>Unlock other agents</button>' +
+            "</div></article>"
+          );
+        })
+        .join("");
+    } catch (err) {
+      locksList.innerHTML =
+        "<p class='agent-admin-empty'>" + escapeHtml(err.message || "Failed") + "</p>";
+    }
+  }
+
+  document.getElementById("loadLocks").addEventListener("click", loadLocks);
+  locksList.addEventListener("click", async function (e) {
+    var btn = e.target.closest("[data-unlock]");
+    if (!btn) return;
+    var card = btn.closest(".agent-admin-card");
+    if (!card || !key()) return;
+    btn.disabled = true;
+    try {
+      var res = await fetch("/api/agent-lead?key=" + encodeURIComponent(key()), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "unlock",
+          userId: card.getAttribute("data-user-id"),
+          leadId: card.getAttribute("data-lead-id"),
+          agentId: card.getAttribute("data-agent-id"),
+        }),
+      });
+      var data = await res.json().catch(function () { return {}; });
+      if (!res.ok) throw new Error(data.error || "Unlock failed");
+      showStatus("Unlocked — they can request another agent.", true);
+      loadLocks();
+    } catch (err) {
+      showStatus(err.message || "Unlock failed", false);
+      btn.disabled = false;
+    }
+  });
+
   window.CCAdminAuth.bind({
     passwordInput: document.getElementById("adminPassword"),
     loginBtn: document.getElementById("adminLoginBtn"),
     logoutBtn: document.getElementById("adminLogoutBtn"),
     statusEl: statusEl,
-    onReady: function () { loadApps("pending"); }
+    onReady: function () {
+      loadApps("pending");
+      loadLocks();
+    }
   });
 })();
 </script>

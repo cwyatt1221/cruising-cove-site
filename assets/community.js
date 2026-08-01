@@ -112,6 +112,70 @@
     }
   }
 
+  function loginUrl(next) {
+    var dest = next || location.pathname + location.search + location.hash;
+    return "/community/login.html?next=" + encodeURIComponent(dest);
+  }
+
+  function requireSignIn(next) {
+    if (getToken() && getUser()) return true;
+    location.href = loginUrl(next);
+    return false;
+  }
+
+  /** Active agent-request lock for the signed-in user, or null. */
+  async function getAgentRequestLock() {
+    if (!getToken()) return null;
+    try {
+      var data = await api("/agent-lead");
+      if (data && data.locked) return data;
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /**
+   * Disable "Request this agent" links when the user already has a locked request.
+   */
+  function applyAgentRequestLocks(root, lock) {
+    var scope = root || document;
+    var links = scope.querySelectorAll('a[href*="/agents/request"], a[data-cc-request-href]');
+    links.forEach(function (a) {
+      if (!a.dataset.ccRequestHref) {
+        a.dataset.ccRequestHref = a.getAttribute("href") || "";
+      }
+      var href = a.dataset.ccRequestHref || "";
+      var match = href.match(/[?&]agent=([^&]+)/);
+      var agentId = match ? decodeURIComponent(match[1]) : "";
+      if (!lock || !lock.locked) {
+        a.removeAttribute("aria-disabled");
+        a.classList.remove("is-disabled");
+        a.removeAttribute("title");
+        a.setAttribute("href", href);
+        if (a.dataset.ccOrigLabel) {
+          a.textContent = a.dataset.ccOrigLabel;
+          delete a.dataset.ccOrigLabel;
+        }
+        return;
+      }
+      if (!a.dataset.ccOrigLabel) a.dataset.ccOrigLabel = (a.textContent || "").trim();
+      a.setAttribute("aria-disabled", "true");
+      a.classList.add("is-disabled");
+      a.setAttribute("href", "#");
+      if (agentId && agentId === lock.agentId) {
+        a.textContent = "Requested";
+        a.title = "You already requested this agent.";
+      } else {
+        a.textContent = "Locked";
+        a.title =
+          "You already requested " +
+          (lock.agentName || "an agent") +
+          ". Other agents stay locked until Cruising Cove unlocks your account.";
+      }
+    });
+  }
+
   global.CCCommunity = {
     api: api,
     getToken: getToken,
@@ -121,5 +185,9 @@
     formatDate: formatDate,
     escapeHtml: escapeHtml,
     renderAuthBar: renderAuthBar,
+    loginUrl: loginUrl,
+    requireSignIn: requireSignIn,
+    getAgentRequestLock: getAgentRequestLock,
+    applyAgentRequestLocks: applyAgentRequestLocks,
   };
 })(window);

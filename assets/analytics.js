@@ -39,12 +39,41 @@
   window.fbq("init", "1300581908656255");
   window.fbq("track", "PageView");
 
+  function communityUserMeta() {
+    try {
+      var token = localStorage.getItem("cc_community_token") || "";
+      var raw = localStorage.getItem("cc_community_user");
+      if (!token || !raw) return {};
+      var user = JSON.parse(raw);
+      return {
+        userId: user && user.userId ? String(user.userId).slice(0, 80) : "",
+        userEmail: user && user.email ? String(user.email).slice(0, 120) : "",
+        userName: user && user.displayName ? String(user.displayName).slice(0, 80) : "",
+      };
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function isSignedIn() {
+    try {
+      return Boolean(localStorage.getItem("cc_community_token"));
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function loginRedirect(next) {
+    location.href = "/community/login.html?next=" + encodeURIComponent(next || location.pathname + location.search);
+  }
+
   function track(type, meta) {
     if (!type) return;
+    var merged = Object.assign({}, communityUserMeta(), meta || {});
     var payload = JSON.stringify({
       type: String(type).slice(0, 64),
       path: location.pathname.slice(0, 200),
-      meta: meta || {},
+      meta: merged,
       at: new Date().toISOString(),
     });
     try {
@@ -112,6 +141,11 @@
       }
 
       if (/etsy\.com/i.test(href)) {
+        if (!isSignedIn()) {
+          e.preventDefault();
+          loginRedirect(location.pathname + location.search);
+          return;
+        }
         track("etsy_click", {
           href: href.slice(0, 300),
           label: label,
@@ -121,6 +155,15 @@
       }
 
       if (href.indexOf("/agents/request") !== -1) {
+        if (a.getAttribute("aria-disabled") === "true" || a.classList.contains("is-disabled")) {
+          e.preventDefault();
+          return;
+        }
+        if (!isSignedIn()) {
+          e.preventDefault();
+          loginRedirect(href);
+          return;
+        }
         var agentMatch = href.match(/[?&]agent=([^&]+)/);
         track("agent_request_click", {
           href: href.slice(0, 300),

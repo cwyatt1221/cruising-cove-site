@@ -99,6 +99,7 @@
 </div>
 
 <script src="/assets/agents-data.js"></script>
+<script src="/assets/community.js"></script>
 <script>
 (function () {
   var btn = document.querySelector(".nav-toggle");
@@ -193,7 +194,15 @@
     }
 
     document.getElementById("sideTitle").textContent = "Request " + (agent.name.split(" ")[0] || "this agent");
-    document.getElementById("requestBtn").href = "/agents/request.html?agent=" + encodeURIComponent(agent.id);
+    var requestBtn = document.getElementById("requestBtn");
+    requestBtn.href = "/agents/request.html?agent=" + encodeURIComponent(agent.id);
+    requestBtn.dataset.ccRequestHref = requestBtn.href;
+    requestBtn.textContent = "Request this agent";
+    if (window.CCCommunity) {
+      window.CCCommunity.getAgentRequestLock().then(function (lock) {
+        window.CCCommunity.applyAgentRequestLocks(document.getElementById("profileLayout"), lock);
+      });
+    }
 
     if (agent.sample) {
       document.getElementById("profileLayout").classList.add("agent-profile-sample");

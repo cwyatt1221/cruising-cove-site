@@ -106,6 +106,7 @@
 </main>
 
 <script src="/assets/agents-data.js"></script>
+<script src="/assets/community.js"></script>
 <script>
   (function(){
     var btn=document.querySelector('.nav-toggle');
@@ -164,6 +165,11 @@
           '</div>';
         grid.appendChild(card);
       });
+      if(window.CCCommunity){
+        window.CCCommunity.getAgentRequestLock().then(function(lock){
+          window.CCCommunity.applyAgentRequestLocks(grid, lock);
+        });
+      }
     }
 
     window.CC_loadDirectoryAgents().then(function(agents){

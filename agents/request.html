@@ -55,7 +55,14 @@
 <div class="agent-request-wrap">
   <p class="eyebrow">Find an agent</p>
   <h1>Request a conversation</h1>
-  <p class="intro">Select the agent you’d like to work with and tell us about your sailing. We’ll notify them with a summary — they unlock your contact details on Cruising Cove when they’re ready to reach out. You still pay the same fare as booking direct.</p>
+  <p class="intro">Sign in required. Select the agent you’d like to work with and tell us about your sailing. After you request one agent, other request buttons stay locked until Cruising Cove unlocks your account.</p>
+
+  <div id="authGate" class="agent-preview visible" hidden>
+    <strong>Sign in to request an agent</strong>
+    <p style="margin-top:8px">A free Cruising Cove account lets us notify you and keep your request tied to one agent at a time.</p>
+    <p style="margin-top:12px"><a class="btn btn-gold" id="authGateLink" href="/community/login.html">Sign in / Register</a></p>
+  </div>
+  <div id="lockNotice" class="agent-preview visible" hidden></div>
 
   <div class="agent-preview" id="agentPreview" aria-live="polite"></div>
 
@@ -131,6 +138,7 @@
 </div>
 
 <script src="/assets/agents-data.js"></script>
+<script src="/assets/community.js"></script>
 <script>
   (function(){
     var btn=document.querySelector('.nav-toggle');
@@ -142,11 +150,34 @@
       });
     }
 
+    var CC=window.CCCommunity;
+    var form=document.getElementById('leadForm');
+    var authGate=document.getElementById('authGate');
+    var lockNotice=document.getElementById('lockNotice');
+    var authGateLink=document.getElementById('authGateLink');
     var select=document.getElementById('agentId');
     var preview=document.getElementById('agentPreview');
     var params=new URLSearchParams(location.search);
     var preselect=params.get('agent')||'';
     var agentMap={};
+    var activeLock=null;
+
+    authGateLink.href=CC.loginUrl(location.pathname+location.search);
+
+    if(!CC.getToken()){
+      authGate.hidden=false;
+      form.hidden=true;
+      preview.hidden=true;
+      return;
+    }
+
+    var user=CC.getUser()||{};
+    if(user.displayName && !document.getElementById('guestName').value){
+      document.getElementById('guestName').value=user.displayName;
+    }
+    if(user.email && !document.getElementById('email').value){
+      document.getElementById('email').value=user.email;
+    }
 
     function updatePreview(){
       var agent=agentMap[select.value] || (window.CC_getAgent && window.CC_getAgent(select.value));
@@ -157,6 +188,29 @@
       }
       preview.className='agent-preview visible';
       preview.innerHTML='<strong>'+agent.name+'</strong><p>'+agent.pitch+'</p><p style="margin-top:8px"><a href="'+window.CC_profilePath(agent)+'">View full profile →</a></p>';
+    }
+
+    function applyLockUI(lock){
+      activeLock=lock;
+      if(!lock){
+        lockNotice.hidden=true;
+        form.hidden=false;
+        select.disabled=false;
+        return;
+      }
+      lockNotice.hidden=false;
+      lockNotice.innerHTML=
+        '<strong>Request already submitted</strong>'+
+        '<p style="margin-top:8px">You requested <strong>'+CC.escapeHtml(lock.agentName||lock.agentId)+
+        '</strong>. Other agents stay locked until Cruising Cove unlocks your account.</p>'+
+        '<p style="margin-top:12px"><a class="btn btn-outline" href="'+
+        (lock.agentId?('/agents/profile.html?id='+encodeURIComponent(lock.agentId)):'/agents/')+
+        '">View that agent</a></p>';
+      form.hidden=true;
+      if(lock.agentId){
+        select.value=lock.agentId;
+        updatePreview();
+      }
     }
 
     window.CC_loadDirectoryAgents().then(function(agents){
@@ -173,7 +227,8 @@
 
     select.addEventListener('change', updatePreview);
 
-    var form=document.getElementById('leadForm');
+    CC.getAgentRequestLock().then(applyLockUI);
+
     var statusEl=document.getElementById('formStatus');
     var submitBtn=document.getElementById('submitBtn');
 
@@ -182,6 +237,12 @@
       statusEl.className='form-status';
       statusEl.textContent='';
 
+      if(!CC.requireSignIn(location.pathname+location.search)) return;
+      if(activeLock){
+        statusEl.className='form-status err';
+        statusEl.textContent='Your account is locked to one agent request right now.';
+        return;
+      }
       if(!form.reportValidity()) return;
 
       var agent=agentMap[select.value] || (window.CC_getAgent && window.CC_getAgent(select.value));
@@ -203,26 +264,19 @@
       submitBtn.textContent='Sending…';
 
       try{
-        var res=await fetch('/api/agent-lead',{
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body:JSON.stringify(payload)
-        });
-        var data={};
-        try{ data=await res.json(); }catch(_){}
-        if(!res.ok){
-          throw new Error(data.error || 'Something went wrong. Please try again.');
-        }
+        var data=await CC.api('/agent-lead',{ method:'POST', body:payload });
         statusEl.className='form-status ok';
-        statusEl.textContent=data.message || 'Request sent. Your selected agent will reach out after unlocking your contact.';
-        form.reset();
-        if(preselect){
-          select.value=preselect;
-        }
-        updatePreview();
+        statusEl.textContent=data.message || 'Request sent.';
+        applyLockUI({
+          locked:true,
+          agentId: payload.agentId,
+          agentName: payload.agentName,
+          leadId: data.leadId
+        });
       }catch(err){
         statusEl.className='form-status err';
         statusEl.textContent=err.message || 'Something went wrong. Please try again.';
+        if(err.data && err.data.lock) applyLockUI(err.data.lock);
       }finally{
         submitBtn.disabled=false;
         submitBtn.textContent='Send request';
