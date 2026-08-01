@@ -6,9 +6,17 @@
 (function (global) {
   var FEATURED_SLOTS = 5;
   /** Pin the first homepage carousel slide. Set to null to rotate by ISO week. */
-  var CAROUSEL_START_ID = "welcome-aboard-shana";
+  var CAROUSEL_START_ID = "disney-cruise-fish-extenders";
 
   var articles = [
+    {
+      id: "disney-cruise-fish-extenders",
+      title: "Disney Cruise Fish Extenders: Everything First-Time Cruisers Need to Know",
+      excerpt:
+        "What Fish Extenders are, how gift exchanges work, how to find a group for your sailing, gift ideas, and where to buy or sell cruise essentials.",
+      date: "2026-08-01",
+      url: "/articles/disney-cruise-fish-extenders.html",
+    },
     {
       id: "welcome-aboard-shana",
       title: "Welcome Aboard Shana — Our Newest Travel Agent",
