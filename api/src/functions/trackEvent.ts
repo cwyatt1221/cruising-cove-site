@@ -1,6 +1,7 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import { TableClient } from "@azure/data-tables";
 import { randomUUID } from "crypto";
+import { escapeHtml, notifyEmail, sendEmail } from "../lib/email";
 
 const TABLE_NAME = "SiteEvents";
 const MAX_META_CHARS = 800;
@@ -69,6 +70,45 @@ export async function trackEvent(request: HttpRequest, context: InvocationContex
     context.error("trackEvent failed:", err);
     // Don't break the UX if analytics fails.
     return { status: 204 };
+  }
+
+  if (type === "agent_request_click") {
+    try {
+      let meta: Record<string, unknown> = {};
+      try {
+        meta = JSON.parse(metaJson || "{}") as Record<string, unknown>;
+      } catch {
+        meta = {};
+      }
+      const agent = String(meta.agent || "unknown");
+      const href = String(meta.href || path || "");
+      const site = (process.env.PUBLIC_SITE_URL || "https://www.cruisingcove.com").replace(/\/$/, "");
+      const subject = `Agent request button clicked: ${agent}`;
+      const text = [
+        "Someone clicked “Request this agent” on Cruising Cove.",
+        "",
+        `Agent: ${agent}`,
+        `From page: ${path || "—"}`,
+        `Link: ${href || "—"}`,
+        "",
+        "They are taken to the request form next. You’ll get another email if they submit it.",
+        `${site}/agents/request.html?agent=${encodeURIComponent(agent)}`,
+      ].join("\n");
+      const html = `
+        <p>Someone clicked <strong>Request this agent</strong> on Cruising Cove.</p>
+        <ul>
+          <li><strong>Agent:</strong> ${escapeHtml(agent)}</li>
+          <li><strong>From page:</strong> ${escapeHtml(path || "—")}</li>
+          <li><strong>Link:</strong> ${escapeHtml(href || "—")}</li>
+        </ul>
+        <p>They are taken to the request form next. You’ll get another email if they submit it.</p>
+        <p><a href="${escapeHtml(site)}/agents/request.html?agent=${encodeURIComponent(agent)}">Open request form</a></p>
+      `;
+      const sent = await sendEmail(notifyEmail(), subject, html, text);
+      if (!sent) context.warn("agent_request_click notify email not sent (check RESEND_API_KEY).");
+    } catch (err) {
+      context.error("agent_request_click notify failed:", err);
+    }
   }
 
   return { status: 204 };

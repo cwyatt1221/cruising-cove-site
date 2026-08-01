@@ -130,6 +130,18 @@
         return;
       }
 
+      // Dynamic profiles: /agents/profile.html?id=shana-matos
+      if (/\/agents\/profile\.html/i.test(href)) {
+        var profileMatch = href.match(/[?&]id=([^&]+)/);
+        track("agent_profile_click", {
+          href: href.slice(0, 300),
+          label: label,
+          agent: profileMatch ? decodeURIComponent(profileMatch[1]) : "",
+        });
+        return;
+      }
+
+      // Legacy static profiles: /agents/ava-bennett.html
       if (/^\/agents\/[a-z0-9-]+\.html(?:$|\?)/i.test(href)) {
         track("agent_profile_click", {
           href: href.slice(0, 300),

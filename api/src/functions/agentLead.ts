@@ -1,6 +1,7 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import { TableClient } from "@azure/data-tables";
 import { randomUUID } from "crypto";
+import { escapeHtml, notifyEmail, sendEmail } from "../lib/email";
 
 const TABLE_NAME = "AgentLeads";
 
@@ -71,7 +72,48 @@ export async function submitAgentLead(request: HttpRequest, context: InvocationC
     return { status: 500, jsonBody: { error: "Something went wrong submitting your request. Please try again." } };
   }
 
-  // Unlock checkout / agent email notify will plug in here next.
+  const agentLabel = (body.agentName ?? "").trim() || body.agentId.trim();
+  const site = (process.env.PUBLIC_SITE_URL || "https://www.cruisingcove.com").replace(/\/$/, "");
+  const subject = `New agent request: ${agentLabel}`;
+  const text = [
+    "A guest submitted an agent request on Cruising Cove.",
+    "",
+    `Agent: ${agentLabel} (${body.agentId.trim()})`,
+    `Guest: ${body.guestName.trim()}`,
+    `Email: ${body.email.trim()}`,
+    `Phone: ${body.phone.trim()}`,
+    `Party: ${body.partySize || "—"}`,
+    `When: ${body.sailingWindow || "—"}`,
+    `Ship / destination: ${body.shipInterest || "—"}`,
+    `First-timer: ${body.firstTimer || "—"}`,
+    `Notes: ${body.notes || "—"}`,
+    "",
+    `Lead id: ${leadId}`,
+    `Profile: ${site}/agents/profile.html?id=${encodeURIComponent(body.agentId.trim())}`,
+  ].join("\n");
+  const html = `
+    <p>A guest submitted an agent request on Cruising Cove.</p>
+    <ul>
+      <li><strong>Agent:</strong> ${escapeHtml(agentLabel)} (${escapeHtml(body.agentId.trim())})</li>
+      <li><strong>Guest:</strong> ${escapeHtml(body.guestName.trim())}</li>
+      <li><strong>Email:</strong> ${escapeHtml(body.email.trim())}</li>
+      <li><strong>Phone:</strong> ${escapeHtml(body.phone.trim())}</li>
+      <li><strong>Party:</strong> ${escapeHtml(body.partySize || "—")}</li>
+      <li><strong>When:</strong> ${escapeHtml(body.sailingWindow || "—")}</li>
+      <li><strong>Ship / destination:</strong> ${escapeHtml(body.shipInterest || "—")}</li>
+      <li><strong>First-timer:</strong> ${escapeHtml(body.firstTimer || "—")}</li>
+      <li><strong>Notes:</strong> ${escapeHtml(body.notes || "—")}</li>
+    </ul>
+    <p>Lead id: ${escapeHtml(leadId)}<br>
+    <a href="${escapeHtml(site)}/agents/profile.html?id=${encodeURIComponent(body.agentId.trim())}">View agent profile</a></p>
+  `;
+  try {
+    const sent = await sendEmail(notifyEmail(), subject, html, text);
+    if (!sent) context.warn("Agent lead saved but notify email was not sent (check RESEND_API_KEY / RESEND_FROM_EMAIL).");
+  } catch (err) {
+    context.error("Agent lead notify email failed:", err);
+  }
+
   return {
     status: 200,
     jsonBody: {

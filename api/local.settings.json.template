@@ -9,6 +9,7 @@
     "ADMIN_PASSWORD": "choose-a-password-you-type-on-admin-pages",
     "RESEND_API_KEY": "optional-resend-api-key-for-booking-window-emails",
     "RESEND_FROM_EMAIL": "Cruising Cove <hello@yourdomain.com>",
+    "AGENT_LEAD_NOTIFY_EMAIL": "cgrove0712@gmail.com",
     "PUBLIC_SITE_URL": "https://www.cruisingcove.com"
   }
 }
