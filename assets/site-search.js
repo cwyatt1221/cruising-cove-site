@@ -136,8 +136,12 @@
       '<div class="cc-site-search-results" id="ccSiteSearchResults" role="listbox" hidden></div>';
 
     var cta = nav.querySelector(".nav-cta");
-    if (cta) nav.insertBefore(wrap, cta);
-    else nav.appendChild(wrap);
+    if (cta) {
+      // Keep search with the CTA so links can't overflow on top of it.
+      cta.insertBefore(wrap, cta.firstChild);
+    } else {
+      nav.appendChild(wrap);
+    }
 
     var input = wrap.querySelector("#ccSiteSearchInput");
     var results = wrap.querySelector("#ccSiteSearchResults");
