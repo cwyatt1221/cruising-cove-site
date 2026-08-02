@@ -147,6 +147,12 @@ body.cc-admin-logged-in .site-header{top:42px;}
   box-shadow:-16px 0 14px -6px var(--cream-2);
 }
 .site-nav-bar .nav-cta .btn{white-space:nowrap;}
+.site-nav-bar .nav-cta .nav-auth-link{
+  white-space:nowrap;font-size:0.86rem;font-weight:500;color:var(--navy);
+  border-bottom:2px solid transparent;padding-bottom:2px;text-decoration:none;
+}
+.site-nav-bar .nav-cta .nav-auth-link:hover{color:var(--gold);}
+.site-nav-bar .nav-cta .nav-auth-link.current{color:var(--gold);border-bottom-color:var(--gold);}
 
 .nav-dropdown{position:relative;}
 .nav-dropdown-toggle{

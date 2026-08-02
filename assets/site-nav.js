@@ -64,6 +64,51 @@
     });
   }
 
+  function communityToken() {
+    try {
+      return localStorage.getItem("cc_community_token") || "";
+    } catch (e) {
+      return "";
+    }
+  }
+
+  /** Gallery + Sign up on every full site header (skips minimal admin bars). */
+  function ensureExtraNav() {
+    var links = document.getElementById("primaryNav");
+    var cta = document.querySelector(".site-nav-bar .nav-cta");
+    if (!links || !cta) return;
+
+    var path = location.pathname.replace(/\/+/g, "/");
+
+    if (!links.querySelector('a[data-cc-nav="gallery"]')) {
+      var gallery = document.createElement("a");
+      gallery.href = "/decorations/#gallery";
+      gallery.textContent = "Gallery";
+      gallery.setAttribute("data-cc-nav", "gallery");
+      if (path.indexOf("/decorations") === 0) gallery.classList.add("current");
+      links.appendChild(gallery);
+    }
+
+    if (!cta.querySelector('a[data-cc-nav="auth"]')) {
+      var auth = document.createElement("a");
+      auth.setAttribute("data-cc-nav", "auth");
+      auth.className = "nav-auth-link";
+      if (communityToken()) {
+        auth.href = "/community/";
+        auth.textContent = "Account";
+        if (path.indexOf("/community") === 0) auth.classList.add("current");
+      } else {
+        var next = location.pathname + location.search + location.hash;
+        auth.href = "/community/login.html?next=" + encodeURIComponent(next);
+        auth.textContent = "Sign up";
+        if (path.indexOf("/community/login") === 0) auth.classList.add("current");
+      }
+      var btn = cta.querySelector("a.btn");
+      if (btn) cta.insertBefore(auth, btn);
+      else cta.appendChild(auth);
+    }
+  }
+
   function ready(fn) {
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fn);
     else fn();
@@ -83,6 +128,7 @@
 
   ready(function () {
     initDropdowns();
+    ensureExtraNav();
     markCurrent();
     loadAdminAuth();
   });
