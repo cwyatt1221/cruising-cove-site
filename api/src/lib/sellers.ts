@@ -37,7 +37,7 @@ export function toPublicSeller(entity: Record<string, unknown>) {
   return {
     id: String(entity.rowKey),
     name: String(entity.shopName ?? entity.name ?? ""),
-    etsyUrl: String(entity.etsyShopUrl ?? entity.etsyUrl ?? ""),
+    shopUrl: String(entity.shopUrl ?? entity.etsyShopUrl ?? entity.etsyUrl ?? ""),
     description: String(entity.shopDescription ?? entity.description ?? ""),
     photoUrls: splitCsv(entity.photoUrls),
     categories,

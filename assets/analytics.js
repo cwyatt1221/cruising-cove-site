@@ -130,26 +130,31 @@
       var href = a.getAttribute("href") || "";
       var label = (a.getAttribute("data-cc-label") || a.textContent || "").replace(/\s+/g, " ").trim().slice(0, 120);
       var custom = a.getAttribute("data-cc-event");
+      var isShopLink =
+        custom === "shop_click" ||
+        Boolean(a.getAttribute("data-shop-id")) ||
+        /etsy\.com/i.test(href);
+
+      if (isShopLink) {
+        if (!isSignedIn()) {
+          e.preventDefault();
+          loginRedirect(location.pathname + location.search);
+          return;
+        }
+        track(custom || "shop_click", {
+          href: href.slice(0, 300),
+          label: label,
+          shop: a.getAttribute("data-shop-id") || a.getAttribute("data-cc-id") || "",
+          id: a.getAttribute("data-cc-id") || "",
+        });
+        return;
+      }
 
       if (custom) {
         track(custom, {
           href: href.slice(0, 300),
           label: label,
           id: a.getAttribute("data-cc-id") || "",
-        });
-        return;
-      }
-
-      if (/etsy\.com/i.test(href)) {
-        if (!isSignedIn()) {
-          e.preventDefault();
-          loginRedirect(location.pathname + location.search);
-          return;
-        }
-        track("etsy_click", {
-          href: href.slice(0, 300),
-          label: label,
-          shop: a.getAttribute("data-shop-id") || a.getAttribute("data-cc-id") || "",
         });
         return;
       }

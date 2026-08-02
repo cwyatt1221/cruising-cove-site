@@ -7,6 +7,8 @@ const MAX_PHOTOS = 4;
 
 interface SellerApplicationInput {
   shopName?: string;
+  shopUrl?: string;
+  /** @deprecated use shopUrl */
   etsyShopUrl?: string;
   ownerName?: string;
   email?: string;
@@ -45,7 +47,8 @@ export async function submitSellerApplication(request: HttpRequest, context: Inv
     return { status: 400, jsonBody: { error: "Request body must be valid JSON." } };
   }
 
-  if (!body.shopName?.trim() || !body.etsyShopUrl?.trim() || !body.ownerName?.trim() || !body.email?.trim()) {
+  const shopUrl = String(body.shopUrl || body.etsyShopUrl || "").trim();
+  if (!body.shopName?.trim() || !shopUrl || !body.ownerName?.trim() || !body.email?.trim()) {
     return { status: 400, jsonBody: { error: "Shop name, shop URL, owner name, and email are required." } };
   }
 
@@ -71,7 +74,8 @@ export async function submitSellerApplication(request: HttpRequest, context: Inv
       rowKey: randomUUID(),
       status: "pending",
       shopName: body.shopName.trim(),
-      etsyShopUrl: body.etsyShopUrl.trim(),
+      shopUrl,
+      etsyShopUrl: shopUrl, // legacy column for existing admin/readers
       ownerName: body.ownerName.trim(),
       email: body.email.trim(),
       shopDescription: body.shopDescription ?? "",

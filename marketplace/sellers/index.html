@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/site.css">
-<meta name="description" content="Apply for one of 10 exclusive Etsy shop slots on Cruising Cove. Submit your store link, description, and product photos.">
+<meta name="description" content="Apply for one of 10 exclusive shop slots on Cruising Cove. Submit your store link, description, and product photos.">
 <style>
   :root{
     --navy-deep:#0f1c33; --navy-mid:var(--navy); --teal:var(--teal);
@@ -218,8 +218,8 @@
       <label class="field-label" for="shopName">Shop name <span class="req">*</span></label>
       <input type="text" id="shopName" name="shopName" required>
 
-      <label class="field-label" for="etsyShopUrl">Shop URL <span class="req">*</span></label>
-      <input type="url" id="etsyShopUrl" name="etsyShopUrl" placeholder="https://…" required>
+      <label class="field-label" for="shopUrl">Shop URL <span class="req">*</span></label>
+      <input type="url" id="shopUrl" name="shopUrl" placeholder="https://…" required>
 
       <label class="field-label" for="shopDescription">Directory description <span class="req">*</span></label>
       <p style="font-size:0.85rem;color:var(--muted);margin:0 0 8px;">2–3 sentences — this is what families will see on your Curated 10 card.</p>
@@ -250,7 +250,7 @@
       <input type="url" name="facebookUrl" placeholder="Facebook URL" style="margin-top:10px;">
 
       <label class="field-label" for="audienceSize">Roughly how many followers / shop favorites do you have? (optional)</label>
-      <input type="text" id="audienceSize" name="audienceSize" placeholder="e.g. 2,400 Etsy favorites, 5k Instagram">
+      <input type="text" id="audienceSize" name="audienceSize" placeholder="e.g. 2,400 shop favorites, 5k Instagram">
     </fieldset>
 
     <fieldset>
@@ -442,7 +442,7 @@
 
     const payload = {
       shopName: form.shopName.value.trim(),
-      etsyShopUrl: form.etsyShopUrl.value.trim(),
+      shopUrl: form.shopUrl.value.trim(),
       shopDescription: form.shopDescription.value.trim(),
       photoUrls: uploadedPhotoUrls,
       ownerName: form.ownerName.value.trim(),

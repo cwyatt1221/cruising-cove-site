@@ -27,7 +27,7 @@ export async function listSellerApplications(
         publishedSellerId: entity.publishedSellerId || null,
         featured: Boolean(entity.featured),
         shopName: entity.shopName,
-        etsyShopUrl: entity.etsyShopUrl,
+        shopUrl: entity.shopUrl || entity.etsyShopUrl || "",
         ownerName: entity.ownerName,
         email: entity.email,
         shopDescription: entity.shopDescription,

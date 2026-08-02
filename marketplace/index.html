@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Curated 10 Etsy Shops — Cruising Cove Marketplace</title>
-<meta name="description" content="Only 10 exclusive Etsy shops for Disney cruise families. Browse trusted sellers for door decorations, fish extenders, packing gear, and more.">
+<title>Curated 10 Shops — Cruising Cove Marketplace</title>
+<meta name="description" content="Only 10 exclusive shops for Disney cruise families. Browse trusted sellers for door decorations, fish extenders, packing gear, and more.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
@@ -56,7 +56,7 @@
   <div class="page-hero-inner">
     <span class="eyebrow mono">Marketplace</span>
     <h1>The Curated <em>10</em></h1>
-    <p class="lede">Ten founding Etsy shop slots for Disney cruise families. Spots open as partners are approved — not a scroll of hundreds.</p>
+    <p class="lede">Ten founding shop slots for Disney cruise families. Spots open as partners are approved — not a scroll of hundreds.</p>
     <div class="mp-hero-actions">
       <a class="btn btn-gold" href="#directory">See open slots</a>
       <a class="btn btn-outline-light" href="/marketplace/sellers/">Apply for a slot</a>
@@ -79,7 +79,7 @@
   <div class="mp-band">
     <div>
       <h2>One of ten spots</h2>
-      <p>Apply with your Etsy link, a short description, and product photos. If selected, you’re one of only ten shops featured on Cruising Cove.</p>
+      <p>Apply with your shop URL, a short description, and product photos. If selected, you’re one of only ten shops featured on Cruising Cove.</p>
     </div>
     <a class="btn btn-gold" href="/marketplace/sellers/">Apply for a slot</a>
   </div>
@@ -131,7 +131,7 @@
             '<h3>'+shop.name+'</h3>'+
             '<p>'+(shop.description||'')+'</p>'+
             '<div class="mp-card-actions">'+
-              '<a class="btn btn-gold" href="'+shop.etsyUrl+'" target="_blank" rel="noopener noreferrer" data-cc-event="etsy_click" data-cc-id="'+(shop.id||'')+'" data-shop-id="'+(shop.id||'')+'">Visit Etsy shop</a>'+
+              '<a class="btn btn-gold" href="'+(shop.shopUrl||shop.etsyUrl||'#')+'" target="_blank" rel="noopener noreferrer" data-cc-event="shop_click" data-cc-id="'+(shop.id||'')+'" data-shop-id="'+(shop.id||'')+'">Visit shop</a>'+
             '</div>'+
           '</div>';
         grid.appendChild(card);

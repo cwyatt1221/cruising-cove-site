@@ -72,7 +72,7 @@ Tables: `AgentApplications`, `PublishedAgents`. Frontend: `/agents/apply.html`, 
 
 ## Marketplace seller applications (Curated 10)
 
-Etsy shops apply for one of ten marketplace slots:
+Shops apply for one of ten marketplace slots:
 
 | Route | Purpose |
 | --- | --- |
@@ -88,7 +88,7 @@ Tables: `SellerApplications`, `PublishedSellers`. Frontend: `/marketplace/seller
 
 | Route | Purpose |
 | --- | --- |
-| `POST /api/events` | First-party click events (etsy / agent CTAs) |
+| `POST /api/events` | First-party click events (shop / agent CTAs) |
 | `GET /api/events-report?key=…&days=30` | Counts + recent events (`REPORT_ACCESS_KEY`) |
 
 Table: `SiteEvents`. Frontend loads Clarity + click tracker via `/assets/analytics.js`. Heatmaps/recordings: https://clarity.microsoft.com

@@ -121,8 +121,8 @@
                 "<h3>" + escapeHtml(a.shopName) +
                 ' <span class="agent-badge">' + escapeHtml(a.status || "pending") + "</span></h3>" +
                 '<p class="agent-meta">' + escapeHtml(a.ownerName) + " · " + escapeHtml(a.email) + "</p>" +
-                '<p class="agent-meta"><a href="' + escapeHtml(a.etsyShopUrl) + '" target="_blank" rel="noopener noreferrer">' +
-                escapeHtml(a.etsyShopUrl) + "</a></p>" +
+                '<p class="agent-meta"><a href="' + escapeHtml(a.shopUrl || a.etsyShopUrl || "") + '" target="_blank" rel="noopener noreferrer">' +
+                escapeHtml(a.shopUrl || a.etsyShopUrl || "") + "</a></p>" +
                 '<p class="agent-meta">Submitted ' + escapeHtml(a.submittedAt || "") + "</p>" +
               "</div>" +
             "</div>" +
@@ -224,8 +224,8 @@
                 "<div><h3>" + escapeHtml(s.name) +
                 (s.featured ? ' <span class="agent-badge teal">Featured</span>' : "") +
                 "</h3>" +
-                '<p class="agent-meta"><a href="' + escapeHtml(s.etsyUrl) + '" target="_blank" rel="noopener noreferrer">' +
-                escapeHtml(s.etsyUrl) + "</a></p>" +
+                '<p class="agent-meta"><a href="' + escapeHtml(s.shopUrl || s.etsyUrl || "") + '" target="_blank" rel="noopener noreferrer">' +
+                escapeHtml(s.shopUrl || s.etsyUrl || "") + "</a></p>" +
                 '<p class="agent-meta"><a href="/marketplace/#' + encodeURIComponent(s.id) +
                 '">/marketplace/#' + escapeHtml(s.id) + "</a></p></div></div>" +
               "<p>" + escapeHtml(s.description) + "</p>" +
