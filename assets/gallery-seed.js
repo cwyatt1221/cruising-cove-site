@@ -230,5 +230,16 @@ window.CC_GALLERY_SEED = [
     "status": "approved",
     "createdAt": "2026-08-02T18:21:00.000Z",
     "seed": true
+  },
+  {
+    "id": "seed-835548571b1f",
+    "photoUrl": "/assets/images/gallery/22-star-wars-pixar-door-7608.jpg",
+    "caption": "Star Wars & Pixar door magnets with Fish Extender",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-02T18:22:00.000Z",
+    "seed": true
   }
 ];
