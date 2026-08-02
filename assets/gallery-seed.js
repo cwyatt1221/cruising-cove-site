@@ -241,5 +241,16 @@ window.CC_GALLERY_SEED = [
     "status": "approved",
     "createdAt": "2026-08-02T18:22:00.000Z",
     "seed": true
+  },
+  {
+    "id": "seed-e3d15b85c2ed",
+    "photoUrl": "/assets/images/gallery/23-haunted-mansion-door-7084.jpg",
+    "caption": "Haunted Mansion Halloween door & Fish Extender",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-02T18:23:00.000Z",
+    "seed": true
   }
 ];
