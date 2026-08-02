@@ -219,5 +219,16 @@ window.CC_GALLERY_SEED = [
     "status": "approved",
     "createdAt": "2026-08-02T18:19:00.000Z",
     "seed": true
+  },
+  {
+    "id": "seed-782ebf5f9a66",
+    "photoUrl": "/assets/images/gallery/21-mickey-snorkeling-door-7038.jpg",
+    "caption": "Mickey snorkeling door magnets",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-02T18:21:00.000Z",
+    "seed": true
   }
 ];
