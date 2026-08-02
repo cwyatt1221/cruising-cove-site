@@ -46,7 +46,7 @@ export async function submitSellerApplication(request: HttpRequest, context: Inv
   }
 
   if (!body.shopName?.trim() || !body.etsyShopUrl?.trim() || !body.ownerName?.trim() || !body.email?.trim()) {
-    return { status: 400, jsonBody: { error: "Shop name, Etsy shop URL, owner name, and email are required." } };
+    return { status: 400, jsonBody: { error: "Shop name, shop URL, owner name, and email are required." } };
   }
 
   if (!body.shopDescription?.trim()) {
