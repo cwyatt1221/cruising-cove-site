@@ -236,6 +236,7 @@
 </main>
 
 <script src="/assets/community.js"></script>
+<script src="/assets/gallery-seed.js"></script>
 <script>
 (function () {
   var btn = document.querySelector(".nav-toggle");
@@ -370,6 +371,13 @@
     lightboxCaption.textContent = photoCaption(p);
     lightbox.hidden = false;
     document.body.style.overflow = "hidden";
+    if (p.seed) {
+      commentGate.hidden = true;
+      commentForm.hidden = true;
+      commentsList.innerHTML =
+        '<p class="gallery-comments-empty">Featured photo — guest comments are open on community uploads.</p>';
+      return;
+    }
     syncCommentAuth();
     loadComments(p.id);
   }
@@ -380,13 +388,20 @@
   }
 
   async function loadGallery() {
+    var seed = (window.CC_GALLERY_SEED || []).slice();
     try {
       var res = await fetch("/api/agent-photo-upload?scope=decorations&status=approved");
       var data = await res.json().catch(function () { return {}; });
       if (!res.ok) throw new Error(data.error || "Could not load gallery");
-      photos = data.photos || [];
+      var uploaded = data.photos || [];
+      photos = seed.concat(uploaded);
       renderGallery();
     } catch (err) {
+      if (seed.length) {
+        photos = seed;
+        renderGallery();
+        return;
+      }
       gallery.innerHTML = '<p class="gallery-empty">Gallery is unavailable right now.</p>';
     }
   }
@@ -414,7 +429,7 @@
     commentStatus.className = "gallery-status";
     commentStatus.textContent = "";
     var photo = currentPhoto();
-    if (!photo) return;
+    if (!photo || photo.seed) return;
     if (!CC.requireSignIn(location.pathname + "#gallery")) return;
     var body = document.getElementById("commentBody").value.trim();
     if (body.length < 2) {

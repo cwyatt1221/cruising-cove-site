@@ -1,0 +1,223 @@
+/** Seed photos for the public gallery (always shown, merged with approved uploads). */
+window.CC_GALLERY_SEED = [
+  {
+    "id": "seed-fc44ea52ceff",
+    "photoUrl": "/assets/images/gallery/01-2024-09-18-disney-wish-castaway-cay-pier-5-ce80a.jpg",
+    "caption": "Disney Wish at Castaway Cay",
+    "ship": "Disney Wish",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-02T18:00:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-adfe1d4e9c48",
+    "photoUrl": "/assets/images/gallery/02-img-4680-c0c92501-b813-40ad-bbde-d76fcffb0651.jpg",
+    "caption": "Sunset over the water from the ship",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-02T18:01:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-82ebefc055ad",
+    "photoUrl": "/assets/images/gallery/03-img-4672-070a814e-97ec-42e5-b707-2287dbe531b5.jpg",
+    "caption": "Ocean view from the verandah",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-02T18:02:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-7dd3b34b882e",
+    "photoUrl": "/assets/images/gallery/04-img-4698-eef8e27d-414a-4cb8-bdc5-583a0e986380.jpg",
+    "caption": "Towel animal crab in the stateroom",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-02T18:03:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-35d9aa2d2d4c",
+    "photoUrl": "/assets/images/gallery/05-img-4702-8af6307e-8afc-4977-af7f-385f6f7afbe3.jpg",
+    "caption": "Grand Hall chandelier looking up",
+    "ship": "Disney Wish",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-02T18:04:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-4375c2e1bb42",
+    "photoUrl": "/assets/images/gallery/06-img-4706-7a94fe1b-f8b9-4bdf-8846-6dcb6c26cf3b.jpg",
+    "caption": "Halloween on the High Seas atrium tree",
+    "ship": "Disney Wish",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-02T18:05:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-432220b74050",
+    "photoUrl": "/assets/images/gallery/07-img-4703-86d89387-7f98-4bb7-9980-9504eccfc3ea.jpg",
+    "caption": "Star chandelier under purple lights",
+    "ship": "Disney Wish",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-02T18:06:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-f815135e4077",
+    "photoUrl": "/assets/images/gallery/08-img-7638-cceeac9e-3ea8-4aee-b92c-5d379ac46c2a.jpg",
+    "caption": "Ship bow at a sunny port",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-02T18:07:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-d38de50d324f",
+    "photoUrl": "/assets/images/gallery/09-img-7746-3faafa87-e1ab-4f4d-8589-2d5cad15a600.jpg",
+    "caption": "Partners statue onboard",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-02T18:08:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-934fe702b8a3",
+    "photoUrl": "/assets/images/gallery/10-img-7629-8eb42896-5b6c-47f6-a44a-e22005552e09.jpg",
+    "caption": "Disney ship docked at port",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-02T18:09:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-280f37b9d0a1",
+    "photoUrl": "/assets/images/gallery/11-img-7494-015413d1-ab1e-4f02-8b35-566f861f5dd2.jpg",
+    "caption": "Disney Treasure at the pier",
+    "ship": "Disney Treasure",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-02T18:10:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-bd78cc30238d",
+    "photoUrl": "/assets/images/gallery/12-img-7770-f4bf9cfe-8b8e-4864-9d4e-24cf94a91f25.jpg",
+    "caption": "Halloween on the High Seas specialty drink",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-02T18:11:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-74a3efe71ba3",
+    "photoUrl": "/assets/images/gallery/13-img-8061-76a789a2-43dc-4084-b83f-b01452eaa4e0.jpg",
+    "caption": "Captain Mickey dessert",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-02T18:12:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-bc15c04fa4f0",
+    "photoUrl": "/assets/images/gallery/14-img-8009-0242eebd-7086-491c-a619-81b8fc523a35.jpg",
+    "caption": "Ship from the beach at Castaway Cay",
+    "ship": "Disney Wish",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-02T18:13:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-af55a9cd686b",
+    "photoUrl": "/assets/images/gallery/15-img-7779-5b99f12b-d09c-4f9b-a215-f5f14314aaa7.jpg",
+    "caption": "Dessert at Worlds of Marvel",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-02T18:14:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-ebff7a2c390e",
+    "photoUrl": "/assets/images/gallery/16-img-8069-36d105b3-4350-490f-a496-787051a718f6.jpg",
+    "caption": "Adult dining with ocean views",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-02T18:15:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-0e5dad378fcf",
+    "photoUrl": "/assets/images/gallery/17-img-4691-34791944-797b-4500-b450-b883934b07a4.jpg",
+    "caption": "Deck party at Funnel Vision",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-02T18:16:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-ee0e89e3c524",
+    "photoUrl": "/assets/images/gallery/18-img-7996-60d7accc-29c1-4c0e-9406-10d075843d4c.jpg",
+    "caption": "Mickey waffles for breakfast",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-02T18:17:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-aeebf85a8356",
+    "photoUrl": "/assets/images/gallery/19-img-7819-87184ff9-77d6-45b7-9fca-c1c272fdc97d.jpg",
+    "caption": "Mickey waffle breakfast plate",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-02T18:18:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-0a1221ebd75a",
+    "photoUrl": "/assets/images/gallery/20-image-736d5e8b-30b8-4268-a482-ea0675b98e9b.jpg",
+    "caption": "Star Wars stateroom door & Fish Extender",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-02T18:19:00.000Z",
+    "seed": true
+  }
+];
