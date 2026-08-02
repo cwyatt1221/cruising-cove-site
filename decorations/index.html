@@ -115,7 +115,7 @@
   <section id="gallery" class="deco-gallery-section">
     <span class="label mono">&mdash; Photo gallery</span>
     <h2>Guest doors &amp; Fish Extenders</h2>
-    <p>Real setups from Cruising Cove members. Tap a photo to view it larger — every image is approved before it appears here.</p>
+    <p>Real setups from fellow cruisers. Tap a photo to view it larger and leave a comment (sign-in required). Every photo is approved before it appears here.</p>
     <div class="deco-filters" role="tablist" aria-label="Filter gallery">
       <button type="button" class="deco-filter is-active" data-filter="all" role="tab" aria-selected="true">All</button>
       <button type="button" class="deco-filter" data-filter="door" role="tab" aria-selected="false">Door magnets</button>
@@ -130,22 +130,38 @@
   <div id="decoLightbox" class="deco-lightbox" hidden role="dialog" aria-modal="true" aria-label="Photo viewer">
     <button type="button" class="deco-lightbox-close" id="decoLightboxClose" aria-label="Close">&times;</button>
     <button type="button" class="deco-lightbox-nav prev" id="decoLightboxPrev" aria-label="Previous photo">&#8249;</button>
-    <figure class="deco-lightbox-figure">
-      <img id="decoLightboxImg" src="" alt="">
-      <figcaption id="decoLightboxCaption"></figcaption>
-    </figure>
+    <div class="deco-lightbox-panel">
+      <figure class="deco-lightbox-figure">
+        <img id="decoLightboxImg" src="" alt="">
+        <figcaption id="decoLightboxCaption"></figcaption>
+      </figure>
+      <div class="deco-comments" id="decoComments">
+        <h3>Comments</h3>
+        <div id="decoCommentsList" class="deco-comments-list" aria-live="polite">
+          <p class="deco-comments-empty">Loading comments…</p>
+        </div>
+        <div id="decoCommentGate" class="deco-comment-gate" hidden>
+          <p>Sign in to leave a comment on this photo.</p>
+          <p><a class="btn btn-gold" id="decoCommentLogin" href="/community/login.html">Sign in / Register</a></p>
+        </div>
+        <form id="decoCommentForm" class="deco-comment-form" hidden>
+          <label for="decoCommentBody">Add a comment</label>
+          <textarea id="decoCommentBody" maxlength="800" required minlength="2" placeholder="What do you love about this setup?"></textarea>
+          <button type="submit" class="btn btn-gold" id="decoCommentSubmit">Post comment</button>
+          <p class="deco-status" id="decoCommentStatus" role="status"></p>
+        </form>
+      </div>
+    </div>
     <button type="button" class="deco-lightbox-nav next" id="decoLightboxNext" aria-label="Next photo">&#8250;</button>
   </div>
 
   <section id="upload">
     <span class="label mono">&mdash; Share yours</span>
     <h2>Add your photo to the gallery</h2>
-    <p>Signed-in guests can submit a door or Fish Extender photo. We review every upload before it appears in the gallery.</p>
-    <div id="decoAuthGate" class="deco-panel" hidden>
-      <p><strong>Sign in to upload.</strong> A free Cruising Cove account keeps submissions tied to a real guest.</p>
-      <p style="margin-top:12px;"><a class="btn btn-gold" id="decoLoginLink" href="/community/login.html">Sign in / Register</a></p>
-    </div>
-    <form id="decoUploadForm" class="deco-form" hidden>
+    <p>Anyone can submit a door or Fish Extender photo — no account needed. We review every upload before it appears. Commenting on photos requires a free sign-in.</p>
+    <form id="decoUploadForm" class="deco-form">
+      <label for="decoName">Your name (optional)</label>
+      <input id="decoName" type="text" maxlength="60" placeholder="How should we credit you?">
       <label for="decoCategory">What are you sharing?</label>
       <select id="decoCategory" required>
         <option value="door">Stateroom door magnets</option>
@@ -214,16 +230,41 @@
   .deco-empty{grid-column:1/-1;color:var(--muted);margin:8px 0 0;}
   .deco-lightbox{
     position:fixed;inset:0;z-index:80;background:rgba(15,28,51,.92);
-    display:flex;align-items:center;justify-content:center;padding:48px 56px 40px;
+    display:flex;align-items:center;justify-content:center;padding:48px 56px 28px;
+    overflow:auto;
   }
   .deco-lightbox[hidden]{display:none !important;}
-  .deco-lightbox-figure{margin:0;max-width:min(920px,100%);text-align:center;}
+  .deco-lightbox-panel{
+    width:min(920px,100%);max-height:calc(100vh - 64px);overflow:auto;
+  }
+  .deco-lightbox-figure{margin:0;text-align:center;}
   .deco-lightbox-figure img{
-    max-width:100%;max-height:min(72vh,820px);width:auto;height:auto;
+    max-width:100%;max-height:min(52vh,620px);width:auto;height:auto;
     object-fit:contain;display:block;margin:0 auto;background:#0f1c33;
   }
   .deco-lightbox-figure figcaption{
-    margin-top:14px;color:rgba(245,240,225,.9);font-size:0.95rem;line-height:1.45;
+    margin-top:12px;color:rgba(245,240,225,.9);font-size:0.95rem;line-height:1.45;
+  }
+  .deco-comments{
+    margin-top:18px;padding:16px 18px;text-align:left;
+    background:rgba(245,240,225,.06);border:1px solid rgba(245,240,225,.12);
+  }
+  .deco-comments h3{
+    margin:0 0 10px;font-family:var(--font-serif);font-weight:500;
+    font-size:1.15rem;color:var(--cream);
+  }
+  .deco-comments-list{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;}
+  .deco-comment{font-size:0.9rem;line-height:1.45;color:rgba(245,240,225,.92);}
+  .deco-comment strong{display:block;color:var(--gold);font-size:0.82rem;margin-bottom:2px;}
+  .deco-comments-empty{margin:0;color:rgba(245,240,225,.65);font-size:0.9rem;}
+  .deco-comment-gate p{margin:0 0 10px;color:rgba(245,240,225,.85);font-size:0.92rem;}
+  .deco-comment-form label{
+    display:block;margin:0 0 6px;font-size:0.85rem;font-weight:600;color:var(--cream);
+  }
+  .deco-comment-form textarea{
+    width:100%;min-height:72px;padding:10px 12px;margin-bottom:10px;
+    border:1px solid rgba(245,240,225,.25);border-radius:2px;font:inherit;
+    background:rgba(15,28,51,.45);color:var(--cream);resize:vertical;
   }
   .deco-lightbox-close,.deco-lightbox-nav{
     position:absolute;appearance:none;border:0;background:transparent;
@@ -239,7 +280,7 @@
     .deco-lightbox-nav{font-size:2.2rem;}
     .deco-shot .deco-caption{opacity:1;transform:none;}
   }
-  .deco-panel,.deco-form{
+  .deco-form{
     margin-top:16px;padding:18px 20px;background:var(--cream);
     border:1px solid rgba(26,42,74,.08);border-left:3px solid var(--gold);
   }
@@ -258,6 +299,8 @@
   .deco-status{margin:12px 0 0;font-size:0.92rem;}
   .deco-status.ok{color:var(--teal);}
   .deco-status.err{color:#8b2e2e;}
+  .deco-comments .deco-status.ok{color:#7dcea0;}
+  .deco-comments .deco-status.err{color:#f5a8a8;}
 </style>
 
 <script src="/assets/community.js"></script>
@@ -283,8 +326,6 @@
     var CC = window.CCCommunity;
     var gallery = document.getElementById('decoGallery');
     var form = document.getElementById('decoUploadForm');
-    var gate = document.getElementById('decoAuthGate');
-    var loginLink = document.getElementById('decoLoginLink');
     var statusEl = document.getElementById('decoStatus');
     var preview = document.getElementById('decoPreview');
     var submitBtn = document.getElementById('decoSubmit');
@@ -292,6 +333,12 @@
     var lightbox = document.getElementById('decoLightbox');
     var lightboxImg = document.getElementById('decoLightboxImg');
     var lightboxCaption = document.getElementById('decoLightboxCaption');
+    var commentsList = document.getElementById('decoCommentsList');
+    var commentGate = document.getElementById('decoCommentGate');
+    var commentForm = document.getElementById('decoCommentForm');
+    var commentLogin = document.getElementById('decoCommentLogin');
+    var commentStatus = document.getElementById('decoCommentStatus');
+    var commentSubmit = document.getElementById('decoCommentSubmit');
     var pendingBase64 = '';
     var allPhotos = [];
     var visiblePhotos = [];
@@ -299,8 +346,6 @@
     var lightboxIndex = 0;
     var MAX_EDGE = 1600;
     var JPEG_QUALITY = 0.82;
-
-    loginLink.href = CC.loginUrl(location.pathname + location.search + '#upload');
 
     function escapeHtml(str){
       return String(str == null ? '' : str)
@@ -318,6 +363,43 @@
       if (p.caption) line += ' — ' + p.caption;
       line += ' · Shared by ' + (p.displayName || 'Guest');
       return line;
+    }
+    function currentPhoto(){
+      return visiblePhotos[lightboxIndex] || null;
+    }
+
+    function syncCommentAuth(){
+      commentLogin.href = CC.loginUrl(location.pathname + location.search + '#gallery');
+      if (CC.getToken()) {
+        commentGate.hidden = true;
+        commentForm.hidden = false;
+      } else {
+        commentGate.hidden = false;
+        commentForm.hidden = true;
+      }
+    }
+
+    async function loadComments(photoId){
+      commentsList.innerHTML = '<p class="deco-comments-empty">Loading comments…</p>';
+      commentStatus.className = 'deco-status';
+      commentStatus.textContent = '';
+      try {
+        var res = await fetch(
+          '/api/agent-photo-upload?scope=decorations&comments=1&photoId=' + encodeURIComponent(photoId) + '&status=approved'
+        );
+        var data = await res.json().catch(function(){ return {}; });
+        if (!res.ok) throw new Error(data.error || 'Could not load comments');
+        var comments = data.comments || [];
+        if (!comments.length) {
+          commentsList.innerHTML = '<p class="deco-comments-empty">No comments yet — sign in to be the first.</p>';
+          return;
+        }
+        commentsList.innerHTML = comments.map(function(c){
+          return '<div class="deco-comment"><strong>'+escapeHtml(c.displayName || 'Guest')+'</strong>'+escapeHtml(c.body)+'</div>';
+        }).join('');
+      } catch (err) {
+        commentsList.innerHTML = '<p class="deco-comments-empty">Comments unavailable right now.</p>';
+      }
     }
 
     function renderGallery(){
@@ -351,6 +433,8 @@
       lightboxCaption.textContent = photoCaption(p);
       lightbox.hidden = false;
       document.body.style.overflow = 'hidden';
+      syncCommentAuth();
+      loadComments(p.id);
     }
     function closeLightbox(){
       lightbox.hidden = true;
@@ -400,6 +484,44 @@
       if (e.key === 'ArrowRight') openLightbox(lightboxIndex + 1);
     });
 
+    commentForm.addEventListener('submit', async function(e){
+      e.preventDefault();
+      commentStatus.className = 'deco-status';
+      commentStatus.textContent = '';
+      var photo = currentPhoto();
+      if (!photo) return;
+      if (!CC.requireSignIn(location.pathname + '#gallery')) return;
+      var body = document.getElementById('decoCommentBody').value.trim();
+      if (body.length < 2) {
+        commentStatus.className = 'deco-status err';
+        commentStatus.textContent = 'Write a short comment first.';
+        return;
+      }
+      commentSubmit.disabled = true;
+      commentSubmit.textContent = 'Posting…';
+      try {
+        var data = await CC.api('/agent-photo-upload?scope=decorations', {
+          method: 'POST',
+          body: {
+            scope: 'decorations',
+            action: 'comment',
+            photoId: photo.id,
+            body: body,
+            displayName: (CC.getUser() && CC.getUser().displayName) || ''
+          }
+        });
+        commentStatus.className = 'deco-status ok';
+        commentStatus.textContent = data.message || 'Comment submitted for approval.';
+        document.getElementById('decoCommentBody').value = '';
+      } catch (err) {
+        commentStatus.className = 'deco-status err';
+        commentStatus.textContent = err.message || 'Could not post comment.';
+      } finally {
+        commentSubmit.disabled = false;
+        commentSubmit.textContent = 'Post comment';
+      }
+    });
+
     function compressImage(file){
       return new Promise(function(resolve, reject){
         var objectUrl = URL.createObjectURL(file);
@@ -434,12 +556,8 @@
       });
     }
 
-    if (CC.getToken()) {
-      gate.hidden = true;
-      form.hidden = false;
-    } else {
-      gate.hidden = false;
-      form.hidden = true;
+    if (CC.getUser() && CC.getUser().displayName) {
+      document.getElementById('decoName').value = CC.getUser().displayName;
     }
 
     photoInput.addEventListener('change', async function(){
@@ -467,7 +585,6 @@
       e.preventDefault();
       statusEl.className = 'deco-status';
       statusEl.textContent = '';
-      if (!CC.requireSignIn(location.pathname + '#upload')) return;
       if (!pendingBase64) {
         statusEl.className = 'deco-status err';
         statusEl.textContent = 'Choose a photo to upload.';
@@ -476,9 +593,15 @@
       submitBtn.disabled = true;
       submitBtn.textContent = 'Submitting…';
       try {
-        var data = await CC.api('/agent-photo-upload?scope=decorations', {
+        var res = await fetch('/api/agent-photo-upload?scope=decorations', {
           method: 'POST',
-          body: {
+          headers: Object.assign(
+            { 'Content-Type': 'application/json' },
+            CC.getToken()
+              ? { Authorization: 'Bearer ' + CC.getToken(), 'X-CC-Token': CC.getToken() }
+              : {}
+          ),
+          body: JSON.stringify({
             scope: 'decorations',
             action: 'upload',
             contentType: 'image/jpeg',
@@ -486,15 +609,21 @@
             category: document.getElementById('decoCategory').value,
             ship: document.getElementById('decoShip').value.trim(),
             caption: document.getElementById('decoCaption').value.trim(),
-            displayName: (CC.getUser() && CC.getUser().displayName) || ''
-          }
+            displayName: document.getElementById('decoName').value.trim() ||
+              ((CC.getUser() && CC.getUser().displayName) || 'Guest')
+          })
         });
+        var data = await res.json().catch(function(){ return {}; });
+        if (!res.ok) throw new Error(data.error || 'Submit failed.');
         statusEl.className = 'deco-status ok';
         statusEl.textContent = data.message || 'Submitted for approval.';
         form.reset();
         pendingBase64 = '';
         preview.hidden = true;
         preview.innerHTML = '';
+        if (CC.getUser() && CC.getUser().displayName) {
+          document.getElementById('decoName').value = CC.getUser().displayName;
+        }
       } catch (err) {
         statusEl.className = 'deco-status err';
         statusEl.textContent = err.message || 'Submit failed.';

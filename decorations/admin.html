@@ -19,6 +19,7 @@
   .deco-admin-card img{width:100%;max-height:280px;object-fit:cover;display:block;margin-bottom:10px;background:var(--cream-2);}
   .deco-admin-card .meta{font-size:0.88rem;color:var(--muted);margin:0 0 10px;line-height:1.45;}
   .deco-admin-card .actions{display:flex;flex-wrap:wrap;gap:8px;}
+  .deco-admin-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
 </style>
 </head>
 <body>
@@ -37,7 +38,7 @@
   <div class="wrap" style="max-width:960px;">
     <section class="agent-admin-panel">
       <h1>Decoration photo moderation</h1>
-      <p class="agent-admin-sub">Sign in with your admin password, then approve guest door and Fish Extender photos before they appear in the public gallery.</p>
+      <p class="agent-admin-sub">Approve guest photos before they appear in the public gallery. Comments also need approval before they show under a photo.</p>
       <div class="agent-admin-key">
         <label for="adminPassword">Admin password</label>
         <input id="adminPassword" type="password" autocomplete="current-password">
@@ -45,9 +46,12 @@
       <div class="agent-admin-actions">
         <button type="button" class="btn btn-gold" id="adminLoginBtn">Sign in</button>
         <button type="button" class="btn btn-outline" id="adminLogoutBtn" hidden>Sign out</button>
-        <button type="button" class="btn btn-gold" id="loadPending">Pending</button>
-        <button type="button" class="btn btn-outline" id="loadApproved">Approved</button>
-        <button type="button" class="btn btn-outline" id="loadRejected">Rejected</button>
+      </div>
+      <div class="deco-admin-tabs">
+        <button type="button" class="btn btn-gold" id="loadPending">Pending photos</button>
+        <button type="button" class="btn btn-outline" id="loadApproved">Approved photos</button>
+        <button type="button" class="btn btn-outline" id="loadRejected">Rejected photos</button>
+        <button type="button" class="btn btn-outline" id="loadPendingComments">Pending comments</button>
       </div>
       <p class="agent-admin-status" id="adminStatus" hidden></p>
       <div id="adminList" class="deco-admin-grid"></div>
@@ -60,6 +64,7 @@
 (function () {
   var list = document.getElementById("adminList");
   var statusEl = document.getElementById("adminStatus");
+  var mode = "photos";
 
   function key() {
     return (window.CCAdminAuth && window.CCAdminAuth.getToken()) || "";
@@ -86,6 +91,7 @@
   }
 
   async function load(status) {
+    mode = "photos";
     if (!key()) {
       list.innerHTML = "<p class='agent-admin-empty'>Sign in with your admin password.</p>";
       return;
@@ -140,31 +146,90 @@
     }
   }
 
+  async function loadComments() {
+    mode = "comments";
+    if (!key()) {
+      list.innerHTML = "<p class='agent-admin-empty'>Sign in with your admin password.</p>";
+      return;
+    }
+    list.innerHTML = "<p class='agent-admin-empty'>Loading…</p>";
+    try {
+      var res = await fetch(
+        "/api/agent-photo-upload?scope=decorations&comments=1&status=pending&key=" +
+          encodeURIComponent(key())
+      );
+      var data = await res.json().catch(function () { return {}; });
+      if (!res.ok) throw new Error(data.error || "Failed to load");
+      var comments = data.comments || [];
+      if (!comments.length) {
+        list.innerHTML = "<p class='agent-admin-empty'>No pending comments.</p>";
+        return;
+      }
+      list.innerHTML = comments
+        .map(function (c) {
+          return (
+            '<article class="deco-admin-card" data-comment-id="' +
+            escapeHtml(c.id) +
+            '" data-photo-id="' +
+            escapeHtml(c.photoId) +
+            '">' +
+            '<p class="meta"><strong>' +
+            escapeHtml(c.displayName || "Guest") +
+            (c.userEmail ? " · " + escapeHtml(c.userEmail) : "") +
+            "</strong><br>Photo id: " +
+            escapeHtml(c.photoId) +
+            "<br>" +
+            escapeHtml(c.createdAt || "") +
+            "</p>" +
+            "<p>" +
+            escapeHtml(c.body) +
+            "</p>" +
+            '<div class="actions" style="margin-top:10px">' +
+            '<button type="button" class="btn btn-gold" data-action="approve-comment">Approve</button>' +
+            '<button type="button" class="btn btn-outline" data-action="reject-comment">Reject</button>' +
+            "</div></article>"
+          );
+        })
+        .join("");
+    } catch (err) {
+      list.innerHTML = "<p class='agent-admin-empty'>" + escapeHtml(err.message || "Failed") + "</p>";
+    }
+  }
+
   document.getElementById("loadPending").onclick = function () { load("pending"); };
   document.getElementById("loadApproved").onclick = function () { load("approved"); };
   document.getElementById("loadRejected").onclick = function () { load("rejected"); };
+  document.getElementById("loadPendingComments").onclick = loadComments;
 
   list.addEventListener("click", async function (e) {
     var btn = e.target.closest("[data-action]");
     if (!btn || !key()) return;
-    var card = btn.closest(".deco-admin-card");
-    if (!card) return;
     var action = btn.getAttribute("data-action");
     btn.disabled = true;
     try {
+      var payload = { scope: "decorations", action: action };
+      if (action === "approve-comment" || action === "reject-comment") {
+        var ccard = btn.closest(".deco-admin-card");
+        payload.photoId = ccard.getAttribute("data-photo-id");
+        payload.commentId = ccard.getAttribute("data-comment-id");
+      } else {
+        var pcard = btn.closest(".deco-admin-card");
+        payload.id = pcard.getAttribute("data-id");
+      }
       var res = await fetch("/api/agent-photo-upload?scope=decorations&key=" + encodeURIComponent(key()), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          scope: "decorations",
-          action: action,
-          id: card.getAttribute("data-id"),
-        }),
+        body: JSON.stringify(payload),
       });
       var data = await res.json().catch(function () { return {}; });
       if (!res.ok) throw new Error(data.error || "Update failed");
-      showStatus(action === "approve" ? "Approved — live in the gallery." : "Rejected.", true);
-      load("pending");
+      if (action.indexOf("comment") !== -1) {
+        showStatus(action === "approve-comment" ? "Comment approved." : "Comment rejected.", true);
+        loadComments();
+      } else {
+        showStatus(action === "approve" ? "Approved — live in the gallery." : "Rejected.", true);
+        load("pending");
+      }
     } catch (err) {
       showStatus(err.message || "Failed", false);
       btn.disabled = false;

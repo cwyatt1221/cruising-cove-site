@@ -2,12 +2,23 @@ import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/fu
 import { ALLOWED_IMAGE_TYPES, uploadPublicImage } from "../lib/blobUpload";
 import { requireUser } from "../lib/community";
 import { adminAuthOk } from "../lib/adminAuth";
-import { listDecorations, moderateDecoration, submitDecoration } from "../lib/decorations";
+import {
+  listComments,
+  listCommentsByStatus,
+  listDecorations,
+  moderateComment,
+  moderateDecoration,
+  submitComment,
+  submitDecoration,
+} from "../lib/decorations";
 
 interface UploadInput {
   scope?: string;
   action?: string;
   id?: string;
+  photoId?: string;
+  commentId?: string;
+  body?: string;
   fileName?: string;
   contentType?: string;
   base64Data?: string;
@@ -58,7 +69,41 @@ async function handleAgentPhotoUpload(
 }
 
 async function handleDecorationsGet(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
+  const commentsMode = (request.query.get("comments") || "").trim();
+  const photoId = (request.query.get("photoId") || "").trim();
   const status = (request.query.get("status") || "approved").trim();
+
+  if (commentsMode === "1" || commentsMode === "true") {
+    if (photoId) {
+      if (status !== "approved" && !(await adminAuthOk(request))) {
+        return cors(401, { error: "Missing or invalid admin key." });
+      }
+      try {
+        const comments = await listComments(photoId, status === "approved" ? "approved" : status);
+        if (status === "approved") {
+          return cors(200, {
+            comments: comments.map(({ userEmail: _e, userId: _u, ...rest }) => rest),
+          });
+        }
+        return cors(200, { comments });
+      } catch (err) {
+        context.error("listComments failed:", err);
+        return cors(500, { error: "Could not load comments." });
+      }
+    }
+
+    if (!(await adminAuthOk(request))) {
+      return cors(401, { error: "Missing or invalid admin key." });
+    }
+    try {
+      const comments = await listCommentsByStatus(status || "pending");
+      return cors(200, { comments });
+    } catch (err) {
+      context.error("listCommentsByStatus failed:", err);
+      return cors(500, { error: "Could not load comments." });
+    }
+  }
+
   if (status !== "approved") {
     if (!(await adminAuthOk(request))) {
       return cors(401, { error: "Missing or invalid admin key." });
@@ -66,7 +111,6 @@ async function handleDecorationsGet(request: HttpRequest, context: InvocationCon
   }
   try {
     const photos = await listDecorations(status);
-    // Public gallery: never expose submitter email/userId.
     if (status === "approved" && !(await adminAuthOk(request))) {
       return cors(200, {
         photos: photos.map(({ userEmail: _e, userId: _u, ...rest }) => rest),
@@ -85,6 +129,7 @@ async function handleDecorationsPost(
   context: InvocationContext
 ): Promise<HttpResponseInit> {
   const action = String(body.action || "upload").trim();
+
   if (action === "approve" || action === "reject") {
     if (!(await adminAuthOk(request))) {
       return cors(401, { error: "Missing or invalid admin key." });
@@ -100,19 +145,70 @@ async function handleDecorationsPost(
     }
   }
 
-  const user = await requireUser(request.headers);
-  if (!user) {
-    return cors(401, { error: "Sign in required to upload a decoration photo." });
+  if (action === "approve-comment" || action === "reject-comment") {
+    if (!(await adminAuthOk(request))) {
+      return cors(401, { error: "Missing or invalid admin key." });
+    }
+    const photoId = String(body.photoId || "").trim();
+    const commentId = String(body.commentId || body.id || "").trim();
+    if (!photoId || !commentId) {
+      return cors(400, { error: "photoId and commentId are required." });
+    }
+    try {
+      const result = await moderateComment(
+        photoId,
+        commentId,
+        action === "approve-comment" ? "approve" : "reject"
+      );
+      return cors(200, result);
+    } catch (err) {
+      context.error("moderateComment failed:", err);
+      return cors(404, { error: "Comment not found." });
+    }
   }
+
+  if (action === "comment") {
+    const user = await requireUser(request.headers);
+    if (!user) {
+      return cors(401, { error: "Sign in required to comment on a photo." });
+    }
+    const photoId = String(body.photoId || body.id || "").trim();
+    const commentBody = String(body.body || "").trim();
+    if (!photoId) return cors(400, { error: "photoId is required." });
+    try {
+      const result = await submitComment({
+        photoId,
+        userId: user.userId,
+        userEmail: user.email,
+        displayName: String(body.displayName || user.displayName || "Guest").trim(),
+        body: commentBody,
+      });
+      return cors(200, {
+        success: true,
+        ...result,
+        message: "Thanks! Your comment was submitted and will appear after approval.",
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Could not save comment.";
+      context.error("submitComment failed:", err);
+      if (message.includes("not found") || message.includes("too short")) {
+        return cors(400, { error: message });
+      }
+      return cors(500, { error: "Could not save your comment. Please try again." });
+    }
+  }
+
+  // Anonymous uploads allowed — photos stay pending until admin approval.
+  const user = await requireUser(request.headers);
   if (!body.base64Data || !body.contentType) {
     return cors(400, { error: "contentType and base64Data are required." });
   }
 
   try {
     const result = await submitDecoration({
-      userId: user.userId,
-      userEmail: user.email,
-      displayName: String(body.displayName || user.displayName || "Guest").trim(),
+      userId: user?.userId || "",
+      userEmail: user?.email || "",
+      displayName: String(body.displayName || user?.displayName || "Guest").trim(),
       caption: String(body.caption || "").trim(),
       category: String(body.category || "other").trim(),
       ship: String(body.ship || "").trim(),
