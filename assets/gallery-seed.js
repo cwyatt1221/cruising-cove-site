@@ -252,5 +252,16 @@ window.CC_GALLERY_SEED = [
     "status": "approved",
     "createdAt": "2026-08-02T18:23:00.000Z",
     "seed": true
+  },
+  {
+    "id": "seed-c354ec6f03f4",
+    "photoUrl": "/assets/images/gallery/24-pepe-door-5148-half.jpg",
+    "caption": "Pepe the King Prawn\u2019s mini door (5148\u00bd)",
+    "ship": "Disney Dream / Fantasy",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-02T18:24:00.000Z",
+    "seed": true
   }
 ];
