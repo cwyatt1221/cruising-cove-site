@@ -69,8 +69,21 @@
     else fn();
   }
 
+  function loadAdminAuth() {
+    if (window.CCAdminAuth) {
+      window.CCAdminAuth.syncNav();
+      return;
+    }
+    if (document.querySelector('script[src="/assets/admin-auth.js"]')) return;
+    var s = document.createElement("script");
+    s.src = "/assets/admin-auth.js";
+    s.async = true;
+    document.head.appendChild(s);
+  }
+
   ready(function () {
     initDropdowns();
     markCurrent();
+    loadAdminAuth();
   });
 })();

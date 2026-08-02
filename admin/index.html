@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin | Cruising Cove</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/agents.css">
+<style>
+  .admin-hub-grid{
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px;
+  }
+  @media (max-width:700px){.admin-hub-grid{grid-template-columns:1fr;}}
+  .admin-hub-card{
+    display:block;padding:18px 18px 16px;background:var(--cream);
+    border:1px solid rgba(26,42,74,.1);border-left:3px solid var(--gold);
+    color:inherit;text-decoration:none;
+  }
+  .admin-hub-card:hover{border-color:rgba(201,162,75,.55);}
+  .admin-hub-card h2{
+    margin:0 0 6px;font-family:var(--font-serif);font-weight:500;
+    font-size:1.25rem;color:var(--navy);
+  }
+  .admin-hub-card p{margin:0;font-size:0.92rem;color:var(--muted);line-height:1.45;}
+  .admin-hub-card .href{display:block;margin-top:10px;font-size:0.82rem;color:var(--teal);}
+  .admin-hub-locked{opacity:.55;pointer-events:none;}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <nav class="site-nav-bar" aria-label="Primary">
+      <a class="logo" href="/">Cruising Cove</a>
+      <div class="nav-cta">
+        <a href="/" class="btn btn-outline">View site</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main class="agent-admin-shell">
+  <div class="wrap" style="max-width:860px;">
+    <section class="agent-admin-panel">
+      <h1>Site admin</h1>
+      <p class="agent-admin-sub">Sign in once with your admin password. The admin menu stays available across the site for about 12 hours.</p>
+      <div class="agent-admin-key">
+        <label for="adminPassword">Admin password</label>
+        <input id="adminPassword" type="password" autocomplete="current-password">
+      </div>
+      <div class="agent-admin-actions">
+        <button type="button" class="btn btn-gold" id="adminLoginBtn">Sign in</button>
+        <button type="button" class="btn btn-outline" id="adminLogoutBtn" hidden>Sign out</button>
+      </div>
+      <p class="agent-admin-status" id="adminStatus" hidden></p>
+
+      <div id="adminHub" class="admin-hub-grid admin-hub-locked" aria-label="Admin tools"></div>
+    </section>
+  </div>
+</main>
+
+<script src="/assets/admin-auth.js"></script>
+<script>
+(function () {
+  var hub = document.getElementById("adminHub");
+  var statusEl = document.getElementById("adminStatus");
+
+  function renderHub() {
+    var pages = (window.CCAdminAuth && window.CCAdminAuth.ADMIN_PAGES) || [];
+    var loggedIn = Boolean(window.CCAdminAuth && window.CCAdminAuth.getToken());
+    hub.classList.toggle("admin-hub-locked", !loggedIn);
+    hub.innerHTML = pages
+      .filter(function (p) { return p.href !== "/admin/"; })
+      .map(function (p) {
+        return (
+          '<a class="admin-hub-card" href="' +
+          p.href +
+          '"><h2>' +
+          p.label +
+          "</h2><p>" +
+          p.blurb +
+          '</p><span class="href">' +
+          p.href +
+          "</span></a>"
+        );
+      })
+      .join("");
+    if (!loggedIn) {
+      statusEl.hidden = false;
+      statusEl.className = "agent-admin-status";
+      statusEl.textContent = "Sign in to unlock the admin tools below.";
+    }
+  }
+
+  window.CCAdminAuth.bind({
+    passwordInput: document.getElementById("adminPassword"),
+    loginBtn: document.getElementById("adminLoginBtn"),
+    logoutBtn: document.getElementById("adminLogoutBtn"),
+    statusEl: statusEl,
+    onReady: function () {
+      statusEl.hidden = false;
+      statusEl.className = "agent-admin-status ok";
+      statusEl.textContent = "Signed in. Use the menu above or the tools below.";
+      renderHub();
+    },
+  });
+
+  renderHub();
+})();
+</script>
+</body>
+</html>

@@ -6,6 +6,34 @@
   var STORAGE_KEY = "cc_admin_session_token";
   var EXPIRES_KEY = "cc_admin_session_expires";
 
+  var ADMIN_PAGES = [
+    {
+      href: "/admin/",
+      label: "Admin home",
+      blurb: "Sign in and jump to every moderation tool",
+    },
+    {
+      href: "/agents/admin.html",
+      label: "Travel agents",
+      blurb: "Agent applications, directory publish, guest request locks",
+    },
+    {
+      href: "/marketplace/sellers/admin.html",
+      label: "Marketplace sellers",
+      blurb: "Curated 10 shop applications",
+    },
+    {
+      href: "/decorations/admin.html",
+      label: "Decoration gallery",
+      blurb: "Door / Fish Extender photos and comments",
+    },
+    {
+      href: "/planning/my-cruise-admin.html",
+      label: "My Cruise & reviews",
+      blurb: "Packing suggestions, port/excursion/venue reviews",
+    },
+  ];
+
   function getToken() {
     try {
       var token = sessionStorage.getItem(STORAGE_KEY) || "";
@@ -52,12 +80,14 @@
     });
     if (!res.ok) throw new Error(data.error || "Login failed");
     setToken(data.token, data.expiresAt);
+    syncNav();
     return data;
   }
 
   async function logout() {
     var token = getToken();
     clearToken();
+    syncNav();
     if (!token) return;
     try {
       await fetch("/api/community/login", {
@@ -70,6 +100,71 @@
         }),
       });
     } catch (_) {}
+  }
+
+  function currentPath() {
+    return (location.pathname || "/").replace(/\/+/g, "/");
+  }
+
+  function isCurrent(href) {
+    var path = currentPath();
+    var clean = (href || "").replace(/\/+$/, "") || "/";
+    var pathClean = path.replace(/\/+$/, "") || "/";
+    if (clean === "/admin") return pathClean === "/admin" || pathClean === "/admin/index.html";
+    return path === href || pathClean === clean;
+  }
+
+  function syncNav() {
+    var existing = document.getElementById("ccAdminBar");
+    var loggedIn = Boolean(getToken());
+    document.body.classList.toggle("cc-admin-logged-in", loggedIn);
+
+    if (!loggedIn) {
+      if (existing) existing.remove();
+      return;
+    }
+
+    var path = currentPath();
+    var linksHtml = ADMIN_PAGES.map(function (page) {
+      var current = isCurrent(page.href);
+      return (
+        '<a href="' +
+        page.href +
+        '"' +
+        (current ? ' class="is-current" aria-current="page"' : "") +
+        ">" +
+        page.label +
+        "</a>"
+      );
+    }).join("");
+
+    if (!existing) {
+      existing = document.createElement("div");
+      existing.id = "ccAdminBar";
+      existing.className = "cc-admin-bar";
+      existing.setAttribute("role", "navigation");
+      existing.setAttribute("aria-label", "Admin tools");
+      document.body.insertBefore(existing, document.body.firstChild);
+    }
+
+    existing.innerHTML =
+      '<div class="cc-admin-bar-inner">' +
+      '<a class="cc-admin-bar-brand" href="/admin/">Admin</a>' +
+      '<nav class="cc-admin-bar-links">' +
+      linksHtml +
+      "</nav>" +
+      '<button type="button" class="cc-admin-bar-logout" id="ccAdminBarLogout">Sign out</button>' +
+      "</div>";
+
+    var logoutBtn = document.getElementById("ccAdminBarLogout");
+    if (logoutBtn) {
+      logoutBtn.onclick = async function () {
+        await logout();
+        if (path.indexOf("/admin") === 0 || /admin\.html$/.test(path)) {
+          location.reload();
+        }
+      };
+    }
   }
 
   /**
@@ -99,6 +194,7 @@
       }
       if (loginBtn) loginBtn.hidden = loggedIn;
       if (logoutBtn) logoutBtn.hidden = !loggedIn;
+      syncNav();
       if (loggedIn) onReady();
     }
 
@@ -135,11 +231,20 @@
     return { getToken: getToken, syncUi: syncUi };
   }
 
+  function ready(fn) {
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fn);
+    else fn();
+  }
+
+  ready(syncNav);
+
   global.CCAdminAuth = {
     getToken: getToken,
     login: login,
     logout: logout,
     clearToken: clearToken,
     bind: bind,
+    syncNav: syncNav,
+    ADMIN_PAGES: ADMIN_PAGES,
   };
 })(window);

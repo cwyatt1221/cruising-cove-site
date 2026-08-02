@@ -54,6 +54,43 @@ img,svg{display:block;max-width:100%;}
 .btn-outline-light{border:1px solid rgba(245,240,225,.5);color:var(--cream);background:transparent;}
 .btn-outline-light:hover{border-color:var(--cream);background:rgba(245,240,225,.08);}
 
+/* ---------- Admin bar (visible only when site-admin session is active) ---------- */
+.cc-admin-bar{
+  position:fixed;top:0;left:0;right:0;z-index:90;
+  background:var(--navy-deep);color:var(--cream);
+  border-bottom:1px solid rgba(201,162,75,.35);
+  font-size:0.84rem;
+}
+.cc-admin-bar-inner{
+  max-width:1180px;margin:0 auto;padding:8px 20px;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+}
+.cc-admin-bar-brand{
+  font-family:var(--font-serif);font-weight:600;color:var(--gold);
+  text-decoration:none;letter-spacing:0.02em;
+}
+.cc-admin-bar-links{
+  display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;flex:1;
+}
+.cc-admin-bar-links a{
+  color:rgba(245,240,225,.82);text-decoration:none;border-bottom:1px solid transparent;
+  padding-bottom:1px;
+}
+.cc-admin-bar-links a:hover{color:var(--cream);}
+.cc-admin-bar-links a.is-current{color:var(--gold);border-bottom-color:var(--gold);}
+.cc-admin-bar-logout{
+  appearance:none;border:1px solid rgba(245,240,225,.35);background:transparent;
+  color:var(--cream);font:inherit;font-size:0.82rem;padding:4px 10px;cursor:pointer;
+}
+.cc-admin-bar-logout:hover{border-color:var(--gold);color:var(--gold);}
+body.cc-admin-logged-in{padding-top:42px;}
+body.cc-admin-logged-in .site-header{top:42px;}
+@media (max-width:700px){
+  body.cc-admin-logged-in{padding-top:0;}
+  .cc-admin-bar{position:sticky;}
+  body.cc-admin-logged-in .site-header{top:0;}
+}
+
 /* ---------- Shared header ---------- */
 .site-header{
   position:sticky;top:0;z-index:50;
