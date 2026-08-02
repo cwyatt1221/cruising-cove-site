@@ -371,13 +371,6 @@
     lightboxCaption.textContent = photoCaption(p);
     lightbox.hidden = false;
     document.body.style.overflow = "hidden";
-    if (p.seed) {
-      commentGate.hidden = true;
-      commentForm.hidden = true;
-      commentsList.innerHTML =
-        '<p class="gallery-comments-empty">Featured photo — guest comments are open on community uploads.</p>';
-      return;
-    }
     syncCommentAuth();
     loadComments(p.id);
   }
@@ -429,7 +422,7 @@
     commentStatus.className = "gallery-status";
     commentStatus.textContent = "";
     var photo = currentPhoto();
-    if (!photo || photo.seed) return;
+    if (!photo) return;
     if (!CC.requireSignIn(location.pathname + "#gallery")) return;
     var body = document.getElementById("commentBody").value.trim();
     if (body.length < 2) {

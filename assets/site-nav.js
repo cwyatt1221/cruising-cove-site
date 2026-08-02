@@ -103,9 +103,8 @@
         auth.textContent = "Sign up";
         if (path.indexOf("/community/login") === 0) auth.classList.add("current");
       }
-      var btn = cta.querySelector("a.btn");
-      if (btn) cta.insertBefore(auth, btn);
-      else cta.appendChild(auth);
+      // Place Sign up / Account after Find an Agent.
+      cta.appendChild(auth);
     }
   }
 

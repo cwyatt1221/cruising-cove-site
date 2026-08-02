@@ -218,8 +218,14 @@ export async function submitComment(opts: {
   displayName: string;
   body: string;
 }): Promise<{ id: string; status: string }> {
-  const photo = await getDecoration(opts.photoId);
-  if (!photo || photo.status !== "approved") {
+  // Seed gallery photos use stable client ids (seed-*) and are not in Table Storage.
+  const isSeedPhoto = opts.photoId.startsWith("seed-");
+  if (!isSeedPhoto) {
+    const photo = await getDecoration(opts.photoId);
+    if (!photo || photo.status !== "approved") {
+      throw new Error("Photo not found.");
+    }
+  } else if (!/^[a-z0-9-]{8,80}$/i.test(opts.photoId)) {
     throw new Error("Photo not found.");
   }
   const body = opts.body.trim().slice(0, 800);
