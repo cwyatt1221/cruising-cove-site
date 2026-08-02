@@ -100,7 +100,7 @@
       } else {
         var next = location.pathname + location.search + location.hash;
         auth.href = "/community/login.html?next=" + encodeURIComponent(next);
-        auth.textContent = "Sign up";
+        auth.textContent = "Sign Up/Sign In";
         if (path.indexOf("/community/login") === 0) auth.classList.add("current");
       }
       // Place Sign up / Account after Find an Agent.
