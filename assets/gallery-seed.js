@@ -14,8 +14,8 @@ window.CC_GALLERY_SEED = [
   {
     "id": "seed-adfe1d4e9c48",
     "photoUrl": "/assets/images/gallery/02-img-4680-c0c92501-b813-40ad-bbde-d76fcffb0651.jpg",
-    "caption": "Sunset over the water from the ship",
-    "ship": "",
+    "caption": "Star Wars: Hyperspace Lounge",
+    "ship": "Disney Wish",
     "displayName": "Cruising Cove",
     "category": "other",
     "status": "approved",
