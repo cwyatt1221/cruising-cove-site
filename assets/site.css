@@ -97,10 +97,26 @@ body.cc-admin-logged-in .site-header{top:42px;}
   background:var(--cream-2);
   border-bottom:1px solid rgba(26,42,74,.08);
 }
+/* Protect header/footer from page-level .wrap overrides (e.g. form pages). */
+.site-header > .wrap,
+.site-footer > .wrap,
+.site-legal > .wrap{
+  max-width:1200px;
+  margin-left:auto;
+  margin-right:auto;
+  padding-left:40px;
+  padding-right:40px;
+}
+@media (max-width:700px){
+  .site-header > .wrap,
+  .site-footer > .wrap,
+  .site-legal > .wrap{padding-left:22px;padding-right:22px;}
+}
 .site-nav-bar{
   display:flex;align-items:center;justify-content:space-between;
   padding:16px 0;gap:14px;
   min-width:0;
+  flex-wrap:wrap;
 }
 .logo{
   display:flex;align-items:center;gap:10px;
@@ -128,12 +144,13 @@ body.cc-admin-logged-in .site-header{top:42px;}
 }
 .logo .mark svg{width:14px;height:14px;}
 .site-nav-bar .nav-links{
-  display:flex;flex-wrap:nowrap;align-items:center;
-  gap:6px 12px;justify-content:flex-end;flex:1 1 auto;
-  font-size:0.86rem;font-weight:500;color:var(--navy);
-  min-width:0;
-  overflow:hidden;
+  display:none;width:100%;order:4;
+  flex-direction:column;align-items:flex-start;gap:14px;
+  padding:14px 0 4px;flex-wrap:wrap;flex:1 1 100%;
+  font-size:0.92rem;font-weight:500;color:var(--navy);
+  min-width:0;justify-content:flex-start;overflow:visible;
 }
+.site-nav-bar .nav-links.open{display:flex;}
 .site-nav-bar .nav-links a{
   white-space:nowrap;transition:color .2s ease;
   border-bottom:2px solid transparent;padding-bottom:2px;
@@ -142,9 +159,8 @@ body.cc-admin-logged-in .site-header{top:42px;}
 .site-nav-bar .nav-links a.current{color:var(--gold);border-bottom-color:var(--gold);}
 .site-nav-bar .nav-cta{
   display:flex;align-items:center;gap:10px;flex:0 0 auto;
-  position:relative;z-index:3;margin-left:4px;
-  background:var(--cream-2);
-  box-shadow:-16px 0 14px -6px var(--cream-2);
+  position:relative;z-index:3;margin-left:auto;order:2;
+  background:transparent;box-shadow:none;
 }
 .site-nav-bar .nav-cta .btn{white-space:nowrap;}
 .site-nav-bar .nav-cta .nav-auth-link{
@@ -170,11 +186,11 @@ body.cc-admin-logged-in .site-header{top:42px;}
   border:4px solid transparent;border-top-color:currentColor;
   transform:translateY(2px);
 }
+.nav-dropdown{width:100%;}
 .nav-dropdown-menu{
-  display:none;position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%);
-  min-width:190px;padding:8px;background:var(--cream);
-  border:1px solid rgba(26,42,74,.12);border-radius:2px;
-  box-shadow:0 14px 32px -16px rgba(15,28,51,.4);z-index:70;
+  display:none;position:static;transform:none;min-width:0;
+  padding:4px 0 4px 12px;background:transparent;border:0;
+  box-shadow:none;border-radius:0;z-index:70;
 }
 .nav-dropdown.open .nav-dropdown-menu{display:flex;flex-direction:column;gap:2px;}
 .nav-dropdown-menu a{
@@ -186,10 +202,10 @@ body.cc-admin-logged-in .site-header{top:42px;}
 
 .cc-site-search{
   position:relative;
-  flex:0 0 150px;
-  width:150px;
-  min-width:140px;
-  max-width:150px;
+  flex:0 1 180px;
+  width:180px;
+  min-width:120px;
+  max-width:200px;
 }
 .cc-site-search-label{
   position:absolute;width:1px;height:1px;padding:0;margin:-1px;
@@ -247,55 +263,24 @@ body.cc-admin-logged-in .site-header{top:42px;}
 }
 
 .nav-toggle{
-  display:none;background:none;border:none;cursor:pointer;padding:6px;
-  flex-direction:column;gap:4px;margin-left:auto;flex-shrink:0;
+  display:flex;background:none;border:none;cursor:pointer;padding:6px;
+  flex-direction:column;gap:4px;margin-left:4px;flex-shrink:0;order:3;
 }
 .nav-toggle span{width:22px;height:2px;background:var(--navy);display:block;}
 
-/*
-  Header content lives in a ~1200px wrap. Full inline nav + search + CTA
-  only fits on wide viewports — use hamburger earlier so Marketplace
-  never paints over the search field.
-*/
-@media (max-width:1600px){
-  .site-nav-bar .nav-links{gap:4px 9px;font-size:0.8rem;}
-  .cc-site-search{flex-basis:132px;width:132px;min-width:120px;max-width:132px;}
-  .logo{font-size:1.12rem;gap:8px;}
-}
-
-/* Compact header — hamburger before links crowd the bar */
-@media (max-width:1480px){
-  .nav-toggle{display:flex;}
-  .site-nav-bar .nav-links{
-    display:none;width:100%;order:4;
-    flex-direction:column;align-items:flex-start;gap:14px;
-    padding:14px 0 4px;flex-wrap:wrap;flex:1 1 100%;
-    overflow:visible;justify-content:flex-start;
-  }
-  .site-nav-bar .nav-links.open{display:flex;}
-  .site-nav-bar{flex-wrap:wrap;gap:12px;}
-  .site-nav-bar .nav-cta{
-    order:3;margin-left:0;box-shadow:none;background:transparent;
-  }
-  .cc-site-search{
-    flex:1 1 auto;width:auto;min-width:0;max-width:220px;
-  }
-  .cc-site-search-results{left:auto;right:0;width:min(360px, calc(100vw - 32px));}
-  .nav-dropdown{width:100%;}
-  .nav-dropdown-toggle{padding:0;}
-  .nav-dropdown-menu{
-    position:static;transform:none;box-shadow:none;border:0;
-    background:transparent;padding:4px 0 4px 12px;min-width:0;
-  }
-  .nav-dropdown.open .nav-dropdown-menu{display:flex;}
-}
+/* Link row always uses the hamburger — a 1200px wrap can't fit the full bar. */
+.nav-dropdown-toggle{padding:0;}
 
 @media (max-width:700px){
   .cc-site-search{
     order:5;flex:1 1 100%;max-width:none;width:100%;
   }
   .cc-site-search-results{left:0;right:0;width:100%;}
+  .site-nav-bar .nav-cta{
+    margin-left:0;flex-wrap:wrap;justify-content:flex-end;
+  }
   .site-nav-bar .nav-cta .btn{padding:9px 12px;font-size:0.8rem;}
+  .site-nav-bar .nav-cta .nav-auth-link{font-size:0.8rem;}
 }
 
 /* ---------- Shared footer ---------- */
