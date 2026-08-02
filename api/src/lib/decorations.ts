@@ -129,27 +129,25 @@ export async function submitDecoration(opts: {
 
   const site = (process.env.PUBLIC_SITE_URL || "https://www.cruisingcove.com").replace(/\/$/, "");
   const fromLine = userEmail ? `${displayName} <${userEmail}>` : displayName;
-  const subject = "New decoration photo pending approval";
+  const subject = "New gallery photo pending approval";
   const text = [
-    "A guest uploaded a decoration photo on Cruising Cove.",
+    "A guest uploaded a photo to the Cruising Cove gallery.",
     "",
     `From: ${fromLine}`,
-    `Category: ${category}`,
     `Ship: ${opts.ship || "—"}`,
     `Caption: ${opts.caption || "—"}`,
     "",
-    `Review: ${site}/decorations/admin.html`,
+    `Review: ${site}/gallery/admin.html`,
   ].join("\n");
   const html = `
-    <p>A guest uploaded a decoration photo on Cruising Cove.</p>
+    <p>A guest uploaded a photo to the Cruising Cove gallery.</p>
     <ul>
       <li><strong>From:</strong> ${escapeHtml(fromLine)}</li>
-      <li><strong>Category:</strong> ${escapeHtml(category)}</li>
       <li><strong>Ship:</strong> ${escapeHtml(opts.ship || "—")}</li>
       <li><strong>Caption:</strong> ${escapeHtml(opts.caption || "—")}</li>
     </ul>
-    <p><img src="${escapeHtml(uploaded.url)}" alt="Decoration preview" style="max-width:320px;height:auto;border-radius:2px;"></p>
-    <p><a href="${escapeHtml(site)}/decorations/admin.html">Review in admin</a></p>
+    <p><img src="${escapeHtml(uploaded.url)}" alt="Gallery preview" style="max-width:320px;height:auto;border-radius:2px;"></p>
+    <p><a href="${escapeHtml(site)}/gallery/admin.html">Review in admin</a></p>
   `;
   try {
     await sendEmail(notifyEmail(), subject, html, text);
@@ -247,20 +245,20 @@ export async function submitComment(opts: {
   try {
     await sendEmail(
       notifyEmail(),
-      "New decoration photo comment pending approval",
-      `<p>New comment on a decoration photo.</p>
+      "New gallery photo comment pending approval",
+      `<p>New comment on a gallery photo.</p>
        <ul>
          <li><strong>From:</strong> ${escapeHtml(opts.displayName)} &lt;${escapeHtml(opts.userEmail)}&gt;</li>
          <li><strong>Comment:</strong> ${escapeHtml(body)}</li>
        </ul>
-       <p><a href="${escapeHtml(site)}/decorations/admin.html">Review in admin</a></p>`,
+       <p><a href="${escapeHtml(site)}/gallery/admin.html">Review in admin</a></p>`,
       [
-        "New comment on a decoration photo.",
+        "New comment on a gallery photo.",
         "",
         `From: ${opts.displayName} <${opts.userEmail}>`,
         `Comment: ${body}`,
         "",
-        `Review: ${site}/decorations/admin.html`,
+        `Review: ${site}/gallery/admin.html`,
       ].join("\n")
     );
   } catch {

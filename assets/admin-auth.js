@@ -23,9 +23,9 @@
       blurb: "Curated 10 shop applications",
     },
     {
-      href: "/decorations/admin.html",
-      label: "Decoration gallery",
-      blurb: "Door / Fish Extender photos and comments",
+      href: "/gallery/admin.html",
+      label: "Photo gallery",
+      blurb: "Guest photos and comments",
     },
     {
       href: "/planning/my-cruise-admin.html",

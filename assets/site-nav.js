@@ -82,10 +82,10 @@
 
     if (!links.querySelector('a[data-cc-nav="gallery"]')) {
       var gallery = document.createElement("a");
-      gallery.href = "/decorations/#gallery";
+      gallery.href = "/gallery/";
       gallery.textContent = "Gallery";
       gallery.setAttribute("data-cc-nav", "gallery");
-      if (path.indexOf("/decorations") === 0) gallery.classList.add("current");
+      if (path.indexOf("/gallery") === 0) gallery.classList.add("current");
       links.appendChild(gallery);
     }
 
