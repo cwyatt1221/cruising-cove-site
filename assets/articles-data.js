@@ -1,14 +1,22 @@
 /**
- * Cruising Cove articles — homepage carousel (up to 5) + archive.
+ * Cruising Cove articles — homepage carousel (up to 10) + archive.
  * Keep newest first in CC_ARTICLES for the archive list.
- * Homepage carousel starts on CAROUSEL_START_ID (or this week's pick if unset), then pages through up to 5.
+ * Homepage carousel starts on CAROUSEL_START_ID (or this week's pick if unset), then pages through up to FEATURED_SLOTS.
  */
 (function (global) {
-  var FEATURED_SLOTS = 5;
+  var FEATURED_SLOTS = 10;
   /** Pin the first homepage carousel slide. Set to null to rotate by ISO week. */
-  var CAROUSEL_START_ID = "disney-cruise-fish-extenders";
+  var CAROUSEL_START_ID = "welcome-aboard-donna";
 
   var articles = [
+    {
+      id: "welcome-aboard-donna",
+      title: "Welcome Aboard Donna — Our Newest Travel Agent",
+      excerpt:
+        "Meet Donna Walters of EnchantAway Travel — a Disney Cruise specialist for personalized family planning, first-timers, and medical needs.",
+      date: "2026-08-02",
+      url: "/articles/welcome-aboard-donna.html",
+    },
     {
       id: "worlds-of-marvel",
       title: "Worlds of Marvel: The Complete Guide to Disney Cruise Line's Marvel Dining Room",
@@ -104,7 +112,7 @@
     return articles[idx];
   }
 
-  /** Up to 5 articles for homepage paging, starting with the featured piece. */
+  /** Up to FEATURED_SLOTS articles for homepage paging, starting with the featured piece. */
   function featuredCarousel(now) {
     if (!articles.length) return [];
     var start = articles.indexOf(featuredArticle(now));
