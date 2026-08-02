@@ -16,7 +16,7 @@ export type CastawayTier =
   | "pearl"
   | "concierge";
 
-export type ReviewTargetType = "excursion" | "port";
+export type ReviewTargetType = "excursion" | "port" | "venue";
 
 export function newId(): string {
   return randomUUID();
@@ -38,7 +38,7 @@ export function isCastawayTier(value: string): value is CastawayTier {
 }
 
 export function isReviewTargetType(value: string): value is ReviewTargetType {
-  return value === "excursion" || value === "port";
+  return value === "excursion" || value === "port" || value === "venue";
 }
 
 export function reviewPartition(type: ReviewTargetType, targetId: string): string {

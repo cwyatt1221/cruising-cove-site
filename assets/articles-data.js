@@ -10,6 +10,14 @@
 
   var articles = [
     {
+      id: "worlds-of-marvel",
+      title: "Worlds of Marvel: The Complete Guide to Disney Cruise Line's Marvel Dining Room",
+      excerpt:
+        "Wish, Treasure, and Destiny's interactive Marvel dining show — Quantum Encounter, Groot Remix, Spider-Man tableside, the menu, and guest reports.",
+      date: "2026-08-02",
+      url: "/articles/worlds-of-marvel.html",
+    },
+    {
       id: "disney-cruise-fish-extenders",
       title: "Disney Cruise Fish Extenders: Everything First-Time Cruisers Need to Know",
       excerpt:
