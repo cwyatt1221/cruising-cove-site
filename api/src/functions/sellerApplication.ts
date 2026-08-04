@@ -60,8 +60,12 @@ export async function submitSellerApplication(request: HttpRequest, context: Inv
     return { status: 400, jsonBody: { error: "Upload at least one product photo." } };
   }
 
-  if (!body.productCategories || body.productCategories.length === 0) {
-    return { status: 400, jsonBody: { error: "Select at least one product category." } };
+  const productCategories = Array.isArray(body.productCategories)
+    ? body.productCategories.map((c) => String(c).trim()).filter(Boolean)
+    : [];
+  const productCategoriesOther = String(body.productCategoriesOther ?? "").trim();
+  if (productCategories.length === 0 && !productCategoriesOther) {
+    return { status: 400, jsonBody: { error: "Select at least one product category (or describe one under Other)." } };
   }
 
   const photoUrls = (body.photoUrls ?? []).slice(0, MAX_PHOTOS);
@@ -80,8 +84,8 @@ export async function submitSellerApplication(request: HttpRequest, context: Inv
       email: body.email.trim(),
       shopDescription: body.shopDescription ?? "",
       photoUrls: csv(photoUrls),
-      productCategories: csv(body.productCategories),
-      productCategoriesOther: body.productCategoriesOther ?? "",
+      productCategories: csv(productCategories),
+      productCategoriesOther: productCategoriesOther,
       instagramUrl: body.instagramUrl ?? "",
       tiktokUrl: body.tiktokUrl ?? "",
       facebookUrl: body.facebookUrl ?? "",

@@ -114,7 +114,12 @@
   }
   .submit-btn:hover:not(:disabled){background:var(--gold-light);}
   .submit-btn:disabled{opacity:0.6;cursor:default;}
-  .submit-error{color:#B3261E;font-size:0.88rem;margin-top:10px;display:none;}
+  .submit-error{
+    color:#B3261E;font-size:0.9rem;margin-top:12px;display:none;
+    background:rgba(179,38,30,0.08);border:1px solid rgba(179,38,30,0.25);
+    border-radius:6px;padding:12px 14px;line-height:1.45;
+  }
+  .submit-error.is-visible{display:block;}
   .photo-thumb{position:relative;width:74px;height:74px;border-radius:6px;overflow:hidden;border:1px solid rgba(10,39,51,0.15);}
   .photo-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
   .photo-thumb .thumb-remove{
@@ -231,15 +236,15 @@
     <p style="margin-top:12px;"><a href="/marketplace/">See open spots on the Curated 10 page →</a></p>
   </div>
 
-  <form id="seller-form">
+  <form id="seller-form" novalidate>
     <fieldset>
       <legend>Your Shop</legend>
 
       <label class="field-label" for="shopName">Shop name <span class="req">*</span></label>
-      <input type="text" id="shopName" name="shopName" required>
+      <input type="text" id="shopName" name="shopName" autocomplete="organization" required>
 
       <label class="field-label" for="shopUrl">Shop URL <span class="req">*</span></label>
-      <input type="url" id="shopUrl" name="shopUrl" placeholder="https://…" required>
+      <input type="text" id="shopUrl" name="shopUrl" inputmode="url" autocomplete="url" placeholder="https://…" required>
 
       <label class="field-label" for="shopDescription">Directory description <span class="req">*</span></label>
       <p style="font-size:0.85rem;color:var(--muted);margin:0 0 8px;">2–3 sentences — this is what families will see on your Curated 10 card.</p>
@@ -264,10 +269,10 @@
 
       <label class="field-label">Social links (optional)</label>
       <div class="field-row">
-        <input type="url" name="instagramUrl" placeholder="Instagram URL">
-        <input type="url" name="tiktokUrl" placeholder="TikTok URL">
+        <input type="text" name="instagramUrl" inputmode="url" autocomplete="off" placeholder="Instagram URL">
+        <input type="text" name="tiktokUrl" inputmode="url" autocomplete="off" placeholder="TikTok URL">
       </div>
-      <input type="url" name="facebookUrl" placeholder="Facebook URL" style="margin-top:10px;">
+      <input type="text" name="facebookUrl" inputmode="url" autocomplete="off" placeholder="Facebook URL" style="margin-top:10px;">
 
       <label class="field-label" for="audienceSize">Roughly how many followers / shop favorites do you have? (optional)</label>
       <input type="text" id="audienceSize" name="audienceSize" placeholder="e.g. 2,400 shop favorites, 5k Instagram">
@@ -307,11 +312,11 @@
     </fieldset>
 
     <button type="submit" class="submit-btn" id="submit-btn">Submit Application</button>
-    <p class="submit-error" id="submit-error">Something went wrong submitting your application. Please try again.</p>
+    <p class="submit-error" id="submit-error" role="alert" aria-live="assertive"></p>
   </form>
 
-  <div class="success-card" id="success-card" style="display:none;">
-    <h2>Thanks for applying</h2>
+  <div class="success-card" id="success-card" style="display:none;" role="status" aria-live="polite">
+    <h2>Thanks — we got your application</h2>
     <p>We’re reviewing Curated 10 applications and will email you if your slot is a fit. Make sure your shop URL, description, and photos are ready on your shop in the meantime.</p>
   </div>
 
@@ -339,7 +344,35 @@
     return Array.from(container.querySelectorAll('input:checked')).map(function(i){ return i.value; });
   }
 
-  // (category query param no longer used)
+  function showError(message) {
+    errorEl.textContent = message || 'Something went wrong submitting your application. Please try again.';
+    errorEl.classList.add('is-visible');
+    errorEl.style.display = 'block';
+    errorEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function clearError() {
+    errorEl.textContent = '';
+    errorEl.classList.remove('is-visible');
+    errorEl.style.display = 'none';
+  }
+
+  function normalizeUrl(value) {
+    var v = String(value || '').trim();
+    if (!v) return '';
+    if (!/^https?:\/\//i.test(v)) v = 'https://' + v;
+    return v;
+  }
+
+  function isValidHttpUrl(value) {
+    if (!value) return false;
+    try {
+      var u = new URL(normalizeUrl(value));
+      return u.protocol === 'http:' || u.protocol === 'https:';
+    } catch (err) {
+      return false;
+    }
+  }
 
   function compressImage(file) {
     return new Promise(function(resolve, reject){
@@ -403,8 +436,9 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ fileName: file.name, contentType: 'image/jpeg', base64Data: base64Data }),
         });
-        if (!res.ok) throw new Error('Upload failed');
-        const data = await res.json();
+        const data = await res.json().catch(function(){ return {}; });
+        if (!res.ok) throw new Error(data.error || 'Upload failed (' + res.status + ')');
+        if (!data.url) throw new Error('Upload succeeded but no photo URL was returned.');
 
         uploadedPhotoUrls.push(data.url);
         thumb.classList.remove('uploading');
@@ -416,12 +450,16 @@
         });
       } catch (err) {
         thumb.remove();
-        photoStatus.textContent = 'A photo failed to upload. Please try again.';
+        photoStatus.textContent = (err && err.message) ? err.message : 'A photo failed to upload. Please try again.';
       } finally {
         uploadsInFlight--;
         if (uploadsInFlight === 0) {
           submitBtn.disabled = false;
-          if (!photoStatus.textContent.includes('failed')) photoStatus.textContent = '';
+          if (!photoStatus.textContent || photoStatus.textContent === 'Uploading photo...') {
+            photoStatus.textContent = uploadedPhotoUrls.length
+              ? (uploadedPhotoUrls.length + ' photo' + (uploadedPhotoUrls.length === 1 ? '' : 's') + ' ready.')
+              : '';
+          }
         }
       }
     }
@@ -429,47 +467,90 @@
 
   form.addEventListener('submit', async function(e){
     e.preventDefault();
-    errorEl.style.display = 'none';
+    clearError();
 
     if (uploadsInFlight > 0) {
-      errorEl.textContent = 'Please wait for photo uploads to finish.';
-      errorEl.style.display = 'block';
+      showError('Please wait for photo uploads to finish.');
       return;
     }
 
-    if (!form.shopDescription.value.trim()) {
-      errorEl.textContent = 'Please add a directory description for your shop.';
-      errorEl.style.display = 'block';
+    const shopName = form.shopName.value.trim();
+    const shopUrlRaw = form.shopUrl.value.trim();
+    const shopDescription = form.shopDescription.value.trim();
+    const ownerName = form.ownerName.value.trim();
+    const email = form.email.value.trim();
+
+    if (!shopName) {
+      showError('Please enter your shop name.');
+      form.shopName.focus();
       return;
     }
-
+    if (!shopUrlRaw) {
+      showError('Please enter your shop URL.');
+      form.shopUrl.focus();
+      return;
+    }
+    if (!isValidHttpUrl(shopUrlRaw)) {
+      showError('Enter a valid shop URL (for example https://yourshop.com).');
+      form.shopUrl.focus();
+      return;
+    }
+    if (!shopDescription) {
+      showError('Please add a directory description for your shop.');
+      form.shopDescription.focus();
+      return;
+    }
     if (uploadedPhotoUrls.length < 1) {
-      errorEl.textContent = 'Please upload at least one product photo.';
-      errorEl.style.display = 'block';
+      showError('Please upload at least one product photo.');
+      photoInput.focus();
+      return;
+    }
+    if (!ownerName) {
+      showError('Please enter your name.');
+      form.ownerName.focus();
+      return;
+    }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showError('Please enter a valid email address.');
+      form.email.focus();
       return;
     }
 
     const categories = checkedValues('productCategories');
     const otherCat = (form.productCategoriesOther && form.productCategoriesOther.value.trim()) || '';
     if (categories.length < 1 && !otherCat) {
-      errorEl.textContent = 'Please select at least one product type (or describe one under Other).';
-      errorEl.style.display = 'block';
+      showError('Please select at least one product type (or describe one under Other).');
       return;
+    }
+
+    const socialFields = [
+      { name: 'instagramUrl', label: 'Instagram' },
+      { name: 'tiktokUrl', label: 'TikTok' },
+      { name: 'facebookUrl', label: 'Facebook' },
+    ];
+    for (var i = 0; i < socialFields.length; i++) {
+      var field = socialFields[i];
+      var raw = form[field.name].value.trim();
+      if (raw && !isValidHttpUrl(raw)) {
+        showError('Enter a valid ' + field.label + ' URL, or leave it blank.');
+        form[field.name].focus();
+        return;
+      }
     }
 
     submitBtn.disabled = true;
     submitBtn.textContent = 'Submitting...';
 
     const payload = {
-      shopName: form.shopName.value.trim(),
-      shopUrl: form.shopUrl.value.trim(),
-      shopDescription: form.shopDescription.value.trim(),
+      shopName: shopName,
+      shopUrl: normalizeUrl(shopUrlRaw),
+      shopDescription: shopDescription,
       photoUrls: uploadedPhotoUrls,
-      ownerName: form.ownerName.value.trim(),
-      email: form.email.value.trim(),
-      instagramUrl: form.instagramUrl.value.trim(),
-      tiktokUrl: form.tiktokUrl.value.trim(),
-      facebookUrl: form.facebookUrl.value.trim(),
+      ownerName: ownerName,
+      email: email,
+      instagramUrl: normalizeUrl(form.instagramUrl.value),
+      tiktokUrl: normalizeUrl(form.tiktokUrl.value),
+      facebookUrl: normalizeUrl(form.facebookUrl.value),
       audienceSize: form.audienceSize.value.trim(),
       productCategories: categories,
       productCategoriesOther: otherCat,
@@ -483,17 +564,16 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
+      const body = await res.json().catch(function(){ return {}; });
       if (!res.ok) {
-        const errBody = await res.json().catch(function(){ return {}; });
-        throw new Error(errBody.error || 'Request failed');
+        throw new Error(body.error || ('Submission failed (HTTP ' + res.status + '). Please try again.'));
       }
 
       form.style.display = 'none';
       successCard.style.display = 'block';
       successCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (err) {
-      errorEl.textContent = err.message || 'Something went wrong submitting your application. Please try again.';
-      errorEl.style.display = 'block';
+      showError((err && err.message) ? err.message : 'Something went wrong submitting your application. Please try again.');
       submitBtn.disabled = false;
       submitBtn.textContent = 'Submit Application';
     }
