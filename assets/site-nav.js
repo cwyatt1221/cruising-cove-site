@@ -20,11 +20,20 @@
     '<div class="nav-dropdown-menu">' +
     '<a href="/planning/my-cruise.html">My Cruise planner</a>' +
     '<a href="/planning/disney-cruise-cost.html">What it costs</a>' +
+    '<a href="/planning/deposit-final-payment.html">Deposit &amp; final payment</a>' +
     '<a href="/planning/booking-windows.html">Booking windows</a>' +
     '<a href="/planning/castaway-club.html">Castaway Club</a>' +
+    '<a href="/planning/embarkation-day-checklist.html">Embarkation day</a>' +
+    '<a href="/planning/kids-clubs.html">Kids clubs</a>' +
+    '<a href="/planning/gratuities.html">Gratuities</a>' +
+    '<a href="/planning/wifi.html">Wi-Fi packages</a>' +
+    '<a href="/planning/seasickness.html">Seasickness</a>' +
+    '<a href="/planning/accessibility.html">Accessibility</a>' +
+    '<a href="/planning/june-2026-policy-changes.html">June 2026 changes</a>' +
     '<a href="/planning/stateroom-guides.html">Stateroom guides</a>' +
     '<a href="/planning/compare-sailings.html">Compare sailings</a>' +
     '<a href="/planning/disney-cruise-packing-list.html">Packing list</a>' +
+    '<a href="/special-cruises/">Special sailings</a>' +
     '<a href="/excursions/">Excursions</a>' +
     '<a href="/pirate-night/">Pirate Night</a>' +
     '<a href="/faq/">FAQ</a>' +
@@ -40,14 +49,9 @@
     "/excursions/",
     "/faq/",
     "/articles/",
-    "/planning/my-cruise.html",
-    "/planning/disney-cruise-packing-list.html",
-    "/planning/disney-cruise-cost.html",
-    "/planning/booking-windows.html",
-    "/planning/castaway-club.html",
-    "/planning/stateroom-guides.html",
-    "/planning/compare-sailings.html",
+    "/special-cruises/",
     "/pirate-night/",
+    "/planning/",
   ];
 
   function pathMatches(path, href) {
@@ -92,9 +96,9 @@
   function normalizePrimaryNav() {
     var links = document.getElementById("primaryNav");
     if (!links) return;
-    if (links.getAttribute("data-cc-nav") === "v3") return;
+    if (links.getAttribute("data-cc-nav") === "v4") return;
     links.innerHTML = NAV_HTML;
-    links.setAttribute("data-cc-nav", "v3");
+    links.setAttribute("data-cc-nav", "v4");
   }
 
   function removeAuthLink() {
