@@ -4,7 +4,7 @@
  * Self-contained: injects its own styles and DOM, no dependencies.
  *
  * Exposes window.CruisingCoveChat.open() so any nav button on any page can
- * open the panel programmatically (e.g. an "Ask AI" link in the header).
+ * open the panel programmatically (e.g. an "Ask Me Anything" link in the header).
  */
 (function () {
   "use strict";
@@ -117,19 +117,19 @@
 
   function buildWidget() {
     const btn = el("button", "cc-chat-btn");
-    btn.setAttribute("aria-label", "Open Cruising Cove chat");
+    btn.setAttribute("aria-label", "Open Ask Me Anything");
     btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="#0f1c33" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-4-1L3 20l1-5.5A8.38 8.38 0 0 1 3 11.5 8.5 8.5 0 0 1 11.5 3h.5a8.5 8.5 0 0 1 8.5 8.5z"/></svg>`;
 
     const panel = el("div", "cc-chat-panel");
     panel.setAttribute("role", "dialog");
-    panel.setAttribute("aria-label", "Cruising Cove chat assistant");
+    panel.setAttribute("aria-label", "Ask Me Anything");
 
     const header = el("div", "cc-chat-header");
     header.innerHTML = `
-      <div><h3>Cruising Cove Assistant</h3><p>Ask anything about planning your Disney cruise</p></div>
+      <div><h3>Ask Me Anything</h3><p>Anything about planning your Disney cruise</p></div>
     `;
     const closeBtn = el("button", "cc-chat-close", "&times;");
-    closeBtn.setAttribute("aria-label", "Close chat");
+    closeBtn.setAttribute("aria-label", "Close Ask Me Anything");
     header.appendChild(closeBtn);
 
     const messages = el("div", "cc-chat-messages");
@@ -142,8 +142,8 @@
     const inputRow = el("div", "cc-chat-input-row");
     const input = el("input", "cc-chat-input");
     input.type = "text";
-    input.placeholder = "Ask a question...";
-    input.setAttribute("aria-label", "Type your question");
+    input.placeholder = "Ask me anything...";
+    input.setAttribute("aria-label", "Ask me anything");
     const sendBtn = el("button", "cc-chat-send");
     sendBtn.setAttribute("aria-label", "Send question");
     sendBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="#0f1c33" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>`;
@@ -226,7 +226,7 @@
         }
       } catch (err) {
         typingEl.remove();
-        addMessage("Couldn't reach the assistant right now. Please try again in a moment.", "error");
+        addMessage("Couldn't reach Ask Me Anything right now. Please try again in a moment.", "error");
       } finally {
         sending = false;
         sendBtn.disabled = false;
