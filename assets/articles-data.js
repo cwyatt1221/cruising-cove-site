@@ -6,9 +6,17 @@
 (function (global) {
   var FEATURED_SLOTS = 10;
   /** Pin the first homepage carousel slide. Set to null to rotate by ISO week. */
-  var CAROUSEL_START_ID = "welcome-aboard-donna";
+  var CAROUSEL_START_ID = "disney-destiny-toddler-tips";
 
   var articles = [
+    {
+      id: "disney-destiny-toddler-tips",
+      title: "Sailing the Disney Destiny with a Toddler: What Parents Actually Need to Know",
+      excerpt:
+        "Practical Destiny toddler tips — nursery booking, Captain’s Deck, swim diapers, strollers, Lookout Cay walking, and island nursery communication.",
+      date: "2026-08-03",
+      url: "/articles/disney-destiny-toddler-tips.html",
+    },
     {
       id: "welcome-aboard-donna",
       title: "Welcome Aboard Donna — Our Newest Travel Agent",
