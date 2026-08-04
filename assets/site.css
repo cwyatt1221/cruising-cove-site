@@ -724,6 +724,29 @@ footer:not(.site-footer) .disclaimer{
   color:var(--gold);
 }
 
+.cc-page-actions{
+  background:var(--cream);
+  border-top:1px solid rgba(26,42,74,.08);
+  padding:36px 0 8px;
+  margin-top:40px;
+}
+.cc-page-actions-label{
+  margin:0 0 14px;
+  font-family:var(--font-serif);
+  font-size:1.35rem;
+  font-weight:500;
+  color:var(--navy);
+}
+.cc-page-actions-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  align-items:center;
+}
+.cc-page-actions .btn{
+  text-decoration:none;
+}
+
 /* Cost calculator + booking window forms */
 .cc-calc,.cc-booking-form{
   background:var(--cream);

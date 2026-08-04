@@ -123,6 +123,63 @@
     });
   }
 
+  function pageTitleForShare() {
+    var h1 = document.querySelector(".page-hero h1, main h1, h1");
+    if (h1) {
+      return (h1.textContent || "").replace(/\s+/g, " ").trim();
+    }
+    var raw = document.title || "Cruising Cove";
+    return raw.replace(/\s*[|—-]\s*Cruising Cove\s*$/i, "").trim() || raw;
+  }
+
+  function ensurePageActions() {
+    var path = location.pathname.replace(/\/+/g, "/");
+    var isArticle = path.indexOf("/articles/") === 0;
+    var isPlanning = path.indexOf("/planning/") === 0;
+    if (!isArticle && !isPlanning) return;
+    if (document.querySelector("[data-cc-page-actions]")) return;
+
+    var title = pageTitleForShare();
+    var url = location.href.split("#")[0];
+    var commentSubject = "Comment on " + title;
+    var commentBody =
+      "Page: " + url + "\n\nYour comment:\n\n";
+    var shareSubject = title + " — Cruising Cove";
+    var shareBody =
+      "I thought you might like this from Cruising Cove:\n\n" + title + "\n" + url + "\n";
+
+    var section = document.createElement("section");
+    section.className = "cc-page-actions";
+    section.setAttribute("data-cc-page-actions", "1");
+    section.setAttribute("aria-label", "Comment or share");
+    section.innerHTML =
+      '<div class="wrap">' +
+      '<p class="cc-page-actions-label">Found this useful?</p>' +
+      '<div class="cc-page-actions-row">' +
+      '<a class="btn btn-outline" href="mailto:cassondra@cruisingcove.com?subject=' +
+      encodeURIComponent(commentSubject) +
+      "&body=" +
+      encodeURIComponent(commentBody) +
+      '">Leave a comment</a>' +
+      '<a class="btn btn-gold" href="mailto:?subject=' +
+      encodeURIComponent(shareSubject) +
+      "&body=" +
+      encodeURIComponent(shareBody) +
+      '">Share by email</a>' +
+      "</div>" +
+      "</div>";
+
+    var legal = document.querySelector(".site-legal");
+    if (legal && legal.parentNode) {
+      legal.parentNode.insertBefore(section, legal);
+      return;
+    }
+    var main = document.querySelector("main");
+    if (main && main.parentNode) {
+      main.parentNode.insertBefore(section, main.nextSibling);
+    }
+  }
+
   function initDropdowns(root) {
     var dropdowns = (root || document).querySelectorAll(".nav-dropdown");
     dropdowns.forEach(function (dd) {
@@ -205,6 +262,7 @@
     initDropdowns();
     markCurrent();
     ensurePrivacyNote();
+    ensurePageActions();
     loadAdminAuth();
   });
 })();
