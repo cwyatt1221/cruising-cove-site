@@ -6,9 +6,17 @@
 (function (global) {
   var FEATURED_SLOTS = 10;
   /** Pin the first homepage carousel slide. Set to null to rotate by ISO week. */
-  var CAROUSEL_START_ID = "disney-destiny-toddler-tips";
+  var CAROUSEL_START_ID = "disney-destiny-halloween-high-seas";
 
   var articles = [
+    {
+      id: "disney-destiny-halloween-high-seas",
+      title: "Halloween on the High Seas Comes to the Disney Destiny: What Not to Miss",
+      excerpt:
+        "Destiny’s first Halloween season — Pumpkin Tree, Mouse-querade, trick-or-treating, seasonal menus, Pirate Night overlap, packing tips, and booking notes.",
+      date: "2026-08-03",
+      url: "/articles/disney-destiny-halloween-high-seas.html",
+    },
     {
       id: "disney-destiny-toddler-tips",
       title: "Sailing the Disney Destiny with a Toddler: What Parents Actually Need to Know",
