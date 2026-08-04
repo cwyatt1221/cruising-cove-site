@@ -57,6 +57,29 @@
     padding:0;
     background:var(--navy-deep);
   }
+  .hero::before{
+    content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(ellipse 80% 55% at 70% 120%, rgba(30,92,92,.35), transparent 55%),
+      radial-gradient(ellipse 50% 40% at 10% 90%, rgba(201,162,75,.12), transparent 50%);
+    animation:heroTide 18s ease-in-out infinite alternate;
+  }
+  .hero::after{
+    content:"";position:absolute;left:0;right:0;bottom:0;height:72px;z-index:1;pointer-events:none;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 72' preserveAspectRatio='none'%3E%3Cpath d='M0,36 C150,58 300,14 450,36 C600,58 750,14 900,36 C1050,58 1150,26 1200,34 L1200,72 L0,72 Z' fill='%230f1c33' opacity='0.55'/%3E%3Cpath d='M0,44 C180,62 320,28 480,44 C640,60 780,24 940,42 C1080,58 1160,36 1200,40 L1200,72 L0,72 Z' fill='%230f1c33' opacity='0.35'/%3E%3C/svg%3E") center bottom / 100% 100% no-repeat;
+    animation:heroWave 12s ease-in-out infinite alternate;
+  }
+  @keyframes heroTide{
+    from{transform:translate3d(0,6px,0) scale(1.02);opacity:.85;}
+    to{transform:translate3d(0,-8px,0) scale(1.06);opacity:1;}
+  }
+  @keyframes heroWave{
+    from{transform:translate3d(-1.5%,0,0);}
+    to{transform:translate3d(1.5%,0,0);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .hero::before,.hero::after{animation:none;}
+  }
   .hero-inner{
     position:relative;z-index:2;width:100%;
     display:grid;grid-template-columns:1fr 1fr;
@@ -367,8 +390,8 @@
       <h1>Chart your course<br>before you ever <em>board</em>.</h1>
       <p>Every ship, every itinerary — all in one place, so you can plan with confidence, whether you're booking a year out or just a few weeks away.</p>
       <div class="hero-ctas">
-        <a href="/planning/disney-cruise-cost.html" class="btn btn-gold">Start planning</a>
-        <a href="/planning/my-cruise.html" class="btn btn-outline-light">My Cruise planner</a>
+        <a href="/planning/first-cruise.html" class="btn btn-gold">First-cruise path</a>
+        <a href="/planning/sailing-timeline.html" class="btn btn-outline-light">Your sailing timeline</a>
       </div>
       <ul class="hero-perks">
         <li>
@@ -455,6 +478,18 @@
   </div>
 </div>
 
+<section class="why-section" id="first-cruise">
+  <div class="wrap">
+    <p class="section-label reveal">First time sailing?</p>
+    <h2 class="reveal">One clear path — cost, money dates, packing, embarkation, kids clubs.</h2>
+    <p class="reveal" style="max-width:52ch;color:var(--muted);line-height:1.6;margin:0 0 22px;">Skip fifty tabs. Follow five doors in order, then branch into ship guides and booking windows when you’re ready.</p>
+    <p class="reveal">
+      <a class="btn btn-gold" href="/planning/first-cruise.html">Start the first-cruise path</a>
+      <a class="btn btn-outline" href="/planning/sailing-timeline.html" style="margin-left:0.5rem;">Build your timeline</a>
+    </p>
+  </div>
+</section>
+
 <section class="why-section" id="featured-articles">
   <div class="wrap">
     <div class="week-feature" id="weekFeature" aria-label="Featured articles">
@@ -490,7 +525,7 @@
         <div class="card-media has-photo stateroom" role="img" aria-label="Disney Treasure verandah stateroom"></div>
         <div class="card-body">
           <h3>Know your stateroom before you book it</h3>
-          <p>Ship guides now include thin cabin intel — elevator proximity, obstructed verandahs, connecting rooms, and noise patterns — so you can pick smarter before you pay.</p>
+          <p>Thin <a href="/planning/cabin-intel.html" style="color:var(--teal);text-decoration:underline;">cabin intel</a> — elevator proximity, obstructed verandahs, connecting rooms, and noise patterns — so you can pick smarter before you pay.</p>
         </div>
       </div>
       <div class="card reveal">

@@ -747,6 +747,77 @@ footer:not(.site-footer) .disclaimer{
   text-decoration:none;
 }
 
+/* Sailing timeline */
+.cc-timeline{
+  list-style:none;
+  margin:1.6rem 0 0;
+  padding:0;
+  border-left:2px solid rgba(26,42,74,.12);
+}
+.cc-timeline-item{
+  position:relative;
+  padding:0 0 1.6rem 1.35rem;
+}
+.cc-timeline-item:last-child{padding-bottom:0;}
+.cc-timeline-marker{
+  position:absolute;left:-7px;top:6px;
+  width:12px;height:12px;border-radius:50%;
+  background:var(--cream);
+  border:2px solid var(--teal);
+}
+.cc-timeline-item.status-passed .cc-timeline-marker{border-color:var(--gold);background:var(--gold);}
+.cc-timeline-item.status-today .cc-timeline-marker{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,75,.25);}
+.cc-timeline-item.status-upcoming .cc-timeline-marker{border-color:var(--navy);}
+.cc-timeline-body h3{
+  font-family:var(--font-serif);font-size:1.25rem;font-weight:500;
+  color:var(--navy);margin:0 0 0.35rem;
+}
+.cc-timeline-date{margin:0 0 0.45rem;font-size:0.92rem;color:var(--muted);}
+.cc-timeline-status{color:var(--teal);font-weight:600;}
+.cc-timeline-body p{margin:0 0 0.45rem;}
+.cc-timeline-body a{color:var(--teal);text-decoration:underline;}
+
+/* First-cruise path */
+.cc-first-path{
+  list-style:none;margin:0;padding:0;
+  display:grid;gap:1.25rem;
+}
+.cc-first-path > li{
+  background:var(--cream);
+  border:1px solid rgba(26,42,74,.08);
+  border-left:3px solid var(--gold);
+  padding:1.25rem 1.35rem 1.35rem;
+}
+.cc-first-path h3{
+  font-family:var(--font-serif);font-size:1.35rem;font-weight:500;
+  color:var(--navy);margin:0 0 0.5rem;
+}
+.cc-first-path p{margin:0 0 0.85rem;line-height:1.55;}
+.cc-first-path p:last-child{margin-bottom:0;}
+
+/* Printable checklists */
+.cc-print-bar{
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+  margin:0 0 1.2rem;
+}
+@media print{
+  .site-header,
+  .site-legal,
+  .nav-toggle,
+  .cc-site-search,
+  .cc-page-actions,
+  .cc-print-bar,
+  .page-hero .tide,
+  #chat-widget,
+  .chat-launcher,
+  [class*="cc-chat"]{display:none !important;}
+  .page-hero{padding:0 0 12px;background:#fff !important;color:#000 !important;}
+  .page-hero h1,.page-hero .lede,.page-hero .eyebrow{color:#000 !important;}
+  body{background:#fff;color:#000;}
+  main{max-width:100%;}
+  a{color:#000;text-decoration:none;}
+}
+
 /* Cost calculator + booking window forms */
 .cc-calc,.cc-booking-form{
   background:var(--cream);

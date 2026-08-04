@@ -119,6 +119,10 @@
 </div>
 
 <main>
+  <div class="cc-print-bar">
+    <button type="button" class="btn btn-outline" id="printPackBtn">Print / save PDF</button>
+    <a class="btn btn-outline" href="/planning/embarkation-day-checklist.html">Embarkation checklist</a>
+  </div>
   <section id="jump">
     <span class="label mono">&mdash; On this page</span>
     <h2>Jump to what you need</h2>
@@ -486,5 +490,14 @@
 <script src="/assets/analytics.js" defer></script>
 <script src="/assets/site-search.js" defer></script>
 <script src="/assets/chat-widget.js" defer></script>
+<script>
+(function(){
+  var btn=document.getElementById('printPackBtn');
+  if(btn) btn.addEventListener('click', function(){ window.print(); });
+  if(/[?&]print=1(?:&|$)/.test(location.search)){
+    window.addEventListener('load', function(){ setTimeout(function(){ window.print(); }, 400); });
+  }
+})();
+</script>
 </body>
 </html>

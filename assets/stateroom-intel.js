@@ -100,15 +100,47 @@
 
   function init() {
     var nodes = document.querySelectorAll("[data-cc-stateroom-intel]");
-    if (!nodes.length) return;
-    var key = shipKeyFromPath();
-    var cls = SHIP_CLASS[key] || "wish";
-    var data = CLASS_NOTES[cls];
-    nodes.forEach(function (el) {
-      var override = el.getAttribute("data-cc-stateroom-intel");
-      if (override && CLASS_NOTES[override]) data = CLASS_NOTES[override];
-      renderInto(el, data);
-    });
+    if (nodes.length) {
+      var key = shipKeyFromPath();
+      var cls = SHIP_CLASS[key] || "wish";
+      var data = CLASS_NOTES[cls];
+      nodes.forEach(function (el) {
+        var override = el.getAttribute("data-cc-stateroom-intel");
+        if (override && CLASS_NOTES[override]) data = CLASS_NOTES[override];
+        renderInto(el, data);
+      });
+    }
+
+    var grid = document.getElementById("cabinIntelGrid");
+    if (grid) {
+      var labels = {
+        classic: "Magic & Wonder",
+        dream: "Dream & Fantasy",
+        wish: "Wish, Treasure & Destiny",
+        adventure: "Adventure",
+      };
+      grid.innerHTML = Object.keys(labels)
+        .map(function (key) {
+          var d = CLASS_NOTES[key];
+          return (
+            '<div class="fleet-card"><span class="class-tag">' +
+            labels[key] +
+            "</span><h3>" +
+            labels[key] +
+            "</h3>" +
+            "<p><strong>Elevators.</strong> " +
+            d.elevators +
+            "</p>" +
+            "<p><strong>Views.</strong> " +
+            d.obstructed +
+            "</p>" +
+            "<p><strong>Connecting.</strong> " +
+            d.connecting +
+            "</p></div>"
+          );
+        })
+        .join("");
+    }
   }
 
   if (document.readyState === "loading") {
@@ -116,4 +148,9 @@
   } else {
     init();
   }
+
+  window.CCStateroomIntel = {
+    CLASS_NOTES: CLASS_NOTES,
+    SHIP_CLASS: SHIP_CLASS,
+  };
 })();
