@@ -23,23 +23,34 @@
         Cruising Cove
       </a>
       <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primaryNav">
-        <span></span><span></span><span></span>
+        <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="nav-toggle-label">Menu</span>
       </button>
-      <div class="nav-links" id="primaryNav">
+      <div class="nav-links" id="primaryNav" data-cc-nav="v2">
         <a href="/ships/">Ships</a>
         <a href="/ports/">Ports</a>
-        <a href="/dining/">Dining</a>
-        <a href="/entertainment/">Entertainment</a>
-        <div class="nav-dropdown">
-          <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">Guides</button>
+        <div class="nav-dropdown" data-cc-nav-group="onboard">
+          <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">Onboard</button>
           <div class="nav-dropdown-menu">
+            <a href="/dining/">Dining</a>
+            <a href="/entertainment/">Entertainment</a>
+          </div>
+        </div>
+        <div class="nav-dropdown" data-cc-nav-group="plan">
+          <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">Plan</button>
+          <div class="nav-dropdown-menu">
+            <a href="/planning/my-cruise.html">My Cruise planner</a>
             <a href="/planning/disney-cruise-cost.html">What it costs</a>
             <a href="/planning/booking-windows.html">Booking windows</a>
             <a href="/planning/castaway-club.html">Castaway Club</a>
+            <a href="/planning/stateroom-guides.html">Stateroom guides</a>
+            <a href="/planning/compare-sailings.html">Compare sailings</a>
+            <a href="/planning/disney-cruise-packing-list.html">Packing list</a>
             <a href="/excursions/">Excursions</a>
+            <a href="/pirate-night/">Pirate Night</a>
             <a href="/faq/">FAQ</a>
             <a href="/articles/">Articles</a>
-            <a href="/planning/disney-cruise-packing-list.html">Packing list</a>
+            <a href="/gallery/">Photo gallery</a>
           </div>
         </div>
         <a href="/community/">Community</a>
@@ -78,7 +89,7 @@
     <div class="stat-grid">
       <div class="stat"><span class="k mono">Rule updated</span><span class="v display">May 28, 2026</span></div>
       <div class="stat"><span class="k mono">Effective</span><span class="v display">Sailings from June 3, 2026</span></div>
-      <div class="stat"><span class="k mono">Allowed</span><span class="v display">Magnets only</span></div>
+      <div class="stat"><span class="k mono">Allowed</span><span class="v display">Magnets preferred · no adhesives</span></div>
       <div class="stat"><span class="k mono">Not allowed</span><span class="v display">Tape, hooks, adhesives</span></div>
       <div class="stat"><span class="k mono">Damage fee</span><span class="v display">$100 per incident</span></div>
       <div class="stat"><span class="k mono">Wooden doors</span><span class="v display">Concierge, Dream & Fantasy</span></div>
@@ -95,13 +106,13 @@
   <section id="rules">
     <span class="label mono">&mdash; The rules, plainly</span>
     <h2>What's allowed and what's not</h2>
-    <ul class='plain'><li><strong>Magnets: yes.</strong> DCL stateroom doors are magnetic surfaces (with one exception below), and character magnets, signs, and displays are the standard way to decorate.</li><li><strong>Tape, adhesives, hooks, suction cups: no.</strong> Anything that isn't magnetic risks damaging the door.</li><li><strong>Door only: yes. Hallway walls and ceiling: no.</strong> This is the new rule as of June 2026.</li><li><strong>Sound or video elements: no</strong>, as a courtesy to other guests in the corridor.</li><li><strong>Over-the-door organizers: no</strong> &mdash; these are explicitly prohibited.</li><li><strong>Damage a door decorating it improperly, and you're looking at a $100 fee</strong> per incident.</li></ul><div class='callout'><span class='label mono'>&mdash; Worth knowing</span><p>Concierge staterooms on the Disney Dream and Disney Fantasy have wooden doors, not magnetic ones &mdash; magnets simply won't stick. If you're in one of those rooms, a fish extender is your best option instead.</p></div>
+    <ul class='plain'><li><strong>Magnets: preferred.</strong> DCL stateroom doors are magnetic surfaces (with one exception below), and character magnets, signs, and displays are the standard way to decorate. Non-magnetic décor can still be fine if it stays on the door and doesn’t damage it — tape, adhesives, hooks, and suction cups are the hard no.</li><li><strong>Tape, adhesives, hooks, suction cups: no.</strong> Anything that risks damaging the door is prohibited.</li><li><strong>Door only: yes. Hallway walls and ceiling: no.</strong> This is the new rule as of June 2026.</li><li><strong>Fish Extenders: still OK</strong> &mdash; the June update targets hallway overflow and damaging attachments, not the classic over-door Fish Extender tradition.</li><li><strong>Sound or video elements: no</strong>, as a courtesy to other guests in the corridor.</li><li><strong>Over-the-door organizers: no</strong> &mdash; generic organizers (shoe racks, toiletry hangers, and similar) are prohibited; Fish Extenders for gift exchanges are the usual exception guests still bring.</li><li><strong>Damage a door decorating it improperly, and you're looking at a $100 fee</strong> per incident.</li></ul><div class='callout'><span class='label mono'>&mdash; Worth knowing</span><p>Concierge staterooms on the Disney Dream and Disney Fantasy have wooden doors, not magnetic ones &mdash; magnets simply won't stick. If you're in one of those rooms, a fish extender is your best option instead.</p></div>
   </section>
 
   <section id="sizing">
     <span class="label mono">&mdash; Sizing it right</span>
     <h2>Door number plate sizes</h2>
-    <p>Every stateroom door has a built-in number plate you can decorate around. On the Magic, Wonder, Dream, and Fantasy, it's a circle roughly 7.5 inches in diameter. On the newer ships &mdash; Wish, Treasure, and Destiny &mdash; it's a curved-edge rectangle, roughly 4.5 by 7 inches. Many guests build their door magnet design around this shape, having a character "peek out" from behind the number plate.</p>
+    <p>Every stateroom door has a built-in number plate you can decorate around. On the Magic, Wonder, Dream, and Fantasy, it's a circle roughly 7.5 inches in diameter. On the newer ships &mdash; Wish, Treasure, and Destiny &mdash; it's a curved-edge rectangle, roughly 4.5 by 7 inches. Disney Adventure plate dimensions aren’t confirmed here yet &mdash; measure onboard or check recent sailing reports before ordering a custom cutout. Many guests build their door magnet design around this shape, having a character "peek out" from behind the number plate.</p>
   </section>
 
   <section id="ideas">

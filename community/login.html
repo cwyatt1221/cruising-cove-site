@@ -23,26 +23,37 @@
         Cruising Cove
       </a>
       <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primaryNav">
-        <span></span><span></span><span></span>
+        <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="nav-toggle-label">Menu</span>
       </button>
-      <div class="nav-links" id="primaryNav">
+      <div class="nav-links" id="primaryNav" data-cc-nav="v2">
         <a href="/ships/">Ships</a>
         <a href="/ports/">Ports</a>
-        <a href="/dining/">Dining</a>
-        <a href="/entertainment/">Entertainment</a>
-        <div class="nav-dropdown">
-          <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">Guides</button>
+        <div class="nav-dropdown" data-cc-nav-group="onboard">
+          <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">Onboard</button>
           <div class="nav-dropdown-menu">
+            <a href="/dining/">Dining</a>
+            <a href="/entertainment/">Entertainment</a>
+          </div>
+        </div>
+        <div class="nav-dropdown" data-cc-nav-group="plan">
+          <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">Plan</button>
+          <div class="nav-dropdown-menu">
+            <a href="/planning/my-cruise.html">My Cruise planner</a>
             <a href="/planning/disney-cruise-cost.html">What it costs</a>
             <a href="/planning/booking-windows.html">Booking windows</a>
             <a href="/planning/castaway-club.html">Castaway Club</a>
+            <a href="/planning/stateroom-guides.html">Stateroom guides</a>
+            <a href="/planning/compare-sailings.html">Compare sailings</a>
+            <a href="/planning/disney-cruise-packing-list.html">Packing list</a>
             <a href="/excursions/">Excursions</a>
+            <a href="/pirate-night/">Pirate Night</a>
             <a href="/faq/">FAQ</a>
             <a href="/articles/">Articles</a>
-            <a href="/planning/disney-cruise-packing-list.html">Packing list</a>
+            <a href="/gallery/">Photo gallery</a>
           </div>
         </div>
-        <a href="/community/" class="current">Community</a>
+        <a href="/community/">Community</a>
         <a href="/marketplace/">Marketplace</a>
       </div>
       <div class="nav-cta">
@@ -107,6 +118,10 @@
       </div>
       <p class="form-msg" id="regMsg" hidden></p>
     </form>
+    <div class="callout" style="margin-top:1.5rem;">
+      <span class="label mono">&mdash; Privacy</span>
+      <p>Cruising Cove is an independent planning site. When you create an account, leave a comment, request an agent, or submit a form, we use that information only to run and improve Cruising Cove — for example, to keep you signed in, show your community posts, or connect you with a travel agent you asked to hear from. We do not sell your personal information, and we do not provide your account or form details to third parties for their marketing. We never ask for Disney Cruise Line or MyDisney login credentials. <a href="/privacy/" style="color:var(--teal);text-decoration:underline;">Read the full privacy note</a>.</p>
+    </div>
   </section>
 </main>
 

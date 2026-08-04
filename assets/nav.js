@@ -31,6 +31,9 @@
     btn.addEventListener("click", function () {
       var open = menu.classList.toggle("open");
       btn.setAttribute("aria-expanded", open ? "true" : "false");
+      if (btn.querySelector(".nav-toggle-label")) {
+        btn.querySelector(".nav-toggle-label").textContent = open ? "Close" : "Menu";
+      }
     });
   }
 

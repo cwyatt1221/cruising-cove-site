@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cruise Expert Profile — Cruising Cove</title>
+<title>Privacy | Cruising Cove</title>
+<meta name="description" content="How Cruising Cove handles personal information — we do not sell your data or provide account and form details to third parties for their marketing.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/site.css">
-<link rel="stylesheet" href="/assets/creators.css">
 </head>
 <body>
 
@@ -63,10 +63,10 @@
 </header>
 
 <div class="page-hero">
-  <div class="page-hero-inner" id="hero">
-    <span class="eyebrow mono">Founding Cruise Expert</span>
-    <h1 id="creatorName">Loading…</h1>
-    <p class="lede" id="creatorBio"></p>
+  <div class="page-hero-inner">
+    <span class="eyebrow mono">Your information</span>
+    <h1>Privacy at <em>Cruising Cove</em></h1>
+    <p class="lede">How we handle the information you share with us — and what we don’t do with it.</p>
   </div>
   <div class="tide" aria-hidden="true">
     <svg viewBox="0 0 1200 56" preserveAspectRatio="none">
@@ -75,21 +75,21 @@
   </div>
 </div>
 
-<main style="max-width:860px;margin:0 auto;padding:32px clamp(1.2rem,5vw,4rem) 80px;">
-  <p class="meta" id="creatorMeta" style="color:var(--muted);margin:0 0 18px;"></p>
-  <div class="creator-tags" id="creatorTags" style="margin-bottom:28px;"></div>
-  <p style="margin:0 0 28px;"><a id="youtubeLink" class="btn btn-gold" href="#" target="_blank" rel="noopener noreferrer">Visit YouTube channel</a></p>
-
-  <section class="video-embed-section">
-    <span class="label mono">&mdash; Featured on Cruising Cove</span>
-    <h2>Videos</h2>
-    <div id="videoList"></div>
+<main>
+  <section id="privacy">
+    <span class="label mono">&mdash; Our commitment</span>
+    <h2>We don’t sell or hand off your personal details</h2>
+    <p>Cruising Cove is an independent planning site. When you create an account, leave a comment, request an agent, or submit a form, we use that information only to run and improve Cruising Cove — for example, to keep you signed in, show your community posts, or connect you with a travel agent you asked to hear from. We do not sell your personal information, and we do not provide your account or form details to third parties for their marketing. We never ask for Disney Cruise Line or MyDisney login credentials.</p>
+    <p>If you request a conversation with a travel agent listed on Cruising Cove, we share only what you submitted in that request with the agent you chose — so they can follow up with you. That handoff is at your direction, not a general data sale or mailing-list transfer.</p>
+    <p>Questions about this policy? Email <a href="mailto:cassondra@cruisingcove.com" style="color:var(--teal);text-decoration:underline;">cassondra@cruisingcove.com</a>.</p>
   </section>
-
-  <p style="margin-top:32px;"><a href="/marketplace/creators/">← All Founding Cruise Experts</a></p>
 </main>
 
-<script src="/assets/creators-data.js"></script>
+<aside class="site-legal" aria-label="Legal">
+  <div class="wrap">
+    <p class="disclaimer">Cruising Cove is an independent planning guide and is not affiliated with, endorsed by, or sponsored by The Walt Disney Company, Disney Cruise Line, or any of their affiliates.</p>
+  </div>
+</aside>
 <script>
   (function(){
     var btn=document.querySelector('.nav-toggle');
@@ -100,52 +100,8 @@
         btn.setAttribute('aria-expanded', open ? 'true' : 'false');
       });
     }
-
-    var id=new URLSearchParams(location.search).get('id');
-    var creator=(window.CC_CREATORS||[]).find(function(c){ return c.id===id; });
-    if(!creator){
-      document.getElementById('creatorName').textContent='Expert not found';
-      document.getElementById('creatorBio').textContent='This Founding Cruise Expert profile isn’t available yet.';
-      document.getElementById('youtubeLink').style.display='none';
-      return;
-    }
-
-    document.title=creator.name+' — Founding Cruise Expert | Cruising Cove';
-    document.getElementById('creatorName').textContent=creator.name;
-    document.getElementById('creatorBio').textContent=creator.bio||'';
-    document.getElementById('creatorMeta').textContent=(creator.channel||'')+(creator.specialties&&creator.specialties.length?' · '+creator.specialties.join(' · '):'');
-    document.getElementById('youtubeLink').href=creator.youtubeUrl;
-
-    var tags=document.getElementById('creatorTags');
-    (creator.specialties||[]).forEach(function(s){
-      var el=document.createElement('span');
-      el.className='creator-tag';
-      el.textContent=s;
-      tags.appendChild(el);
-    });
-
-    var list=document.getElementById('videoList');
-    (creator.videos||[]).forEach(function(v){
-      var block=document.createElement('div');
-      block.className='video-embed-block';
-      block.innerHTML=
-        '<h3>'+v.title+'</h3>'+
-        '<p class="credit">Placed on Cruising Cove guides · placement: '+v.placement+'</p>'+
-        '<div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/'+encodeURIComponent(v.youtubeId)+
-        '" title="'+v.title.replace(/"/g,'&quot;')+'" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>';
-      list.appendChild(block);
-    });
-    if(!(creator.videos||[]).length){
-      list.innerHTML='<div class="video-empty">Videos from this expert will appear here once placements are live.</div>';
-    }
   })();
 </script>
-
-<aside class="site-legal" aria-label="Legal">
-  <div class="wrap">
-    <p class="disclaimer">Cruising Cove is an independent planning guide and is not affiliated with The Walt Disney Company or Disney Cruise Line.</p>
-  </div>
-</aside>
 <script src="/assets/site-nav.js" defer></script>
 <script src="/assets/analytics.js" defer></script>
 <script src="/assets/site-search.js" defer></script>

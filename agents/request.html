@@ -23,23 +23,34 @@
         Cruising Cove
       </a>
       <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primaryNav">
-        <span></span><span></span><span></span>
+        <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="nav-toggle-label">Menu</span>
       </button>
-      <div class="nav-links" id="primaryNav">
+      <div class="nav-links" id="primaryNav" data-cc-nav="v2">
         <a href="/ships/">Ships</a>
         <a href="/ports/">Ports</a>
-        <a href="/dining/">Dining</a>
-        <a href="/entertainment/">Entertainment</a>
-        <div class="nav-dropdown">
-          <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">Guides</button>
+        <div class="nav-dropdown" data-cc-nav-group="onboard">
+          <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">Onboard</button>
           <div class="nav-dropdown-menu">
+            <a href="/dining/">Dining</a>
+            <a href="/entertainment/">Entertainment</a>
+          </div>
+        </div>
+        <div class="nav-dropdown" data-cc-nav-group="plan">
+          <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">Plan</button>
+          <div class="nav-dropdown-menu">
+            <a href="/planning/my-cruise.html">My Cruise planner</a>
             <a href="/planning/disney-cruise-cost.html">What it costs</a>
             <a href="/planning/booking-windows.html">Booking windows</a>
             <a href="/planning/castaway-club.html">Castaway Club</a>
+            <a href="/planning/stateroom-guides.html">Stateroom guides</a>
+            <a href="/planning/compare-sailings.html">Compare sailings</a>
+            <a href="/planning/disney-cruise-packing-list.html">Packing list</a>
             <a href="/excursions/">Excursions</a>
+            <a href="/pirate-night/">Pirate Night</a>
             <a href="/faq/">FAQ</a>
             <a href="/articles/">Articles</a>
-            <a href="/planning/disney-cruise-packing-list.html">Packing list</a>
+            <a href="/gallery/">Photo gallery</a>
           </div>
         </div>
         <a href="/community/">Community</a>
@@ -56,6 +67,7 @@
   <p class="eyebrow">Find an agent</p>
   <h1>Request a conversation</h1>
   <p class="intro">Sign in required. Select the agent you’d like to work with and tell us about your sailing. After you request one agent, other request buttons stay locked until Cruising Cove unlocks your account.</p>
+  <p class="intro" style="margin-top:-8px;">Your request details are shared only with the agent you choose — we do not sell your personal information or provide account or form details to third parties for their marketing. <a href="/privacy/" style="color:var(--teal);text-decoration:underline;">Privacy</a></p>
 
   <div id="authGate" class="agent-preview visible" hidden>
     <strong>Sign in to request an agent</strong>

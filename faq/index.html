@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/site.css">
-<meta name="description" content="The most common questions about Disney Cruise Line, answered plainly — passports, age requirements, alcohol policy, seasickness, what's included, and more.">
+<meta name="description" content="The most common questions about Disney Cruise Line, answered plainly — passports, age requirements, alcohol policy, selfie sticks, seasickness, what's included, and more.">
 </head>
 <body>
 
@@ -23,23 +23,34 @@
         Cruising Cove
       </a>
       <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primaryNav">
-        <span></span><span></span><span></span>
+        <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="nav-toggle-label">Menu</span>
       </button>
-      <div class="nav-links" id="primaryNav">
+      <div class="nav-links" id="primaryNav" data-cc-nav="v2">
         <a href="/ships/">Ships</a>
         <a href="/ports/">Ports</a>
-        <a href="/dining/">Dining</a>
-        <a href="/entertainment/">Entertainment</a>
-        <div class="nav-dropdown">
-          <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">Guides</button>
+        <div class="nav-dropdown" data-cc-nav-group="onboard">
+          <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">Onboard</button>
           <div class="nav-dropdown-menu">
+            <a href="/dining/">Dining</a>
+            <a href="/entertainment/">Entertainment</a>
+          </div>
+        </div>
+        <div class="nav-dropdown" data-cc-nav-group="plan">
+          <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">Plan</button>
+          <div class="nav-dropdown-menu">
+            <a href="/planning/my-cruise.html">My Cruise planner</a>
             <a href="/planning/disney-cruise-cost.html">What it costs</a>
             <a href="/planning/booking-windows.html">Booking windows</a>
             <a href="/planning/castaway-club.html">Castaway Club</a>
-            <a href="/excursions/">Excursions</a>
-            <a href="/faq/" class="current">FAQ</a>
-            <a href="/articles/">Articles</a>
+            <a href="/planning/stateroom-guides.html">Stateroom guides</a>
+            <a href="/planning/compare-sailings.html">Compare sailings</a>
             <a href="/planning/disney-cruise-packing-list.html">Packing list</a>
+            <a href="/excursions/">Excursions</a>
+            <a href="/pirate-night/">Pirate Night</a>
+            <a href="/faq/">FAQ</a>
+            <a href="/articles/">Articles</a>
+            <a href="/gallery/">Photo gallery</a>
           </div>
         </div>
         <a href="/community/">Community</a>
@@ -88,7 +99,7 @@
 
   <section id="faq-4">
     <h2>Can I bring my own alcohol onboard?</h2>
-    <p>Yes, but the policy tightened in June 2026. Guests 21+ may bring <strong>one unopened bottle of wine or champagne (750&nbsp;ml or less) <em>or</em> six beers (12&nbsp;oz or less)</strong> &mdash; not both &mdash; packed in carry-on luggage at embarkation only. That is down from the older two-bottle wine allowance. You can still buy alcohol ashore, but Disney <strong>holds port purchases until the end of the cruise</strong> rather than delivering them to your stateroom during the sailing. If you drink your own wine in a dining room, expect a corkage fee (typically $20 per bottle). Drink prices and other onboard extras are covered in the <a href="/planning/disney-cruise-cost.html#breakdown" style="color:var(--water-deep);border-bottom:2px solid var(--sunset);">cost breakdown</a>.</p>
+    <p>Yes, but the policy tightened in June 2026. Guests <strong>21+</strong> may bring <strong>one unopened bottle of wine or champagne (750&nbsp;ml or less) <em>or</em> six beers (12&nbsp;oz or less)</strong> &mdash; not both &mdash; packed in carry-on luggage at embarkation only. That is down from the older two-bottle wine allowance. On <strong>round-trip sailings from Singapore</strong> (Disney Adventure), guests <strong>18+</strong> may use that same carry-on allowance. You can still buy alcohol ashore, but Disney <strong>holds port purchases until the end of the cruise</strong> rather than delivering them to your stateroom during the sailing. If you drink your own wine in a dining room, expect a corkage fee (typically $20 per bottle). Drink prices and other onboard extras are covered in the <a href="/planning/disney-cruise-cost.html#breakdown" style="color:var(--teal);text-decoration:underline;">cost breakdown</a>.</p>
   </section>
 
   <section id="faq-5">
@@ -98,22 +109,27 @@
 
   <section id="faq-6">
     <h2>What's actually included in the cruise fare, and what isn't?</h2>
-    <p>Included: your stateroom, all rotational dining, entertainment, youth clubs, and most private-island beach access including the BBQ lunch. Not included: gratuities, specialty dining (Palo, Remy, Enchant&eacute;), alcohol, Wi-Fi, spa services, and excursions. See the <a href='../planning/disney-cruise-cost.html' style='color:var(--water-deep); border-bottom:2px solid var(--sunset);'>full cost breakdown</a> for real numbers on each of these.</p>
+    <p>Included: your stateroom, all rotational dining, entertainment, youth clubs, and most private-island beach access including the BBQ lunch. Not included: gratuities, specialty dining (Palo, Remy, Enchant&eacute;), alcohol, Wi-Fi, spa services, and excursions. See the <a href="/planning/disney-cruise-cost.html" style="color:var(--teal);text-decoration:underline;">full cost breakdown</a> for real numbers on each of these.</p>
   </section>
 
   <section id="faq-7">
     <h2>How far in advance should I book?</h2>
-    <p>Earlier than most first-time cruisers expect. Popular sailings (school breaks, holiday weeks) and the best stateroom categories can sell out 9&ndash;12 months ahead, and Castaway Club returning-guest booking windows open even earlier for repeat cruisers. Booking early also means more time for the price-monitoring benefit a travel agent provides (see our <a href='../agents/index.html' style='color:var(--water-deep); border-bottom:2px solid var(--sunset);'>Travel Agents page</a>) to actually pay off if the fare drops before you sail.</p>
+    <p>Earlier than most first-time cruisers expect. Popular sailings (school breaks, holiday weeks) and the best stateroom categories can sell out 9&ndash;12 months ahead, and Castaway Club returning-guest booking windows open even earlier for repeat cruisers. Booking early also means more time for the price-monitoring benefit a travel agent provides (see our <a href="/agents/" style="color:var(--teal);text-decoration:underline;">Travel Agents page</a>) to actually pay off if the fare drops before you sail.</p>
   </section>
 
   <section id="faq-8">
     <h2>Is Wi-Fi included?</h2>
-    <p>Basic connectivity for iMessage, WhatsApp, and the Disney Cruise Line Navigator app is free. Real browsing, email, or streaming requires a paid Wi-Fi package, tiered by speed and data allowance &mdash; see the <a href='../planning/disney-cruise-cost.html' style='color:var(--water-deep); border-bottom:2px solid var(--sunset);'>cost breakdown page</a> for current pricing.</p>
+    <p>Basic connectivity for iMessage, WhatsApp, and the Disney Cruise Line Navigator app is free. Real browsing, email, or streaming requires a paid Wi-Fi package, tiered by speed and data allowance &mdash; see the <a href="/planning/disney-cruise-cost.html" style="color:var(--teal);text-decoration:underline;">cost breakdown page</a> for current pricing.</p>
   </section>
 
   <section id="faq-9">
     <h2>What if I'm a solo parent traveling with one child?</h2>
     <p>This isn't a DCL-specific restriction &mdash; a single parent or guardian can absolutely book and sail with their child, no special documentation required beyond the usual proof of citizenship for both of you. If a child is traveling with only one parent and that could raise a custody question at security or immigration in some ports, some experienced cruisers recommend carrying a simple signed permission note from the non-traveling parent, though DCL itself doesn't require it for standard sailings.</p>
+  </section>
+
+  <section id="faq-10">
+    <h2>Can I bring a selfie stick or tripod onboard?</h2>
+    <p>Yes, with a size rule that took effect for sailings starting June 3, 2026. Selfie sticks, hand-held extension poles, and tripods may be used in most areas onboard as long as they are <strong>retracted and under 18 inches</strong>. Longer gear can still come on the ship, but it must stay stored in your stateroom while you’re onboard and may only be used ashore at ports of call. Pack a compact stick if you want atrium or deck photos without hunting for a storage spot every time you leave the room.</p>
   </section>
 
 </main>

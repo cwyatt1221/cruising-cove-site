@@ -42,23 +42,34 @@
         Cruising Cove
       </a>
       <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primaryNav">
-        <span></span><span></span><span></span>
+        <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="nav-toggle-label">Menu</span>
       </button>
-      <div class="nav-links" id="primaryNav">
+      <div class="nav-links" id="primaryNav" data-cc-nav="v2">
         <a href="/ships/">Ships</a>
         <a href="/ports/">Ports</a>
-        <a href="/dining/">Dining</a>
-        <a href="/entertainment/">Entertainment</a>
-        <div class="nav-dropdown">
-          <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">Guides</button>
+        <div class="nav-dropdown" data-cc-nav-group="onboard">
+          <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">Onboard</button>
           <div class="nav-dropdown-menu">
+            <a href="/dining/">Dining</a>
+            <a href="/entertainment/">Entertainment</a>
+          </div>
+        </div>
+        <div class="nav-dropdown" data-cc-nav-group="plan">
+          <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">Plan</button>
+          <div class="nav-dropdown-menu">
+            <a href="/planning/my-cruise.html">My Cruise planner</a>
             <a href="/planning/disney-cruise-cost.html">What it costs</a>
             <a href="/planning/booking-windows.html">Booking windows</a>
             <a href="/planning/castaway-club.html">Castaway Club</a>
-            <a href="/excursions/">Excursions</a>
-            <a href="/faq/">FAQ</a>
-            <a href="/articles/" class="current">Articles</a>
+            <a href="/planning/stateroom-guides.html">Stateroom guides</a>
+            <a href="/planning/compare-sailings.html">Compare sailings</a>
             <a href="/planning/disney-cruise-packing-list.html">Packing list</a>
+            <a href="/excursions/">Excursions</a>
+            <a href="/pirate-night/">Pirate Night</a>
+            <a href="/faq/">FAQ</a>
+            <a href="/articles/">Articles</a>
+            <a href="/gallery/">Photo gallery</a>
           </div>
         </div>
         <a href="/community/">Community</a>
