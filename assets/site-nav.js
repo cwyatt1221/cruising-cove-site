@@ -29,10 +29,10 @@
     '<a href="/pirate-night/">Pirate Night</a>' +
     '<a href="/faq/">FAQ</a>' +
     '<a href="/articles/">Articles</a>' +
-    '<a href="/gallery/">Photo gallery</a>' +
     "</div>" +
     "</div>" +
     '<a href="/community/">Community</a>' +
+    '<a href="/gallery/">Gallery</a>' +
     '<a href="/marketplace/">Marketplace</a>';
 
   var ONBOARD_HREFS = ["/dining/", "/entertainment/"];
@@ -40,7 +40,6 @@
     "/excursions/",
     "/faq/",
     "/articles/",
-    "/gallery/",
     "/planning/my-cruise.html",
     "/planning/disney-cruise-packing-list.html",
     "/planning/disney-cruise-cost.html",
@@ -93,9 +92,9 @@
   function normalizePrimaryNav() {
     var links = document.getElementById("primaryNav");
     if (!links) return;
-    if (links.getAttribute("data-cc-nav") === "v2") return;
+    if (links.getAttribute("data-cc-nav") === "v3") return;
     links.innerHTML = NAV_HTML;
-    links.setAttribute("data-cc-nav", "v2");
+    links.setAttribute("data-cc-nav", "v3");
   }
 
   function removeAuthLink() {
