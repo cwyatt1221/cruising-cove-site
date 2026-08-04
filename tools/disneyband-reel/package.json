@@ -1,0 +1,26 @@
+{
+  "name": "disneyband-reel",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DisneyBand+ Instagram Reel (1080x1920, 45s) \u2014 Remotion",
+  "scripts": {
+    "start": "remotion studio",
+    "build": "remotion bundle",
+    "upgrade": "remotion upgrade",
+    "render": "remotion render DisneyBandReel out/disneyband-reel.mp4",
+    "render:silent": "remotion render DisneyBandReel out/disneyband-reel.mp4",
+    "render:ffmpeg": "python3 scripts/render_ffmpeg.py"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.506",
+    "@remotion/google-fonts": "^4.0.506",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "remotion": "^4.0.506"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.8.0"
+  }
+}

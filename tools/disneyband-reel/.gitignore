@@ -1,0 +1,10 @@
+node_modules/
+.chrome/
+.DS_Store
+dist/
+.remotion/
+*.log
+# Keep the exported reel; ignore other render intermediates
+out/*
+!out/disneyband-reel.mp4
+!out/.gitkeep

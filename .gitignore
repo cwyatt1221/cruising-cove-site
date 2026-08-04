@@ -1,1 +1,5 @@
 .DS_Store
+
+# Remotion / tool deps
+tools/**/node_modules/
+tools/**/.chrome/
