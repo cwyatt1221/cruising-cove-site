@@ -6,9 +6,49 @@
 (function (global) {
   var FEATURED_SLOTS = 10;
   /** Pin the first homepage carousel slide. Set to null to rotate by ISO week. */
-  var CAROUSEL_START_ID = "disney-destiny-halloween-high-seas";
+  var CAROUSEL_START_ID = "disney-cruise-booking-and-cost";
 
   var articles = [
+    {
+      id: "disney-cruise-booking-and-cost",
+      title: "Disney Cruise Booking & Cost: Your Questions Answered",
+      excerpt:
+        "What’s included in the fare, booking with an agent vs Disney, travel insurance, discounts, and how kids are priced.",
+      date: "2026-08-04",
+      url: "/articles/disney-cruise-booking-and-cost.html",
+    },
+    {
+      id: "which-disney-ship-should-you-choose",
+      title: "Which Disney Ship Should You Choose? Ships & Itineraries Explained",
+      excerpt:
+        "How the fleet differs, which ship fits first-timers vs newest-ship fans, and Inside through Concierge stateroom tiers.",
+      date: "2026-08-04",
+      url: "/articles/which-disney-ship-should-you-choose.html",
+    },
+    {
+      id: "before-you-go-disney-cruise-prep",
+      title: "Before You Go: Pre-Cruise Prep for Disney Cruise Line",
+      excerpt:
+        "Documents, packing essentials, boarding windows, the onboard deadline, and what to download before you leave home.",
+      date: "2026-08-04",
+      url: "/articles/before-you-go-disney-cruise-prep.html",
+    },
+    {
+      id: "life-onboard-disney-cruise",
+      title: "Life Onboard: What to Expect on a Disney Cruise",
+      excerpt:
+        "Free vs paid onboard, kids club ages, nursery, dinner dress code, seasickness, and staying connected at sea.",
+      date: "2026-08-04",
+      url: "/articles/life-onboard-disney-cruise.html",
+    },
+    {
+      id: "disney-cruise-ports-money-disembarkation",
+      title: "Ports, Money, and Disembarkation: Cruise Logistics Explained",
+      excerpt:
+        "Port currency tips, disembarkation morning timing, whether Disney works without kids, and weather-driven itinerary changes.",
+      date: "2026-08-04",
+      url: "/articles/disney-cruise-ports-money-disembarkation.html",
+    },
     {
       id: "disney-destiny-halloween-high-seas",
       title: "Halloween on the High Seas Comes to the Disney Destiny: What Not to Miss",
