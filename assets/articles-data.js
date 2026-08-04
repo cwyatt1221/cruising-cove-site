@@ -6,9 +6,17 @@
 (function (global) {
   var FEATURED_SLOTS = 10;
   /** Pin the first homepage carousel slide. Set to null to rotate by ISO week. */
-  var CAROUSEL_START_ID = "disney-cruise-booking-and-cost";
+  var CAROUSEL_START_ID = "marketplace-sellers-application-fixed";
 
   var articles = [
+    {
+      id: "marketplace-sellers-application-fixed",
+      title: "Oooops — Marketplace Seller Applications Are Fixed",
+      excerpt:
+        "Our seller application had a hiccup. It’s fixed now — apply for a Curated 10 shop spot, or browse trusted sellers for Disney cruise essentials.",
+      date: "2026-08-04",
+      url: "/articles/marketplace-sellers-application-fixed.html",
+    },
     {
       id: "disney-cruise-booking-and-cost",
       title: "Disney Cruise Booking & Cost: Your Questions Answered",
