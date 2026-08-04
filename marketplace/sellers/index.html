@@ -566,13 +566,33 @@
       });
       const body = await res.json().catch(function(){ return {}; });
       if (!res.ok) {
-        throw new Error(body.error || ('Submission failed (HTTP ' + res.status + '). Please try again.'));
+        if (window.CCAnalytics && CCAnalytics.reportSubmitError) {
+          CCAnalytics.reportSubmitError('Marketplace seller application', {
+            httpStatus: res.status,
+            error: body.error || ('HTTP ' + res.status),
+            email: payload.email,
+            ownerName: payload.ownerName,
+            shopName: payload.shopName
+          });
+        }
+        var httpErr = new Error(body.error || ('Submission failed (HTTP ' + res.status + '). Please try again.'));
+        httpErr._ccReported = true;
+        throw httpErr;
       }
 
       form.style.display = 'none';
       successCard.style.display = 'block';
       successCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (err) {
+      if (window.CCAnalytics && CCAnalytics.reportSubmitError && !(err && err._ccReported)) {
+        CCAnalytics.reportSubmitError('Marketplace seller application', {
+          httpStatus: 0,
+          error: (err && err.message) || 'Network or unknown error',
+          email: payload.email,
+          ownerName: payload.ownerName,
+          shopName: payload.shopName
+        });
+      }
       showError((err && err.message) ? err.message : 'Something went wrong submitting your application. Please try again.');
       submitBtn.disabled = false;
       submitBtn.textContent = 'Submit Application';

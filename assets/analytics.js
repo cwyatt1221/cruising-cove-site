@@ -92,7 +92,15 @@
     }).catch(function () {});
   }
 
-  window.CCAnalytics = { track: track };
+  /** Report a failed application / agent-request submit so the owner can be emailed. */
+  function reportSubmitError(form, meta) {
+    var data = Object.assign({}, meta || {});
+    data.form = form || data.form || "Unknown form";
+    if (data.error == null && data.message != null) data.error = data.message;
+    track("application_submit_error", data);
+  }
+
+  window.CCAnalytics = { track: track, reportSubmitError: reportSubmitError };
 
   function ensureBrandMail() {
     document.querySelectorAll(".site-nav-bar > .logo, .site-footer .foot-top > .logo").forEach(function (logo) {

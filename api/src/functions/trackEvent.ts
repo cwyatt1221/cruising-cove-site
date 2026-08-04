@@ -1,7 +1,7 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import { TableClient } from "@azure/data-tables";
 import { randomUUID } from "crypto";
-import { escapeHtml, notifyEmail, sendEmail } from "../lib/email";
+import { escapeHtml, notifyEmail, notifyOwnerOfSubmitError, safeField, sendEmail } from "../lib/email";
 
 const TABLE_NAME = "SiteEvents";
 const MAX_META_CHARS = 800;
@@ -108,6 +108,43 @@ export async function trackEvent(request: HttpRequest, context: InvocationContex
       if (!sent) context.warn("agent_request_click notify email not sent (check RESEND_API_KEY).");
     } catch (err) {
       context.error("agent_request_click notify failed:", err);
+    }
+  }
+
+  // Client-reported submit failures (network / gateway / etc.). Skip benign 4xx validation.
+  if (type === "application_submit_error") {
+    try {
+      let meta: Record<string, unknown> = {};
+      try {
+        meta = JSON.parse(metaJson || "{}") as Record<string, unknown>;
+      } catch {
+        meta = {};
+      }
+      const statusNum = Number(meta.httpStatus);
+      const hasStatus = Number.isFinite(statusNum) && statusNum > 0;
+      const isBenignValidation = hasStatus && statusNum >= 400 && statusNum < 500 && statusNum !== 429;
+      if (!isBenignValidation) {
+        const form = safeField(meta.form, 80) || "Application submit";
+        const error = safeField(meta.error || meta.message, 400) || "Submit failed (client report)";
+        const sent = await notifyOwnerOfSubmitError({
+          form,
+          error,
+          source: "client/events",
+          path: path || safeField(meta.path, 200),
+          httpStatus: hasStatus ? statusNum : "network",
+          context: {
+            email: meta.email,
+            name: meta.name || meta.fullName || meta.ownerName || meta.guestName,
+            shopName: meta.shopName,
+            agency: meta.agency,
+            agentId: meta.agentId,
+            agentName: meta.agentName,
+          },
+        });
+        if (!sent) context.warn("application_submit_error notify email not sent (check RESEND_API_KEY).");
+      }
+    } catch (err) {
+      context.error("application_submit_error notify failed:", err);
     }
   }
 

@@ -1,6 +1,7 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import { TableClient } from "@azure/data-tables";
 import { randomUUID } from "crypto";
+import { notifyOwnerOfSubmitError, safeField } from "../lib/email";
 
 const TABLE_NAME = "AgentApplications";
 
@@ -122,6 +123,24 @@ export async function submitAgentApplication(request: HttpRequest, context: Invo
     });
   } catch (err) {
     context.error("Failed to store agent application:", err);
+    const message = err instanceof Error ? err.message : String(err);
+    try {
+      const sent = await notifyOwnerOfSubmitError({
+        form: "Travel agent application",
+        error: message,
+        source: "api/agent-application",
+        httpStatus: 500,
+        context: {
+          fullName: safeField(body.fullName),
+          email: safeField(body.email),
+          agency: safeField(body.agency),
+          location: safeField(body.location),
+        },
+      });
+      if (!sent) context.warn("Agent application error notify email not sent (check RESEND_API_KEY).");
+    } catch (notifyErr) {
+      context.error("Agent application error notify failed:", notifyErr);
+    }
     return { status: 500, jsonBody: { error: "Something went wrong submitting your application. Please try again." } };
   }
 

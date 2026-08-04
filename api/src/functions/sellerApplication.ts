@@ -1,6 +1,7 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import { TableClient } from "@azure/data-tables";
 import { randomUUID } from "crypto";
+import { notifyOwnerOfSubmitError, safeField } from "../lib/email";
 
 const TABLE_NAME = "SellerApplications";
 const MAX_PHOTOS = 4;
@@ -96,6 +97,24 @@ export async function submitSellerApplication(request: HttpRequest, context: Inv
     });
   } catch (err) {
     context.error("Failed to store seller application:", err);
+    const message = err instanceof Error ? err.message : String(err);
+    try {
+      const sent = await notifyOwnerOfSubmitError({
+        form: "Marketplace seller application",
+        error: message,
+        source: "api/seller-application",
+        httpStatus: 500,
+        context: {
+          shopName: safeField(body.shopName),
+          ownerName: safeField(body.ownerName),
+          email: safeField(body.email),
+          shopUrl: safeField(shopUrl, 200),
+        },
+      });
+      if (!sent) context.warn("Seller application error notify email not sent (check RESEND_API_KEY).");
+    } catch (notifyErr) {
+      context.error("Seller application error notify failed:", notifyErr);
+    }
     return { status: 500, jsonBody: { error: "Something went wrong submitting your application. Please try again." } };
   }
 

@@ -295,6 +295,17 @@
           leadId: data.leadId
         });
       }catch(err){
+        var status = (err && err.status) || (err && err.data && err.data.status) || 0;
+        if(window.CCAnalytics && CCAnalytics.reportSubmitError){
+          CCAnalytics.reportSubmitError('Travel agent request', {
+            httpStatus: status,
+            error: (err && err.message) || 'Request failed',
+            email: payload.email,
+            guestName: payload.guestName,
+            agentId: payload.agentId,
+            agentName: payload.agentName
+          });
+        }
         statusEl.className='form-status err';
         statusEl.textContent=err.message || 'Something went wrong. Please try again.';
         if(err.data && err.data.lock) applyLockUI(err.data.lock);

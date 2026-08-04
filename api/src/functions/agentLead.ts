@@ -1,7 +1,7 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import { TableClient, odata } from "@azure/data-tables";
 import { randomUUID } from "crypto";
-import { escapeHtml, notifyEmail, sendEmail } from "../lib/email";
+import { escapeHtml, notifyEmail, notifyOwnerOfSubmitError, safeField, sendEmail } from "../lib/email";
 import { requireUser } from "../lib/community";
 import { adminAuthOk } from "../lib/adminAuth";
 
@@ -243,6 +243,25 @@ export async function agentLeadHandler(
     );
   } catch (err) {
     context.error("Failed to store agent lead:", err);
+    const message = err instanceof Error ? err.message : String(err);
+    try {
+      const sent = await notifyOwnerOfSubmitError({
+        form: "Travel agent request",
+        error: message,
+        source: "api/agent-lead",
+        httpStatus: 500,
+        context: {
+          agentId: safeField(agentId),
+          agentName: safeField(agentName),
+          guestName: safeField(guestName),
+          email: safeField(email),
+          userId: safeField(user.userId),
+        },
+      });
+      if (!sent) context.warn("Agent lead error notify email not sent (check RESEND_API_KEY).");
+    } catch (notifyErr) {
+      context.error("Agent lead error notify failed:", notifyErr);
+    }
     return cors(500, { error: "Something went wrong submitting your request. Please try again." });
   }
 
