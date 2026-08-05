@@ -164,18 +164,18 @@ export async function plannerDeleteTrip(request: HttpRequest, context: Invocatio
   }
 }
 
-app.http("plannerListTrips", {
-  methods: ["GET", "OPTIONS"],
-  authLevel: "anonymous",
-  route: "planner/trips",
-  handler: plannerListTrips,
-});
+// SWA managed Functions only keep one registration per route — combine methods.
+async function tripsCollection(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
+  if (request.method === "GET") return plannerListTrips(request, context);
+  if (request.method === "POST" || request.method === "PUT") return plannerUpsertTrip(request, context);
+  return corsJson(204, {});
+}
 
-app.http("plannerUpsertTrip", {
-  methods: ["POST", "PUT", "OPTIONS"],
+app.http("plannerTrips", {
+  methods: ["GET", "POST", "PUT", "OPTIONS"],
   authLevel: "anonymous",
   route: "planner/trips",
-  handler: plannerUpsertTrip,
+  handler: tripsCollection,
 });
 
 app.http("plannerDeleteTrip", {

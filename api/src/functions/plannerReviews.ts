@@ -203,18 +203,18 @@ export async function plannerAdminModerateReview(
   }
 }
 
-app.http("plannerListReviews", {
-  methods: ["GET", "OPTIONS"],
-  authLevel: "anonymous",
-  route: "planner/reviews",
-  handler: plannerListReviews,
-});
+// SWA managed Functions only keep one registration per route — combine methods.
+async function reviewsCollection(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
+  if (request.method === "GET") return plannerListReviews(request, context);
+  if (request.method === "POST") return plannerCreateReview(request, context);
+  return corsJson(204, {});
+}
 
-app.http("plannerCreateReview", {
-  methods: ["POST", "OPTIONS"],
+app.http("plannerReviews", {
+  methods: ["GET", "POST", "OPTIONS"],
   authLevel: "anonymous",
   route: "planner/reviews",
-  handler: plannerCreateReview,
+  handler: reviewsCollection,
 });
 
 app.http("plannerAdminListReviews", {

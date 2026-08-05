@@ -210,7 +210,11 @@
         saveLocal();
       }
     } catch (e) {
-      toast("Saved on this device — sign in again to sync.");
+      toast(
+        e && e.status === 401
+          ? "Saved on this device — sign in again to sync."
+          : "Saved on this device — cloud sync unavailable right now."
+      );
     }
   }
 
