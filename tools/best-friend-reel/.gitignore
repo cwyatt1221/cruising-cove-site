@@ -1,0 +1,6 @@
+.DS_Store
+*.log
+__pycache__/
+out/*
+!out/best-friend-reel.mp4
+!out/.gitkeep
