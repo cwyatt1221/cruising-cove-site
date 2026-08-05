@@ -28,9 +28,14 @@ FADE_IN = 0.25
 FADE_OUT = 0.2
 TEXT_CENTER_Y = int(H * 0.50)
 
-LINE1 = ["Woody's Roundup Breakfast", "at Animator's Palate"]
-LINE2 = ["Meet Bullseye & friends —", "Pixar Day at Sea energy"]
-END_CARD = ["Follow cruisingcove.com", "for more Disney cruise tips"]
+# Beat captions — middle-third, white + black outline
+CAPTIONS: list[tuple[list[str], int]] = [
+    (["Hey Howdy Breakfast", "Woody's Roundup"], 70),
+    (["Animator's Palate", "Pixar Day at Sea", "on Disney Fantasy"], 62),
+    (["Meet Woody & friends", "for a festive", "character breakfast"], 64),
+    (["Reservations go FAST —", "book as soon as", "your window opens"], 62),
+    (["Follow cruisingcove.com", "for more fun info"], 64),
+]
 
 
 def probe_duration(path: Path) -> float:
@@ -138,92 +143,79 @@ def build_overlay_filter(overlays: list[tuple[str, float, float]]) -> str:
     return ";".join(parts)
 
 
-def timing_for_duration(src_dur: float) -> tuple[tuple[float, float], tuple[float, float], tuple[float, float]]:
-    content_end = max(src_dur - END_CARD_S, src_dur * 0.55)
-    mid = content_end / 2.0
-    return (0.0, mid), (mid, content_end), (content_end, src_dur)
+def timing_for_duration(src_dur: float) -> list[tuple[float, float]]:
+    """Split content (before end card) evenly across caption beats; end card ~2s."""
+    n = len(CAPTIONS)
+    content_end = max(src_dur - END_CARD_S, src_dur * 0.85)
+    content_beats = n - 1
+    slot = content_end / content_beats
+    windows: list[tuple[float, float]] = []
+    for i in range(content_beats):
+        windows.append((i * slot, (i + 1) * slot))
+    windows.append((content_end, src_dur))
+    return windows
 
 
 def render_from_video(source: Path) -> int:
     src_dur = probe_duration(source)
-    (t1_start, t1_end), (t2_start, t2_end), (t3_start, t3_end) = timing_for_duration(src_dur)
+    windows = timing_for_duration(src_dur)
     print(f"Mode: video ({source.name})")
     print(f"Source duration: {src_dur:.3f}s")
-    print(f"  Line 1: {t1_start:.2f}–{t1_end:.2f}s")
-    print(f"  Line 2: {t2_start:.2f}–{t2_end:.2f}s")
-    print(f"  End card: {t3_start:.2f}–{t3_end:.2f}s")
+    for i, ((start, end), (lines, _)) in enumerate(zip(windows, CAPTIONS), start=1):
+        label = "End card" if i == len(CAPTIONS) else f"Beat {i}"
+        print(f"  {label}: {start:.2f}–{end:.2f}s  {' / '.join(lines)}")
 
     with tempfile.TemporaryDirectory(prefix="woodys-roundup-") as tmp:
         tmp_path = Path(tmp)
-        o1, o2, o3 = tmp_path / "line1.png", tmp_path / "line2.png", tmp_path / "endcard.png"
-        render_text_png(LINE1, 70, o1)
-        render_text_png(LINE2, 66, o2)
-        render_text_png(END_CARD, 64, o3)
+        overlay_paths: list[Path] = []
+        for i, (lines, font_size) in enumerate(CAPTIONS):
+            p = tmp_path / f"cap{i}.png"
+            render_text_png(lines, font_size, p)
+            overlay_paths.append(p)
 
-        # Scale/pad to 1080x1920 if needed
         vf_base = (
             f"scale={W}:{H}:force_original_aspect_ratio=increase,"
             f"crop={W}:{H},fps={FPS}"
         )
+        overlay_specs = [
+            (f"ov{i}", start, end) for i, (start, end) in enumerate(windows)
+        ]
         filter_complex = (
             f"[0:v]{vf_base}[base];"
-            + build_overlay_filter(
-                [
-                    ("ov1", t1_start, t1_end),
-                    ("ov2", t2_start, t2_end),
-                    ("ov3", t3_start, t3_end),
-                ]
-            ).replace("[0:v]", "[base]")
+            + build_overlay_filter(overlay_specs).replace("[0:v]", "[base]")
         )
 
-        cmd = [
-            "ffmpeg",
-            "-y",
-            "-i",
-            str(source),
-            "-loop",
-            "1",
-            "-t",
-            f"{src_dur:.3f}",
-            "-i",
-            str(o1),
-            "-loop",
-            "1",
-            "-t",
-            f"{src_dur:.3f}",
-            "-i",
-            str(o2),
-            "-loop",
-            "1",
-            "-t",
-            f"{src_dur:.3f}",
-            "-i",
-            str(o3),
-            "-filter_complex",
-            filter_complex,
-            "-map",
-            "[vout]",
-            "-map",
-            "0:a?",
-            "-c:v",
-            "libx264",
-            "-pix_fmt",
-            "yuv420p",
-            "-profile:v",
-            "high",
-            "-crf",
-            "18",
-            "-r",
-            str(FPS),
-            "-c:a",
-            "aac",
-            "-b:a",
-            "128k",
-            "-shortest",
-            "-movflags",
-            "+faststart",
-            str(OUT),
-        ]
+        cmd: list[str] = ["ffmpeg", "-y", "-i", str(source)]
+        for p in overlay_paths:
+            cmd.extend(["-loop", "1", "-t", f"{src_dur:.3f}", "-i", str(p)])
+        cmd.extend(
+            [
+                "-filter_complex",
+                filter_complex,
+                "-map",
+                "[vout]",
+                "-map",
+                "0:a?",
+                "-c:v",
+                "libx264",
+                "-pix_fmt",
+                "yuv420p",
+                "-profile:v",
+                "high",
+                "-crf",
+                "18",
+                "-r",
+                str(FPS),
+                "-c:a",
+                "aac",
+                "-b:a",
+                "128k",
+                "-shortest",
+                "-movflags",
+                "+faststart",
+                str(OUT),
+            ]
+        )
         print("Rendering…")
         proc = subprocess.run(cmd, capture_output=True, text=True)
         if proc.returncode != 0:
@@ -295,27 +287,22 @@ def text_alpha(local_t: float, duration: float) -> float:
 
 def render_from_still(photo: Path) -> int:
     total = STILL_DURATION_S * FPS
-    (t1_start, t1_end), (t2_start, t2_end), (t3_start, t3_end) = timing_for_duration(
-        float(STILL_DURATION_S)
-    )
+    windows = timing_for_duration(float(STILL_DURATION_S))
     print(f"Mode: still Ken Burns ({photo.name})")
     print(f"Duration: {STILL_DURATION_S}s @ {FPS}fps")
-    print(f"  Line 1: {t1_start:.2f}–{t1_end:.2f}s")
-    print(f"  Line 2: {t2_start:.2f}–{t2_end:.2f}s")
-    print(f"  End card: {t3_start:.2f}–{t3_end:.2f}s")
+    for i, ((start, end), (lines, _)) in enumerate(zip(windows, CAPTIONS), start=1):
+        label = "End card" if i == len(CAPTIONS) else f"Beat {i}"
+        print(f"  {label}: {start:.2f}–{end:.2f}s  {' / '.join(lines)}")
 
     src = Image.open(photo).convert("RGB")
     with tempfile.TemporaryDirectory(prefix="woodys-roundup-still-") as tmp:
         tmp_path = Path(tmp)
-        o1, o2, o3 = tmp_path / "line1.png", tmp_path / "line2.png", tmp_path / "endcard.png"
-        render_text_png(LINE1, 70, o1)
-        render_text_png(LINE2, 66, o2)
-        render_text_png(END_CARD, 64, o3)
-        overlays = [
-            (Image.open(o1).convert("RGBA"), t1_start, t1_end),
-            (Image.open(o2).convert("RGBA"), t2_start, t2_end),
-            (Image.open(o3).convert("RGBA"), t3_start, t3_end),
-        ]
+        overlays: list[tuple[Image.Image, float, float]] = []
+        for i, (lines, font_size) in enumerate(CAPTIONS):
+            p = tmp_path / f"cap{i}.png"
+            render_text_png(lines, font_size, p)
+            start, end = windows[i]
+            overlays.append((Image.open(p).convert("RGBA"), start, end))
 
         cmd = [
             "ffmpeg",

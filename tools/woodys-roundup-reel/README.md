@@ -17,11 +17,15 @@ Renders from the real footage at `public/source.mp4` (video mode; original audio
 
 ## Timing (text overlays)
 
+Content beats share the clip evenly before the ~2s end card (times scale with source duration; ~28s clip shown):
+
 | Scene | Time | Text |
 |-------|------|------|
-| 1 | first half of content | Woody's Roundup Breakfast at Animator's Palate |
-| 2 | second half of content | Meet Bullseye & friends — Pixar Day at Sea energy |
-| 3 (end card) | last **~2.0s** | Follow cruisingcove.com for more Disney cruise tips |
+| 1 Hook | ~0.0–6.5s | Hey Howdy Breakfast / Woody's Roundup |
+| 2 Where | ~6.5–13.0s | Animator's Palate / Pixar Day at Sea / on Disney Fantasy |
+| 3 Vibe | ~13.0–19.4s | Meet Woody & friends / for a festive / character breakfast |
+| 4 Urgency | ~19.4–25.9s | Reservations go FAST — / book as soon as / your window opens |
+| 5 End card | last **~2.0s** | Follow cruisingcove.com / for more fun info |
 
 Text is **large**, white with a strong black outline + shadow, centered in the **middle third** of the frame (away from Instagram UI chrome).
 
