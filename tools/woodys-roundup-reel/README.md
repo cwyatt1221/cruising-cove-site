@@ -8,15 +8,12 @@ ffmpeg + Pillow project that builds a **1080×1920 / 30fps** Instagram Reel abou
 |------|------|
 | Project | `tools/woodys-roundup-reel/` |
 | Export | `tools/woodys-roundup-reel/out/woodys-roundup-reel.mp4` |
-| Still (used) | `tools/woodys-roundup-reel/public/photos/woodys-roundup-breakfast.png` |
-| Video (optional) | `tools/woodys-roundup-reel/public/video/source.mp4` |
+| Source video | `tools/woodys-roundup-reel/public/source.mp4` |
+| Still (fallback) | `tools/woodys-roundup-reel/public/photos/woodys-roundup-breakfast.png` |
 
 ## Source
 
-The Cursor attachment arrived as a **still** (Animator's Palate / Bullseye). No matching `.mov`/`.mp4` was found under Desktop, Downloads, or Movies for UUID stem `19366427-3D5C-4CF9-B1E2-374F7C195A85`.
-
-- **Current render:** Ken Burns pan/zoom from the still (~22s, silent).
-- **To re-render from real footage:** drop an H.264 clip at `public/video/source.mp4` and run the script again (video mode takes priority; original audio is kept when present).
+Renders from the real footage at `public/source.mp4` (video mode; original audio kept when present). If that file is missing, falls back to a Ken Burns pan/zoom from the still.
 
 ## Timing (text overlays)
 

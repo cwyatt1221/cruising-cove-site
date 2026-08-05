@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Woody's Roundup Breakfast Instagram reel.
-Prefers public/video/source.mp4 when present; otherwise Ken Burns from the still.
+Uses public/source.mp4 when present; otherwise Ken Burns from the still.
 1080x1920, 30fps, H.264. End card held ~2s. Middle-third outlined captions.
 """
 
@@ -16,7 +16,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE_VIDEO = ROOT / "public" / "video" / "source.mp4"
+SOURCE_VIDEO = ROOT / "public" / "source.mp4"
 PHOTO = ROOT / "public" / "photos" / "woodys-roundup-breakfast.png"
 FONT_PATH = ROOT / "public" / "fonts" / "Montserrat-SemiBold.ttf"
 OUT = ROOT / "out" / "woodys-roundup-reel.mp4"

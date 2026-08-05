@@ -4,4 +4,3 @@ __pycache__/
 out/*
 !out/woodys-roundup-reel.mp4
 !out/.gitkeep
-public/video/
