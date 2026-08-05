@@ -1,0 +1,7 @@
+.DS_Store
+*.log
+__pycache__/
+out/*
+!out/woodys-roundup-reel.mp4
+!out/.gitkeep
+public/video/
