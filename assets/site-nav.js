@@ -47,7 +47,7 @@
     '<a href="/community/">Community</a>' +
     '<a href="/gallery/">Gallery</a>' +
     '<a href="/marketplace/">Marketplace</a>' +
-    '<a href="mailto:cgrove0712@gmail.com?subject=Cruising%20Cove%20feedback" data-cc-feedback="1">Give Feedback</a>';
+    '<a href="#feedback" data-cc-feedback="1">Give Feedback</a>';
 
   var ONBOARD_HREFS = ["/dining/", "/entertainment/"];
   var PLAN_HREFS = [
@@ -133,24 +133,203 @@
     var links = document.getElementById("primaryNav");
     if (!links) return;
 
-    var href =
-      "mailto:cgrove0712@gmail.com?subject=" +
-      encodeURIComponent("Cruising Cove feedback") +
-      "&body=" +
-      encodeURIComponent("Page: " + location.href.split("#")[0] + "\n\nYour feedback:\n\n");
-
     var existing = links.querySelector("[data-cc-feedback]");
-    if (existing) {
-      // Keep page URL in the mailto body even when the link came from NAV_HTML.
-      existing.setAttribute("href", href);
+    var a = existing;
+    if (!a) {
+      a = document.createElement("a");
+      a.setAttribute("data-cc-feedback", "1");
+      a.textContent = "Give Feedback";
+      links.appendChild(a);
+    }
+
+    a.setAttribute("href", "#feedback");
+    a.setAttribute("role", "button");
+    if (a.getAttribute("data-cc-feedback-bound") === "1") return;
+    a.setAttribute("data-cc-feedback-bound", "1");
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      openFeedbackModal();
+    });
+  }
+
+  function feedbackPageUrl() {
+    try {
+      return location.href.split("#")[0];
+    } catch (_) {
+      return "";
+    }
+  }
+
+  function ensureFeedbackModal() {
+    var existing = document.getElementById("ccFeedbackModal");
+    if (existing) return existing;
+
+    var overlay = document.createElement("div");
+    overlay.id = "ccFeedbackModal";
+    overlay.className = "cc-feedback-modal";
+    overlay.hidden = true;
+    overlay.setAttribute("role", "dialog");
+    overlay.setAttribute("aria-modal", "true");
+    overlay.setAttribute("aria-labelledby", "ccFeedbackTitle");
+    overlay.innerHTML =
+      '<div class="cc-feedback-backdrop" data-cc-feedback-close="1"></div>' +
+      '<div class="cc-feedback-panel">' +
+      '<button type="button" class="cc-feedback-close" data-cc-feedback-close="1" aria-label="Close">&times;</button>' +
+      '<h2 id="ccFeedbackTitle" class="display">Give Feedback</h2>' +
+      '<p class="cc-feedback-lead">Tell us what works, what doesn\'t, or what you\'d like next. We read every note.</p>' +
+      '<form id="ccFeedbackForm" class="cc-feedback-form" novalidate>' +
+      '<label for="ccFeedbackName">Name <span class="cc-feedback-optional">(optional)</span></label>' +
+      '<input id="ccFeedbackName" name="name" type="text" maxlength="120" autocomplete="name" placeholder="Your name">' +
+      '<label for="ccFeedbackEmail">Email <span class="cc-feedback-required">*</span></label>' +
+      '<input id="ccFeedbackEmail" name="email" type="email" maxlength="200" required autocomplete="email" placeholder="you@example.com">' +
+      '<label for="ccFeedbackMessage">Message <span class="cc-feedback-required">*</span></label>' +
+      '<textarea id="ccFeedbackMessage" name="message" rows="5" maxlength="5000" required placeholder="Your feedback…"></textarea>' +
+      '<p class="cc-feedback-status" id="ccFeedbackStatus" role="status" aria-live="polite" hidden></p>' +
+      '<div class="cc-feedback-actions">' +
+      '<button type="button" class="btn btn-outline" data-cc-feedback-close="1">Cancel</button>' +
+      '<button type="submit" class="btn btn-gold" id="ccFeedbackSubmit">Send feedback</button>' +
+      "</div>" +
+      "</form>" +
+      "</div>";
+
+    document.body.appendChild(overlay);
+
+    overlay.addEventListener("click", function (e) {
+      var t = e.target;
+      if (t && t.getAttribute && t.getAttribute("data-cc-feedback-close") === "1") {
+        closeFeedbackModal();
+      }
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && !overlay.hidden) closeFeedbackModal();
+    });
+
+    var form = document.getElementById("ccFeedbackForm");
+    form.addEventListener("submit", onFeedbackSubmit);
+
+    return overlay;
+  }
+
+  function setFeedbackStatus(msg, ok) {
+    var statusEl = document.getElementById("ccFeedbackStatus");
+    if (!statusEl) return;
+    statusEl.hidden = !msg;
+    statusEl.textContent = msg || "";
+    statusEl.className = "cc-feedback-status" + (msg ? (ok ? " ok" : " err") : "");
+  }
+
+  function openFeedbackModal() {
+    var overlay = ensureFeedbackModal();
+    var form = document.getElementById("ccFeedbackForm");
+    var submitBtn = document.getElementById("ccFeedbackSubmit");
+    if (form) form.reset();
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Send feedback";
+    }
+    setFeedbackStatus("", true);
+    overlay.hidden = false;
+    document.body.classList.add("cc-feedback-open");
+    var email = document.getElementById("ccFeedbackEmail");
+    if (email) setTimeout(function () { email.focus(); }, 0);
+
+    var menu = document.getElementById("primaryNav");
+    var toggle = document.querySelector(".site-nav-bar .nav-toggle");
+    if (menu && menu.classList.contains("open")) {
+      menu.classList.remove("open");
+      if (toggle) {
+        toggle.setAttribute("aria-expanded", "false");
+        var labelEl = toggle.querySelector(".nav-toggle-label");
+        if (labelEl) labelEl.textContent = "Menu";
+        toggle.setAttribute("aria-label", "Menu");
+      }
+    }
+  }
+
+  function closeFeedbackModal() {
+    var overlay = document.getElementById("ccFeedbackModal");
+    if (!overlay) return;
+    overlay.hidden = true;
+    document.body.classList.remove("cc-feedback-open");
+  }
+
+  function onFeedbackSubmit(e) {
+    e.preventDefault();
+    var form = e.target;
+    var nameEl = document.getElementById("ccFeedbackName");
+    var emailEl = document.getElementById("ccFeedbackEmail");
+    var messageEl = document.getElementById("ccFeedbackMessage");
+    var submitBtn = document.getElementById("ccFeedbackSubmit");
+
+    var name = (nameEl && nameEl.value ? nameEl.value : "").trim();
+    var email = (emailEl && emailEl.value ? emailEl.value : "").trim();
+    var message = (messageEl && messageEl.value ? messageEl.value : "").trim();
+
+    if (!email || email.indexOf("@") < 1) {
+      setFeedbackStatus("Please enter a valid email address.", false);
+      if (emailEl) emailEl.focus();
+      return;
+    }
+    if (!message || message.length < 2) {
+      setFeedbackStatus("Please enter your feedback message.", false);
+      if (messageEl) messageEl.focus();
       return;
     }
 
-    var a = document.createElement("a");
-    a.href = href;
-    a.setAttribute("data-cc-feedback", "1");
-    a.textContent = "Give Feedback";
-    links.appendChild(a);
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Sending…";
+    }
+    setFeedbackStatus("", true);
+
+    var payload = {
+      name: name,
+      email: email,
+      message: message,
+      pageUrl: feedbackPageUrl(),
+    };
+
+    fetch("/api/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    })
+      .then(function (res) {
+        return res.json().catch(function () { return {}; }).then(function (body) {
+          return { ok: res.ok, status: res.status, body: body };
+        });
+      })
+      .then(function (result) {
+        if (!result.ok) {
+          if (window.CCAnalytics && CCAnalytics.reportSubmitError) {
+            CCAnalytics.reportSubmitError("Site feedback", {
+              httpStatus: result.status,
+              error: (result.body && result.body.error) || ("HTTP " + result.status),
+              email: payload.email,
+              name: payload.name,
+              path: payload.pageUrl,
+            });
+          }
+          throw new Error((result.body && result.body.error) || "Something went wrong. Please try again.");
+        }
+        setFeedbackStatus((result.body && result.body.message) || "Thanks — your feedback was sent.", true);
+        if (form) form.reset();
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Send feedback";
+        }
+        setTimeout(function () {
+          closeFeedbackModal();
+        }, 1600);
+      })
+      .catch(function (err) {
+        setFeedbackStatus((err && err.message) || "Something went wrong. Please try again.", false);
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Send feedback";
+        }
+      });
   }
 
   function pageTitleForShare() {

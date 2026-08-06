@@ -24,3 +24,4 @@ import "./functions/plannerShares";
 import "./functions/plannerReminders";
 import "./functions/trackEvent";
 import "./functions/listEvents";
+import "./functions/feedback";
