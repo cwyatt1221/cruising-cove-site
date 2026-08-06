@@ -46,7 +46,8 @@
     "</div>" +
     '<a href="/community/">Community</a>' +
     '<a href="/gallery/">Gallery</a>' +
-    '<a href="/marketplace/">Marketplace</a>';
+    '<a href="/marketplace/">Marketplace</a>' +
+    '<a href="mailto:cgrove0712@gmail.com?subject=Cruising%20Cove%20feedback" data-cc-feedback="1">Give Feedback</a>';
 
   var ONBOARD_HREFS = ["/dining/", "/entertainment/"];
   var PLAN_HREFS = [
@@ -101,9 +102,9 @@
   function normalizePrimaryNav() {
     var links = document.getElementById("primaryNav");
     if (!links) return;
-    if (links.getAttribute("data-cc-nav") === "v5") return;
+    if (links.getAttribute("data-cc-nav") === "v6") return;
     links.innerHTML = NAV_HTML;
-    links.setAttribute("data-cc-nav", "v5");
+    links.setAttribute("data-cc-nav", "v6");
   }
 
   function removeAuthLink() {
@@ -130,13 +131,20 @@
 
   function ensureFeedbackLink() {
     var links = document.getElementById("primaryNav");
-    if (!links || links.querySelector("[data-cc-feedback]")) return;
+    if (!links) return;
 
     var href =
       "mailto:cgrove0712@gmail.com?subject=" +
       encodeURIComponent("Cruising Cove feedback") +
       "&body=" +
       encodeURIComponent("Page: " + location.href.split("#")[0] + "\n\nYour feedback:\n\n");
+
+    var existing = links.querySelector("[data-cc-feedback]");
+    if (existing) {
+      // Keep page URL in the mailto body even when the link came from NAV_HTML.
+      existing.setAttribute("href", href);
+      return;
+    }
 
     var a = document.createElement("a");
     a.href = href;
