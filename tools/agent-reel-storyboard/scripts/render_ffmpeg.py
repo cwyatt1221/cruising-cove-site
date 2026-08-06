@@ -83,7 +83,7 @@ BACKGROUNDS: list[tuple[int | None, list[tuple[list[str], int]]]] = [
         0,  # 01.jpeg
         [
             (
-                ["Booking a Disney cruise?", "Here's why families", "never do it alone."],
+                ["Booking a Family Cruise —", "make it easy", "from the start."],
                 58,
             ),
             (

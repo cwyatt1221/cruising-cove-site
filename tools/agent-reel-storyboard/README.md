@@ -18,7 +18,7 @@ Most storyboard ship JPEGs are **landscape** with the hull/horizon horizontal. `
 
 | BG | Time | Background | Tip captions |
 |----|------|------------|--------------|
-| 1 | 0:00–0:06.4 | 01.jpeg | Booking a Disney cruise?… · 10 reasons families use… |
+| 1 | 0:00–0:06.4 | 01.jpeg | Booking a Family Cruise —… · 10 reasons families use… |
 | 2 | 0:06.4–0:12.8 | 03.jpeg | Same price, always… · They watch the price after you book… |
 | 3 | 0:12.8–0:19.2 | 06.jpeg | First in line when booking windows open… · A real human when plans break… |
 | 4 | 0:19.2–0:25.6 | 07.jpeg (CW 90°) | Group trips without the group-chat chaos… · They know the fleet, ship by ship… |
