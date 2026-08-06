@@ -76,8 +76,8 @@ SHIP_ROTATE_CW: dict[str, int] = {
 }
 
 # Each background holds TWO consecutive tips.
-# ship_index | None — None = navy branded bg (former ~11s / ~13–14s navy scenes).
-# Tips 3+4 (price) share 03.jpeg; tips 5+6 share navy (tip 5 stays navy, tip 6 pairs on).
+# ship_index | None — None = navy branded bg (unused; tip card is the only navy hold).
+# Tips 3+4 (price) share 03.jpeg; tips 5+6 share 06.jpeg (Castaway Cay ship).
 BACKGROUNDS: list[tuple[int | None, list[tuple[list[str], int]]]] = [
     (
         0,  # 01.jpeg
@@ -118,7 +118,7 @@ BACKGROUNDS: list[tuple[int | None, list[tuple[list[str], int]]]] = [
         ],
     ),
     (
-        None,  # navy — tip 5 stays navy; tip 6 pairs on
+        5,  # 06.jpeg — Castaway Cay ship (covers 12.8–19.2s / tips First in line + real human)
         [
             (
                 [
