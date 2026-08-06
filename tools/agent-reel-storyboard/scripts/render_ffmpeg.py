@@ -4,8 +4,9 @@ Cruising Cove — Agent Reel Storyboard export.
 Source: reel_preview storyboard HTML (phone-frame preview).
 
 Landscape ship stills → 1080×1920 Ken Burns crop.
-Scenes 7/9 apply a 90° clockwise rotate so sideways port stills sit upright.
-Large middle-third white captions with black outline. Silent H.264 mp4.
+Each still/navy background holds for TWO caption beats.
+Scenes using 07/09 apply a 90° clockwise rotate so sideways port stills sit upright.
+Large middle-third navy captions with thick white outline. Silent H.264 mp4.
 """
 
 from __future__ import annotations
@@ -24,8 +25,9 @@ FONT_PATH = ROOT / "public" / "fonts" / "Montserrat-SemiBold.ttf"
 OUT = ROOT / "out" / "agent-reel-storyboard.mp4"
 
 W, H, FPS = 1080, 1920, 30
-SLIDE_S = 3.2  # matches storyboard DURATION = 3200ms
-CARD_S = SLIDE_S * 2.2  # storyboard holds final card longer
+TIP_S = 3.2  # one caption beat (matches storyboard DURATION = 3200ms)
+BG_S = TIP_S * 2  # each still/navy holds for two tips
+CARD_S = TIP_S * 2.2  # storyboard holds final card longer
 TEXT_CENTER_Y = int(H * 0.50)
 FADE_IN = 0.28
 FADE_OUT = 0.22
@@ -35,6 +37,11 @@ NAVY = (11, 42, 74, 255)
 DEEP = (7, 26, 46, 255)
 BRASS = (201, 162, 75, 255)
 CREAM = (245, 239, 227, 255)
+
+# Caption: dark navy fill + thick white outline (readable on sand/sky AND navy)
+CAPTION_FILL = (11, 42, 74, 255)
+CAPTION_OUTLINE = (255, 255, 255, 255)
+CAPTION_OUTLINE_W = 10
 
 # shipAt(i) = SHIPS[i % 9] — same cycling as the HTML
 SHIPS = [
@@ -62,119 +69,137 @@ SHIP_FOCUS: dict[str, tuple[float, float]] = {
     "09.jpeg": (0.48, 0.42),  # after CW90: ship + umbrellas upright
 }
 
-# Degrees clockwise (applied once at load). Fixes sideways port stills in scenes 7 & 9.
+# Degrees clockwise (applied once at load). Fixes sideways port stills (former ~20s / ~28s).
 SHIP_ROTATE_CW: dict[str, int] = {
     "07.jpeg": 90,
     "09.jpeg": 90,
 }
 
-# (ship_index | None, caption lines, font_size) — None = navy branded bg (no photo)
-PHOTO_SCENES: list[tuple[int | None, list[str], int]] = [
+# Each background holds TWO consecutive tips.
+# ship_index | None — None = navy branded bg (former ~11s / ~13–14s navy scenes).
+# Tips 3+4 (price) share 03.jpeg; tips 5+6 share navy (tip 5 stays navy, tip 6 pairs on).
+BACKGROUNDS: list[tuple[int | None, list[tuple[list[str], int]]]] = [
     (
-        0,
-        ["Booking a Disney cruise?", "Here's why families", "never do it alone."],
-        58,
+        0,  # 01.jpeg
+        [
+            (
+                ["Booking a Disney cruise?", "Here's why families", "never do it alone."],
+                58,
+            ),
+            (
+                [
+                    "10 reasons families use",
+                    "a Disney-specialist agent",
+                    "— and it costs nothing extra.",
+                ],
+                52,
+            ),
+        ],
     ),
     (
-        1,
+        2,  # 03.jpeg — Same price + watch-the-price (tip 4 leaves navy, paired logically)
         [
-            "10 reasons families use",
-            "a Disney-specialist agent",
-            "— and it costs nothing extra.",
+            (
+                [
+                    "Same price, always",
+                    "You pay the exact fare as booking direct —",
+                    "Disney pays the agent's commission, not you.",
+                ],
+                48,
+            ),
+            (
+                [
+                    "They watch the price",
+                    "after you book",
+                    "Rate drops → rebook or onboard credit.",
+                ],
+                54,
+            ),
         ],
-        52,
     ),
     (
-        2,
+        None,  # navy — tip 5 stays navy; tip 6 pairs on
         [
-            "Same price, always",
-            "You pay the exact fare as booking direct —",
-            "Disney pays the agent's commission, not you.",
+            (
+                [
+                    "First in line when",
+                    "booking windows open",
+                    "Palo, Remy, cabanas & excursions.",
+                ],
+                54,
+            ),
+            (
+                [
+                    "A real human when",
+                    "plans break",
+                    "Flights, docs, last-minute surprises.",
+                ],
+                56,
+            ),
         ],
-        48,
-    ),
-    # Scene 4 (9.6–12.8s / ~11s): caption only on navy — no photo
-    (
-        None,
-        [
-            "They watch the price",
-            "after you book",
-            "Rate drops → rebook or onboard credit.",
-        ],
-        54,
-    ),
-    # Scene 5 (12.8–16.0s / ~13–14s): caption only on navy — no ship/beach still
-    (
-        None,
-        [
-            "First in line when",
-            "booking windows open",
-            "Palo, Remy, cabanas & excursions.",
-        ],
-        54,
     ),
     (
-        5,
+        6,  # 07.jpeg CW90 — former ~20s upright ship
         [
-            "A real human when",
-            "plans break",
-            "Flights, docs, last-minute surprises.",
+            (
+                [
+                    "Group trips without",
+                    "the group-chat chaos",
+                    "Multi-cabin paperwork, one contact.",
+                ],
+                54,
+            ),
+            (
+                [
+                    "They know the fleet,",
+                    "ship by ship",
+                    "Itinerary & stateroom that fit your family.",
+                ],
+                54,
+            ),
         ],
-        56,
     ),
     (
-        6,
+        8,  # 09.jpeg CW90 — former ~28s upright ship
         [
-            "Group trips without",
-            "the group-chat chaos",
-            "Multi-cabin paperwork, one contact.",
+            (
+                [
+                    "Deck-plan and",
+                    "stateroom insight",
+                    "Connecting rooms, quiet halls, upgrades.",
+                ],
+                54,
+            ),
+            (
+                [
+                    "Castaway Club perks,",
+                    "decoded",
+                    "What your tier unlocks — and how to use it.",
+                ],
+                54,
+            ),
         ],
-        54,
     ),
     (
-        7,
+        1,  # 02.jpeg
         [
-            "They know the fleet,",
-            "ship by ship",
-            "Itinerary & stateroom that fit your family.",
+            (
+                [
+                    "Passport & paperwork",
+                    "peace of mind",
+                    "Disney-specific requirements, handled early.",
+                ],
+                52,
+            ),
+            (
+                [
+                    "An advocate,",
+                    "start to sail-away",
+                    "From deposit day through the final day.",
+                ],
+                56,
+            ),
         ],
-        54,
-    ),
-    (
-        8,
-        [
-            "Deck-plan and",
-            "stateroom insight",
-            "Connecting rooms, quiet halls, upgrades.",
-        ],
-        54,
-    ),
-    (
-        9,
-        [
-            "Castaway Club perks,",
-            "decoded",
-            "What your tier unlocks — and how to use it.",
-        ],
-        54,
-    ),
-    (
-        10,
-        [
-            "Passport & paperwork",
-            "peace of mind",
-            "Disney-specific requirements, handled early.",
-        ],
-        52,
-    ),
-    (
-        11,
-        [
-            "An advocate,",
-            "start to sail-away",
-            "From deposit day through the final day.",
-        ],
-        56,
     ),
 ]
 
@@ -230,11 +255,12 @@ def draw_outlined_text(
     xy: tuple[int, int],
     text: str,
     font: ImageFont.FreeTypeFont,
-    outline_w: int = 7,
+    outline_w: int = CAPTION_OUTLINE_W,
+    fill: tuple[int, int, int, int] = CAPTION_FILL,
+    outline: tuple[int, int, int, int] = CAPTION_OUTLINE,
 ) -> None:
+    """Navy fill + thick white halo — readable on bright sand/sky and dark navy."""
     x, y = xy
-    outline = (0, 0, 0, 255)
-    fill = (255, 255, 255, 255)
     for dx in range(-outline_w, outline_w + 1):
         for dy in range(-outline_w, outline_w + 1):
             if dx == 0 and dy == 0:
@@ -242,7 +268,8 @@ def draw_outlined_text(
             if dx * dx + dy * dy > outline_w * outline_w:
                 continue
             draw.text((x + dx, y + dy), text, font=font, fill=outline)
-    draw.text((x + 2, y + 3), text, font=font, fill=(0, 0, 0, 200))
+    # Soft white shadow under fill for extra separation
+    draw.text((x + 2, y + 3), text, font=font, fill=(255, 255, 255, 180))
     draw.text((x, y), text, font=font, fill=fill)
 
 
@@ -304,9 +331,7 @@ def make_scrim() -> Image.Image:
     """Soft radial darkening so middle-third captions stay readable."""
     layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     draw = ImageDraw.Draw(layer)
-    # vertical vignette
     for i in range(H):
-        # stronger at top/bottom, lighter mid
         d = abs(i - H / 2) / (H / 2)
         a = int(40 + 90 * (d**1.4))
         draw.line([(0, i), (W, i)], fill=(7, 26, 46, a))
@@ -316,9 +341,6 @@ def make_scrim() -> Image.Image:
 def make_branded_bg() -> Image.Image:
     """Solid navy branded backdrop (caption beats with no photo)."""
     img = Image.new("RGBA", (W, H), NAVY)
-    draw = ImageDraw.Draw(img)
-    for x in range(-H, W, 34):
-        draw.line([(x, 0), (x + H, H)], fill=(255, 255, 255, 8), width=1)
     glow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     gd = ImageDraw.Draw(glow)
     gd.ellipse([-200, -280, 700, 520], fill=(28, 110, 140, 55))
@@ -335,7 +357,10 @@ def text_alpha(local_t: float, duration: float) -> float:
 
 
 def render_agent_card() -> Image.Image:
-    """Final storyboard card: Meet your agents + portholes + CruisingCove URL."""
+    """Final storyboard card: Meet your agents + portholes + CruisingCove URL.
+
+    Planner portholes are vertically centered in the 9:16 frame (not pinned high).
+    """
     img = Image.new("RGBA", (W, H), NAVY)
 
     # Soft teal / brass glows only — no diagonal stripe texture
@@ -353,12 +378,29 @@ def render_agent_card() -> Image.Image:
     brand_font = load_font(44)
     url_font = load_font(36)
 
-    # Eyebrow
+    cell_w = 420
+    gap_x = 40
+    gap_y = 24
+    label_h = 96  # name + role under each porthole
+    hole_size = 280
+    row_pitch = hole_size + label_h + gap_y
+    grid_h = hole_size + label_h + gap_y + hole_size + label_h  # 2 rows + labels
+    grid_w = cell_w * 2 + gap_x
+    grid_left = (W - grid_w) // 2
+
+    # Vertically center the full planners block (title + 2×2 + labels) in the frame,
+    # with footer tucked just below — was floating high near y≈280.
+    header_h = 118
+    footer_h = 200
+    cluster_h = header_h + grid_h
+    cluster_top = (H - cluster_h - footer_h) // 2 + 100  # optical bias downward in 9:16
+    ey = cluster_top
+    grid_top = cluster_top + header_h
+
     eyebrow = "MEET YOUR AGENTS"
     bbox = draw.textbbox((0, 0), eyebrow, font=eyebrow_font)
     ew = bbox[2] - bbox[0]
     ex = (W - ew) // 2
-    ey = 140
     draw.ellipse([ex - 22, ey + 10, ex - 10, ey + 22], fill=(225, 103, 60, 255))
     draw.text((ex, ey), eyebrow, font=eyebrow_font, fill=BRASS)
 
@@ -367,19 +409,10 @@ def render_agent_card() -> Image.Image:
     tw = bbox[2] - bbox[0]
     draw.text(((W - tw) // 2, ey + 48), title, font=title_font, fill=CREAM)
 
-    # 2×2 porthole grid
-    cell_w = 420
-    gap_x = 40
-    gap_y = 36
-    grid_w = cell_w * 2 + gap_x
-    grid_left = (W - grid_w) // 2
-    grid_top = 280
-    hole_size = 280
-
     for i, (fname, name, role) in enumerate(AGENTS):
         col, row = i % 2, i // 2
         cx = grid_left + col * (cell_w + gap_x) + cell_w // 2
-        top = grid_top + row * (hole_size + 110 + gap_y)
+        top = grid_top + row * row_pitch
 
         ph = Image.open(PHOTOS / fname).convert("RGBA")
         ph = ph.resize((hole_size, hole_size), Image.Resampling.LANCZOS)
@@ -390,7 +423,6 @@ def render_agent_card() -> Image.Image:
         ny = top + hole_size + 14
         draw.text((cx - nw // 2, ny), name, font=name_font, fill=CREAM)
 
-        # wrap role
         role_lines = wrap_lines(role, role_font, cell_w - 20)
         ry = ny + 36
         for rl in role_lines:
@@ -399,34 +431,60 @@ def render_agent_card() -> Image.Image:
             draw.text((cx - rw // 2, ry), rl, font=role_font, fill=BRASS)
             ry += 26
 
-    # Footer brand + URL (storyboard: cruisingcove.com/agents)
+    # Footer tucked under planners (no large empty navy gap)
     brand = "Cruising Cove"
     bb = draw.textbbox((0, 0), brand, font=brand_font)
     bw = bb[2] - bb[0]
-    by = H - 280
+    by = grid_top + grid_h + 36
     draw.text(((W - bw) // 2, by), brand, font=brand_font, fill=BRASS)
 
+    # End-card URLs: cream fill + navy outline (already on navy card)
     url = "CruisingCove.com/agents"
     ub = draw.textbbox((0, 0), url, font=url_font)
     uw = ub[2] - ub[0]
-    draw_outlined_text(draw, ((W - uw) // 2, by + 64), url, url_font, outline_w=5)
+    draw_outlined_text(
+        draw,
+        ((W - uw) // 2, by + 56),
+        url,
+        url_font,
+        outline_w=5,
+        fill=CREAM,
+        outline=DEEP,
+    )
 
     cta = "CruisingCove.com"
     cf = load_font(40)
     cb = draw.textbbox((0, 0), cta, font=cf)
     cw = cb[2] - cb[0]
-    draw_outlined_text(draw, ((W - cw) // 2, by + 120), cta, cf, outline_w=5)
+    draw_outlined_text(
+        draw,
+        ((W - cw) // 2, by + 108),
+        cta,
+        cf,
+        outline_w=5,
+        fill=CREAM,
+        outline=DEEP,
+    )
 
     return img
 
 
-def active_beat(beats: list[dict], t: float, frame: int, total: int) -> dict:
-    for b in beats:
+def active_bg(backgrounds: list[dict], t: float, frame: int, total: int) -> dict:
+    for b in backgrounds:
         if b["start"] <= t < b["end"]:
             return b
     if frame == total - 1:
-        return beats[-1]
-    return beats[-1]
+        return backgrounds[-1]
+    return backgrounds[-1]
+
+
+def active_tip(tips: list[dict], t: float) -> dict | None:
+    for tip in tips:
+        if tip["start"] <= t < tip["end"]:
+            return tip
+    if tips and abs(t - tips[-1]["end"]) < 1e-6:
+        return tips[-1]
+    return None
 
 
 def main() -> int:
@@ -444,57 +502,63 @@ def main() -> int:
             print(f"Missing porthole: {PHOTOS / fname}", file=sys.stderr)
             return 1
 
-    # Build explicit timing
-    beats: list[dict] = []
+    # Build backgrounds (each holds two tip beats) + final card
+    backgrounds: list[dict] = []
     t = 0.0
-    for ship_i, lines, fsize in PHOTO_SCENES:
-        if ship_i is None:
-            beats.append(
+    tip_n = 0
+    for ship_i, tip_specs in BACKGROUNDS:
+        ship = None if ship_i is None else SHIPS[ship_i % len(SHIPS)]
+        kind = "brand" if ship_i is None else "photo"
+        tips: list[dict] = []
+        tip_t = t
+        for lines, fsize in tip_specs:
+            tip_n += 1
+            tips.append(
                 {
-                    "kind": "brand",
-                    "ship": None,
-                    "start": t,
-                    "end": t + SLIDE_S,
+                    "n": tip_n,
+                    "start": tip_t,
+                    "end": tip_t + TIP_S,
                     "lines": lines,
                     "font_size": fsize,
                 }
             )
-        else:
-            ship = SHIPS[ship_i % len(SHIPS)]
-            beats.append(
-                {
-                    "kind": "photo",
-                    "ship": ship,
-                    "start": t,
-                    "end": t + SLIDE_S,
-                    "lines": lines,
-                    "font_size": fsize,
-                }
-            )
-        t += SLIDE_S
-    beats.append({"kind": "card", "ship": None, "start": t, "end": t + CARD_S})
+            tip_t += TIP_S
+        backgrounds.append(
+            {
+                "kind": kind,
+                "ship": ship,
+                "start": t,
+                "end": t + BG_S,
+                "tips": tips,
+            }
+        )
+        t += BG_S
+
+    backgrounds.append({"kind": "card", "ship": None, "start": t, "end": t + CARD_S, "tips": []})
     duration_s = t + CARD_S
     total = int(round(duration_s * FPS))
 
     print(f"Duration: {duration_s:.2f}s @ {FPS}fps ({total} frames)")
     print("Orientation: cover-crop; CW90 on 07/09 for upright ships")
-    for i, b in enumerate(beats, start=1):
+    print("Captions: navy fill + white outline; 2 tips per background")
+    for i, b in enumerate(backgrounds, start=1):
+        if b["kind"] == "card":
+            print(
+                f"  BG{i:02d} {b['start']:.1f}–{b['end']:.1f}s  [agent card]  "
+                f"CruisingCove.com"
+            )
+            continue
         if b["kind"] == "photo":
             rot = SHIP_ROTATE_CW.get(b["ship"] or "", 0)
             rot_tag = f" rotCW{rot}" if rot else ""
-            print(
-                f"  {i:02d} {b['start']:.1f}–{b['end']:.1f}s  [{b['ship']}{rot_tag}]  "
-                f"{' / '.join(b['lines'])}"
-            )
-        elif b["kind"] == "brand":
-            print(
-                f"  {i:02d} {b['start']:.1f}–{b['end']:.1f}s  [navy brand]  "
-                f"{' / '.join(b['lines'])}"
-            )
+            label = f"{b['ship']}{rot_tag}"
         else:
+            label = "navy brand"
+        print(f"  BG{i:02d} {b['start']:.1f}–{b['end']:.1f}s  [{label}]")
+        for tip in b["tips"]:
             print(
-                f"  {i:02d} {b['start']:.1f}–{b['end']:.1f}s  [agent card]  "
-                f"CruisingCove.com/agents"
+                f"       tip {tip['n']:02d} {tip['start']:.1f}–{tip['end']:.1f}s  "
+                f"{' / '.join(tip['lines'])}"
             )
 
     # Preload stills (RGB). Apply explicit CW rotate where port stills are sideways.
@@ -517,13 +581,15 @@ def main() -> int:
 
     with tempfile.TemporaryDirectory(prefix="agent-reel-") as tmp:
         tmp_path = Path(tmp)
+        # (overlay_img, tip_start, tip_end)
         overlays: list[tuple[Image.Image, float, float]] = []
-        for i, b in enumerate(beats):
-            if b["kind"] not in ("photo", "brand"):
-                continue
-            p = tmp_path / f"cap{i}.png"
-            render_caption_png(b["lines"], b["font_size"], p)
-            overlays.append((Image.open(p).convert("RGBA"), b["start"], b["end"]))
+        for b in backgrounds:
+            for tip in b["tips"]:
+                p = tmp_path / f"cap{tip['n']}.png"
+                render_caption_png(tip["lines"], tip["font_size"], p)
+                overlays.append(
+                    (Image.open(p).convert("RGBA"), tip["start"], tip["end"])
+                )
 
         cmd = [
             "ffmpeg",
@@ -558,52 +624,57 @@ def main() -> int:
         try:
             for frame in range(total):
                 t = frame / FPS
-                beat = active_beat(beats, t, frame, total)
+                bg = active_bg(backgrounds, t, frame, total)
 
-                if beat["kind"] == "card":
+                if bg["kind"] == "card":
                     base = card.copy()
-                elif beat["kind"] == "brand":
+                elif bg["kind"] == "brand":
                     base = branded.copy()
-                    for ov_img, start, end in overlays:
-                        if start <= t <= end or (frame == total - 1 and abs(end - t) < 0.05):
-                            opacity = text_alpha(t - start, end - start)
-                            if opacity > 0.01:
-                                faded = ov_img.copy()
-                                if opacity < 0.99:
-                                    alpha = faded.split()[-1].point(
-                                        lambda a, o=opacity: int(a * o)
-                                    )
-                                    faded.putalpha(alpha)
-                                base = Image.alpha_composite(base, faded)
+                    tip = active_tip(bg["tips"], t)
+                    if tip:
+                        for ov_img, start, end in overlays:
+                            if start == tip["start"] and end == tip["end"]:
+                                opacity = text_alpha(t - start, end - start)
+                                if opacity > 0.01:
+                                    faded = ov_img.copy()
+                                    if opacity < 0.99:
+                                        alpha = faded.split()[-1].point(
+                                            lambda a, o=opacity: int(a * o)
+                                        )
+                                        faded.putalpha(alpha)
+                                    base = Image.alpha_composite(base, faded)
+                                break
                 else:
-                    ship = beat["ship"]
+                    ship = bg["ship"]
                     src = stills[ship]
                     fx, fy = SHIP_FOCUS.get(ship, (0.50, 0.42))
-                    local = (t - beat["start"]) / max(beat["end"] - beat["start"], 1e-9)
-                    # HTML kenburns: scale 1.12 → 1.00
+                    # Ken Burns spans the full 2-tip background hold
+                    local = (t - bg["start"]) / max(bg["end"] - bg["start"], 1e-9)
                     scale = 1.12 - 0.12 * ease_in_out_quad(local)
-                    # tiny drift toward center of interest
                     fx2 = fx + 0.02 * ease_in_out_quad(local)
                     fy2 = fy - 0.03 * ease_in_out_quad(local)
                     base = cover_crop_upright(src, scale, fx2, fy2).convert("RGBA")
                     base = Image.alpha_composite(base, scrim)
 
-                    for ov_img, start, end in overlays:
-                        if start <= t <= end or (frame == total - 1 and abs(end - t) < 0.05):
-                            opacity = text_alpha(t - start, end - start)
-                            if opacity > 0.01:
-                                faded = ov_img.copy()
-                                if opacity < 0.99:
-                                    alpha = faded.split()[-1].point(
-                                        lambda a, o=opacity: int(a * o)
-                                    )
-                                    faded.putalpha(alpha)
-                                base = Image.alpha_composite(base, faded)
+                    tip = active_tip(bg["tips"], t)
+                    if tip:
+                        for ov_img, start, end in overlays:
+                            if start == tip["start"] and end == tip["end"]:
+                                opacity = text_alpha(t - start, end - start)
+                                if opacity > 0.01:
+                                    faded = ov_img.copy()
+                                    if opacity < 0.99:
+                                        alpha = faded.split()[-1].point(
+                                            lambda a, o=opacity: int(a * o)
+                                        )
+                                        faded.putalpha(alpha)
+                                    base = Image.alpha_composite(base, faded)
+                                break
 
                 proc.stdin.write(base.convert("RGB").tobytes())
                 if frame % 90 == 0:
-                    kind = beat["kind"]
-                    label = beat.get("ship") or ("navy" if kind == "brand" else "card")
+                    kind = bg["kind"]
+                    label = bg.get("ship") or ("navy" if kind == "brand" else "card")
                     print(f"  frame {frame}/{total} ({t:.1f}s) {kind}:{label}")
 
             proc.stdin.close()
