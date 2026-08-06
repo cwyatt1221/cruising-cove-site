@@ -22,7 +22,7 @@ All storyboard ship JPEGs are **landscape** with the hull/horizon horizontal and
 | 2 | 0:03.2–0:06.4 | 02.jpeg | 10 reasons families use / a Disney-specialist agent / — and it costs nothing extra. |
 | 3 | 0:06.4–0:09.6 | 03.jpeg | Same price, always / … |
 | 4 | 0:09.6–0:12.8 | 04.jpeg | They watch the price after you book |
-| 5 | 0:12.8–0:16.0 | 05.jpeg | First in line when booking windows open |
+| 5 | 0:12.8–0:16.0 | **navy brand** (no photo) | First in line when booking windows open |
 | 6 | 0:16.0–0:19.2 | 06.jpeg | A real human when plans break |
 | 7 | 0:19.2–0:22.4 | 07.jpeg | Group trips without the group-chat chaos |
 | 8 | 0:22.4–0:25.6 | 08.jpeg | They know the fleet, ship by ship |

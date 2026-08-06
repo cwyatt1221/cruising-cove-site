@@ -62,8 +62,8 @@ SHIP_FOCUS: dict[str, tuple[float, float]] = {
     "09.jpeg": (0.50, 0.42),
 }
 
-# (ship_index, caption lines, font_size) — photo slides
-PHOTO_SCENES: list[tuple[int, list[str], int]] = [
+# (ship_index | None, caption lines, font_size) — None = navy branded bg (no photo)
+PHOTO_SCENES: list[tuple[int | None, list[str], int]] = [
     (
         0,
         ["Booking a Disney cruise?", "Here's why families", "never do it alone."],
@@ -96,8 +96,9 @@ PHOTO_SCENES: list[tuple[int, list[str], int]] = [
         ],
         54,
     ),
+    # Scene 5 (12.8–16.0s / ~13–14s): caption only on navy — no ship/beach still
     (
-        4,
+        None,
         [
             "First in line when",
             "booking windows open",
@@ -307,6 +308,19 @@ def make_scrim() -> Image.Image:
     return layer.filter(ImageFilter.GaussianBlur(radius=1))
 
 
+def make_branded_bg() -> Image.Image:
+    """Solid navy branded backdrop (caption beats with no photo)."""
+    img = Image.new("RGBA", (W, H), NAVY)
+    draw = ImageDraw.Draw(img)
+    for x in range(-H, W, 34):
+        draw.line([(x, 0), (x + H, H)], fill=(255, 255, 255, 8), width=1)
+    glow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    gd = ImageDraw.Draw(glow)
+    gd.ellipse([-200, -280, 700, 520], fill=(28, 110, 140, 55))
+    gd.ellipse([500, 1400, 1300, 2100], fill=(201, 162, 75, 32))
+    return Image.alpha_composite(img, glow)
+
+
 def text_alpha(local_t: float, duration: float) -> float:
     if local_t < FADE_IN:
         return local_t / FADE_IN
@@ -434,17 +448,29 @@ def main() -> int:
     beats: list[dict] = []
     t = 0.0
     for ship_i, lines, fsize in PHOTO_SCENES:
-        ship = SHIPS[ship_i % len(SHIPS)]
-        beats.append(
-            {
-                "kind": "photo",
-                "ship": ship,
-                "start": t,
-                "end": t + SLIDE_S,
-                "lines": lines,
-                "font_size": fsize,
-            }
-        )
+        if ship_i is None:
+            beats.append(
+                {
+                    "kind": "brand",
+                    "ship": None,
+                    "start": t,
+                    "end": t + SLIDE_S,
+                    "lines": lines,
+                    "font_size": fsize,
+                }
+            )
+        else:
+            ship = SHIPS[ship_i % len(SHIPS)]
+            beats.append(
+                {
+                    "kind": "photo",
+                    "ship": ship,
+                    "start": t,
+                    "end": t + SLIDE_S,
+                    "lines": lines,
+                    "font_size": fsize,
+                }
+            )
         t += SLIDE_S
     beats.append({"kind": "card", "ship": None, "start": t, "end": t + CARD_S})
     duration_s = t + CARD_S
@@ -456,6 +482,11 @@ def main() -> int:
         if b["kind"] == "photo":
             print(
                 f"  {i:02d} {b['start']:.1f}–{b['end']:.1f}s  [{b['ship']}]  "
+                f"{' / '.join(b['lines'])}"
+            )
+        elif b["kind"] == "brand":
+            print(
+                f"  {i:02d} {b['start']:.1f}–{b['end']:.1f}s  [navy brand]  "
                 f"{' / '.join(b['lines'])}"
             )
         else:
@@ -481,13 +512,14 @@ def main() -> int:
         print(f"  loaded {name}: {sw}×{sh} (upright landscape crop)")
 
     scrim = make_scrim()
+    branded = make_branded_bg()
     card = render_agent_card()
 
     with tempfile.TemporaryDirectory(prefix="agent-reel-") as tmp:
         tmp_path = Path(tmp)
         overlays: list[tuple[Image.Image, float, float]] = []
         for i, b in enumerate(beats):
-            if b["kind"] != "photo":
+            if b["kind"] not in ("photo", "brand"):
                 continue
             p = tmp_path / f"cap{i}.png"
             render_caption_png(b["lines"], b["font_size"], p)
@@ -530,6 +562,19 @@ def main() -> int:
 
                 if beat["kind"] == "card":
                     base = card.copy()
+                elif beat["kind"] == "brand":
+                    base = branded.copy()
+                    for ov_img, start, end in overlays:
+                        if start <= t <= end or (frame == total - 1 and abs(end - t) < 0.05):
+                            opacity = text_alpha(t - start, end - start)
+                            if opacity > 0.01:
+                                faded = ov_img.copy()
+                                if opacity < 0.99:
+                                    alpha = faded.split()[-1].point(
+                                        lambda a, o=opacity: int(a * o)
+                                    )
+                                    faded.putalpha(alpha)
+                                base = Image.alpha_composite(base, faded)
                 else:
                     ship = beat["ship"]
                     src = stills[ship]
@@ -558,7 +603,7 @@ def main() -> int:
                 proc.stdin.write(base.convert("RGB").tobytes())
                 if frame % 90 == 0:
                     kind = beat["kind"]
-                    label = beat.get("ship") or "card"
+                    label = beat.get("ship") or ("navy" if kind == "brand" else "card")
                     print(f"  frame {frame}/{total} ({t:.1f}s) {kind}:{label}")
 
             proc.stdin.close()
