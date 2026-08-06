@@ -1,0 +1,6 @@
+.DS_Store
+*.log
+__pycache__/
+out/*
+!out/agent-reel-storyboard.mp4
+!out/.gitkeep
