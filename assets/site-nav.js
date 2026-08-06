@@ -129,20 +129,20 @@
   }
 
   function ensureFeedbackLink() {
+    var links = document.getElementById("primaryNav");
+    if (!links || links.querySelector("[data-cc-feedback]")) return;
+
     var href =
       "mailto:cgrove0712@gmail.com?subject=" +
       encodeURIComponent("Cruising Cove feedback") +
       "&body=" +
       encodeURIComponent("Page: " + location.href.split("#")[0] + "\n\nYour feedback:\n\n");
 
-    document.querySelectorAll(".site-legal .wrap, .site-footer > .wrap, footer.site-footer > .wrap").forEach(function (wrap) {
-      if (wrap.querySelector("[data-cc-feedback]")) return;
-      var p = document.createElement("p");
-      p.className = "disclaimer privacy-note";
-      p.setAttribute("data-cc-feedback", "1");
-      p.innerHTML = '<a href="' + href + '">Give Feedback</a>';
-      wrap.appendChild(p);
-    });
+    var a = document.createElement("a");
+    a.href = href;
+    a.setAttribute("data-cc-feedback", "1");
+    a.textContent = "Give Feedback";
+    links.appendChild(a);
   }
 
   function pageTitleForShare() {
