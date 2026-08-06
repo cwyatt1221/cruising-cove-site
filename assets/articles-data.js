@@ -10,6 +10,14 @@
 
   var articles = [
     {
+      id: "disney-cruise-pixie-dusting",
+      title: "Disney Cruise Pixie Dusting: Guest-to-Guest Surprises Explained",
+      excerpt:
+        "What Pixie Dusting is vs Fish Extenders, etiquette, gift ideas, and how Cruising Cove sailing Pixie Dust sign-ups work.",
+      date: "2026-08-06",
+      url: "/articles/disney-cruise-pixie-dusting.html",
+    },
+    {
       id: "welcome-aboard-kim",
       title: "Welcome Aboard Kim — Our Newest Travel Agent",
       excerpt:
