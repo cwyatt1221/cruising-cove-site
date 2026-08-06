@@ -747,6 +747,105 @@ footer:not(.site-footer) .disclaimer{
   text-decoration:none;
 }
 
+/* Related / next-page engagement (articles + ships) */
+.cc-related{
+  background:var(--cream-2);
+  border-top:1px solid rgba(26,42,74,.08);
+  padding:40px 0 12px;
+  margin-top:8px;
+}
+.cc-related-label{
+  margin:0 0 16px;
+  font-family:var(--font-serif);
+  font-size:1.45rem;
+  font-weight:500;
+  color:var(--navy);
+}
+.cc-related-list{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:grid;
+  gap:0;
+  border-top:1px solid rgba(26,42,74,.1);
+}
+.cc-related-item a{
+  display:grid;
+  grid-template-columns:5.5rem 1fr;
+  gap:12px 18px;
+  align-items:baseline;
+  padding:14px 0;
+  border-bottom:1px solid rgba(26,42,74,.1);
+  color:var(--navy);
+  text-decoration:none;
+}
+.cc-related-item a:hover .cc-related-title{color:var(--gold);}
+.cc-related-meta{
+  font-size:0.72rem;
+  font-weight:700;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--teal);
+}
+.cc-related-title{
+  font-family:var(--font-serif);
+  font-size:1.12rem;
+  font-weight:500;
+  line-height:1.3;
+  color:var(--navy);
+  transition:color .15s ease;
+}
+@media (max-width:560px){
+  .cc-related-item a{
+    grid-template-columns:1fr;
+    gap:4px;
+    padding:12px 0;
+  }
+}
+
+/* Homepage early “pick your path” strip */
+.cc-pick-path{
+  background:var(--cream);
+  border-bottom:1px solid rgba(26,42,74,.08);
+  padding:40px 0 36px;
+}
+.cc-pick-path .section-label{margin-bottom:10px;}
+.cc-pick-path h2{
+  font-family:var(--font-serif);
+  font-size:clamp(1.55rem,2.8vw,1.95rem);
+  font-weight:500;
+  color:var(--navy);
+  margin:0 0 18px;
+  max-width:28ch;
+  line-height:1.2;
+}
+.cc-pick-path-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px 28px;
+  align-items:baseline;
+  padding-top:4px;
+  border-top:1px solid rgba(26,42,74,.1);
+}
+.cc-pick-path-row a{
+  font-family:var(--font-serif);
+  font-size:1.2rem;
+  font-weight:500;
+  color:var(--navy);
+  text-decoration:none;
+  padding:14px 0 2px;
+  border-bottom:2px solid transparent;
+}
+.cc-pick-path-row a:hover{
+  color:var(--gold);
+  border-bottom-color:rgba(201,162,75,.55);
+}
+@media (max-width:700px){
+  .cc-pick-path{padding:32px 0 28px;}
+  .cc-pick-path-row{gap:6px 20px;}
+  .cc-pick-path-row a{font-size:1.08rem;padding:12px 0 2px;}
+}
+
 /* Sailing timeline */
 .cc-timeline{
   list-style:none;
@@ -806,6 +905,8 @@ footer:not(.site-footer) .disclaimer{
   .nav-toggle,
   .cc-site-search,
   .cc-page-actions,
+  .cc-related,
+  .cc-pick-path,
   .cc-print-bar,
   .page-hero .tide,
   #chat-widget,

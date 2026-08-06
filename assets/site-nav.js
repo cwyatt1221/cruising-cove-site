@@ -137,11 +137,29 @@
     return raw.replace(/\s*[|—-]\s*Cruising Cove\s*$/i, "").trim() || raw;
   }
 
+  function insertBeforeChrome(section) {
+    var actions = document.querySelector("[data-cc-page-actions]");
+    if (actions && actions.parentNode) {
+      actions.parentNode.insertBefore(section, actions);
+      return;
+    }
+    var legal = document.querySelector(".site-legal");
+    if (legal && legal.parentNode) {
+      legal.parentNode.insertBefore(section, legal);
+      return;
+    }
+    var main = document.querySelector("main");
+    if (main && main.parentNode) {
+      main.parentNode.insertBefore(section, main.nextSibling);
+    }
+  }
+
   function ensurePageActions() {
     var path = location.pathname.replace(/\/+/g, "/");
     var isArticle = path.indexOf("/articles/") === 0;
     var isPlanning = path.indexOf("/planning/") === 0;
     if (!isArticle && !isPlanning) return;
+    if (path === "/articles/" || path === "/articles/index.html") return;
     if (document.querySelector("[data-cc-page-actions]")) return;
 
     var title = pageTitleForShare();
@@ -174,14 +192,377 @@
       "</div>" +
       "</div>";
 
-    var legal = document.querySelector(".site-legal");
-    if (legal && legal.parentNode) {
-      legal.parentNode.insertBefore(section, legal);
+    insertBeforeChrome(section);
+  }
+
+  var PLANNING_FALLBACKS = [
+    { href: "/planning/first-cruise.html", title: "First-cruise path", meta: "Plan" },
+    { href: "/planning/disney-cruise-packing-list.html", title: "Disney cruise packing list", meta: "Plan" },
+    { href: "/planning/kids-clubs.html", title: "Kids clubs guide", meta: "Plan" },
+    { href: "/agents/", title: "Find a Disney cruise travel agent", meta: "Agents" },
+    { href: "/ships/", title: "Compare the Disney fleet", meta: "Ships" },
+  ];
+
+  var SHIP_ARTICLE_IDS = {
+    "disney-destiny": [
+      "disney-destiny-hidden-secrets",
+      "disney-destiny-halloween-high-seas",
+      "disney-destiny-toddler-tips",
+      "worlds-of-marvel",
+      "which-disney-ship-should-you-choose",
+    ],
+    "disney-wish": [
+      "disney-wish-vs-disney-treasure",
+      "worlds-of-marvel",
+      "bluey-on-disney-cruise-line-2026",
+      "which-disney-ship-should-you-choose",
+    ],
+    "disney-treasure": [
+      "disney-wish-vs-disney-treasure",
+      "worlds-of-marvel",
+      "which-disney-ship-should-you-choose",
+    ],
+    "disney-dream": [
+      "midship-detective-agency",
+      "bluey-on-disney-cruise-line-2026",
+      "which-disney-ship-should-you-choose",
+    ],
+    "disney-fantasy": ["midship-detective-agency", "which-disney-ship-should-you-choose"],
+    "disney-wonder": ["bluey-on-disney-cruise-line-2026", "which-disney-ship-should-you-choose"],
+    "disney-magic": ["which-disney-ship-should-you-choose", "10-hidden-disney-cruise-secrets"],
+    "disney-adventure": ["which-disney-ship-should-you-choose"],
+  };
+
+  var ARTICLE_EXTRA_LINKS = {
+    "welcome-aboard-kim": [{ href: "/agents/", title: "Browse travel agents", meta: "Agents" }],
+    "welcome-aboard-donna": [{ href: "/agents/", title: "Browse travel agents", meta: "Agents" }],
+    "welcome-aboard-shana": [{ href: "/agents/", title: "Browse travel agents", meta: "Agents" }],
+    "welcome-aboard-rebekah": [{ href: "/agents/", title: "Browse travel agents", meta: "Agents" }],
+    "welcome-aboard-bels-castle-creations": [
+      { href: "/marketplace/", title: "Visit the marketplace", meta: "Marketplace" },
+    ],
+    "marketplace-sellers-application-fixed": [
+      { href: "/marketplace/sellers/", title: "Seller applications", meta: "Marketplace" },
+    ],
+    "disney-cruise-booking-and-cost": [
+      { href: "/planning/disney-cruise-cost.html", title: "What a Disney cruise costs", meta: "Plan" },
+    ],
+    "before-you-go-disney-cruise-prep": [
+      { href: "/planning/disney-cruise-packing-list.html", title: "Packing list", meta: "Plan" },
+    ],
+    "life-onboard-disney-cruise": [
+      { href: "/planning/kids-clubs.html", title: "Kids clubs guide", meta: "Plan" },
+    ],
+    "disney-cruise-ports-money-disembarkation": [
+      { href: "/ports/", title: "Port guides", meta: "Ports" },
+    ],
+    "castaway-cay-vs-lookout-cay": [
+      { href: "/ports/castaway-cay.html", title: "Castaway Cay guide", meta: "Ports" },
+    ],
+    "which-disney-ship-should-you-choose": [{ href: "/ships/", title: "Ship guides", meta: "Ships" }],
+    "disney-wish-vs-disney-treasure": [
+      { href: "/ships/disney-wish.html", title: "Disney Wish guide", meta: "Ships" },
+    ],
+    "disney-destiny-hidden-secrets": [
+      { href: "/ships/disney-destiny.html", title: "Disney Destiny guide", meta: "Ships" },
+    ],
+    "disney-destiny-halloween-high-seas": [
+      { href: "/ships/disney-destiny.html", title: "Disney Destiny guide", meta: "Ships" },
+    ],
+    "disney-destiny-toddler-tips": [
+      { href: "/planning/kids-clubs.html", title: "Kids clubs guide", meta: "Plan" },
+    ],
+    "worlds-of-marvel": [{ href: "/dining/", title: "Dining guides", meta: "Onboard" }],
+    "disney-cruise-fish-extenders": [
+      { href: "/marketplace/", title: "Marketplace essentials", meta: "Marketplace" },
+    ],
+  };
+
+  function escapeHtml(str) {
+    return String(str || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function pathSlug(path, folder) {
+    var prefix = "/" + folder + "/";
+    if (path.indexOf(prefix) !== 0) return "";
+    var rest = path.slice(prefix.length).replace(/\/+$/, "");
+    if (!rest || rest === "index.html") return "";
+    return rest.replace(/\.html$/, "");
+  }
+
+  function normalizePath(href) {
+    if (!href) return "";
+    try {
+      var u = new URL(href, location.origin);
+      return u.pathname.replace(/\/+/g, "/");
+    } catch (e) {
+      return href;
+    }
+  }
+
+  function tokensFromText(text) {
+    return String(text || "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim()
+      .split(/\s+/)
+      .filter(function (t) {
+        return (
+          t.length > 2 &&
+          "the and for with your from that this what when how are you".indexOf(t) === -1
+        );
+      });
+  }
+
+  function scoreArticleRelated(currentId, currentTitle, candidate) {
+    if (!candidate || candidate.id === currentId) return -1;
+    var score = 0;
+    var curTokens = tokensFromText(currentId + " " + currentTitle);
+    var candTokens = tokensFromText(candidate.id + " " + candidate.title);
+    curTokens.forEach(function (t) {
+      if (candTokens.indexOf(t) !== -1) score += 3;
+    });
+    var ships = ["destiny", "wish", "treasure", "dream", "fantasy", "wonder", "magic", "adventure"];
+    ships.forEach(function (ship) {
+      if (currentId.indexOf(ship) !== -1 && candidate.id.indexOf(ship) !== -1) score += 8;
+    });
+    if (/welcome-aboard/.test(currentId) && /welcome-aboard/.test(candidate.id)) score += 6;
+    if (/marketplace|fish-extender|seller/.test(currentId) && /marketplace|fish-extender|seller/.test(candidate.id))
+      score += 5;
+    if (/port|castaway|lookout|disembark/.test(currentId) && /port|castaway|lookout|disembark/.test(candidate.id))
+      score += 5;
+    if (/toddler|kids|bluey|nursery/.test(currentId) && /toddler|kids|bluey|nursery|life-onboard/.test(candidate.id))
+      score += 5;
+    if (/halloween|secret|hidden/.test(currentId) && /halloween|secret|hidden/.test(candidate.id)) score += 4;
+    return score;
+  }
+
+  function articleById(id) {
+    if (!id || !window.CC_ARTICLES) return null;
+    for (var i = 0; i < window.CC_ARTICLES.length; i++) {
+      if (window.CC_ARTICLES[i].id === id) return window.CC_ARTICLES[i];
+    }
+    return null;
+  }
+
+  function linkItem(href, title, meta) {
+    return { href: href, title: title, meta: meta || "" };
+  }
+
+  function dedupeLinks(items, currentPath) {
+    var seen = {};
+    var out = [];
+    seen[normalizePath(currentPath)] = 1;
+    items.forEach(function (item) {
+      if (!item || !item.href || !item.title) return;
+      var key = normalizePath(item.href);
+      if (seen[key]) return;
+      seen[key] = 1;
+      out.push(item);
+    });
+    return out;
+  }
+
+  function pickRelatedForArticle(slug) {
+    var articles = window.CC_ARTICLES || [];
+    var current = null;
+    for (var i = 0; i < articles.length; i++) {
+      if (articles[i].id === slug || normalizePath(articles[i].url) === "/articles/" + slug + ".html") {
+        current = articles[i];
+        break;
+      }
+    }
+    var currentId = current ? current.id : slug;
+    var currentTitle = current ? current.title : pageTitleForShare();
+    var scored = articles
+      .map(function (a) {
+        return { article: a, score: scoreArticleRelated(currentId, currentTitle, a) };
+      })
+      .filter(function (row) {
+        return row.score > 0;
+      })
+      .sort(function (a, b) {
+        return b.score - a.score;
+      });
+
+    var links = [];
+    scored.slice(0, 3).forEach(function (row) {
+      links.push(linkItem(row.article.url, row.article.title, "Article"));
+    });
+
+    var extras = ARTICLE_EXTRA_LINKS[currentId] || [];
+    extras.forEach(function (extra) {
+      links.push(linkItem(extra.href, extra.title, extra.meta));
+    });
+
+    if (links.length < 3) {
+      var idx = current
+        ? articles.findIndex(function (a) {
+            return a.id === current.id;
+          })
+        : -1;
+      for (var j = 1; j < articles.length && links.length < 3; j++) {
+        var neighbor = articles[(Math.max(idx, 0) + j) % articles.length];
+        if (neighbor.id === currentId) continue;
+        links.push(linkItem(neighbor.url, neighbor.title, "Article"));
+      }
+    }
+
+    PLANNING_FALLBACKS.forEach(function (fb) {
+      if (links.length < 3) links.push(linkItem(fb.href, fb.title, fb.meta));
+    });
+
+    return dedupeLinks(links, location.pathname).slice(0, 3);
+  }
+
+  function pickRelatedForShip(slug) {
+    var links = [
+      linkItem("/planning/kids-clubs.html", "Kids clubs by age", "Plan"),
+      linkItem("/planning/disney-cruise-packing-list.html", "Packing list", "Plan"),
+      linkItem("/agents/", "Find a travel agent", "Agents"),
+      linkItem("/planning/first-cruise.html", "First-cruise path", "Plan"),
+      linkItem("/articles/", "More articles", "Articles"),
+    ];
+    var ids = SHIP_ARTICLE_IDS[slug] || [];
+    var articleLinks = [];
+    ids.forEach(function (id) {
+      var a = articleById(id);
+      if (a) articleLinks.push(linkItem(a.url, a.title, "Article"));
+    });
+    // Prefer ship-specific articles, then keep useful planning links.
+    var merged = articleLinks.concat(links);
+    return dedupeLinks(merged, location.pathname).slice(0, 4);
+  }
+
+  function renderRelatedSection(label, ariaLabel, items) {
+    if (!items || !items.length) return;
+    if (document.querySelector("[data-cc-related]")) return;
+
+    var section = document.createElement("section");
+    section.className = "cc-related";
+    section.setAttribute("data-cc-related", "1");
+    section.setAttribute("aria-label", ariaLabel);
+
+    var listHtml = items
+      .map(function (item) {
+        return (
+          '<li class="cc-related-item">' +
+          '<a href="' +
+          escapeHtml(item.href) +
+          '">' +
+          (item.meta
+            ? '<span class="cc-related-meta">' + escapeHtml(item.meta) + "</span>"
+            : "") +
+          '<span class="cc-related-title">' +
+          escapeHtml(item.title) +
+          "</span>" +
+          "</a>" +
+          "</li>"
+        );
+      })
+      .join("");
+
+    section.innerHTML =
+      '<div class="wrap">' +
+      '<p class="cc-related-label">' +
+      escapeHtml(label) +
+      "</p>" +
+      '<ul class="cc-related-list">' +
+      listHtml +
+      "</ul>" +
+      "</div>";
+
+    insertBeforeChrome(section);
+  }
+
+  function withArticlesData(done) {
+    if (window.CC_ARTICLES) {
+      done();
       return;
     }
-    var main = document.querySelector("main");
-    if (main && main.parentNode) {
-      main.parentNode.insertBefore(section, main.nextSibling);
+    var existing = document.querySelector('script[src="/assets/articles-data.js"]');
+    function finish() {
+      done();
+    }
+    if (existing) {
+      if (window.CC_ARTICLES) {
+        finish();
+        return;
+      }
+      existing.addEventListener("load", finish);
+      // Already-parsed scripts won't fire load; poll briefly.
+      var tries = 0;
+      var timer = setInterval(function () {
+        tries += 1;
+        if (window.CC_ARTICLES || tries > 40) {
+          clearInterval(timer);
+          finish();
+        }
+      }, 25);
+      return;
+    }
+    var s = document.createElement("script");
+    s.src = "/assets/articles-data.js";
+    s.onload = finish;
+    s.onerror = finish;
+    document.head.appendChild(s);
+  }
+
+  function ensureRelatedLinks() {
+    if (document.querySelector("[data-cc-related]")) return;
+    var path = location.pathname.replace(/\/+/g, "/");
+    var articleSlug = pathSlug(path, "articles");
+    var shipSlug = pathSlug(path, "ships");
+
+    if (articleSlug) {
+      withArticlesData(function () {
+        renderRelatedSection("Read next", "Read next", pickRelatedForArticle(articleSlug));
+      });
+      return;
+    }
+
+    if (shipSlug) {
+      withArticlesData(function () {
+        renderRelatedSection("Also useful", "Also useful", pickRelatedForShip(shipSlug));
+      });
+      return;
+    }
+
+    if (path === "/agents/" || path === "/agents/index.html") {
+      renderRelatedSection(
+        "Also useful",
+        "Also useful",
+        dedupeLinks(
+          [
+            linkItem("/agents/when-an-agent-helps.html", "When an agent helps", "Agents"),
+            linkItem("/planning/first-cruise.html", "First-cruise path", "Plan"),
+            linkItem("/ships/", "Compare the Disney fleet", "Ships"),
+            linkItem("/marketplace/", "Marketplace", "Marketplace"),
+          ],
+          path
+        )
+      );
+      return;
+    }
+
+    if (path === "/marketplace/" || path === "/marketplace/index.html") {
+      renderRelatedSection(
+        "Also useful",
+        "Also useful",
+        dedupeLinks(
+          [
+            linkItem("/marketplace/sellers/", "Browse sellers", "Marketplace"),
+            linkItem("/articles/disney-cruise-fish-extenders.html", "Fish extenders guide", "Article"),
+            linkItem("/planning/disney-cruise-packing-list.html", "Packing list", "Plan"),
+            linkItem("/agents/", "Find a travel agent", "Agents"),
+          ],
+          path
+        )
+      );
     }
   }
 
@@ -267,6 +648,7 @@
     initDropdowns();
     markCurrent();
     ensurePrivacyNote();
+    ensureRelatedLinks();
     ensurePageActions();
     loadAdminAuth();
   });
