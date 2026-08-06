@@ -1,6 +1,6 @@
 # Cruising Cove — Agent Reel Storyboard
 
-ffmpeg + Pillow project that builds a **~45s / 1080×1920 / 30fps** silent Instagram/Facebook Reel from the **Agent Reel Storyboard** phone-frame HTML (`reel_preview`). Ken Burns on upright Disney ship stills (landscape cover-crop — **no 90° rotation**), large middle-third outlined captions, and a final agent-card CTA with **CruisingCove.com**.
+ffmpeg + Pillow project that builds a **~45s / 1080×1920 / 30fps** silent Instagram/Facebook Reel from the **Agent Reel Storyboard** phone-frame HTML (`reel_preview`). Ken Burns on Disney ship stills (landscape cover-crop; **CW 90°** on `07.jpeg` / `09.jpeg` so port stills sit upright), large middle-third outlined captions, and a final agent-card CTA with **CruisingCove.com**.
 
 ## Paths
 
@@ -12,7 +12,7 @@ ffmpeg + Pillow project that builds a **~45s / 1080×1920 / 30fps** silent Insta
 
 ## Ship orientation
 
-All storyboard ship JPEGs are **landscape** with the hull/horizon horizontal and funnels upright. The renderer **never** rotates or EXIF-transposes them — it only scales and center-crops into 9:16 (Ken Burns zoom). Bow/hull stay horizontal like a normal beach/port photo.
+Most storyboard ship JPEGs are **landscape** with the hull/horizon horizontal. `07.jpeg` and `09.jpeg` are stored sideways (sky on the left); the renderer rotates them **90° clockwise** at load, then scales and cover-crops into 9:16 (Ken Burns zoom). No EXIF transpose.
 
 ## Timing (from storyboard `DURATION = 3200ms`, last slide ×2.2)
 
@@ -21,12 +21,12 @@ All storyboard ship JPEGs are **landscape** with the hull/horizon horizontal and
 | 1 | 0:00–0:03.2 | 01.jpeg | Booking a Disney cruise? / Here's why families / never do it alone. |
 | 2 | 0:03.2–0:06.4 | 02.jpeg | 10 reasons families use / a Disney-specialist agent / — and it costs nothing extra. |
 | 3 | 0:06.4–0:09.6 | 03.jpeg | Same price, always / … |
-| 4 | 0:09.6–0:12.8 | 04.jpeg | They watch the price after you book |
+| 4 | 0:09.6–0:12.8 | **navy brand** (no photo) | They watch the price after you book |
 | 5 | 0:12.8–0:16.0 | **navy brand** (no photo) | First in line when booking windows open |
 | 6 | 0:16.0–0:19.2 | 06.jpeg | A real human when plans break |
-| 7 | 0:19.2–0:22.4 | 07.jpeg | Group trips without the group-chat chaos |
+| 7 | 0:19.2–0:22.4 | 07.jpeg (CW 90°) | Group trips without the group-chat chaos |
 | 8 | 0:22.4–0:25.6 | 08.jpeg | They know the fleet, ship by ship |
-| 9 | 0:25.6–0:28.8 | 09.jpeg | Deck-plan and stateroom insight |
+| 9 | 0:25.6–0:28.8 | 09.jpeg (CW 90°) | Deck-plan and stateroom insight |
 | 10 | 0:28.8–0:32.0 | 01.jpeg | Castaway Club perks, decoded |
 | 11 | 0:32.0–0:35.2 | 02.jpeg | Passport & paperwork peace of mind |
 | 12 | 0:35.2–0:38.4 | 03.jpeg | An advocate, start to sail-away |

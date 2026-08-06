@@ -3,7 +3,8 @@
 Cruising Cove — Agent Reel Storyboard export.
 Source: reel_preview storyboard HTML (phone-frame preview).
 
-Landscape ship stills → 1080×1920 Ken Burns crop (NO rotation / transpose).
+Landscape ship stills → 1080×1920 Ken Burns crop.
+Scenes 7/9 apply a 90° clockwise rotate so sideways port stills sit upright.
 Large middle-third white captions with black outline. Silent H.264 mp4.
 """
 
@@ -49,7 +50,6 @@ SHIPS = [
 ]
 
 # Per-ship Ken Burns focus (fx, fy) — keep hull horizontal / funnels up.
-# No rotation: landscape cover-crop only.
 SHIP_FOCUS: dict[str, tuple[float, float]] = {
     "01.jpeg": (0.48, 0.42),  # bow + Mickey radar
     "02.jpeg": (0.52, 0.48),  # red funnel + Mickey logo
@@ -57,9 +57,15 @@ SHIP_FOCUS: dict[str, tuple[float, float]] = {
     "04.jpeg": (0.50, 0.42),
     "05.jpeg": (0.50, 0.44),
     "06.jpeg": (0.50, 0.38),  # Castaway Cay ship between palms
-    "07.jpeg": (0.50, 0.40),
+    "07.jpeg": (0.50, 0.42),  # after CW90: pier + stern upright
     "08.jpeg": (0.48, 0.42),
-    "09.jpeg": (0.50, 0.42),
+    "09.jpeg": (0.48, 0.42),  # after CW90: ship + umbrellas upright
+}
+
+# Degrees clockwise (applied once at load). Fixes sideways port stills in scenes 7 & 9.
+SHIP_ROTATE_CW: dict[str, int] = {
+    "07.jpeg": 90,
+    "09.jpeg": 90,
 }
 
 # (ship_index | None, caption lines, font_size) — None = navy branded bg (no photo)
@@ -87,8 +93,9 @@ PHOTO_SCENES: list[tuple[int | None, list[str], int]] = [
         ],
         48,
     ),
+    # Scene 4 (9.6–12.8s / ~11s): caption only on navy — no photo
     (
-        3,
+        None,
         [
             "They watch the price",
             "after you book",
@@ -278,10 +285,8 @@ def ease_in_out_quad(t: float) -> float:
 def cover_crop_upright(
     img: Image.Image, scale: float, fx: float, fy: float
 ) -> Image.Image:
-    """Scale+crop landscape (or any) still into 9:16. Never rotate/transpose."""
+    """Scale+crop still into 9:16 (rotation already applied at load when needed)."""
     src_w, src_h = img.size
-    # Guard: if somehow handed a sideways portrait of a landscape scene
-    # (w < h but content looks wrong), we still do NOT rotate — only crop.
     base = max(W / src_w, H / src_h)
     s = base * scale
     nw, nh = int(round(src_w * s)), int(round(src_h * s))
@@ -332,13 +337,8 @@ def text_alpha(local_t: float, duration: float) -> float:
 def render_agent_card() -> Image.Image:
     """Final storyboard card: Meet your agents + portholes + CruisingCove URL."""
     img = Image.new("RGBA", (W, H), NAVY)
-    draw = ImageDraw.Draw(img)
 
-    # Subtle diagonal texture
-    for x in range(-H, W, 34):
-        draw.line([(x, 0), (x + H, H)], fill=(255, 255, 255, 8), width=1)
-
-    # Soft teal / brass glows
+    # Soft teal / brass glows only — no diagonal stripe texture
     glow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     gd = ImageDraw.Draw(glow)
     gd.ellipse([-200, -280, 700, 520], fill=(28, 110, 140, 70))
@@ -477,11 +477,13 @@ def main() -> int:
     total = int(round(duration_s * FPS))
 
     print(f"Duration: {duration_s:.2f}s @ {FPS}fps ({total} frames)")
-    print("Orientation: landscape cover-crop only (ships stay upright — no rotate)")
+    print("Orientation: cover-crop; CW90 on 07/09 for upright ships")
     for i, b in enumerate(beats, start=1):
         if b["kind"] == "photo":
+            rot = SHIP_ROTATE_CW.get(b["ship"] or "", 0)
+            rot_tag = f" rotCW{rot}" if rot else ""
             print(
-                f"  {i:02d} {b['start']:.1f}–{b['end']:.1f}s  [{b['ship']}]  "
+                f"  {i:02d} {b['start']:.1f}–{b['end']:.1f}s  [{b['ship']}{rot_tag}]  "
                 f"{' / '.join(b['lines'])}"
             )
         elif b["kind"] == "brand":
@@ -495,21 +497,19 @@ def main() -> int:
                 f"CruisingCove.com/agents"
             )
 
-    # Preload stills (RGB, no EXIF transpose that would sideways-rotate content)
+    # Preload stills (RGB). Apply explicit CW rotate where port stills are sideways.
     stills: dict[str, Image.Image] = {}
     for name in SHIPS:
         im = Image.open(PHOTOS / name).convert("RGB")
-        # Explicitly do NOT call ImageOps.exif_transpose / rotate.
-        # Storyboard JPEGs are already upright landscape (hull horizontal).
+        # Do NOT call ImageOps.exif_transpose — use SHIP_ROTATE_CW only.
+        cw = SHIP_ROTATE_CW.get(name, 0)
+        if cw:
+            # Pillow: negative degrees = clockwise
+            im = im.rotate(-cw, expand=True)
         sw, sh = im.size
-        if sw < sh:
-            print(
-                f"WARNING: {name} is portrait ({sw}×{sh}); "
-                f"still cropping without rotation.",
-                file=sys.stderr,
-            )
         stills[name] = im
-        print(f"  loaded {name}: {sw}×{sh} (upright landscape crop)")
+        rot_note = f", rotated CW{cw}" if cw else ""
+        print(f"  loaded {name}: {sw}×{sh}{rot_note}")
 
     scrim = make_scrim()
     branded = make_branded_bg()
