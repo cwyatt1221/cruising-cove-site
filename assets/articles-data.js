@@ -18,6 +18,14 @@
       url: "/articles/marketplace-sellers-application-fixed.html",
     },
     {
+      id: "disney-destiny-hidden-secrets",
+      title: "What Most People Don't Know Happens on the Disney Destiny",
+      excerpt:
+        "Grand Hall Kiss Goodnight timing, Kiss Goodnightmares, Loki and Facilier takeovers, Sanctum secrets, and architecture details most guests walk past.",
+      date: "2026-08-05",
+      url: "/articles/disney-destiny-hidden-secrets.html",
+    },
+    {
       id: "disney-cruise-booking-and-cost",
       title: "Disney Cruise Booking & Cost: Your Questions Answered",
       excerpt:
