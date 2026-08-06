@@ -18,6 +18,14 @@
       url: "/articles/welcome-aboard-kim.html",
     },
     {
+      id: "welcome-aboard-bels-castle-creations",
+      title: "Welcome Aboard Bels Castle Creations — First Marketplace Shop",
+      excerpt:
+        "Meet our first Curated 10 shop — custom Disney cruise door magnets, fish extender gifts, cabin décor, and personalized keepsakes.",
+      date: "2026-08-05",
+      url: "/articles/welcome-aboard-bels-castle-creations.html",
+    },
+    {
       id: "marketplace-sellers-application-fixed",
       title: "Oooops — Marketplace Seller Applications Are Fixed",
       excerpt:

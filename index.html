@@ -289,47 +289,55 @@
   .save-section{background:#c7cdd6;}
   .save-note{font-size:0.875rem;color:var(--muted);margin-top:20px;max-width:70ch;}
 
-  /* ---------- MARKETPLACE FEATURE ---------- */
-  .marketplace-feature{
+  /* ---------- WELCOME DUO (agent + marketplace) ---------- */
+  .welcome-duo{
     background:var(--cream-2);
     padding:56px 0 0;
   }
-  .mp-feature-block{
-    background:var(--navy);border-radius:8px;display:flex;gap:0;
-    overflow:hidden;align-items:stretch;
-  }
-  .mp-feature-media{
-    width:42%;min-width:0;flex-shrink:0;background:#0f1a2e;
-    display:flex;align-items:center;
-  }
-  .mp-feature-media video{
-    display:block;width:100%;height:100%;max-height:360px;
-    object-fit:cover;background:#0f1a2e;
-  }
-  .mp-feature-text{padding:40px 36px;flex:1;}
-  .mp-feature-text .section-label{color:var(--gold);margin-bottom:12px;}
-  .mp-feature-text h2{
-    color:var(--cream);margin:0 0 14px;
+  .welcome-duo .section-label{margin-bottom:10px;}
+  .welcome-duo > .wrap > h2{
+    font-family:var(--font-serif);font-weight:500;
     font-size:clamp(1.55rem,2.8vw,1.95rem);
+    color:var(--navy);margin:0 0 22px;max-width:32ch;line-height:1.2;
   }
-  .mp-feature-text h2 em{color:var(--gold);}
-  .mp-feature-text > p{
-    color:#c7cbd6;font-size:1rem;line-height:1.6;margin:0 0 22px;max-width:42ch;
+  .welcome-duo-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:0;
+    background:var(--navy);border-radius:8px;overflow:hidden;
   }
-  .mp-feature-actions{
-    display:flex;flex-wrap:wrap;gap:12px;margin:0 0 16px;
+  .welcome-duo-col{
+    padding:36px 32px;color:var(--cream);
+    display:flex;flex-direction:column;min-height:100%;
   }
-  .mp-feature-story{
+  .welcome-duo-col + .welcome-duo-col{
+    border-left:1px solid rgba(201,162,75,.28);
+  }
+  .welcome-duo-col .duo-eyebrow{
+    font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--gold);margin:0 0 10px;font-weight:600;
+  }
+  .welcome-duo-col h3{
+    font-family:var(--font-serif);font-weight:500;
+    font-size:clamp(1.35rem,2.2vw,1.6rem);
+    color:var(--cream);margin:0 0 12px;line-height:1.2;
+  }
+  .welcome-duo-col p{
+    color:#c7cbd6;font-size:1rem;line-height:1.6;margin:0 0 20px;flex:1;
+  }
+  .welcome-duo-col .duo-actions{
+    display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+  }
+  .welcome-duo-col a.duo-story{
     font-size:0.92rem;color:var(--cream);
     border-bottom:1px solid rgba(201,162,75,.55);padding-bottom:1px;
   }
-  .mp-feature-story:hover{color:var(--gold);}
+  .welcome-duo-col a.duo-story:hover{color:var(--gold);}
   @media (max-width:800px){
-    .marketplace-feature{padding:40px 0 0;}
-    .mp-feature-block{flex-direction:column;}
-    .mp-feature-media{width:100%;}
-    .mp-feature-media video{max-height:240px;height:auto;}
-    .mp-feature-text{padding:28px 22px 32px;}
+    .welcome-duo{padding:40px 0 0;}
+    .welcome-duo-grid{grid-template-columns:1fr;}
+    .welcome-duo-col{padding:28px 22px 32px;}
+    .welcome-duo-col + .welcome-duo-col{
+      border-left:none;border-top:1px solid rgba(201,162,75,.28);
+    }
   }
 
   /* ---------- FAMILY ---------- */
@@ -521,28 +529,28 @@
   </div>
 </div>
 
-<section class="marketplace-feature" id="marketplace-fixed" aria-label="Marketplace update">
+<section class="welcome-duo" id="welcome-aboard" aria-label="Welcome aboard">
   <div class="wrap">
-    <div class="mp-feature-block reveal">
-      <div class="mp-feature-media">
-        <video
-          controls
-          playsinline
-          preload="metadata"
-          poster="/assets/images/marketplace-sellers-reel-door.png"
-          aria-label="Cruising Cove marketplace sellers reel">
-          <source src="/assets/images/marketplace-sellers-reel.mp4" type="video/mp4">
-        </video>
-      </div>
-      <div class="mp-feature-text">
-        <p class="section-label">Marketplace update</p>
-        <h2>Oooops — seller applications are <em>fixed</em>.</h2>
-        <p>Our marketplace form had a hiccup. It’s working again — apply for a Curated 10 spot, or browse trusted shops for cruise essentials.</p>
-        <div class="mp-feature-actions">
-          <a class="btn btn-gold" href="/marketplace/sellers/">Apply as a seller</a>
-          <a class="btn btn-outline-light" href="/marketplace/">Browse marketplace</a>
+    <p class="section-label reveal">Welcome aboard</p>
+    <h2 class="reveal">Two new faces — a travel agent and our first marketplace shop.</h2>
+    <div class="welcome-duo-grid reveal">
+      <div class="welcome-duo-col">
+        <p class="duo-eyebrow">Newest travel agent</p>
+        <h3>Kim Fanning</h3>
+        <p>Magical World Vacations — personalized family planning and neurodivergent-friendly Disney cruise travel.</p>
+        <div class="duo-actions">
+          <a class="btn btn-gold" href="/agents/profile.html?id=kim-fanning">View her profile</a>
+          <a class="duo-story" href="/articles/welcome-aboard-kim.html">Read the welcome →</a>
         </div>
-        <a class="mp-feature-story" href="/articles/marketplace-sellers-application-fixed.html">Read the full story →</a>
+      </div>
+      <div class="welcome-duo-col">
+        <p class="duo-eyebrow">First marketplace shop</p>
+        <h3>Bels Castle Creations</h3>
+        <p>Custom Disney cruise door magnets, fish extender gifts, cabin décor, and personalized keepsakes for every sailing.</p>
+        <div class="duo-actions">
+          <a class="btn btn-gold" href="/marketplace/#bels-castle-creations">Shop the marketplace</a>
+          <a class="duo-story" href="/articles/welcome-aboard-bels-castle-creations.html">Read the welcome →</a>
+        </div>
       </div>
     </div>
   </div>
