@@ -1,0 +1,6 @@
+.DS_Store
+*.log
+__pycache__/
+out/*
+!out/agents-marketplace-announce-reel.mp4
+!out/.gitkeep
