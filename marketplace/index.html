@@ -76,9 +76,9 @@
   <div class="page-hero-inner">
     <span class="eyebrow mono">Marketplace</span>
     <h1>The Curated <em>10</em></h1>
-    <p class="lede">Ten founding shop slots for Disney cruise families. Spots open as partners are approved — not a scroll of hundreds.</p>
+    <p class="lede">Ten founding shop slots for Disney cruise families. Browse the shops we have approved so far — not a scroll of hundreds.</p>
     <div class="mp-hero-actions">
-      <a class="btn btn-gold" href="#directory">See open slots</a>
+      <a class="btn btn-gold" href="#directory">Browse shops</a>
       <a class="btn btn-outline-light" href="/marketplace/sellers/">Apply for a slot</a>
     </div>
   </div>
@@ -91,7 +91,7 @@
 
 <div class="mp-main" id="directory">
   <span class="mp-count" id="slotCount">0 of 10 spots filled</span>
-  <p class="mp-note">Listings appear here once a shop is approved. Until then, founding slots are open for applications.</p>
+  <p class="mp-note">Listings appear here once a shop is approved. Spots remain for founding partners — <a href="/marketplace/sellers/">apply for a slot</a>.</p>
 
   <div class="mp-grid" id="shopGrid"></div>
   <p class="mp-empty" id="emptyState" hidden>No shops listed yet — founding partners are being selected. <a href="/marketplace/sellers/">Apply for a spot</a>.</p>
@@ -156,22 +156,6 @@
           '</div>';
         grid.appendChild(card);
       });
-
-      var open = Math.max(0, max - shops.length);
-      for(var i=0;i<open;i++){
-        var openCard=document.createElement('article');
-        openCard.className='mp-card open';
-        openCard.innerHTML=
-          '<div class="mp-card-body">'+
-            '<p class="mp-open-label">Spot open</p>'+
-            '<h3>Founding partner slot</h3>'+
-            '<p>One of ten exclusive listings for Disney cruise families planning on Cruising Cove.</p>'+
-            '<div class="mp-card-actions">'+
-              '<a class="btn btn-outline" href="/marketplace/sellers/">Apply for a slot</a>'+
-            '</div>'+
-          '</div>';
-        grid.appendChild(openCard);
-      }
     }
 
     async function load(){
