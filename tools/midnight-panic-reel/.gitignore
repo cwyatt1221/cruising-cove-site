@@ -1,0 +1,6 @@
+.DS_Store
+*.log
+__pycache__/
+out/*
+!out/midnight-panic-reel.mp4
+!out/.gitkeep
