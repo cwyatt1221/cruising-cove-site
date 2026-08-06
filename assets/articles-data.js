@@ -6,9 +6,17 @@
 (function (global) {
   var FEATURED_SLOTS = 10;
   /** Pin the first homepage carousel slide. Set to null to rotate by ISO week. */
-  var CAROUSEL_START_ID = "marketplace-sellers-application-fixed";
+  var CAROUSEL_START_ID = "welcome-aboard-kim";
 
   var articles = [
+    {
+      id: "welcome-aboard-kim",
+      title: "Welcome Aboard Kim — Our Newest Travel Agent",
+      excerpt:
+        "Meet Kim Fanning of Magical World Vacations — a Disney Cruise specialist for personalized family planning and neurodivergent-friendly travel.",
+      date: "2026-08-05",
+      url: "/articles/welcome-aboard-kim.html",
+    },
     {
       id: "marketplace-sellers-application-fixed",
       title: "Oooops — Marketplace Seller Applications Are Fixed",
