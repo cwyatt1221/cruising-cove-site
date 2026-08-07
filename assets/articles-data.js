@@ -6,9 +6,17 @@
 (function (global) {
   var FEATURED_SLOTS = 10;
   /** Pin the first homepage carousel slide. Set to null to rotate by ISO week. */
-  var CAROUSEL_START_ID = "welcome-aboard-kim";
+  var CAROUSEL_START_ID = "welcome-aboard-emily";
 
   var articles = [
+    {
+      id: "welcome-aboard-emily",
+      title: "Welcome Aboard Emily — Our Newest Travel Agent",
+      excerpt:
+        "Meet Emily Schultz of Magic Mom Travel — a Disney Cruise specialist for families, first-timers, and autism- and sensory-friendly sailings.",
+      date: "2026-08-07",
+      url: "/articles/welcome-aboard-emily.html",
+    },
     {
       id: "disney-cruise-pixie-dusting",
       title: "Disney Cruise Pixie Dusting: Guest-to-Guest Surprises Explained",
