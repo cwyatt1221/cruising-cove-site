@@ -14,10 +14,15 @@ export const SIGNUP_GENERATION = 2;
 /** Fish Extender groups fill to this many cabins, then a new group opens. */
 export const FE_GROUP_SIZE = 5;
 
-export type SignupType = "fish-extender" | "pixie-dust";
+export type SignupType = "fish-extender" | "pixie-dust" | "book-trade";
+export type BookTradeAudience = "kids" | "adults" | "both";
 
 export function isSignupType(value: string): value is SignupType {
-  return value === "fish-extender" || value === "pixie-dust";
+  return value === "fish-extender" || value === "pixie-dust" || value === "book-trade";
+}
+
+export function isBookTradeAudience(value: string): value is BookTradeAudience {
+  return value === "kids" || value === "adults" || value === "both";
 }
 
 export function signupRowKey(type: SignupType, userId: string): string {

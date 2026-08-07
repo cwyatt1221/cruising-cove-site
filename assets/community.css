@@ -117,6 +117,22 @@
 .fe-group .signup-list{margin:0;}
 .fe-group .notes{font-size:0.85rem;color:var(--muted);margin:0;}
 
+.signup-panel-wide{margin-top:1.2rem;}
+.signup-list .tag{
+  display:inline-block;margin-left:.35rem;padding:.1rem .4rem;
+  font-size:0.72rem;letter-spacing:.04em;text-transform:uppercase;font-weight:700;
+  color:var(--navy);background:rgba(26,42,74,.06);border-radius:2px;vertical-align:middle;
+}
+.signup-list .meta{color:var(--muted);}
+.meetup-suggest{
+  margin:0 0 1rem;padding:.7rem .85rem;
+  background:rgba(201,162,75,.12);border-left:3px solid var(--gold);
+  font-size:0.9rem;color:var(--navy);line-height:1.45;
+}
+.etiquette-blurb{
+  margin:0 0 1rem;font-size:0.88rem;color:var(--muted);line-height:1.5;max-width:62ch;
+}
+
 .phase-note{
   font-size:0.85rem;color:var(--muted);margin:0.8rem 0 0;max-width:62ch;
 }

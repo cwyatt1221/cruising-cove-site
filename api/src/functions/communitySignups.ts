@@ -1,11 +1,13 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import {
+  BookTradeAudience,
   FE_GROUP_SIZE,
   MEMBERS_TABLE,
   SIGNUPS_TABLE,
   SIGNUP_GENERATION,
   SignupType,
   corsJson,
+  isBookTradeAudience,
   isSignupType,
   parseSailingKey,
   requireUser,
@@ -22,6 +24,10 @@ type SignupView = {
   notes: string;
   joinedAt: string;
   groupNumber: number | null;
+  bringing: string;
+  bringingNote: string;
+  lookingFor: string;
+  audience: string;
 };
 
 type FishGroup = {
@@ -54,7 +60,17 @@ function serializeSignup(entity: Record<string, unknown>): SignupView {
     notes: String(entity.notes ?? ""),
     joinedAt: String(entity.joinedAt ?? ""),
     groupNumber: Number.isFinite(groupNumber as number) ? (groupNumber as number) : null,
+    bringing: String(entity.bringing ?? ""),
+    bringingNote: String(entity.bringingNote ?? ""),
+    lookingFor: String(entity.lookingFor ?? ""),
+    audience: String(entity.audience ?? ""),
   };
+}
+
+function alreadyOnListMessage(type: SignupType): string {
+  if (type === "fish-extender") return "You’re already on the Fish Extender list for this sailing.";
+  if (type === "pixie-dust") return "You’re already on the Pixie Dust list for this sailing.";
+  return "You’re already on the Book trade list for this sailing.";
 }
 
 function isCurrentGeneration(entity: Record<string, unknown>): boolean {
@@ -116,12 +132,13 @@ export async function listSignups(request: HttpRequest, context: InvocationConte
 
   const typeFilter = (request.query.get("type") || "all").trim();
   if (typeFilter !== "all" && !isSignupType(typeFilter)) {
-    return corsJson(400, { error: "type must be fish-extender, pixie-dust, or all." });
+    return corsJson(400, { error: "type must be fish-extender, pixie-dust, book-trade, or all." });
   }
 
   try {
     const fish: SignupView[] = [];
     const pixie: SignupView[] = [];
+    const bookTrade: SignupView[] = [];
     const client = await table(SIGNUPS_TABLE);
     const iter = client.listEntities({ queryOptions: { filter: `PartitionKey eq '${key}'` } });
     for await (const entity of iter) {
@@ -131,9 +148,11 @@ export async function listSignups(request: HttpRequest, context: InvocationConte
       const item = serializeSignup(raw);
       if (item.type === "fish-extender") fish.push(item);
       if (item.type === "pixie-dust") pixie.push(item);
+      if (item.type === "book-trade") bookTrade.push(item);
     }
     fish.sort((a, b) => a.joinedAt.localeCompare(b.joinedAt) || a.displayName.localeCompare(b.displayName));
     pixie.sort((a, b) => a.displayName.localeCompare(b.displayName));
+    bookTrade.sort((a, b) => a.displayName.localeCompare(b.displayName));
 
     const fishGroups = buildFishGroups(fish);
     const openGroup = fishGroups.find((g) => g.open) || fishGroups[fishGroups.length - 1];
@@ -141,12 +160,14 @@ export async function listSignups(request: HttpRequest, context: InvocationConte
     const user = await requireUser(request.headers);
     let myFish = false;
     let myPixie = false;
+    let myBookTrade = false;
     let myFishGroup: number | null = null;
     if (user) {
       const mine = fish.find((s) => s.userId === user.userId);
       myFish = !!mine;
       myFishGroup = mine?.groupNumber ?? null;
       myPixie = pixie.some((s) => s.userId === user.userId);
+      myBookTrade = bookTrade.some((s) => s.userId === user.userId);
     }
 
     const payload = {
@@ -155,19 +176,30 @@ export async function listSignups(request: HttpRequest, context: InvocationConte
       fishExtenderGroupSize: FE_GROUP_SIZE,
       openFishExtenderGroup: openGroup?.groupNumber ?? 1,
       pixieDust: pixie,
+      bookTrade,
       myFishExtender: myFish,
       myFishExtenderGroup: myFishGroup,
       myPixieDust: myPixie,
+      myBookTrade,
     };
 
     if (typeFilter === "fish-extender") {
-      return corsJson(200, { ...payload, pixieDust: [] });
+      return corsJson(200, { ...payload, pixieDust: [], bookTrade: [] });
     }
     if (typeFilter === "pixie-dust") {
       return corsJson(200, {
         ...payload,
         fishExtender: [],
         fishExtenderGroups: [],
+        bookTrade: [],
+      });
+    }
+    if (typeFilter === "book-trade") {
+      return corsJson(200, {
+        ...payload,
+        fishExtender: [],
+        fishExtenderGroups: [],
+        pixieDust: [],
       });
     }
     return corsJson(200, payload);
@@ -181,7 +213,7 @@ export async function createSignup(request: HttpRequest, context: InvocationCont
   if (request.method === "OPTIONS") return corsJson(204, {});
 
   const user = await requireUser(request.headers);
-  if (!user) return corsJson(401, { error: "Sign in to join Fish Extender or Pixie Dust." });
+  if (!user) return corsJson(401, { error: "Sign in to join Fish Extender, Pixie Dust, or Book trade." });
 
   const key = request.params.sailingKey;
   if (!key || !parseSailingKey(key)) return corsJson(400, { error: "Invalid sailing key." });
@@ -190,7 +222,16 @@ export async function createSignup(request: HttpRequest, context: InvocationCont
     return corsJson(403, { error: "Join this sailing community before signing up." });
   }
 
-  let body: { type?: string; cabin?: string; notes?: string };
+  let body: {
+    type?: string;
+    cabin?: string;
+    notes?: string;
+    displayName?: string;
+    bringing?: string;
+    bringingNote?: string;
+    lookingFor?: string;
+    audience?: string;
+  };
   try {
     body = (await request.json()) as typeof body;
   } catch {
@@ -199,12 +240,31 @@ export async function createSignup(request: HttpRequest, context: InvocationCont
 
   const typeRaw = (body.type ?? "").trim();
   if (!isSignupType(typeRaw)) {
-    return corsJson(400, { error: "type must be fish-extender or pixie-dust." });
+    return corsJson(400, { error: "type must be fish-extender, pixie-dust, or book-trade." });
   }
   const type: SignupType = typeRaw;
 
   const cabin = (body.cabin ?? "").trim().slice(0, 20);
   const notes = (body.notes ?? "").trim().slice(0, 280);
+  const bringing = (body.bringing ?? "").trim().slice(0, 120);
+  const bringingNote = (body.bringingNote ?? "").trim().slice(0, 160);
+  const lookingFor = (body.lookingFor ?? "").trim().slice(0, 120);
+
+  let displayName = user.displayName;
+  let audience: BookTradeAudience | "" = "";
+
+  if (type === "book-trade") {
+    const nameRaw = (body.displayName ?? "").trim() || user.displayName;
+    displayName = nameRaw.slice(0, 60);
+    if (!displayName) {
+      return corsJson(400, { error: "Display name is required for Book trade." });
+    }
+    const audienceRaw = (body.audience ?? "both").trim().toLowerCase();
+    if (!isBookTradeAudience(audienceRaw)) {
+      return corsJson(400, { error: "audience must be kids, adults, or both." });
+    }
+    audience = audienceRaw;
+  }
 
   if (type === "fish-extender" && !cabin) {
     return corsJson(400, { error: "Cabin number is required for Fish Extender so gifts can find you." });
@@ -217,12 +277,7 @@ export async function createSignup(request: HttpRequest, context: InvocationCont
   try {
     try {
       await client.getEntity(key, rowKey);
-      return corsJson(409, {
-        error:
-          type === "fish-extender"
-            ? "You’re already on the Fish Extender list for this sailing."
-            : "You’re already on the Pixie Dust list for this sailing.",
-      });
+      return corsJson(409, { error: alreadyOnListMessage(type) });
     } catch {
       /* not signed up yet */
     }
@@ -247,10 +302,14 @@ export async function createSignup(request: HttpRequest, context: InvocationCont
       generation: SIGNUP_GENERATION,
       groupNumber: groupNumber ?? undefined,
       userId: user.userId,
-      displayName: user.displayName,
+      displayName,
       email: user.email,
       cabin,
       notes,
+      bringing: type === "book-trade" ? bringing : undefined,
+      bringingNote: type === "book-trade" ? bringingNote : undefined,
+      lookingFor: type === "book-trade" ? lookingFor : undefined,
+      audience: type === "book-trade" ? audience : undefined,
       joinedAt: now,
     });
 
@@ -259,11 +318,15 @@ export async function createSignup(request: HttpRequest, context: InvocationCont
       signup: {
         type,
         userId: user.userId,
-        displayName: user.displayName,
+        displayName,
         cabin,
         notes,
         joinedAt: now,
         groupNumber,
+        bringing: type === "book-trade" ? bringing : "",
+        bringingNote: type === "book-trade" ? bringingNote : "",
+        lookingFor: type === "book-trade" ? lookingFor : "",
+        audience: type === "book-trade" ? audience : "",
       },
     });
   } catch (err) {
@@ -281,7 +344,9 @@ export async function deleteSignup(request: HttpRequest, context: InvocationCont
   const key = request.params.sailingKey;
   const typeRaw = (request.params.type || "").trim();
   if (!key || !parseSailingKey(key)) return corsJson(400, { error: "Invalid sailing key." });
-  if (!isSignupType(typeRaw)) return corsJson(400, { error: "type must be fish-extender or pixie-dust." });
+  if (!isSignupType(typeRaw)) {
+    return corsJson(400, { error: "type must be fish-extender, pixie-dust, or book-trade." });
+  }
 
   try {
     const client = await table(SIGNUPS_TABLE);
@@ -304,7 +369,7 @@ export async function deleteSignup(request: HttpRequest, context: InvocationCont
   }
 }
 
-/** Admin: wipe all Fish Extender + Pixie Dust rows for a sailing (current + legacy). */
+/** Admin: wipe all Fish Extender + Pixie Dust + Book trade rows for a sailing (current + legacy). */
 export async function clearSignups(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   if (request.method === "OPTIONS") return corsJson(204, {});
 

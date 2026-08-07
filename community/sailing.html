@@ -91,13 +91,13 @@
   <section id="status">
     <span class="label mono">&mdash; Membership</span>
     <h2 id="statusTitle">Join to post</h2>
-    <p id="statusCopy">Members of this sailing can share planning tips, meet-up ideas, and questions — plus Fish Extender and Pixie Dust sign-ups.</p>
+    <p id="statusCopy">Members of this sailing can share planning tips, meet-up ideas, and questions — plus Fish Extender, Pixie Dust, and Book trade sign-ups.</p>
     <p class="actions" id="statusActions" style="margin-top:1rem;"></p>
   </section>
 
   <section id="gifts">
     <span class="label mono">&mdash; Gift exchanges</span>
-    <h2>Fish Extender &amp; Pixie Dust</h2>
+    <h2>Fish Extender, Pixie Dust &amp; Book trade</h2>
     <p>Sign up after you join this sailing board. Cabin numbers are only shown to people on this board — still don’t post passport or payment info.</p>
     <p class="marketplace-link">Need an extender, magnets, or Pixie Dust supplies? <a href="/marketplace/">Browse the marketplace</a>.</p>
     <div class="signup-grid">
@@ -143,6 +143,67 @@
           <p class="form-msg" id="pdMsg" hidden></p>
         </form>
       </div>
+    </div>
+
+    <div class="signup-panel signup-panel-wide" id="btPanel">
+      <p class="signup-count" id="btCount">Book trade · 0 signed up</p>
+      <h3>Book trade for this sailing</h3>
+      <p class="blurb">Swap paperbacks with others on your ship + sail date. Browse who’s bringing what and what they’re hoping to find.</p>
+      <p class="etiquette-blurb">Etiquette: bring 1–2 paperbacks (gently used OK). No money or shipping — swap in person or leave books for pickup. Meetup optional; no obligation to trade with anyone.</p>
+      <p class="meetup-suggest" id="btMeetupSuggest">Meetup suggestion: Sea day 1 — pick a spot on the board / atrium. Guidance only — not enforced.</p>
+      <ul class="signup-list" id="btList"><li class="notes">Loading…</li></ul>
+      <div class="actions" id="btActions"></div>
+      <form class="community-form" id="btForm" hidden style="margin-top:1rem;padding:1rem;">
+        <div class="row">
+          <div class="field">
+            <label for="btDisplayName">Display name</label>
+            <input type="text" id="btDisplayName" required maxlength="60" placeholder="How you’ll appear on the list">
+          </div>
+          <div class="field">
+            <label for="btCabin">Cabin (optional)</label>
+            <input type="text" id="btCabin" maxlength="20" placeholder="e.g. 8024">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="btBringing">Book I’m bringing (encouraged)</label>
+            <input type="text" id="btBringing" maxlength="120" placeholder="Title">
+          </div>
+          <div class="field">
+            <label for="btBringingNote">Short note (optional)</label>
+            <input type="text" id="btBringingNote" maxlength="160" placeholder="Condition, series, age range…">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="btLookingFor">Looking for (optional)</label>
+            <input type="text" id="btLookingFor" maxlength="120" list="btLookingSuggestions" placeholder="Anything / kids / YA / romance / mystery…">
+            <datalist id="btLookingSuggestions">
+              <option value="Anything"></option>
+              <option value="Kids"></option>
+              <option value="YA"></option>
+              <option value="Romance"></option>
+              <option value="Mystery"></option>
+            </datalist>
+          </div>
+          <div class="field">
+            <label for="btAudience">Audience</label>
+            <select id="btAudience" required>
+              <option value="both">Both</option>
+              <option value="kids">Kids</option>
+              <option value="adults">Adults</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="btNotes">Notes (optional)</label>
+          <input type="text" id="btNotes" maxlength="280" placeholder="Deck tips, flexible on genres…">
+        </div>
+        <div class="actions">
+          <button type="submit" class="btn btn-gold">Join Book trade</button>
+        </div>
+        <p class="form-msg" id="btMsg" hidden></p>
+      </form>
     </div>
   </section>
 
@@ -422,10 +483,40 @@
     }).join('');
   }
 
+  function audienceLabel(value) {
+    if (value === 'kids') return 'Kids';
+    if (value === 'adults') return 'Adults';
+    if (value === 'both') return 'Both';
+    return value || '';
+  }
+
+  function renderBookTradeList(el, items) {
+    if (!items || !items.length) {
+      el.innerHTML = '<li class="notes">Nobody signed up yet — be the first to list a book.</li>';
+      return;
+    }
+    el.innerHTML = items.map(function(s){
+      var bringing = s.bringing
+        ? (CC.escapeHtml(s.bringing) + (s.bringingNote ? ' <span class="meta">(' + CC.escapeHtml(s.bringingNote) + ')</span>' : ''))
+        : '<span class="meta">Not listed yet</span>';
+      var looking = s.lookingFor ? CC.escapeHtml(s.lookingFor) : '<span class="meta">Open</span>';
+      var tag = audienceLabel(s.audience);
+      var line =
+        '<span class="name">' + CC.escapeHtml(s.displayName) + '</span>' +
+        (tag ? ' <span class="tag">' + CC.escapeHtml(tag) + '</span>' : '') +
+        '<span class="notes">Bringing: ' + bringing + '</span>' +
+        '<span class="notes">Looking for: ' + looking + '</span>';
+      if (s.cabin) line += '<span class="notes">Cabin ' + CC.escapeHtml(s.cabin) + '</span>';
+      if (s.notes) line += '<span class="notes">' + CC.escapeHtml(s.notes) + '</span>';
+      return '<li>' + line + '</li>';
+    }).join('');
+  }
+
   function loadSignups() {
     return CC.api('/community/sailings/' + encodeURIComponent(key) + '/signups').then(function(data){
       var fe = data.fishExtender || [];
       var pd = data.pixieDust || [];
+      var bt = data.bookTrade || [];
       var groups = data.fishExtenderGroups || [];
       var groupSize = data.fishExtenderGroupSize || 5;
       var openGroup = data.openFishExtenderGroup || 1;
@@ -433,34 +524,42 @@
         'Fish Extender · ' + fe.length + ' signed up · groups of ' + groupSize +
         (fe.length ? ' · joining Group ' + openGroup : '');
       document.getElementById('pdCount').textContent = 'Pixie Dust · ' + pd.length + ' signed up';
+      document.getElementById('btCount').textContent = 'Book trade · ' + bt.length + ' signed up';
       renderFishGroups(groups, groupSize);
       renderSignupList(document.getElementById('pdList'), pd, true);
-      setSignupActions(!!data.myFishExtender, !!data.myPixieDust, data.myFishExtenderGroup);
+      renderBookTradeList(document.getElementById('btList'), bt);
+      setSignupActions(!!data.myFishExtender, !!data.myPixieDust, !!data.myBookTrade, data.myFishExtenderGroup);
     }).catch(function(){
       var wrap = document.getElementById('feGroups');
       if (wrap) wrap.innerHTML = '<p class="notes">Could not load Fish Extender list.</p>';
       document.getElementById('pdList').innerHTML = '<li class="notes">Could not load Pixie Dust list.</li>';
+      document.getElementById('btList').innerHTML = '<li class="notes">Could not load Book trade list.</li>';
     });
   }
 
-  function setSignupActions(myFish, myPixie, myFishGroup) {
+  function setSignupActions(myFish, myPixie, myBookTrade, myFishGroup) {
     var signedIn = !!(CC.getToken() && CC.getUser());
     var feActions = document.getElementById('feActions');
     var pdActions = document.getElementById('pdActions');
+    var btActions = document.getElementById('btActions');
     var feForm = document.getElementById('feForm');
     var pdForm = document.getElementById('pdForm');
+    var btForm = document.getElementById('btForm');
     feForm.hidden = true;
     pdForm.hidden = true;
+    btForm.hidden = true;
 
     if (!signedIn) {
       var loginUrl = '/community/login.html?next=' + encodeURIComponent(location.pathname + location.search);
       feActions.innerHTML = '<a class="btn btn-outline" href="' + loginUrl + '">Sign in to join</a>';
       pdActions.innerHTML = '<a class="btn btn-outline" href="' + loginUrl + '">Sign in to join</a>';
+      btActions.innerHTML = '<a class="btn btn-outline" href="' + loginUrl + '">Sign in to join</a>';
       return;
     }
     if (!isMember) {
       feActions.innerHTML = '<span class="notes">Join this sailing board first, then sign up here.</span>';
       pdActions.innerHTML = '<span class="notes">Join this sailing board first, then sign up here.</span>';
+      btActions.innerHTML = '<span class="notes">Join this sailing board first, then sign up here.</span>';
       return;
     }
 
@@ -489,6 +588,23 @@
       pdActions.innerHTML = '<button type="button" class="btn btn-gold" id="openPd">Sign up for Pixie Dust</button>';
       document.getElementById('openPd').addEventListener('click', function(){ pdForm.hidden = false; });
     }
+
+    if (myBookTrade) {
+      btActions.innerHTML = '<button type="button" class="btn btn-outline" id="leaveBt">Leave Book trade</button>';
+      document.getElementById('leaveBt').addEventListener('click', function(){
+        CC.api('/community/sailings/' + encodeURIComponent(key) + '/signups/book-trade', { method: 'DELETE' })
+          .then(loadSignups)
+          .catch(function(err){ alert(err.message || 'Could not leave.'); });
+      });
+    } else {
+      btActions.innerHTML = '<button type="button" class="btn btn-gold" id="openBt">Join Book trade</button>';
+      document.getElementById('openBt').addEventListener('click', function(){
+        var user = CC.getUser();
+        var nameField = document.getElementById('btDisplayName');
+        if (user && user.displayName && !nameField.value) nameField.value = user.displayName;
+        btForm.hidden = false;
+      });
+    }
   }
 
   function setMembershipUI(member) {
@@ -496,7 +612,7 @@
     var signedIn = !!(CC.getToken() && CC.getUser());
     if (isMember) {
       document.getElementById('statusTitle').textContent = "You're a member";
-      document.getElementById('statusCopy').textContent = (sailingMeta.memberCount || 0) + ' members · ' + (sailingMeta.postCount || 0) + ' posts — join Fish Extender or Pixie Dust below.';
+      document.getElementById('statusCopy').textContent = (sailingMeta.memberCount || 0) + ' members · ' + (sailingMeta.postCount || 0) + ' posts — join Fish Extender, Pixie Dust, or Book trade below.';
       statusActions.innerHTML = '';
       compose.hidden = false;
     } else if (signedIn) {
@@ -565,6 +681,30 @@
     }).then(function(){
       msg.hidden = false; msg.className = 'form-msg ok'; msg.textContent = 'You’re on the Pixie Dust list.';
       document.getElementById('pdForm').hidden = true;
+      return loadSignups();
+    }).catch(function(err){
+      msg.hidden = false; msg.className = 'form-msg error'; msg.textContent = err.message || 'Could not sign up.';
+    });
+  });
+
+  document.getElementById('btForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var msg = document.getElementById('btMsg');
+    CC.api('/community/sailings/' + encodeURIComponent(key) + '/signups', {
+      method: 'POST',
+      body: {
+        type: 'book-trade',
+        displayName: document.getElementById('btDisplayName').value,
+        cabin: document.getElementById('btCabin').value,
+        bringing: document.getElementById('btBringing').value,
+        bringingNote: document.getElementById('btBringingNote').value,
+        lookingFor: document.getElementById('btLookingFor').value,
+        audience: document.getElementById('btAudience').value,
+        notes: document.getElementById('btNotes').value
+      }
+    }).then(function(){
+      msg.hidden = false; msg.className = 'form-msg ok'; msg.textContent = 'You’re on the Book trade list.';
+      document.getElementById('btForm').hidden = true;
       return loadSignups();
     }).catch(function(err){
       msg.hidden = false; msg.className = 'form-msg error'; msg.textContent = err.message || 'Could not sign up.';

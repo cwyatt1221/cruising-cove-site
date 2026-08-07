@@ -44,14 +44,14 @@ On-site sailing boards keyed by Disney ship + embarkation date:
 | `PATCH/DELETE /api/community/sailings/{key}/posts/{postId}` | Edit / delete own post (delete removes replies) |
 | `POST /api/community/sailings/{key}/posts/{postId}/replies` | Reply to a post (members only) |
 | `PATCH/DELETE /api/community/sailings/{key}/posts/{postId}/replies/{replyId}` | Edit / delete own reply |
-| `GET/POST /api/community/sailings/{key}/signups` | Fish Extender & Pixie Dust lists |
-| `DELETE /api/community/sailings/{key}/signups/{type}` | Leave a gift list (`fish-extender` \| `pixie-dust`) |
+| `GET/POST /api/community/sailings/{key}/signups` | Fish Extender, Pixie Dust & Book trade lists |
+| `DELETE /api/community/sailings/{key}/signups/{type}` | Leave a list (`fish-extender` \| `pixie-dust` \| `book-trade`) |
 
 Tables: `CommunityUsers`, `CommunitySessions`, `CommunitySailings`, `CommunityMembers`, `CommunityPosts`, `CommunityReplies`, `CommunitySignups`.
 
 Requires the same `STORAGE_CONNECTION_STRING` as the rest of the API. Frontend: `/community/`.
 
-Fish Extender sign-ups require a cabin number. Pixie Dust cabin is optional. Cabin and display name are visible to that sailing’s board viewers.
+Fish Extender sign-ups require a cabin number. Pixie Dust cabin is optional. Book trade (`type: "book-trade"`) accepts optional `cabin`, `bringing`, `bringingNote`, `lookingFor`, `notes`, required `audience` (`kids` \| `adults` \| `both`), and optional `displayName` (defaults to community account name). Cabin and display name are visible to that sailing’s board viewers.
 
 Phase 2 (not built): live chat, DMs, moderation queue, email verification, FE matchmaking pairs.
 
