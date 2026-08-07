@@ -11,6 +11,7 @@
     "RESEND_FROM_EMAIL": "Cruising Cove <hello@yourdomain.com>",
     "AGENT_LEAD_NOTIFY_EMAIL": "cgrove0712@gmail.com",
     "FEEDBACK_NOTIFY_EMAIL": "cgrove0712@gmail.com",
+    "NEWSLETTER_NOTIFY_EMAIL": "cgrove0712@gmail.com",
     "PUBLIC_SITE_URL": "https://www.cruisingcove.com"
   }
 }

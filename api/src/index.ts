@@ -25,3 +25,4 @@ import "./functions/plannerReminders";
 import "./functions/trackEvent";
 import "./functions/listEvents";
 import "./functions/feedback";
+import "./functions/newsletter";

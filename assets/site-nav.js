@@ -332,6 +332,248 @@
       });
   }
 
+  var NEWSLETTER_SHIPS = [
+    { slug: "disney-magic", label: "Disney Magic" },
+    { slug: "disney-wonder", label: "Disney Wonder" },
+    { slug: "disney-dream", label: "Disney Dream" },
+    { slug: "disney-fantasy", label: "Disney Fantasy" },
+    { slug: "disney-wish", label: "Disney Wish" },
+    { slug: "disney-treasure", label: "Disney Treasure" },
+    { slug: "disney-destiny", label: "Disney Destiny" },
+    { slug: "disney-adventure", label: "Disney Adventure" },
+  ];
+
+  var newsletterUid = 0;
+
+  function newsletterShipOptionsHtml() {
+    return NEWSLETTER_SHIPS.map(function (ship) {
+      return '<option value="' + ship.slug + '">' + ship.label + "</option>";
+    }).join("");
+  }
+
+  function newsletterPageUrl() {
+    try {
+      return location.href.split("#")[0];
+    } catch (_) {
+      return "";
+    }
+  }
+
+  function buildNewsletterFormHtml(uid, compact) {
+    var emailId = "ccNlEmail" + uid;
+    var nameId = "ccNlName" + uid;
+    var shipId = "ccNlShip" + uid;
+    var dateId = "ccNlDate" + uid;
+    var tipsId = "ccNlTips" + uid;
+    var statusId = "ccNlStatus" + uid;
+    var formId = "ccNlForm" + uid;
+    var submitId = "ccNlSubmit" + uid;
+    var rowClass = compact ? "cc-newsletter-row cc-newsletter-row-compact" : "cc-newsletter-row";
+
+    return (
+      '<form id="' + formId + '" class="cc-newsletter-form" novalidate data-cc-nl-uid="' + uid + '">' +
+      '<div class="' + rowClass + '">' +
+      '<div class="cc-newsletter-field">' +
+      '<label for="' + emailId + '">Email <span class="cc-newsletter-required">*</span></label>' +
+      '<input id="' + emailId + '" name="email" type="email" maxlength="200" required autocomplete="email" placeholder="you@example.com">' +
+      "</div>" +
+      '<div class="cc-newsletter-field">' +
+      '<label for="' + nameId + '">Name <span class="cc-newsletter-optional">(optional)</span></label>' +
+      '<input id="' + nameId + '" name="name" type="text" maxlength="120" autocomplete="name" placeholder="Your name">' +
+      "</div>" +
+      "</div>" +
+      '<div class="' + rowClass + '">' +
+      '<div class="cc-newsletter-field">' +
+      '<label for="' + shipId + '">Ship <span class="cc-newsletter-optional">(optional)</span></label>' +
+      '<select id="' + shipId + '" name="ship">' +
+      '<option value="">Any / not sure yet</option>' +
+      newsletterShipOptionsHtml() +
+      "</select>" +
+      "</div>" +
+      '<div class="cc-newsletter-field">' +
+      '<label for="' + dateId + '">Embarkation date <span class="cc-newsletter-optional">(optional)</span></label>' +
+      '<input id="' + dateId + '" name="embarkationDate" type="date">' +
+      "</div>" +
+      "</div>" +
+      '<label class="cc-newsletter-check" for="' + tipsId + '">' +
+      '<input id="' + tipsId + '" name="sailingTips" type="checkbox" value="1">' +
+      "<span>Send sailing-specific tips if I share a ship or date</span>" +
+      "</label>" +
+      '<p class="cc-newsletter-status" id="' + statusId + '" role="status" aria-live="polite" hidden></p>' +
+      '<div class="cc-newsletter-actions">' +
+      '<button type="submit" class="btn btn-gold" id="' + submitId + '">Join the newsletter</button>' +
+      "</div>" +
+      "</form>"
+    );
+  }
+
+  function setNewsletterStatus(uid, msg, ok) {
+    var statusEl = document.getElementById("ccNlStatus" + uid);
+    if (!statusEl) return;
+    statusEl.hidden = !msg;
+    statusEl.textContent = msg || "";
+    statusEl.className = "cc-newsletter-status" + (msg ? (ok ? " ok" : " err") : "");
+  }
+
+  function syncNewsletterTips(form) {
+    var uid = form.getAttribute("data-cc-nl-uid");
+    var shipEl = document.getElementById("ccNlShip" + uid);
+    var dateEl = document.getElementById("ccNlDate" + uid);
+    var tipsEl = document.getElementById("ccNlTips" + uid);
+    if (!tipsEl) return;
+    var hasShip = !!(shipEl && shipEl.value);
+    var hasDate = !!(dateEl && dateEl.value);
+    if (hasShip || hasDate) tipsEl.checked = true;
+  }
+
+  function bindNewsletterForm(form) {
+    if (!form || form.getAttribute("data-cc-nl-bound") === "1") return;
+    form.setAttribute("data-cc-nl-bound", "1");
+    var uid = form.getAttribute("data-cc-nl-uid");
+    var shipEl = document.getElementById("ccNlShip" + uid);
+    var dateEl = document.getElementById("ccNlDate" + uid);
+    if (shipEl) shipEl.addEventListener("change", function () { syncNewsletterTips(form); });
+    if (dateEl) dateEl.addEventListener("change", function () { syncNewsletterTips(form); });
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var emailEl = document.getElementById("ccNlEmail" + uid);
+      var nameEl = document.getElementById("ccNlName" + uid);
+      var tipsEl = document.getElementById("ccNlTips" + uid);
+      var submitBtn = document.getElementById("ccNlSubmit" + uid);
+
+      var email = (emailEl && emailEl.value ? emailEl.value : "").trim();
+      var name = (nameEl && nameEl.value ? nameEl.value : "").trim();
+      var ship = (shipEl && shipEl.value ? shipEl.value : "").trim();
+      var embarkationDate = (dateEl && dateEl.value ? dateEl.value : "").trim();
+      var sailingTips = !!(tipsEl && tipsEl.checked) || !!ship || !!embarkationDate;
+
+      if (!email || email.indexOf("@") < 1) {
+        setNewsletterStatus(uid, "Please enter a valid email address.", false);
+        if (emailEl) emailEl.focus();
+        return;
+      }
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Joining…";
+      }
+      setNewsletterStatus(uid, "", true);
+
+      var payload = {
+        email: email,
+        name: name,
+        ship: ship,
+        embarkationDate: embarkationDate,
+        sailingTips: sailingTips,
+        pageUrl: newsletterPageUrl(),
+      };
+
+      fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      })
+        .then(function (res) {
+          return res.json().catch(function () { return {}; }).then(function (body) {
+            return { ok: res.ok, status: res.status, body: body };
+          });
+        })
+        .then(function (result) {
+          if (!result.ok) {
+            if (window.CCAnalytics && CCAnalytics.reportSubmitError) {
+              CCAnalytics.reportSubmitError("Newsletter signup", {
+                httpStatus: result.status,
+                error: (result.body && result.body.error) || ("HTTP " + result.status),
+                email: payload.email,
+                name: payload.name,
+                path: payload.pageUrl,
+              });
+            }
+            throw new Error((result.body && result.body.error) || "Something went wrong. Please try again.");
+          }
+          setNewsletterStatus(
+            uid,
+            (result.body && result.body.message) || "You're on the list — thanks for joining.",
+            true
+          );
+          form.reset();
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Join the newsletter";
+          }
+        })
+        .catch(function (err) {
+          setNewsletterStatus(uid, (err && err.message) || "Something went wrong. Please try again.", false);
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Join the newsletter";
+          }
+        });
+    });
+  }
+
+  function mountNewsletterForm(container, opts) {
+    if (!container || container.querySelector(".cc-newsletter-form")) return;
+    opts = opts || {};
+    newsletterUid += 1;
+    var uid = newsletterUid;
+    var wrap = document.createElement("div");
+    wrap.className = "cc-newsletter-mount";
+    wrap.innerHTML = buildNewsletterFormHtml(uid, !!opts.compact);
+    container.appendChild(wrap);
+    bindNewsletterForm(document.getElementById("ccNlForm" + uid));
+  }
+
+  function ensureNewsletterFooter() {
+    if (document.querySelector("[data-cc-newsletter-footer]")) return;
+    if (location.pathname.indexOf("/privacy") === 0) return;
+
+    var band = document.createElement("aside");
+    band.className = "cc-newsletter-band";
+    band.setAttribute("data-cc-newsletter-footer", "1");
+    band.setAttribute("aria-label", "Newsletter signup");
+    band.innerHTML =
+      '<div class="wrap">' +
+      '<div class="cc-newsletter-band-inner">' +
+      '<div class="cc-newsletter-copy">' +
+      '<p class="cc-newsletter-eyebrow">Newsletter</p>' +
+      "<h2 class=\"display\">Cruise tips in your inbox</h2>" +
+      "<p>Planning notes, ship updates, and packing reminders — free, no spam. Add your ship and embarkation date if you want sailing-specific tips later.</p>" +
+      "</div>" +
+      '<div class="cc-newsletter-form-slot" data-cc-newsletter-slot="footer"></div>' +
+      "</div>" +
+      "</div>";
+
+    var legal = document.querySelector(".site-legal");
+    if (legal && legal.parentNode) {
+      legal.parentNode.insertBefore(band, legal);
+    } else {
+      var footer = document.querySelector(".site-footer, footer.site-footer");
+      if (footer && footer.parentNode) {
+        footer.parentNode.insertBefore(band, footer);
+      } else {
+        var main = document.querySelector("main");
+        if (main && main.parentNode) {
+          main.parentNode.insertBefore(band, main.nextSibling);
+        } else {
+          document.body.appendChild(band);
+        }
+      }
+    }
+
+    var slot = band.querySelector("[data-cc-newsletter-slot]");
+    mountNewsletterForm(slot, { compact: true });
+  }
+
+  function ensureNewsletterCallouts() {
+    document.querySelectorAll("[data-cc-newsletter]").forEach(function (el) {
+      if (el.querySelector(".cc-newsletter-form")) return;
+      var slot = el.querySelector("[data-cc-newsletter-slot]") || el;
+      mountNewsletterForm(slot, { compact: false });
+    });
+  }
+
   function pageTitleForShare() {
     var h1 = document.querySelector(".page-hero h1, main h1, h1");
     if (h1) {
@@ -853,6 +1095,8 @@
     markCurrent();
     ensurePrivacyNote();
     ensureFeedbackLink();
+    ensureNewsletterFooter();
+    ensureNewsletterCallouts();
     ensureRelatedLinks();
     ensurePageActions();
     loadAdminAuth();
