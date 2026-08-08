@@ -203,7 +203,7 @@
   joinForm.addEventListener('submit', function(e){
     e.preventDefault();
     if (!CC.getToken()) {
-      showMsg(joinMsg, 'Sign in or register first — then join your sailing.', false);
+      location.href = CC.loginUrl('/community/' + location.search + '#join');
       return;
     }
     CC.api('/community/sailings', {

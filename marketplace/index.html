@@ -107,7 +107,7 @@
       <h2>One of ten spots</h2>
       <p>Apply with your shop URL, a short description, and product photos. If selected, you’re one of only ten shops featured on Cruising Cove.</p>
     </div>
-    <a class="btn btn-gold" href="/marketplace/sellers/">Apply for a slot</a>
+    <a class="btn btn-gold mp-band-link" href="/marketplace/sellers/">Apply for a slot</a>
   </div>
 
   <p class="mp-side-links" hidden>YouTube or Instagram creators: see the <a href="/marketplace/creators/">Founding Creator Program</a>.</p>
@@ -248,7 +248,7 @@
         var cats=(shop.categories||[]).filter(Boolean);
         var catHtml=cats.length
           ? '<div class="mp-card-cats">'+cats.map(function(c){
-              return '<span class="mp-cat">'+escapeHtml(c)+'</span>';
+              return '<button type="button" class="mp-cat" data-filter-cat="'+escapeHtml(c)+'">'+escapeHtml(c)+'</button>';
             }).join('')+'</div>'
           : '';
 
@@ -268,8 +268,13 @@
           ? '<span class="mp-visits" data-visit-count>'+escapeHtml(visits)+'</span>'
           : '<span class="mp-visits" data-visit-count hidden></span>';
 
+        var shopUrl=String(shop.shopUrl||shop.etsyUrl||'').trim();
+        var visitHtml=shopUrl
+          ? '<a class="btn btn-gold mp-card-link" href="'+escapeHtml(shopUrl)+'" target="_blank" rel="noopener noreferrer" data-cc-event="shop_click" data-cc-id="'+escapeHtml(shop.id||'')+'" data-shop-id="'+escapeHtml(shop.id||'')+'" data-visit-shop="1">Visit shop</a>'
+          : '';
+
         var card=document.createElement('article');
-        card.className='mp-card';
+        card.className='mp-card'+(shopUrl?' is-linked':'');
         if(shop.id) card.id=shop.id;
         card.innerHTML=
           photoHtml+
@@ -279,7 +284,7 @@
             '<p>'+escapeHtml(shop.description||'')+'</p>'+
             quoteHtml+
             '<div class="mp-card-actions">'+
-              '<a class="btn btn-gold" href="'+escapeHtml(shop.shopUrl||shop.etsyUrl||'#')+'" target="_blank" rel="noopener noreferrer" data-cc-event="shop_click" data-cc-id="'+escapeHtml(shop.id||'')+'" data-shop-id="'+escapeHtml(shop.id||'')+'" data-visit-shop="1">Visit shop</a>'+
+              visitHtml+
               visitsHtml+
             '</div>'+
           '</div>';
@@ -302,6 +307,14 @@
     }
 
     grid.addEventListener('click',function(e){
+      var catBtn=e.target.closest('[data-filter-cat]');
+      if(catBtn){
+        e.preventDefault();
+        e.stopPropagation();
+        activeFilter=catBtn.getAttribute('data-filter-cat')||'';
+        render();
+        return;
+      }
       var link=e.target.closest('[data-visit-shop]');
       if(!link) return;
       var shopId=link.getAttribute('data-shop-id')||link.getAttribute('data-cc-id')||'';

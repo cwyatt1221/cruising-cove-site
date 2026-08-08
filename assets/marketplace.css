@@ -15,8 +15,19 @@
   background:var(--cream);border:1px solid rgba(26,42,74,.08);
   border-top:3px solid var(--teal);border-radius:2px;overflow:hidden;
   display:flex;flex-direction:column;min-height:100%;
+  position:relative;
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+.mp-card.is-linked{cursor:pointer;}
+.mp-card.is-linked:hover{
+  transform:translateY(-2px);
+  box-shadow:0 14px 28px -18px rgba(15,28,51,.35);
 }
 .mp-card.open{border-top-color:rgba(26,42,74,.2);}
+/* Stretch Visit shop over the whole card so photo/title clicks aren't dead. */
+.mp-card-link::after{
+  content:"";position:absolute;inset:0;z-index:1;
+}
 .mp-card-photos{
   display:grid;grid-template-columns:2fr 1fr;grid-template-rows:140px 140px;gap:4px;
   background:var(--cream-2);min-height:284px;
@@ -34,11 +45,14 @@
   .mp-card-photos.single{grid-template-rows:220px;}
 }
 .mp-card-body{padding:20px 22px 22px;display:flex;flex-direction:column;flex:1;gap:10px;}
-.mp-card-cats{display:flex;flex-wrap:wrap;gap:6px;}
+.mp-card-cats{display:flex;flex-wrap:wrap;gap:6px;position:relative;z-index:3;}
 .mp-cat{
-  display:inline-block;font-size:0.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  appearance:none;border:0;display:inline-block;font:inherit;
+  font-size:0.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
   color:var(--navy);background:rgba(201,162,75,.16);padding:4px 8px;border-radius:2px;margin:0;
+  cursor:pointer;line-height:1.2;
 }
+.mp-cat:hover{background:rgba(201,162,75,.28);}
 .mp-card h3{font-family:var(--font-serif);font-size:1.35rem;font-weight:500;color:var(--navy);margin:0;}
 .mp-card p{
   font-size:0.92rem;line-height:1.55;color:var(--muted);margin:0;flex:1;
@@ -56,10 +70,10 @@
   display:block;margin-top:6px;font-size:0.78rem;font-style:normal;font-weight:600;
   letter-spacing:.04em;color:var(--muted);
 }
-.mp-card-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:6px;}
-.mp-card-actions .btn{font-size:0.82rem;padding:9px 14px;}
+.mp-card-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:6px;position:relative;z-index:2;}
+.mp-card-actions .btn{font-size:0.82rem;padding:9px 14px;position:relative;z-index:2;}
 .mp-visits{
-  font-size:0.78rem;color:var(--muted);letter-spacing:.02em;
+  font-size:0.78rem;color:var(--muted);letter-spacing:.02em;pointer-events:none;
 }
 .mp-visits[hidden]{display:none !important;}
 
@@ -93,7 +107,13 @@
 .mp-band{
   background:var(--navy);color:var(--cream);border-radius:8px;padding:32px 28px;margin:12px 0 40px;
   display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between;
+  position:relative;cursor:pointer;
 }
+.mp-band:hover{box-shadow:0 16px 32px -18px rgba(15,28,51,.55);}
+.mp-band-link::after{
+  content:"";position:absolute;inset:0;z-index:1;border-radius:inherit;
+}
+.mp-band .btn{position:relative;z-index:2;}
 .mp-band h2{font-family:var(--font-serif);font-weight:400;font-size:1.5rem;color:var(--cream);margin:0 0 8px;}
 .mp-band p{color:#c7cbd6;margin:0;max-width:48ch;line-height:1.55;font-size:0.95rem;}
 .mp-empty{font-size:0.95rem;color:var(--muted);margin:0 0 28px;line-height:1.55;}

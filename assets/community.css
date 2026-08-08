@@ -11,10 +11,11 @@
 }
 .sailing-card{
   display:block;background:var(--cream);border:1px solid rgba(26,42,74,.1);border-top:3px solid var(--teal);
-  border-radius:2px;padding:1.2rem 1.3rem;color:inherit;
+  border-radius:2px;padding:1.2rem 1.3rem;color:inherit;text-decoration:none;cursor:pointer;
   transition:transform .15s ease, box-shadow .15s ease;
 }
 .sailing-card:hover{transform:translateY(-2px);box-shadow:0 12px 24px -16px rgba(15,28,51,.35);}
+.sailing-card:focus-visible{outline:2px solid var(--teal);outline-offset:2px;}
 .sailing-card .meta{font-size:0.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);font-weight:700;margin:0 0 .45rem;}
 .sailing-card h3{font-family:var(--font-serif);font-weight:500;font-size:1.25rem;margin:0 0 .35rem;color:var(--navy);}
 .sailing-card p{margin:0;font-size:0.9rem;color:var(--muted);}
