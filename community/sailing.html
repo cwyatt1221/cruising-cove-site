@@ -207,6 +207,32 @@
     </div>
   </section>
 
+  <section id="boardChat">
+    <span class="label mono">&mdash; Board chat</span>
+    <h2>Chat with this sailing</h2>
+    <div class="board-chat" id="boardChatPanel">
+      <p class="board-chat-safety">
+        <strong>Stay safe:</strong> No booking scams or “agent” DMs asking for money.
+        Never share passport numbers, payment cards, or passwords here.
+      </p>
+      <div class="chat-list" id="chatList" aria-live="polite"></div>
+      <p class="empty-state" id="chatEmpty">Join this sailing to see board chat.</p>
+      <form class="community-form" id="chatForm" hidden>
+        <div class="field">
+          <label for="chatBody">Message</label>
+          <textarea id="chatBody" maxlength="500" required placeholder="Quick question or hello for fellow guests…"></textarea>
+        </div>
+        <div class="chat-compose-row">
+          <button type="submit" class="btn btn-gold" id="chatSend">Send</button>
+          <p class="chat-hint">Max 500 characters · please don’t spam</p>
+        </div>
+        <p class="form-msg" id="chatMsg" hidden></p>
+      </form>
+      <p class="board-chat-locked" id="chatLocked">Sign in and join this sailing to chat with other members.</p>
+      <p class="board-chat-status" id="chatStatus" aria-hidden="true"></p>
+    </div>
+  </section>
+
   <section id="compose" hidden>
     <span class="label mono">&mdash; New post</span>
     <h2>Say something useful</h2>
@@ -254,6 +280,108 @@
   var statusActions = document.getElementById('statusActions');
   var sailingMeta = null;
   var isMember = false;
+  var chatList = document.getElementById('chatList');
+  var chatEmpty = document.getElementById('chatEmpty');
+  var chatForm = document.getElementById('chatForm');
+  var chatLocked = document.getElementById('chatLocked');
+  var chatStatus = document.getElementById('chatStatus');
+  var chatPollTimer = null;
+  var chatFingerprint = '';
+  var CHAT_POLL_MS = 4000;
+
+  function stopChatPoll() {
+    if (chatPollTimer) {
+      clearInterval(chatPollTimer);
+      chatPollTimer = null;
+    }
+  }
+
+  function startChatPoll() {
+    stopChatPoll();
+    if (!isMember) return;
+    chatPollTimer = setInterval(function(){
+      if (document.hidden) return;
+      loadChat({ silent: true });
+    }, CHAT_POLL_MS);
+  }
+
+  function setChatMembershipUI() {
+    var signedIn = !!(CC.getToken() && CC.getUser());
+    if (isMember) {
+      chatForm.hidden = false;
+      chatLocked.hidden = true;
+      chatEmpty.textContent = 'No messages yet — say hello.';
+      loadChat();
+      startChatPoll();
+    } else {
+      stopChatPoll();
+      chatForm.hidden = true;
+      chatLocked.hidden = false;
+      chatList.innerHTML = '';
+      chatFingerprint = '';
+      chatEmpty.hidden = false;
+      chatEmpty.textContent = signedIn
+        ? 'Join this sailing to see board chat.'
+        : 'Sign in and join this sailing to chat with other members.';
+      chatLocked.textContent = signedIn
+        ? 'Join this sailing board above to chat with other members.'
+        : 'Sign in and join this sailing to chat with other members.';
+      chatStatus.textContent = '';
+    }
+  }
+
+  function loadChat(opts) {
+    opts = opts || {};
+    if (!isMember || !key) return Promise.resolve();
+    return CC.api('/community/sailings/' + encodeURIComponent(key) + '/chat')
+      .then(function(data){
+        renderChat(data.messages || [], !!opts.silent);
+      })
+      .catch(function(err){
+        if (opts.silent) return;
+        chatEmpty.hidden = false;
+        chatEmpty.textContent = (err && err.message) || 'Could not load chat.';
+        chatList.innerHTML = '';
+      });
+  }
+
+  function renderChat(messages, silent) {
+    var nextFp = (messages || []).map(function(m){ return m.id; }).join('|');
+    var shouldStick = !silent || nearChatBottom();
+    if (nextFp === chatFingerprint && silent) return;
+    chatFingerprint = nextFp;
+
+    if (!messages || !messages.length) {
+      chatList.innerHTML = '';
+      chatEmpty.hidden = false;
+      chatEmpty.textContent = 'No messages yet — say hello.';
+      return;
+    }
+    chatEmpty.hidden = true;
+    var me = CC.getUser();
+    var myId = me && me.userId ? me.userId : '';
+    chatList.innerHTML = messages.map(function(m){
+      var mine = myId && m.userId === myId;
+      return (
+        '<article class="chat-msg' + (mine ? ' mine' : '') + '" data-chat-id="' + CC.escapeHtml(m.id) + '">' +
+          '<div class="meta">' +
+            '<p class="by">' + CC.escapeHtml(m.displayName || 'Member') + '</p>' +
+            '<p class="when">' + CC.escapeHtml(CC.formatDate(m.createdAt)) + '</p>' +
+          '</div>' +
+          '<p class="body">' + CC.escapeHtml(m.body) + '</p>' +
+        '</article>'
+      );
+    }).join('');
+    if (shouldStick) {
+      chatList.scrollTop = chatList.scrollHeight;
+    }
+  }
+
+  function nearChatBottom() {
+    if (!chatList) return true;
+    var remaining = chatList.scrollHeight - chatList.scrollTop - chatList.clientHeight;
+    return remaining < 80;
+  }
 
   function loadPosts() {
     return CC.api('/community/sailings/' + encodeURIComponent(key) + '/posts')
@@ -661,6 +789,7 @@
       statusActions.innerHTML = '<a class="btn btn-gold" href="/community/login.html?next=' + encodeURIComponent(location.pathname + location.search) + '">Sign in / Register</a>';
       compose.hidden = true;
     }
+    setChatMembershipUI();
     loadSignups();
   }
 
@@ -769,6 +898,43 @@
       msg.className = 'form-msg error';
       msg.textContent = err.message || 'Could not post.';
     });
+  });
+
+  document.getElementById('chatForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var msg = document.getElementById('chatMsg');
+    var bodyEl = document.getElementById('chatBody');
+    var sendBtn = document.getElementById('chatSend');
+    var text = (bodyEl.value || '').trim();
+    if (!text) {
+      msg.hidden = false; msg.className = 'form-msg error'; msg.textContent = 'Message cannot be empty.';
+      return;
+    }
+    sendBtn.disabled = true;
+    CC.api('/community/sailings/' + encodeURIComponent(key) + '/chat', {
+      method: 'POST',
+      body: { body: text }
+    }).then(function(){
+      bodyEl.value = '';
+      msg.hidden = false;
+      msg.className = 'form-msg ok';
+      msg.textContent = 'Sent.';
+      return loadChat();
+    }).catch(function(err){
+      msg.hidden = false;
+      msg.className = 'form-msg error';
+      msg.textContent = err.message || 'Could not send.';
+    }).then(function(){
+      sendBtn.disabled = false;
+    });
+  });
+
+  document.addEventListener('visibilitychange', function(){
+    if (document.hidden) {
+      if (chatStatus) chatStatus.textContent = '';
+      return;
+    }
+    if (isMember) loadChat({ silent: true });
   });
 })();
 </script>

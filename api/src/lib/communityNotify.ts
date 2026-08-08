@@ -1,5 +1,5 @@
 /**
- * Community sailing-board email notifications (join + new post).
+ * Community sailing-board email notifications (join + new post + board chat).
  * Preference lives on CommunityMembers.emailNotify (default on).
  */
 import { MEMBERS_TABLE, table } from "./community";
@@ -68,6 +68,13 @@ export function postNotifySubject(shipName: string, embarkDate: string): string 
   const when = formatEmbarkShort(embarkDate);
   if (when) return `New post on your ${short} sailing (${when})`;
   return `New post on your ${short} sailing`;
+}
+
+export function chatNotifySubject(shipName: string, embarkDate: string): string {
+  const short = shipShortName(shipName) || "sailing";
+  const when = formatEmbarkShort(embarkDate);
+  if (when) return `New chat on your ${short} sailing (${when})`;
+  return `New chat on your ${short} sailing`;
 }
 
 export function sailingBoardUrl(sailingKey: string): string {
@@ -231,6 +238,58 @@ export async function notifyMembersOfPost(opts: {
   log?: (msg: string, ...args: unknown[]) => void;
 }): Promise<{ attempted: number; sent: number }> {
   const email = buildPostEmail({
+    actorName: opts.actorName,
+    shipName: opts.shipName,
+    embarkDate: opts.embarkDate,
+    sailingKey: opts.sailingKey,
+  });
+  return notifySailingMembers({
+    sailingKey: opts.sailingKey,
+    excludeUserId: opts.actorUserId,
+    subject: email.subject,
+    html: email.html,
+    text: email.text,
+    log: opts.log,
+  });
+}
+
+export function buildChatEmail(opts: {
+  actorName: string;
+  shipName: string;
+  embarkDate: string;
+  sailingKey: string;
+}): { subject: string; html: string; text: string } {
+  const who = (opts.actorName || "Someone").trim() || "Someone";
+  const ship = (opts.shipName || "your sailing").trim();
+  const board = sailingBoardUrl(opts.sailingKey);
+  const subject = chatNotifySubject(ship, opts.embarkDate);
+  const short = shipShortName(ship) || "sailing";
+  const when = formatEmbarkShort(opts.embarkDate);
+  const sailingLine = when ? `${short} sailing (${when})` : `${short} sailing`;
+  const text = [
+    `${who} sent a chat message on your ${sailingLine} board on Cruising Cove.`,
+    "",
+    `Open the board: ${board}`,
+    "",
+    "You’re getting this because you’re a member of that board. Turn off “Email me about this sailing” on the board anytime.",
+  ].join("\n");
+  const html = `
+    <p><strong>${escapeHtml(who)}</strong> sent a chat message on your <strong>${escapeHtml(sailingLine)}</strong> board on Cruising Cove.</p>
+    <p><a href="${escapeHtml(board)}">Open the sailing board</a></p>
+    <p style="color:#666;font-size:14px;">You’re getting this because you’re a member of that board. Turn off “Email me about this sailing” on the board anytime.</p>
+  `;
+  return { subject, html, text };
+}
+
+export async function notifyMembersOfChat(opts: {
+  sailingKey: string;
+  actorUserId: string;
+  actorName: string;
+  shipName: string;
+  embarkDate: string;
+  log?: (msg: string, ...args: unknown[]) => void;
+}): Promise<{ attempted: number; sent: number }> {
+  const email = buildChatEmail({
     actorName: opts.actorName,
     shipName: opts.shipName,
     embarkDate: opts.embarkDate,

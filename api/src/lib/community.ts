@@ -8,6 +8,7 @@ export const MEMBERS_TABLE = "CommunityMembers";
 export const POSTS_TABLE = "CommunityPosts";
 export const REPLIES_TABLE = "CommunityReplies";
 export const SIGNUPS_TABLE = "CommunitySignups";
+export const CHAT_MESSAGES_TABLE = "CommunityChatMessages";
 
 /** Bump to retire prior Fish Extender / Pixie Dust test sign-ups. */
 export const SIGNUP_GENERATION = 2;

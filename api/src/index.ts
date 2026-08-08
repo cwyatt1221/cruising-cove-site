@@ -16,6 +16,7 @@ import "./functions/publishedAgents";
 import "./functions/communityAuth";
 import "./functions/communitySailings";
 import "./functions/communityPosts";
+import "./functions/communityChat";
 import "./functions/communitySignups";
 import "./functions/plannerTrips";
 import "./functions/plannerReviews";
