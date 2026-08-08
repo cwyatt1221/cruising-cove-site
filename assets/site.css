@@ -273,18 +273,25 @@ body.cc-admin-logged-in .site-header{top:42px;}
 }
 .nav-toggle-label{line-height:1;}
 
-/* Desktop: visible link row + flyout menus (hamburger only below this). */
+/* Desktop: brand + search/CTA on row 1; primary links on row 2 (no overlap). */
 @media (min-width:980px){
   .site-nav-bar{
-    flex-wrap:nowrap;gap:18px;
+    flex-wrap:wrap;gap:10px 20px;align-items:center;
   }
   .site-nav-bar .nav-toggle{display:none;}
+  .site-nav-bar > .brand,
+  .site-nav-bar > .logo{order:1;flex:0 0 auto;}
+  .site-nav-bar .nav-cta{
+    order:2;margin-left:auto;flex:0 0 auto;gap:12px;
+  }
   .site-nav-bar .nav-links,
   .site-nav-bar .nav-links.open{
-    display:flex;width:auto;order:0;flex:1 1 auto;
-    flex-direction:row;align-items:center;gap:4px 16px;
-    padding:0;margin:0;border:0;flex-wrap:nowrap;
-    justify-content:flex-start;
+    display:flex;order:3;flex:1 1 100%;width:100%;
+    flex-direction:row;align-items:center;justify-content:space-between;
+    gap:6px 16px;padding:10px 0 2px;margin:0;
+    border:0;border-top:1px solid rgba(26,42,74,.08);
+    flex-wrap:wrap;font-size:0.88rem;
+    min-width:0;
   }
   .site-nav-bar .nav-links > a{
     padding:4px 0 6px;
@@ -308,9 +315,8 @@ body.cc-admin-logged-in .site-header{top:42px;}
     border-radius:2px;
     box-shadow:0 16px 40px -18px rgba(15,28,51,.45);
   }
-  .site-nav-bar .nav-cta{order:0;margin-left:0;}
   .cc-site-search{
-    flex:0 1 160px;width:160px;min-width:130px;max-width:180px;
+    flex:0 1 168px;width:168px;min-width:140px;max-width:200px;
   }
 }
 
