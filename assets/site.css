@@ -1163,6 +1163,13 @@ body.cc-feedback-open{overflow:hidden;}
   gap:36px 48px;
   align-items:start;
 }
+.cc-newsletter-band-inner-cta{
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:24px 36px;
+}
+.cc-newsletter-cta{flex-shrink:0;}
+.cc-newsletter-cta .btn{white-space:nowrap;}
 .cc-newsletter-eyebrow{
   margin:0 0 8px;
   font-size:0.72rem;font-weight:700;letter-spacing:.14em;
@@ -1255,9 +1262,11 @@ body.cc-feedback-open{overflow:hidden;}
 .cc-newsletter-actions .btn{min-width:10rem;}
 @media (max-width:860px){
   .cc-newsletter-band-inner{grid-template-columns:1fr;gap:22px;}
+  .cc-newsletter-band-inner-cta{grid-template-columns:1fr;gap:18px;}
 }
 @media (max-width:560px){
   .cc-newsletter-band{padding:34px 0 32px;}
   .cc-newsletter-row{grid-template-columns:1fr;}
   .cc-newsletter-actions .btn{width:100%;}
+  .cc-newsletter-cta .btn{width:100%;}
 }

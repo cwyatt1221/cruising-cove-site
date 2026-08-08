@@ -47,6 +47,7 @@
     '<a href="/community/">Community</a>' +
     '<a href="/gallery/">Gallery</a>' +
     '<a href="/marketplace/">Marketplace</a>' +
+    '<a href="/newsletter/">Newsletter</a>' +
     '<a href="#feedback" data-cc-feedback="1">Give Feedback</a>';
 
   var ONBOARD_HREFS = ["/dining/", "/entertainment/"];
@@ -102,9 +103,9 @@
   function normalizePrimaryNav() {
     var links = document.getElementById("primaryNav");
     if (!links) return;
-    if (links.getAttribute("data-cc-nav") === "v6") return;
+    if (links.getAttribute("data-cc-nav") === "v7") return;
     links.innerHTML = NAV_HTML;
-    links.setAttribute("data-cc-nav", "v6");
+    links.setAttribute("data-cc-nav", "v7");
   }
 
   function removeAuthLink() {
@@ -534,23 +535,32 @@
 
   function ensureNewsletterFooter() {
     if (document.querySelector("[data-cc-newsletter-footer]")) return;
-    // Pages with an in-content callout already expose signup — skip the footer band.
-    if (document.querySelector("[data-cc-newsletter], #newsletter")) return;
-    if (location.pathname.indexOf("/privacy") === 0) return;
+    // Full form lives on /newsletter/ — skip duplicate bands on signup/unsub, privacy, marketplace.
+    if (document.querySelector("[data-cc-newsletter]")) return;
+    var path = location.pathname.replace(/\/+/g, "/");
+    if (
+      path.indexOf("/privacy") === 0 ||
+      path.indexOf("/marketplace") === 0 ||
+      path.indexOf("/newsletter") === 0
+    ) {
+      return;
+    }
 
     var band = document.createElement("aside");
-    band.className = "cc-newsletter-band";
+    band.className = "cc-newsletter-band cc-newsletter-band-cta";
     band.setAttribute("data-cc-newsletter-footer", "1");
-    band.setAttribute("aria-label", "Newsletter signup");
+    band.setAttribute("aria-label", "Newsletter");
     band.innerHTML =
       '<div class="wrap">' +
-      '<div class="cc-newsletter-band-inner">' +
+      '<div class="cc-newsletter-band-inner cc-newsletter-band-inner-cta">' +
       '<div class="cc-newsletter-copy">' +
       '<p class="cc-newsletter-eyebrow">Newsletter</p>' +
       "<h2 class=\"display\">Cruise tips in your inbox</h2>" +
-      "<p>Planning notes, ship updates, and packing reminders — free, no spam. Add your ship and embarkation date if you want sailing-specific tips later.</p>" +
+      "<p>Planning notes, ship updates, and packing reminders — free, no spam.</p>" +
       "</div>" +
-      '<div class="cc-newsletter-form-slot" data-cc-newsletter-slot="footer"></div>' +
+      '<div class="cc-newsletter-cta">' +
+      '<a class="btn btn-gold" href="/newsletter/">Join the newsletter</a>' +
+      "</div>" +
       "</div>" +
       "</div>";
 
@@ -570,9 +580,6 @@
         }
       }
     }
-
-    var slot = band.querySelector("[data-cc-newsletter-slot]");
-    mountNewsletterForm(slot, { compact: true });
   }
 
   function ensureNewsletterCallouts() {
