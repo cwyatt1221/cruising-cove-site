@@ -1,6 +1,6 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import { TableClient } from "@azure/data-tables";
-import { randomUUID } from "crypto";
+import { randomBytes, randomUUID } from "crypto";
 import { escapeHtml, notifyOwnerOfSubmitError, safeField, sendEmail } from "../lib/email";
 
 const TABLE_NAME = "NewsletterSignups";
@@ -26,6 +26,11 @@ interface NewsletterInput {
   embarkationDate?: string;
   sailingTips?: boolean;
   pageUrl?: string;
+}
+
+interface UnsubscribeInput {
+  email?: string;
+  token?: string;
 }
 
 let tableClient: TableClient | null = null;
@@ -56,6 +61,10 @@ function normalizeEmail(email: string): string {
   return email.trim().toLowerCase();
 }
 
+function newUnsubToken(): string {
+  return randomBytes(24).toString("hex");
+}
+
 function parseShip(raw: string): { slug: string; label: string } | null {
   const value = raw.trim();
   if (!value) return null;
@@ -70,6 +79,85 @@ function looksLikeDate(value: string): boolean {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
   const d = new Date(`${value}T00:00:00Z`);
   return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === value;
+}
+
+function isSignupActive(entity: Record<string, unknown>): boolean {
+  if (entity.active === false || entity.active === 0) return false;
+  if (typeof entity.active === "string") {
+    const v = entity.active.trim().toLowerCase();
+    if (v === "false" || v === "0" || v === "no") return false;
+  }
+  return true;
+}
+
+/** Mark all NewsletterSignups rows for an email (or matching token) inactive. */
+export async function unsubscribeNewsletterSignups(opts: {
+  email?: string;
+  token?: string;
+}): Promise<{ updated: number; email: string }> {
+  const client = await getTableClient();
+  const email = opts.email ? normalizeEmail(opts.email) : "";
+  const token = (opts.token || "").trim();
+  if (!email && !token) return { updated: 0, email: "" };
+
+  const now = new Date().toISOString();
+  let updated = 0;
+  let resolvedEmail = email;
+
+  if (email) {
+    const iter = client.listEntities({
+      queryOptions: { filter: `PartitionKey eq '${email.replace(/'/g, "''")}'` },
+    });
+    for await (const entity of iter) {
+      if (!isSignupActive(entity as Record<string, unknown>)) {
+        resolvedEmail = String(entity.email ?? entity.partitionKey ?? email);
+        continue;
+      }
+      await client.updateEntity(
+        {
+          partitionKey: String(entity.partitionKey),
+          rowKey: String(entity.rowKey),
+          etag: entity.etag,
+          active: false,
+          sailingTips: false,
+          unsubscribedAt: now,
+        },
+        "Merge"
+      );
+      updated += 1;
+      resolvedEmail = String(entity.email ?? entity.partitionKey ?? email);
+    }
+    return { updated, email: resolvedEmail };
+  }
+
+  // Token path: full scan (same pattern as planner reminders).
+  for await (const entity of client.listEntities()) {
+    if (String(entity.unsubToken ?? "") !== token) continue;
+    resolvedEmail = String(entity.email ?? entity.partitionKey ?? "");
+    if (!isSignupActive(entity as Record<string, unknown>)) {
+      continue;
+    }
+    await client.updateEntity(
+      {
+        partitionKey: String(entity.partitionKey),
+        rowKey: String(entity.rowKey),
+        etag: entity.etag,
+        active: false,
+        sailingTips: false,
+        unsubscribedAt: now,
+      },
+      "Merge"
+    );
+    updated += 1;
+  }
+
+  // Also deactivate any other signups sharing that email partition.
+  if (resolvedEmail) {
+    const more = await unsubscribeNewsletterSignups({ email: resolvedEmail });
+    updated += more.updated;
+  }
+
+  return { updated, email: resolvedEmail };
 }
 
 export async function submitNewsletter(
@@ -112,6 +200,7 @@ export async function submitNewsletter(
     Boolean(body.sailingTips) || Boolean(shipSlug) || Boolean(embarkationDate);
 
   const signupId = randomUUID();
+  const unsubToken = newUnsubToken();
   const now = new Date();
   const submittedAt = now.toISOString();
 
@@ -129,6 +218,8 @@ export async function submitNewsletter(
       tipsSent: "[]",
       pageUrl,
       submittedAt,
+      active: true,
+      unsubToken,
     });
   } catch (err) {
     context.error("Failed to store newsletter signup:", err);
@@ -212,9 +303,63 @@ export async function submitNewsletter(
   };
 }
 
+export async function unsubscribeNewsletter(
+  request: HttpRequest,
+  context: InvocationContext
+): Promise<HttpResponseInit> {
+  let email = "";
+  let token = "";
+
+  if (request.method === "GET") {
+    email = normalizeEmail(String(request.query.get("email") || "").slice(0, 200));
+    token = String(request.query.get("token") || "").trim();
+  } else {
+    let body: UnsubscribeInput;
+    try {
+      body = (await request.json()) as UnsubscribeInput;
+    } catch {
+      return { status: 400, jsonBody: { error: "Request body must be valid JSON." } };
+    }
+    email = normalizeEmail(String(body.email ?? "").slice(0, 200));
+    token = String(body.token ?? "").trim();
+  }
+
+  if (!email && !token) {
+    return { status: 400, jsonBody: { error: "Email or unsubscribe token is required." } };
+  }
+  if (email && !looksLikeEmail(email)) {
+    return { status: 400, jsonBody: { error: "A valid email address is required." } };
+  }
+
+  try {
+    const result = await unsubscribeNewsletterSignups({ email: email || undefined, token: token || undefined });
+    // Always succeed for email-based unsub to avoid email enumeration; token miss can 404.
+    if (token && !email && result.updated === 0 && !result.email) {
+      return { status: 404, jsonBody: { error: "Unsubscribe link is invalid or already used." } };
+    }
+    return {
+      status: 200,
+      jsonBody: {
+        success: true,
+        message: "You're unsubscribed. You won't receive further Cruising Cove newsletter or sailing tip emails.",
+      },
+    };
+  } catch (err) {
+    context.error("Newsletter unsubscribe failed:", err);
+    return { status: 500, jsonBody: { error: "Could not unsubscribe. Please try again." } };
+  }
+}
+
 app.http("submitNewsletter", {
   methods: ["POST"],
   authLevel: "anonymous",
   route: "newsletter",
   handler: submitNewsletter,
+});
+
+app.http("unsubscribeNewsletter", {
+  methods: ["GET", "POST"],
+  authLevel: "anonymous",
+  route: "newsletter/unsubscribe",
+  handler: unsubscribeNewsletter,
 });

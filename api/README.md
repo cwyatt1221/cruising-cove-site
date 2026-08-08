@@ -33,10 +33,12 @@ Frontend: `/planning/my-cruise.html`. Admin UI: `/planning/my-cruise-admin.html`
 | Route / job | Purpose |
 | --- | --- |
 | `POST /api/newsletter` | Store signup (`NewsletterSignups`); owner notify via Resend |
-| Timer `newsletterTipsTimer` | Daily **14:00 UTC** — tip emails to subscribers with `sailingTips` + `embarkationDate` |
+| `POST /api/newsletter/unsubscribe` | `{ email }` or `{ token }` — mark signup(s) `active: false`, clear `sailingTips` |
+| `GET /api/newsletter/unsubscribe?token=` | Same for tokenized tip-email links |
+| Timer `newsletterTipsTimer` | Daily **14:00 UTC** — tip emails to **active** subscribers with `sailingTips` + `embarkationDate` |
 | `GET/POST /api/newsletter/tips/run?key=…&dryRun=1` | Manual/admin run (`REPORT_ACCESS_KEY`); use `dryRun=1` to preview without sending |
 
-Table: `NewsletterSignups` (partitionKey = email, rowKey = signup id). Tip idempotency: `tipsSent` JSON array of milestone ids (`d90`, `d60`, `d30`, `d14`, `d7`, `d0`), plus `lastTipSentAt` / `lastTipMilestone` after a send. Past embarkation dates are skipped (no post-cruise drip in v1).
+Table: `NewsletterSignups` (partitionKey = email, rowKey = signup id). Fields include `active` (default true / missing = active), `unsubToken`, optional `unsubscribedAt`. Tip idempotency: `tipsSent` JSON array of milestone ids (`d90`, `d60`, `d30`, `d14`, `d7`, `d0`), plus `lastTipSentAt` / `lastTipMilestone` after a send. Past embarkation dates and inactive/unsubscribed rows are skipped (no post-cruise drip in v1). Tip email footers link to `/newsletter/unsubscribe.html?token=…`.
 
 Milestone windows (days until embark, UTC):
 
@@ -86,7 +88,8 @@ On-site sailing boards keyed by Disney ship + embarkation date:
 | `GET/POST /api/community/sailings/{key}/chat` | Board chat (auth + member; GET list, POST send) |
 | `GET/POST /api/community/sailings/{key}/signups` | Fish Extender, Pixie Dust & Book trade lists |
 | `DELETE /api/community/sailings/{key}/signups/{type}` | Leave a list (`fish-extender` \| `pixie-dust` \| `book-trade`) |
-| `GET/POST /api/community/moderation?key=…` | Admin moderation (`REPORT_ACCESS_KEY` or admin session): feed / mutes; hide, delete, mute, unmute |
+| `GET/POST /api/community/moderation?key=…` | Admin moderation (`REPORT_ACCESS_KEY` or admin session): feed / mutes / **reports**; hide, delete, mute, unmute |
+| `POST /api/community/moderation` `{ action: "report", kind, id, sailingKey, reason? }` | Member report (community session) — writes `CommunityModLog` (`action: "report"`, `status: "pending"`); does **not** hide content; emails admin notify |
 
 Tables: `CommunityUsers`, `CommunitySessions`, `CommunitySailings`, `CommunityMembers`, `CommunityPosts`, `CommunityReplies`, `CommunityChatMessages`, `CommunitySignups`, `CommunityMutes`, `CommunityModLog`.
 
@@ -94,13 +97,13 @@ Tables: `CommunityUsers`, `CommunitySessions`, `CommunitySailings`, `CommunityMe
 
 **Board chat (v1):** Per-sailing chat for signed-in members only (`CommunityChatMessages`, partition = sailing key). Messages capped at 500 characters with a soft ~4s rate limit per author. UI on `/community/sailing.html` polls about every 4s while the tab is visible. Out of scope for v1: DMs, reactions, image uploads, typing indicators, delete-own-message.
 
-**Moderation (v1):** Site admins can review recent posts and chat (optional `sailingKey` filter), soft-**hide** or soft-**delete** content (`hidden` / `deleted` flags — omitted from public GET posts/chat), and **mute** / **unmute** a member on a board (`CommunityMutes`, PK = sailing key, RK = userId). Muted members receive a clear 403 on post, reply, and chat. Quiet actions are written to `CommunityModLog`. Admin UI: `/community/admin.html` (linked from `/admin/`). Skipped for v1: member Report button, auto-mod / AI, IP bans, full audit UI.
+**Moderation (v1):** Site admins can review **pending member reports**, recent posts and chat (optional `sailingKey` filter), soft-**hide** or soft-**delete** content (`hidden` / `deleted` flags — omitted from public GET posts/chat), and **mute** / **unmute** a member on a board (`CommunityMutes`, PK = sailing key, RK = userId). Muted members receive a clear 403 on post, reply, and chat. Quiet actions are written to `CommunityModLog`. Signed-in board members can **Report** a post, reply, or chat message (optional reason); reports create a pending mod-log entry and notify `AGENT_LEAD_NOTIFY_EMAIL` — content stays visible until an admin acts. Admin UI: `/community/admin.html` (linked from `/admin/`). Skipped for v1: auto-mod / AI, IP bans, full audit UI, DMs.
 
 Requires the same `STORAGE_CONNECTION_STRING` as the rest of the API. Frontend: `/community/`.
 
 Fish Extender sign-ups require a cabin number. Pixie Dust cabin is optional. Book trade (`type: "book-trade"`) accepts optional `cabin`, `bringing`, `bringingNote`, `lookingFor`, `notes`, required `audience` (`kids` \| `adults` \| `both`), and optional `displayName` (defaults to community account name). Cabin and display name are visible to that sailing’s board viewers.
 
-Phase 2 (not built): DMs, email verification, FE matchmaking pairs, gift-list signup emails, member reporting.
+Phase 2 (not built): DMs, email verification, FE matchmaking pairs, gift-list signup emails.
 
 ## Agent directory applications
 
@@ -115,7 +118,7 @@ Agents submit a profile card for manual review:
 | `GET /api/agents` | Public published directory cards |
 | `GET /api/agents/{id}` | Public published agent profile |
 
-Tables: `AgentApplications`, `PublishedAgents`. Frontend: `/agents/apply.html`, admin review/publish at `/agents/admin.html`, dynamic profiles at `/agents/profile.html?id=…`. Sample cards remain in `assets/agents-data.js` until at least one live agent is published.
+Tables: `AgentApplications`, `PublishedAgents`. Frontend: `/agents/apply.html`, admin review/publish at `/agents/admin.html`, dynamic profiles at `/agents/profile.html?id=…`. Directory at `/agents/` supports client-side specialty filter chips (unique tokens from live agent specialties, including comma-split “other” text). Sample cards remain in `assets/agents-data.js` until at least one live agent is published.
 
 ## Marketplace seller applications (Curated 10)
 
@@ -147,7 +150,7 @@ Table: `SiteEvents`. Frontend loads Clarity + click tracker via `/assets/analyti
 - No content moderation or per-IP rate limiting beyond a basic question-length cap.
 - No admin UI for reviewing logged questions — you'd query the table directly for now
   (Azure Storage Explorer, a free desktop app, is the easiest way to browse it).
-- Newsletter tip drips have no subscriber unsubscribe link yet (v1); post-cruise “leave a review” drip is skipped.
+- Newsletter post-cruise “leave a review” drip is skipped (v1).
 
 ## One-time setup (do this before it will work)
 

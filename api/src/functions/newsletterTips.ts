@@ -1,5 +1,6 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext, Timer } from "@azure/functions";
 import { TableClient } from "@azure/data-tables";
+import { randomBytes } from "crypto";
 import { adminAuthOk } from "../lib/adminAuth";
 import { sendEmail } from "../lib/email";
 import {
@@ -28,6 +29,19 @@ async function getTableClient(): Promise<TableClient> {
 
 function todayYmdUtc(now = new Date()): string {
   return now.toISOString().slice(0, 10);
+}
+
+function isSignupActive(entity: Record<string, unknown>): boolean {
+  if (entity.active === false || entity.active === 0) return false;
+  if (typeof entity.active === "string") {
+    const v = entity.active.trim().toLowerCase();
+    if (v === "false" || v === "0" || v === "no") return false;
+  }
+  return true;
+}
+
+function siteBase(): string {
+  return (process.env.PUBLIC_SITE_URL || "https://www.cruisingcove.com").replace(/\/$/, "");
 }
 
 export interface TipRunResult {
@@ -71,6 +85,12 @@ export async function runNewsletterTipDrip(
   const client = await getTableClient();
   for await (const entity of client.listEntities()) {
     result.scanned += 1;
+    const row = entity as Record<string, unknown>;
+
+    if (!isSignupActive(row)) {
+      result.skipped += 1;
+      continue;
+    }
 
     const sailingTips = Boolean(entity.sailingTips);
     const embarkationDate = String(entity.embarkationDate ?? "").trim();
@@ -98,8 +118,12 @@ export async function runNewsletterTipDrip(
     const shipLabel = String(entity.shipLabel ?? "").trim();
     const partitionKey = String(entity.partitionKey);
     const rowKey = String(entity.rowKey);
+    let unsubToken = String(entity.unsubToken ?? "").trim();
+    const needsUnsubToken = !unsubToken;
+    if (needsUnsubToken) unsubToken = randomBytes(24).toString("hex");
+    const unsubUrl = `${siteBase()}/newsletter/unsubscribe.html?token=${encodeURIComponent(unsubToken)}`;
     const subject = tipSubject(shipLabel, milestone);
-    const content = buildTipEmail(milestone.id, { name, shipLabel, embarkationDate });
+    const content = buildTipEmail(milestone.id, { name, shipLabel, embarkationDate, unsubUrl });
 
     if (dryRun) {
       if (result.details.length < limitDetails) {
@@ -142,6 +166,7 @@ export async function runNewsletterTipDrip(
           tipsSent: nextSent,
           lastTipSentAt: new Date().toISOString(),
           lastTipMilestone: milestone.id,
+          ...(needsUnsubToken ? { unsubToken } : {}),
         },
         "Merge"
       );

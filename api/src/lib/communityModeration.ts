@@ -13,9 +13,10 @@ import {
   postRowKey,
   table,
 } from "./community";
+import { escapeHtml, notifyEmail, sendEmail } from "./email";
 
 export type ModContentKind = "post" | "reply" | "chat";
-export type ModAction = "hide" | "delete" | "mute" | "unmute";
+export type ModAction = "hide" | "delete" | "mute" | "unmute" | "report";
 
 export const MUTE_ERROR = "You are muted on this sailing board and cannot post or chat until unmuted.";
 
@@ -54,7 +55,7 @@ export async function isUserMuted(sailingKey: string, userId: string): Promise<b
   }
 }
 
-async function writeModLog(entry: {
+export async function writeModLog(entry: {
   sailingKey: string;
   action: string;
   kind?: string;
@@ -62,23 +63,211 @@ async function writeModLog(entry: {
   userId?: string;
   displayName?: string;
   note?: string;
-}): Promise<void> {
+  status?: string;
+  reporterUserId?: string;
+  reporterDisplayName?: string;
+  targetUserId?: string;
+  targetDisplayName?: string;
+  bodyPreview?: string;
+}): Promise<string | null> {
   try {
     const now = new Date().toISOString();
+    const rowKey = postRowKey();
     await (await table(MOD_LOG_TABLE)).createEntity({
       partitionKey: entry.sailingKey || "global",
-      rowKey: postRowKey(),
+      rowKey,
       action: entry.action,
       kind: entry.kind || "",
       targetId: entry.targetId || "",
       userId: entry.userId || "",
       displayName: entry.displayName || "",
       note: (entry.note || "").slice(0, 500),
+      status: entry.status || "",
+      reporterUserId: entry.reporterUserId || "",
+      reporterDisplayName: entry.reporterDisplayName || "",
+      targetUserId: entry.targetUserId || "",
+      targetDisplayName: entry.targetDisplayName || "",
+      bodyPreview: (entry.bodyPreview || "").slice(0, 280),
       createdAt: now,
     });
+    return rowKey;
   } catch {
     /* quiet log — never fail the moderation action */
+    return null;
   }
+}
+
+function siteBase(): string {
+  return (process.env.PUBLIC_SITE_URL || "https://www.cruisingcove.com").replace(/\/$/, "");
+}
+
+/** Member report — logs only; does not hide or delete content. */
+export async function reportContent(input: {
+  sailingKey: string;
+  kind: ModContentKind;
+  id: string;
+  reason?: string;
+  reporter: { userId: string; displayName: string; email?: string };
+}): Promise<
+  | { ok: true; reportId: string }
+  | { ok: false; error: string; status: number }
+> {
+  const key = (input.sailingKey || "").trim();
+  const id = (input.id || "").trim();
+  if (!key || !parseSailingKey(key)) return { ok: false, status: 400, error: "Invalid sailing key." };
+  if (!id || !isSafeModId(id)) return { ok: false, status: 400, error: "Invalid content id." };
+  if (input.kind !== "post" && input.kind !== "reply" && input.kind !== "chat") {
+    return { ok: false, status: 400, error: "kind must be post, reply, or chat." };
+  }
+
+  try {
+    await (await table(MEMBERS_TABLE)).getEntity(key, input.reporter.userId);
+  } catch {
+    return { ok: false, status: 403, error: "Join this sailing community to report content." };
+  }
+
+  const client = await table(tableForKind(input.kind));
+  let existing: Record<string, unknown>;
+  try {
+    existing = (await client.getEntity(key, id)) as Record<string, unknown>;
+  } catch {
+    return { ok: false, status: 404, error: "Content not found." };
+  }
+
+  if (!isContentVisible(existing)) {
+    return { ok: false, status: 404, error: "Content not found." };
+  }
+
+  const targetUserId = String(existing.userId ?? "");
+  if (targetUserId && targetUserId === input.reporter.userId) {
+    return { ok: false, status: 400, error: "You can’t report your own content." };
+  }
+
+  const reason = (input.reason || "").trim().slice(0, 500);
+  const bodyPreview = String(existing.body ?? "").trim().slice(0, 280);
+  const targetDisplayName = String(existing.displayName ?? "Member");
+  const reportId =
+    (await writeModLog({
+      sailingKey: key,
+      action: "report",
+      kind: input.kind,
+      targetId: id,
+      userId: input.reporter.userId,
+      displayName: input.reporter.displayName,
+      note: reason,
+      status: "pending",
+      reporterUserId: input.reporter.userId,
+      reporterDisplayName: input.reporter.displayName,
+      targetUserId,
+      targetDisplayName,
+      bodyPreview,
+    })) || postRowKey();
+
+  const adminUrl = `${siteBase()}/community/admin.html`;
+  const sailingUrl = `${siteBase()}/community/sailing.html?key=${encodeURIComponent(key)}`;
+  const subject = `Community report: ${input.kind} on ${key}`;
+  const text = [
+    "A community member reported content on Cruising Cove.",
+    "",
+    `Sailing: ${key}`,
+    `Kind: ${input.kind}`,
+    `Content id: ${id}`,
+    `Author: ${targetDisplayName} (${targetUserId || "—"})`,
+    `Reporter: ${input.reporter.displayName} (${input.reporter.userId})`,
+    `Reason: ${reason || "—"}`,
+    "",
+    `Preview: ${bodyPreview || "—"}`,
+    "",
+    `Admin: ${adminUrl}`,
+    `Board: ${sailingUrl}`,
+  ].join("\n");
+  const html = `
+    <p>A community member reported content on Cruising Cove.</p>
+    <ul>
+      <li><strong>Sailing:</strong> ${escapeHtml(key)}</li>
+      <li><strong>Kind:</strong> ${escapeHtml(input.kind)}</li>
+      <li><strong>Content id:</strong> ${escapeHtml(id)}</li>
+      <li><strong>Author:</strong> ${escapeHtml(targetDisplayName)} (${escapeHtml(targetUserId || "—")})</li>
+      <li><strong>Reporter:</strong> ${escapeHtml(input.reporter.displayName)} (${escapeHtml(input.reporter.userId)})</li>
+      <li><strong>Reason:</strong> ${escapeHtml(reason || "—")}</li>
+    </ul>
+    <p><strong>Preview</strong></p>
+    <pre style="white-space:pre-wrap;font-family:inherit">${escapeHtml(bodyPreview || "—")}</pre>
+    <p><a href="${escapeHtml(adminUrl)}">Open community admin</a> · <a href="${escapeHtml(sailingUrl)}">Open board</a></p>
+  `;
+  try {
+    await sendEmail(notifyEmail(), subject, html, text);
+  } catch {
+    /* best-effort notify */
+  }
+
+  return { ok: true, reportId };
+}
+
+export async function listPendingReports(options: {
+  sailingKey?: string;
+  limit?: number;
+}): Promise<
+  {
+    id: string;
+    sailingKey: string;
+    kind: string;
+    targetId: string;
+    status: string;
+    reason: string;
+    bodyPreview: string;
+    reporterUserId: string;
+    reporterDisplayName: string;
+    targetUserId: string;
+    targetDisplayName: string;
+    createdAt: string;
+  }[]
+> {
+  const limit = Math.min(Math.max(options.limit ?? 80, 1), 200);
+  const sailingKey = (options.sailingKey || "").trim() || undefined;
+  if (sailingKey && !parseSailingKey(sailingKey)) {
+    throw new Error("Invalid sailing key.");
+  }
+
+  const client = await table(MOD_LOG_TABLE);
+  const out: {
+    id: string;
+    sailingKey: string;
+    kind: string;
+    targetId: string;
+    status: string;
+    reason: string;
+    bodyPreview: string;
+    reporterUserId: string;
+    reporterDisplayName: string;
+    targetUserId: string;
+    targetDisplayName: string;
+    createdAt: string;
+  }[] = [];
+  const filter = sailingKey ? `PartitionKey eq '${sailingKey}'` : undefined;
+  const iter = client.listEntities(filter ? { queryOptions: { filter } } : undefined);
+  for await (const entity of iter) {
+    if (String(entity.action ?? "") !== "report") continue;
+    const status = String(entity.status ?? "pending").trim().toLowerCase() || "pending";
+    if (status !== "pending") continue;
+    out.push({
+      id: String(entity.rowKey ?? ""),
+      sailingKey: String(entity.partitionKey ?? ""),
+      kind: String(entity.kind ?? ""),
+      targetId: String(entity.targetId ?? ""),
+      status,
+      reason: String(entity.note ?? ""),
+      bodyPreview: String(entity.bodyPreview ?? ""),
+      reporterUserId: String(entity.reporterUserId || entity.userId || ""),
+      reporterDisplayName: String(entity.reporterDisplayName || entity.displayName || ""),
+      targetUserId: String(entity.targetUserId ?? ""),
+      targetDisplayName: String(entity.targetDisplayName ?? ""),
+      createdAt: String(entity.createdAt ?? ""),
+    });
+    if (out.length >= limit) break;
+  }
+  out.sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
+  return out;
 }
 
 export async function muteMember(input: {

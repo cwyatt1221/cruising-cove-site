@@ -108,14 +108,25 @@ function buildTip(opts: {
   shipLabel: string;
   body: string[];
   links: TipLinks;
+  unsubUrl?: string;
 }): TipEmailContent {
   const site = siteBase();
   const greet = greeting(opts.name, opts.shipLabel);
   const paragraphs = opts.body;
   const textLinks = opts.links.map((l) => `- ${l.label}: ${site}${l.path}`).join("\n");
-  const text = [greet, "", ...paragraphs, "", "Helpful links:", textLinks, "", "— Cruising Cove", site].join(
-    "\n"
-  );
+  const unsub = (opts.unsubUrl || "").trim() || `${site}/newsletter/unsubscribe.html`;
+  const text = [
+    greet,
+    "",
+    ...paragraphs,
+    "",
+    "Helpful links:",
+    textLinks,
+    "",
+    "— Cruising Cove",
+    site,
+    `Unsubscribe: ${unsub}`,
+  ].join("\n");
   const htmlParas = paragraphs.map((p) => `<p>${escapeForEmail(p)}</p>`).join("\n");
   const htmlLinks = opts.links
     .map((l) => `<li><a href="${site}${l.path}">${escapeForEmail(l.label)}</a></li>`)
@@ -125,7 +136,8 @@ function buildTip(opts: {
     ${htmlParas}
     <p><strong>Helpful links</strong></p>
     <ul>${htmlLinks}</ul>
-    <p style="font-size:12px;color:#666">— Cruising Cove · <a href="${site}">${escapeForEmail(site)}</a></p>
+    <p style="font-size:12px;color:#666">— Cruising Cove · <a href="${site}">${escapeForEmail(site)}</a><br>
+    <a href="${escapeForEmail(unsub)}">Unsubscribe</a></p>
   `;
   return { html, text };
 }
@@ -140,16 +152,18 @@ function escapeForEmail(value: string): string {
 
 export function buildTipEmail(
   milestoneId: TipMilestoneId,
-  opts: { name: string; shipLabel: string; embarkationDate: string }
+  opts: { name: string; shipLabel: string; embarkationDate: string; unsubUrl?: string }
 ): TipEmailContent {
-  const { name, shipLabel, embarkationDate } = opts;
+  const { name, shipLabel, embarkationDate, unsubUrl } = opts;
   const dateNote = embarkationDate ? ` Embarkation: ${embarkationDate}.` : "";
+  const footer = { unsubUrl };
 
   switch (milestoneId) {
     case "d90":
       return buildTip({
         name,
         shipLabel,
+        ...footer,
         body: [
           `You're about 90 days out.${dateNote} This is a great window to confirm Castaway Club timing and start planning port adventures, dining, and kids clubs — windows open at different times by tier.`,
           "We don’t invent exact open dates here: use our booking-windows and Castaway Club guides so you know when your tier can book, then set a reminder in My Cruise if you like.",
@@ -165,6 +179,7 @@ export function buildTipEmail(
       return buildTip({
         name,
         shipLabel,
+        ...footer,
         body: [
           `About 60 days to go.${dateNote} Gather travel docs early (passports / birth certificates as needed), and note when online check-in opens for your sailing so you’re ready the moment it does.`,
           "Skim the sailing timeline and deposit / final-payment guide so due dates don’t sneak up. If anything looks off on your reservation, it’s easier to fix now than in the final weeks.",
@@ -179,6 +194,7 @@ export function buildTipEmail(
       return buildTip({
         name,
         shipLabel,
+        ...footer,
         body: [
           `One month out.${dateNote} Start a packing list, lock in must-do reservations (dining, spa, kids clubs where applicable), and peek at port days so you’re not improvising everything at the pier.`,
           "Kids clubs have age bands and registration steps — worth reading before you board. If you’re still sorting logistics, an agent can still help with changes.",
@@ -193,6 +209,7 @@ export function buildTipEmail(
       return buildTip({
         name,
         shipLabel,
+        ...footer,
         body: [
           `Two weeks out.${dateNote} Run through final payments if anything is still due, finish online check-in when it’s open, and walk the embarkation-day checklist so port morning feels calm.`,
           "Double-check what you need at the terminal (IDs, boarding docs, medication) and leave room in the suitcase for Pirate Night and any port days.",
@@ -207,6 +224,7 @@ export function buildTipEmail(
       return buildTip({
         name,
         shipLabel,
+        ...footer,
         body: [
           `Final week.${dateNote} Confirm arrival plans to the port, download any apps Disney recommends for your sailing, and set aside boarding documents where you’ll find them at 5 a.m.`,
           "A quick pass on seasickness prep, Wi‑Fi plans, and gratuities means fewer “wait, did we…?” moments once you’re onboard.",
@@ -221,6 +239,7 @@ export function buildTipEmail(
       return buildTip({
         name,
         shipLabel,
+        ...footer,
         body: [
           `It’s embarkation day — have an amazing cruise!${dateNote}`,
           "Keep IDs and boarding docs handy, follow your arrival window, and use the embarkation checklist if you want a last calm scan before you leave for the terminal.",

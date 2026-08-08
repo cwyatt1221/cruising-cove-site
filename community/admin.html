@@ -49,7 +49,7 @@
   <div class="wrap" style="max-width:960px;">
     <section class="agent-admin-panel">
       <h1>Community moderation</h1>
-      <p class="agent-admin-sub">Review recent posts and board chat, hide or delete content, and mute members on a sailing board.</p>
+      <p class="agent-admin-sub">Review member reports, recent posts and board chat, hide or delete content, and mute members on a sailing board. Reports do not auto-hide content.</p>
       <div class="agent-admin-key">
         <label for="adminPassword">Admin password</label>
         <input id="adminPassword" type="password" autocomplete="current-password">
@@ -66,7 +66,8 @@
         </div>
       </div>
       <div class="agent-admin-actions">
-        <button type="button" class="btn btn-gold" id="loadFeed">Recent content</button>
+        <button type="button" class="btn btn-gold" id="loadReports">Pending reports</button>
+        <button type="button" class="btn btn-outline" id="loadFeed">Recent content</button>
         <button type="button" class="btn btn-outline" id="loadMutes">Active mutes</button>
       </div>
       <p class="agent-admin-status" id="adminStatus" hidden></p>
@@ -82,7 +83,7 @@
   var statusEl = document.getElementById("adminStatus");
   var sailingFilter = document.getElementById("sailingFilter");
   var sailingKeys = document.getElementById("sailingKeys");
-  var mode = "feed";
+  var mode = "reports";
 
   function key() {
     return (window.CCAdminAuth && window.CCAdminAuth.getToken()) || "";
@@ -120,6 +121,61 @@
     if (item.deleted) html += '<span class="mod-badge danger">deleted</span>';
     else if (item.hidden) html += '<span class="mod-badge warn">hidden</span>';
     return html;
+  }
+
+  function renderReports(rows) {
+    if (!rows.length) {
+      list.innerHTML = "<p class='agent-admin-empty'>No pending reports.</p>";
+      return;
+    }
+    list.innerHTML =
+      "<h2>Pending reports <span>(" + rows.length + ")</span></h2>" +
+      rows
+        .map(function (row) {
+          return (
+            '<article class="agent-admin-card" data-kind="' +
+            escapeHtml(row.kind) +
+            '" data-id="' +
+            escapeHtml(row.targetId) +
+            '" data-sailing="' +
+            escapeHtml(row.sailingKey) +
+            '" data-user-id="' +
+            escapeHtml(row.targetUserId) +
+            '" data-display-name="' +
+            escapeHtml(row.targetDisplayName) +
+            '">' +
+            "<h3>" +
+            escapeHtml(row.targetDisplayName || "Member") +
+            ' <span class="mod-badge warn">reported</span>' +
+            ' <span class="mod-badge kind">' +
+            escapeHtml(row.kind || "") +
+            "</span></h3>" +
+            '<p class="agent-meta">' +
+            escapeHtml(row.sailingKey) +
+            (row.createdAt ? " · " + escapeHtml(row.createdAt) : "") +
+            "</p>" +
+            '<p class="agent-meta">Reporter: ' +
+            escapeHtml(row.reporterDisplayName || row.reporterUserId || "Member") +
+            "</p>" +
+            (row.reason
+              ? "<p class='agent-meta'>Reason: " + escapeHtml(row.reason) + "</p>"
+              : "") +
+            '<div class="mod-body">' +
+            escapeHtml(row.bodyPreview || "(no preview)") +
+            "</div>" +
+            '<div class="agent-admin-card-actions">' +
+            '<button type="button" class="btn btn-outline" data-action="hide">Hide</button>' +
+            '<button type="button" class="btn btn-outline" data-action="delete">Delete</button>' +
+            (row.targetUserId
+              ? '<button type="button" class="btn btn-gold" data-action="mute">Mute member</button>'
+              : "") +
+            '<a class="btn btn-outline" href="/community/sailing.html?key=' +
+            encodeURIComponent(row.sailingKey || "") +
+            '">Open board</a>' +
+            "</div></article>"
+          );
+        })
+        .join("");
   }
 
   function renderFeed(items) {
@@ -204,6 +260,31 @@
         .join("");
   }
 
+  async function loadReports() {
+    mode = "reports";
+    if (!key()) {
+      list.innerHTML = "<p class='agent-admin-empty'>Sign in with your admin password.</p>";
+      return;
+    }
+    list.innerHTML = "<p class='agent-admin-empty'>Loading…</p>";
+    statusEl.hidden = true;
+    try {
+      var url =
+        "/api/community/moderation?view=reports&key=" + encodeURIComponent(key()) + "&limit=80";
+      var sk = sailingParam();
+      if (sk) url += "&sailingKey=" + encodeURIComponent(sk);
+      var res = await fetch(url);
+      var data = await res.json().catch(function () {
+        return {};
+      });
+      if (!res.ok) throw new Error(data.error || "Failed to load");
+      renderReports(data.reports || []);
+    } catch (err) {
+      list.innerHTML =
+        "<p class='agent-admin-empty'>" + escapeHtml(err.message || "Failed") + "</p>";
+    }
+  }
+
   async function loadFeed() {
     mode = "feed";
     if (!key()) {
@@ -268,6 +349,7 @@
     return data;
   }
 
+  document.getElementById("loadReports").addEventListener("click", loadReports);
   document.getElementById("loadFeed").addEventListener("click", loadFeed);
   document.getElementById("loadMutes").addEventListener("click", loadMutes);
 
@@ -287,7 +369,8 @@
           id: card.getAttribute("data-id"),
         });
         showStatus(action === "hide" ? "Content hidden." : "Content deleted.", true);
-        loadFeed();
+        if (mode === "reports") loadReports();
+        else loadFeed();
         return;
       }
       if (action === "mute") {
@@ -307,6 +390,7 @@
         });
         showStatus("Member muted on this board.", true);
         if (mode === "mutes") loadMutes();
+        else if (mode === "reports") loadReports();
         else loadFeed();
         return;
       }
@@ -332,7 +416,7 @@
     logoutBtn: document.getElementById("adminLogoutBtn"),
     statusEl: statusEl,
     onReady: function () {
-      loadFeed();
+      loadReports();
     },
   });
 })();

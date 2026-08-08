@@ -1,11 +1,13 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import { adminAuthOk } from "../lib/adminAuth";
-import { corsJson } from "../lib/community";
+import { corsJson, requireUser } from "../lib/community";
 import {
   listModerationFeed,
   listMutes,
+  listPendingReports,
   moderateContent,
   muteMember,
+  reportContent,
   unmuteMember,
   type ModContentKind,
 } from "../lib/communityModeration";
@@ -33,6 +35,14 @@ export async function communityModerationGet(
       return corsJson(200, { mutes });
     }
 
+    if (view === "reports") {
+      const reports = await listPendingReports({
+        sailingKey: sailingKey || undefined,
+        limit,
+      });
+      return corsJson(200, { reports });
+    }
+
     const feed = await listModerationFeed({
       sailingKey: sailingKey || undefined,
       limit,
@@ -50,10 +60,6 @@ export async function communityModerationPost(
   request: HttpRequest,
   context: InvocationContext
 ): Promise<HttpResponseInit> {
-  if (!(await adminAuthOk(request))) {
-    return corsJson(401, { error: "Unauthorized." });
-  }
-
   let body: {
     action?: string;
     kind?: string;
@@ -70,6 +76,41 @@ export async function communityModerationPost(
 
   const action = String(body.action || "").trim().toLowerCase();
   const sailingKey = String(body.sailingKey || "").trim();
+
+  // Member report — community session auth (no admin key). Does not hide content.
+  if (action === "report") {
+    const user = await requireUser(request.headers);
+    if (!user) return corsJson(401, { error: "Sign in to report content." });
+    if (!isKind(body.kind)) {
+      return corsJson(400, { error: "kind must be post, reply, or chat." });
+    }
+    try {
+      const result = await reportContent({
+        sailingKey,
+        kind: body.kind,
+        id: String(body.id || "").trim(),
+        reason: body.reason,
+        reporter: {
+          userId: user.userId,
+          displayName: user.displayName,
+          email: user.email,
+        },
+      });
+      if (!result.ok) return corsJson(result.status, { error: result.error });
+      return corsJson(200, {
+        success: true,
+        reportId: result.reportId,
+        message: "Thanks — moderators will review this report.",
+      });
+    } catch (err) {
+      context.error("community report failed:", err);
+      return corsJson(500, { error: "Could not submit report." });
+    }
+  }
+
+  if (!(await adminAuthOk(request))) {
+    return corsJson(401, { error: "Unauthorized." });
+  }
 
   try {
     if (action === "hide" || action === "delete") {
@@ -105,7 +146,7 @@ export async function communityModerationPost(
       return corsJson(200, { success: true });
     }
 
-    return corsJson(400, { error: "action must be hide, delete, mute, or unmute." });
+    return corsJson(400, { error: "action must be hide, delete, mute, unmute, or report." });
   } catch (err) {
     context.error("communityModerationPost failed:", err);
     return corsJson(500, { error: "Could not apply moderation action." });

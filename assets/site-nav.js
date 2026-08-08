@@ -492,11 +492,18 @@
             }
             throw new Error((result.body && result.body.error) || "Something went wrong. Please try again.");
           }
-          setNewsletterStatus(
-            uid,
-            (result.body && result.body.message) || "You're on the list — thanks for joining.",
-            true
-          );
+          var okMsg =
+            (result.body && result.body.message) || "You're on the list — thanks for joining.";
+          setNewsletterStatus(uid, okMsg, true);
+          var statusEl = document.getElementById("ccNlStatus" + uid);
+          if (statusEl && !statusEl.querySelector("a")) {
+            statusEl.appendChild(document.createTextNode(" "));
+            var unsubLink = document.createElement("a");
+            unsubLink.href = "/newsletter/unsubscribe.html";
+            unsubLink.textContent = "Unsubscribe";
+            statusEl.appendChild(unsubLink);
+            statusEl.appendChild(document.createTextNode(" anytime."));
+          }
           form.reset();
           if (submitBtn) {
             submitBtn.disabled = false;

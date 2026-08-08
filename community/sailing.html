@@ -345,6 +345,31 @@
       });
   }
 
+  function reportContent(kind, id) {
+    if (!CC.getUser()) {
+      alert('Sign in to report content.');
+      return;
+    }
+    var reason = window.prompt('Optional note for moderators (why are you reporting this?):', '');
+    if (reason === null) return;
+    CC.api('/community/moderation', {
+      method: 'POST',
+      body: {
+        action: 'report',
+        kind: kind,
+        id: id,
+        sailingKey: key,
+        reason: reason
+      }
+    })
+      .then(function(data){
+        alert((data && data.message) || 'Thanks — moderators will review this report.');
+      })
+      .catch(function(err){
+        alert((err && err.message) || 'Could not submit report.');
+      });
+  }
+
   function renderChat(messages, silent) {
     var nextFp = (messages || []).map(function(m){ return m.id; }).join('|');
     var shouldStick = !silent || nearChatBottom();
@@ -362,6 +387,9 @@
     var myId = me && me.userId ? me.userId : '';
     chatList.innerHTML = messages.map(function(m){
       var mine = myId && m.userId === myId;
+      var reportBtn = (isMember && myId && !mine)
+        ? '<div class="post-actions"><button type="button" class="post-action" data-report-chat="' + CC.escapeHtml(m.id) + '">Report</button></div>'
+        : '';
       return (
         '<article class="chat-msg' + (mine ? ' mine' : '') + '" data-chat-id="' + CC.escapeHtml(m.id) + '">' +
           '<div class="meta">' +
@@ -369,9 +397,15 @@
             '<p class="when">' + CC.escapeHtml(CC.formatDate(m.createdAt)) + '</p>' +
           '</div>' +
           '<p class="body">' + CC.escapeHtml(m.body) + '</p>' +
+          reportBtn +
         '</article>'
       );
     }).join('');
+    chatList.querySelectorAll('[data-report-chat]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        reportContent('chat', btn.getAttribute('data-report-chat'));
+      });
+    });
     if (shouldStick) {
       chatList.scrollTop = chatList.scrollHeight;
     }
@@ -408,6 +442,8 @@
         actions +=
           '<button type="button" class="post-action" data-edit="' + CC.escapeHtml(p.id) + '">Edit</button>' +
           '<button type="button" class="post-action danger" data-delete="' + CC.escapeHtml(p.id) + '">Delete</button>';
+      } else if (isMember && myId) {
+        actions += '<button type="button" class="post-action" data-report-post="' + CC.escapeHtml(p.id) + '">Report</button>';
       }
       actions += '</div>';
 
@@ -418,12 +454,16 @@
           var rMine = myId && r.userId === myId;
           var rWhen = CC.formatDate(r.createdAt);
           if (r.updatedAt) rWhen += ' · edited';
-          var rActions = rMine
-            ? ('<div class="post-actions">' +
-                '<button type="button" class="post-action" data-edit-reply="' + CC.escapeHtml(r.id) + '" data-post="' + CC.escapeHtml(p.id) + '">Edit</button>' +
-                '<button type="button" class="post-action danger" data-delete-reply="' + CC.escapeHtml(r.id) + '" data-post="' + CC.escapeHtml(p.id) + '">Delete</button>' +
-              '</div>')
-            : '';
+          var rActions = '<div class="post-actions">';
+          if (rMine) {
+            rActions +=
+              '<button type="button" class="post-action" data-edit-reply="' + CC.escapeHtml(r.id) + '" data-post="' + CC.escapeHtml(p.id) + '">Edit</button>' +
+              '<button type="button" class="post-action danger" data-delete-reply="' + CC.escapeHtml(r.id) + '" data-post="' + CC.escapeHtml(p.id) + '">Delete</button>';
+          } else if (isMember && myId) {
+            rActions += '<button type="button" class="post-action" data-report-reply="' + CC.escapeHtml(r.id) + '">Report</button>';
+          }
+          rActions += '</div>';
+          if (!rMine && !(isMember && myId)) rActions = '';
           return (
             '<div class="reply-card" data-reply-id="' + CC.escapeHtml(r.id) + '">' +
               '<p class="by">' + CC.escapeHtml(r.displayName) + '</p>' +
@@ -562,6 +602,18 @@
         CC.api('/community/sailings/' + encodeURIComponent(key) + '/posts/' + encodeURIComponent(postId) + '/replies/' + encodeURIComponent(replyId), {
           method: 'DELETE'
         }).then(loadPosts).catch(function(err){ alert(err.message || 'Could not delete.'); });
+      });
+    });
+
+    postList.querySelectorAll('[data-report-post]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        reportContent('post', btn.getAttribute('data-report-post'));
+      });
+    });
+
+    postList.querySelectorAll('[data-report-reply]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        reportContent('reply', btn.getAttribute('data-report-reply'));
       });
     });
   }

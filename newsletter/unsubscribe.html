@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unsubscribe | Cruising Cove</title>
+<meta name="description" content="Unsubscribe from Cruising Cove newsletter and sailing tip emails.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+  .unsub-shell{max-width:520px;margin:0 auto;padding:2.5rem 1.25rem 4rem;}
+  .unsub-shell h1{font-family:var(--font-serif);font-size:clamp(1.8rem,4vw,2.4rem);font-weight:500;color:var(--navy);margin:0 0 .6rem;}
+  .unsub-shell .lede{color:var(--muted);font-size:1.02rem;line-height:1.55;margin:0 0 1.5rem;}
+  .unsub-form label{display:block;font-size:0.85rem;font-weight:600;color:var(--navy);margin:0 0 .35rem;}
+  .unsub-form input[type="email"]{
+    width:100%;padding:10px 12px;border:1px solid rgba(26,42,74,.18);border-radius:2px;
+    font:inherit;background:#fff;margin:0 0 1rem;
+  }
+  .unsub-form .actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+  .unsub-status{margin:1rem 0 0;font-size:0.95rem;line-height:1.5;}
+  .unsub-status.ok{color:var(--teal);}
+  .unsub-status.err{color:#8a2a2a;}
+  .unsub-status[hidden]{display:none !important;}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <nav class="site-nav-bar" aria-label="Primary">
+      <a class="logo" href="/">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M1 8c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0" stroke="#c9a24b" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </span>
+        Cruising Cove
+      </a>
+      <div class="nav-cta">
+        <a href="/" class="btn btn-outline">Home</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main class="unsub-shell">
+  <h1>Unsubscribe</h1>
+  <p class="lede" id="lede">Enter the email you used to join the Cruising Cove newsletter. We’ll stop newsletter and sailing tip emails for that address.</p>
+
+  <form class="unsub-form" id="unsubForm" novalidate>
+    <label for="email">Email</label>
+    <input id="email" name="email" type="email" maxlength="200" required autocomplete="email" placeholder="you@example.com">
+    <div class="actions">
+      <button type="submit" class="btn btn-gold" id="submitBtn">Unsubscribe</button>
+      <a class="btn btn-outline" href="/">Keep me subscribed</a>
+    </div>
+  </form>
+  <p class="unsub-status" id="status" role="status" aria-live="polite" hidden></p>
+</main>
+
+<script>
+(function () {
+  var form = document.getElementById("unsubForm");
+  var emailEl = document.getElementById("email");
+  var statusEl = document.getElementById("status");
+  var submitBtn = document.getElementById("submitBtn");
+  var lede = document.getElementById("lede");
+  var params = new URLSearchParams(window.location.search || "");
+  var token = (params.get("token") || "").trim();
+  var emailParam = (params.get("email") || "").trim();
+
+  function showStatus(msg, ok) {
+    statusEl.hidden = !msg;
+    statusEl.textContent = msg || "";
+    statusEl.className = "unsub-status" + (msg ? (ok ? " ok" : " err") : "");
+  }
+
+  function looksLikeEmail(v) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v || "").trim());
+  }
+
+  function unsubscribe(payload) {
+    submitBtn.disabled = true;
+    showStatus("Working…", true);
+    return fetch("/api/newsletter/unsubscribe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    })
+      .then(function (res) {
+        return res.json().then(function (body) {
+          return { ok: res.ok, body: body };
+        });
+      })
+      .then(function (result) {
+        if (!result.ok) {
+          throw new Error((result.body && result.body.error) || "Could not unsubscribe.");
+        }
+        form.hidden = true;
+        lede.textContent = "You're unsubscribed.";
+        showStatus(
+          (result.body && result.body.message) ||
+            "You're unsubscribed. You won't receive further Cruising Cove newsletter or sailing tip emails.",
+          true
+        );
+      })
+      .catch(function (err) {
+        showStatus((err && err.message) || "Something went wrong. Please try again.", false);
+        submitBtn.disabled = false;
+      });
+  }
+
+  if (emailParam) emailEl.value = emailParam;
+
+  if (token) {
+    lede.textContent = "Confirming your unsubscribe request…";
+    form.hidden = true;
+    unsubscribe({ token: token });
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var email = (emailEl.value || "").trim();
+    if (!looksLikeEmail(email)) {
+      showStatus("Please enter a valid email address.", false);
+      return;
+    }
+    unsubscribe({ email: email });
+  });
+})();
+</script>
+<script src="/assets/site-nav.js" defer></script>
+</body>
+</html>
