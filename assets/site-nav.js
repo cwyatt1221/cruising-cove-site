@@ -1103,12 +1103,99 @@
     document.head.appendChild(s);
   }
 
+  var VISITOR_SESSION_KEY = "cc_site_visit_counted";
+
+  function formatVisitorCount(n) {
+    var num = Number(n);
+    if (!Number.isFinite(num) || num < 0) return null;
+    return Math.floor(num).toLocaleString("en-US");
+  }
+
+  function visitorCaptionMode() {
+    if (window.matchMedia("(max-width:979px)").matches) return "mobile";
+    if (window.matchMedia("(max-width:1180px)").matches) return "short";
+    return "full";
+  }
+
+  function setVisitorCaptionText(el, total) {
+    var formatted = formatVisitorCount(total);
+    if (!formatted) {
+      el.hidden = true;
+      el.textContent = "";
+      return;
+    }
+    el.hidden = false;
+    el.setAttribute("data-count", String(Math.floor(Number(total))));
+    var mode = visitorCaptionMode();
+    var html;
+    if (mode === "mobile") {
+      html = "<strong>" + formatted + "</strong> guests ashore";
+    } else if (mode === "short") {
+      html = "Welcome aboard — <strong>" + formatted + "</strong> guests ashore";
+    } else {
+      html = "Welcome aboard — <strong>" + formatted + "</strong> guests have come ashore";
+    }
+    el.innerHTML = html;
+  }
+
+  function ensureVisitorCounter() {
+    var links = document.getElementById("primaryNav");
+    if (!links || links.querySelector("[data-cc-visitor-count]")) return;
+
+    var el = document.createElement("p");
+    el.className = "nav-visitor-count";
+    el.setAttribute("data-cc-visitor-count", "1");
+    el.setAttribute("aria-live", "polite");
+    el.hidden = true;
+    links.insertBefore(el, links.firstChild);
+
+    var counted = false;
+    try {
+      counted = sessionStorage.getItem(VISITOR_SESSION_KEY) === "1";
+    } catch (e) {
+      /* private mode */
+    }
+
+    var method = counted ? "GET" : "POST";
+    var opts = { method: method, credentials: "same-origin", cache: "no-store" };
+    if (method === "POST") {
+      opts.headers = { "Content-Type": "application/json" };
+      opts.body = "{}";
+    }
+    fetch("/api/site-visit", opts)
+      .then(function (res) {
+        if (!res.ok) throw new Error("visit " + res.status);
+        return res.json();
+      })
+      .then(function (data) {
+        if (!counted) {
+          try {
+            sessionStorage.setItem(VISITOR_SESSION_KEY, "1");
+          } catch (e) {
+            /* ignore */
+          }
+        }
+        setVisitorCaptionText(el, data && data.total);
+        if (!el._ccVisitorResize) {
+          el._ccVisitorResize = function () {
+            var n = el.getAttribute("data-count");
+            if (n != null) setVisitorCaptionText(el, n);
+          };
+          window.addEventListener("resize", el._ccVisitorResize);
+        }
+      })
+      .catch(function () {
+        el.hidden = true;
+      });
+  }
+
   ready(function () {
     enhanceToggle();
     normalizePrimaryNav();
     removeAuthLink();
     initDropdowns();
     markCurrent();
+    ensureVisitorCounter();
     ensurePrivacyNote();
     ensureFeedbackLink();
     ensureNewsletterFooter();

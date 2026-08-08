@@ -154,8 +154,10 @@ Each email includes name/id, timestamp, page URL (`path` JSON body or Referer), 
 | --- | --- |
 | `POST /api/events` | First-party click events (shop / agent CTAs) |
 | `GET /api/events-report?key=…&days=30` | Counts + recent events (`REPORT_ACCESS_KEY`) |
+| `GET /api/site-visit` | Current sitewide visitor total (no increment) |
+| `POST /api/site-visit` | Increment sitewide visitor total and return new count |
 
-Table: `SiteEvents`. Frontend loads Clarity + click tracker via `/assets/analytics.js`. Heatmaps/recordings: https://clarity.microsoft.com
+Tables: `SiteEvents`; `SiteStats` (partition `site` / row `visitors`, field `total`). Frontend loads Clarity + click tracker via `/assets/analytics.js`. Nav visitor caption in `/assets/site-nav.js` POSTs once per browser session (`sessionStorage`), then GETs on later pages. Heatmaps/recordings: https://clarity.microsoft.com
 
 ## What this does NOT do yet
 - No aggregation/report of top questions — that's the natural next piece to build.
