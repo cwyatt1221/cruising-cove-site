@@ -10,6 +10,7 @@ import {
   requireUser,
   table,
 } from "../lib/community";
+import { notifyMembersOfPost } from "../lib/communityNotify";
 
 async function assertMember(sailingKey: string, userId: string): Promise<boolean> {
   try {
@@ -141,9 +142,13 @@ export async function createPost(request: HttpRequest, context: InvocationContex
       createdAt: now,
     });
 
+    let shipName = "";
+    let embarkDate = "";
     try {
       const sailings = await table(SAILINGS_TABLE);
       const meta = await sailings.getEntity("sailing", key);
+      shipName = String(meta.shipName ?? "");
+      embarkDate = String(meta.embarkDate ?? "");
       await sailings.updateEntity(
         {
           partitionKey: "sailing",
@@ -156,6 +161,21 @@ export async function createPost(request: HttpRequest, context: InvocationContex
     } catch {
       /* best-effort */
     }
+
+    if (!shipName || !embarkDate) {
+      const parsed = parseSailingKey(key);
+      if (parsed) embarkDate = embarkDate || parsed.embarkDate;
+    }
+
+    // Await fan-out so Azure doesn't freeze mid-send; failures never fail the post.
+    await notifyMembersOfPost({
+      sailingKey: key,
+      actorUserId: user.userId,
+      actorName: user.displayName,
+      shipName: shipName || "Disney cruise",
+      embarkDate,
+      log: (...args) => context.warn(String(args[0]), ...args.slice(1)),
+    });
 
     return corsJson(200, {
       success: true,

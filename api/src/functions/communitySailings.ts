@@ -9,6 +9,7 @@ import {
   shipLabel,
   table,
 } from "../lib/community";
+import { notifyMembersOfJoin, wantsEmailNotify } from "../lib/communityNotify";
 
 const SHIPS = [
   "disney-wish",
@@ -109,8 +110,11 @@ export async function createOrJoinSailing(request: HttpRequest, context: Invocat
       created = true;
     }
 
+    let joinedNow = false;
+    let emailNotify = true;
     try {
-      await members.getEntity(key, user.userId);
+      const existingMember = await members.getEntity(key, user.userId);
+      emailNotify = wantsEmailNotify(existingMember.emailNotify);
     } catch {
       await members.createEntity({
         partitionKey: key,
@@ -118,7 +122,10 @@ export async function createOrJoinSailing(request: HttpRequest, context: Invocat
         email: user.email,
         displayName: user.displayName,
         joinedAt: now,
+        emailNotify: true,
       });
+      joinedNow = true;
+      emailNotify = true;
       try {
         const meta = await sailings.getEntity("sailing", key);
         await sailings.updateEntity(
@@ -136,6 +143,18 @@ export async function createOrJoinSailing(request: HttpRequest, context: Invocat
     }
 
     const meta = await sailings.getEntity("sailing", key);
+    if (joinedNow) {
+      // Await fan-out so Azure doesn't freeze mid-send; failures never fail join.
+      await notifyMembersOfJoin({
+        sailingKey: key,
+        actorUserId: user.userId,
+        actorName: user.displayName,
+        shipName: String(meta.shipName ?? shipName),
+        embarkDate: String(meta.embarkDate ?? parsed.embarkDate),
+        log: (...args) => context.warn(String(args[0]), ...args.slice(1)),
+      });
+    }
+
     return corsJson(200, {
       success: true,
       created,
@@ -150,6 +169,7 @@ export async function createOrJoinSailing(request: HttpRequest, context: Invocat
         memberCount: Number(meta.memberCount ?? 0),
         postCount: Number(meta.postCount ?? 0),
       },
+      emailNotify,
     });
   } catch (err) {
     context.error("createOrJoinSailing failed:", err);
@@ -167,10 +187,12 @@ export async function getSailing(request: HttpRequest, context: InvocationContex
     const meta = await sailings.getEntity("sailing", key);
     const user = await requireUser(request.headers);
     let isMember = false;
+    let emailNotify: boolean | null = null;
     if (user) {
       try {
-        await (await table(MEMBERS_TABLE)).getEntity(key, user.userId);
+        const member = await (await table(MEMBERS_TABLE)).getEntity(key, user.userId);
         isMember = true;
+        emailNotify = wantsEmailNotify(member.emailNotify);
       } catch {
         isMember = false;
       }
@@ -188,6 +210,7 @@ export async function getSailing(request: HttpRequest, context: InvocationContex
         postCount: Number(meta.postCount ?? 0),
       },
       isMember,
+      emailNotify,
       user,
     });
   } catch (err) {
@@ -196,10 +219,61 @@ export async function getSailing(request: HttpRequest, context: InvocationContex
   }
 }
 
+/** PATCH membership prefs — currently emailNotify only. */
+export async function updateSailingMembership(
+  request: HttpRequest,
+  context: InvocationContext
+): Promise<HttpResponseInit> {
+  if (request.method === "OPTIONS") return corsJson(204, {});
+
+  const user = await requireUser(request.headers);
+  if (!user) return corsJson(401, { error: "Sign in to update sailing preferences." });
+
+  const key = request.params.sailingKey;
+  if (!key || !parseSailingKey(key)) return corsJson(400, { error: "Invalid sailing key." });
+
+  let body: { emailNotify?: boolean };
+  try {
+    body = (await request.json()) as typeof body;
+  } catch {
+    return corsJson(400, { error: "Request body must be valid JSON." });
+  }
+
+  if (typeof body.emailNotify !== "boolean") {
+    return corsJson(400, { error: "emailNotify (boolean) is required." });
+  }
+
+  try {
+    const members = await table(MEMBERS_TABLE);
+    const existing = await members.getEntity(key, user.userId);
+    await members.updateEntity(
+      {
+        partitionKey: key,
+        rowKey: user.userId,
+        etag: existing.etag,
+        emailNotify: body.emailNotify,
+      },
+      "Merge"
+    );
+    return corsJson(200, { success: true, emailNotify: body.emailNotify });
+  } catch (err) {
+    context.error("updateSailingMembership failed:", err);
+    return corsJson(403, { error: "Join this sailing community before updating preferences." });
+  }
+}
+
 // SWA managed Functions only keep one registration per route — combine methods.
 async function sailingsCollection(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   if (request.method === "GET") return listSailings(request, context);
   if (request.method === "POST") return createOrJoinSailing(request, context);
+  return corsJson(204, {});
+}
+
+async function sailingItem(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
+  if (request.method === "GET") return getSailing(request, context);
+  if (request.method === "PATCH" || request.method === "PUT") {
+    return updateSailingMembership(request, context);
+  }
   return corsJson(204, {});
 }
 
@@ -211,8 +285,8 @@ app.http("sailingsCollection", {
 });
 
 app.http("getSailing", {
-  methods: ["GET", "OPTIONS"],
+  methods: ["GET", "PATCH", "PUT", "OPTIONS"],
   authLevel: "anonymous",
   route: "community/sailings/{sailingKey}",
-  handler: getSailing,
+  handler: sailingItem,
 });

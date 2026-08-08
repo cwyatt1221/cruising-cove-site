@@ -38,6 +38,18 @@
 .form-msg.error{color:#8b2e2e;}
 .form-msg.ok{color:var(--teal);}
 
+.email-notify-toggle{
+  display:inline-flex;align-items:center;gap:0.55rem;cursor:pointer;
+  font-size:0.92rem;color:var(--ink);user-select:none;
+}
+.email-notify-toggle input{
+  width:1.05rem;height:1.05rem;margin:0;accent-color:var(--teal);cursor:pointer;
+}
+.email-notify-hint{font-size:0.85rem;margin-left:0.35rem;}
+.email-notify-hint.ok{color:var(--teal);}
+.email-notify-hint.error{color:#8b2e2e;}
+#status .actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;}
+
 .post-list{margin:1.4rem 0 0;display:flex;flex-direction:column;gap:12px;}
 .post-card{
   background:var(--cream);border:1px solid rgba(26,42,74,.1);border-radius:2px;padding:1rem 1.15rem;

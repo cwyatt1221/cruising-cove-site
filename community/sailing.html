@@ -607,14 +607,39 @@
     }
   }
 
-  function setMembershipUI(member) {
+  function setMembershipUI(member, emailNotifyPref) {
     isMember = !!member;
     var signedIn = !!(CC.getToken() && CC.getUser());
     if (isMember) {
       document.getElementById('statusTitle').textContent = "You're a member";
       document.getElementById('statusCopy').textContent = (sailingMeta.memberCount || 0) + ' members · ' + (sailingMeta.postCount || 0) + ' posts — join Fish Extender, Pixie Dust, or Book trade below.';
-      statusActions.innerHTML = '';
+      var checked = emailNotifyPref !== false;
+      statusActions.innerHTML =
+        '<label class="email-notify-toggle">' +
+          '<input type="checkbox" id="emailNotifyToggle"' + (checked ? ' checked' : '') + '>' +
+          '<span>Email me about this sailing</span>' +
+        '</label>' +
+        '<span class="email-notify-hint" id="emailNotifyHint" hidden></span>';
       compose.hidden = false;
+      var toggle = document.getElementById('emailNotifyToggle');
+      var hint = document.getElementById('emailNotifyHint');
+      toggle.addEventListener('change', function(){
+        var next = !!toggle.checked;
+        hint.hidden = true;
+        CC.api('/community/sailings/' + encodeURIComponent(key), {
+          method: 'PATCH',
+          body: { emailNotify: next }
+        }).then(function(){
+          hint.hidden = false;
+          hint.className = 'email-notify-hint ok';
+          hint.textContent = next ? 'Email alerts on.' : 'Email alerts off.';
+        }).catch(function(err){
+          toggle.checked = !next;
+          hint.hidden = false;
+          hint.className = 'email-notify-hint error';
+          hint.textContent = err.message || 'Could not save preference.';
+        });
+      });
     } else if (signedIn) {
       document.getElementById('statusTitle').textContent = 'Join to post & gift lists';
       statusActions.innerHTML = '<button type="button" class="btn btn-gold" id="joinBtn">Join this sailing</button>';
@@ -720,7 +745,7 @@
       'Embarks ' + sailingMeta.embarkDate +
       (sailingMeta.departurePort ? ' · ' + sailingMeta.departurePort : '') +
       (sailingMeta.nights ? ' · ' + sailingMeta.nights + ' nights' : '');
-    setMembershipUI(!!data.isMember);
+    setMembershipUI(!!data.isMember, data.emailNotify);
     return loadPosts();
   }).catch(function(){
     document.getElementById('heroTitle').textContent = 'Sailing not found';

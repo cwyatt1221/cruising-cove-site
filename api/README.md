@@ -77,7 +77,8 @@ On-site sailing boards keyed by Disney ship + embarkation date:
 | `GET /api/community/me` | Current user |
 | `GET /api/community/sailings` | List boards |
 | `POST /api/community/sailings` | Create/join a board (auth required) |
-| `GET /api/community/sailings/{key}` | Board metadata + membership |
+| `GET /api/community/sailings/{key}` | Board metadata + membership + `emailNotify` (when member) |
+| `PATCH /api/community/sailings/{key}` | Update membership prefs (`emailNotify` boolean) |
 | `GET/POST /api/community/sailings/{key}/posts` | Message board (GET includes nested `replies`) |
 | `PATCH/DELETE /api/community/sailings/{key}/posts/{postId}` | Edit / delete own post (delete removes replies) |
 | `POST /api/community/sailings/{key}/posts/{postId}/replies` | Reply to a post (members only) |
@@ -87,11 +88,13 @@ On-site sailing boards keyed by Disney ship + embarkation date:
 
 Tables: `CommunityUsers`, `CommunitySessions`, `CommunitySailings`, `CommunityMembers`, `CommunityPosts`, `CommunityReplies`, `CommunitySignups`.
 
+**Board email notifications (v1):** When someone newly joins a sailing board, or posts on it, other members with an email on their community account are emailed via Resend (`sendEmail`). The actor (joiner/poster) is never emailed. Preference is stored on `CommunityMembers.emailNotify` (boolean, **on by default**; missing/legacy rows treated as on). Members can toggle “Email me about this sailing” on `/community/sailing.html`. Emails are short board links only — no cabin/passport content. Fan-out is best-effort (concurrency-limited); join/post still succeed if Resend fails. Requires `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, and optional `PUBLIC_SITE_URL`. Skipped for v1: FE/Pixie/Book trade signup emails, digests, push/SMS, in-app center.
+
 Requires the same `STORAGE_CONNECTION_STRING` as the rest of the API. Frontend: `/community/`.
 
 Fish Extender sign-ups require a cabin number. Pixie Dust cabin is optional. Book trade (`type: "book-trade"`) accepts optional `cabin`, `bringing`, `bringingNote`, `lookingFor`, `notes`, required `audience` (`kids` \| `adults` \| `both`), and optional `displayName` (defaults to community account name). Cabin and display name are visible to that sailing’s board viewers.
 
-Phase 2 (not built): live chat, DMs, moderation queue, email verification, FE matchmaking pairs.
+Phase 2 (not built): live chat, DMs, moderation queue, email verification, FE matchmaking pairs, gift-list signup emails.
 
 ## Agent directory applications
 
