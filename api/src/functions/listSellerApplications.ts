@@ -1,5 +1,12 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
-import { APPLICATIONS_TABLE, adminKeyOk, splitCsv, table } from "../lib/sellers";
+import {
+  APPLICATIONS_TABLE,
+  adminKeyOk,
+  parseSocialProofQuotes,
+  resolveCategories,
+  splitCsv,
+  table,
+} from "../lib/sellers";
 
 export async function listSellerApplications(
   request: HttpRequest,
@@ -34,6 +41,8 @@ export async function listSellerApplications(
         photoUrls: splitCsv(entity.photoUrls),
         productCategories: splitCsv(entity.productCategories),
         productCategoriesOther: entity.productCategoriesOther || "",
+        categories: resolveCategories(entity as Record<string, unknown>),
+        socialProofQuotes: parseSocialProofQuotes(entity.socialProofQuotes),
         socialLinks: {
           instagram: entity.instagramUrl || null,
           tiktok: entity.tiktokUrl || null,

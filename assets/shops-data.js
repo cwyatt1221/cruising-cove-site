@@ -1,7 +1,7 @@
 /**
  * Cruising Cove — Curated 10 marketplace shops.
  * Up to 10 featured shops. Add approved partners to SHOPS (max 10).
- * shop shape: { id, name, shopUrl, description, photoUrls: string[] }
+ * shop shape: { id, name, shopUrl, description, photoUrls, categories?, socialProofQuotes?, visitCount? }
  */
 window.CC_MAX_SHOPS = 10;
 window.CC_SHOPS = [
@@ -11,6 +11,20 @@ window.CC_SHOPS = [
     shopUrl: "https://belscastlecreations.etsy.com/",
     description:
       "At Bels Castle Creations, we create custom Disney cruise door magnets, fish extender gifts, cabin décor, and personalized keepsakes designed to make every sailing extra special. From one-of-a-kind family door decorations to thoughtful cruise gifts and celebration décor, our handcrafted designs help you make unforgettable memories from embarkation day to disembarkation.",
+    categories: [
+      "Door magnets",
+      "Fish extender gifts",
+      "Cabin décor",
+      "Personalized keepsakes",
+      "Celebration / birthday",
+    ],
+    socialProofQuotes: [
+      {
+        quote: "Our door magnets made embarkation day feel magical — and the fish extender gifts were a hit with the whole sailing.",
+        name: "Sarah",
+      },
+    ],
+    visitCount: 0,
     photoUrls: [
       "https://cruisingcovelogs.blob.core.windows.net/seller-photos/05cfe01c-b107-4bd2-844a-bb7101431e9c.jpg?sv=2026-06-06&spr=https&se=2036-08-06T00%3A38%3A41Z&sr=b&sp=r&sig=4b87vOZOu2cJd92jVcywl2lbJbq7GGO4yej%2FGHWBL7I%3D",
       "https://cruisingcovelogs.blob.core.windows.net/seller-photos/7ff34f23-20d7-47e2-a831-45d2b4d10abb.jpg?sv=2026-06-06&spr=https&se=2036-08-06T00%3A38%3A43Z&sr=b&sp=r&sig=iQi9O1QW%2FGpUUbEJLuvOpSK4NlHpkWKyTUYmydD%2FudI%3D",

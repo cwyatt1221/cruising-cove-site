@@ -16,6 +16,20 @@
     width:88px;height:88px;object-fit:cover;border-radius:2px;
     border:1px solid rgba(26,42,74,.12);background:var(--cream-2);
   }
+  .seller-admin-edit{
+    margin-top:14px;padding-top:14px;border-top:1px solid rgba(26,42,74,.1);
+    display:flex;flex-direction:column;gap:10px;
+  }
+  .seller-admin-edit label{display:flex;flex-direction:column;gap:4px;font-size:0.82rem;font-weight:600;color:var(--navy);}
+  .seller-admin-edit textarea,
+  .seller-admin-edit input[type="text"]{
+    font:inherit;font-weight:400;padding:8px 10px;border:1px solid rgba(26,42,74,.18);
+    border-radius:2px;background:#fff;color:var(--navy);
+  }
+  .seller-admin-cats{display:flex;flex-wrap:wrap;gap:8px 12px;font-weight:400;}
+  .seller-admin-cats label{flex-direction:row;align-items:center;gap:6px;font-weight:500;}
+  .seller-admin-cats input{width:auto;margin:0;}
+  .seller-admin-hint{font-size:0.78rem;font-weight:400;color:var(--muted);margin:0;}
 </style>
 </head>
 <body>
@@ -35,7 +49,7 @@
   <div class="wrap" style="max-width:960px;">
     <section class="agent-admin-panel">
       <h1>Marketplace seller applications</h1>
-      <p class="agent-admin-sub">Sign in with your admin password, then review Curated 10 submissions and publish approved shops (max 10 live).</p>
+      <p class="agent-admin-sub">Sign in with your admin password, then review Curated 10 submissions and publish approved shops (max 10 live). Edit category tags and social-proof quotes on live shops.</p>
       <div class="agent-admin-key">
         <label for="adminPassword">Admin password</label>
         <input id="adminPassword" type="password" autocomplete="current-password">
@@ -57,6 +71,19 @@
 <script src="/assets/admin-auth.js"></script>
 <script>
 (function () {
+  var CATEGORIES = [
+    "Door magnets",
+    "Fish extender gifts",
+    "Cabin décor",
+    "Personalized keepsakes",
+    "Celebration / birthday",
+    "Packing organizers",
+    "Lanyards & credentials",
+    "Luggage tags",
+    "Apparel",
+    "Printables"
+  ];
+
   var list = document.getElementById("adminList");
   var statusEl = document.getElementById("adminStatus");
 
@@ -98,6 +125,49 @@
     );
   }
 
+  function categoryChecks(selected) {
+    var selectedSet = {};
+    var extras = [];
+    (selected || []).forEach(function (c) {
+      var name = String(c || "").trim();
+      if (!name || selectedSet[name]) return;
+      selectedSet[name] = true;
+      if (CATEGORIES.indexOf(name) === -1) extras.push(name);
+    });
+    var all = CATEGORIES.concat(extras);
+    return (
+      '<div class="seller-admin-cats" data-categories>' +
+      all.map(function (cat) {
+        return (
+          '<label><input type="checkbox" value="' + escapeHtml(cat) + '"' +
+          (selectedSet[cat] ? " checked" : "") +
+          "> " + escapeHtml(cat) + "</label>"
+        );
+      }).join("") +
+      "</div>"
+    );
+  }
+
+  function firstQuote(quotes) {
+    if (!quotes || !quotes.length) return { quote: "", name: "" };
+    return {
+      quote: quotes[0].quote || "",
+      name: quotes[0].name || ""
+    };
+  }
+
+  function readEditFields(card) {
+    var cats = Array.from(card.querySelectorAll("[data-categories] input:checked")).map(function (el) {
+      return el.value;
+    });
+    var quoteEl = card.querySelector("[data-quote]");
+    var nameEl = card.querySelector("[data-quote-name]");
+    var quote = quoteEl ? quoteEl.value.trim() : "";
+    var name = nameEl ? nameEl.value.trim() : "";
+    var socialProofQuotes = quote ? [{ quote: quote, name: name || undefined }] : [];
+    return { categories: cats, socialProofQuotes: socialProofQuotes };
+  }
+
   function renderApps(rows, title) {
     if (!rows.length) {
       list.innerHTML = "<p class='agent-admin-empty'>No applications.</p>";
@@ -111,6 +181,8 @@
         var live = a.publishedSellerId
           ? "/marketplace/#" + encodeURIComponent(a.publishedSellerId)
           : "";
+        var cats = a.categories && a.categories.length ? a.categories : (a.productCategories || []);
+        var q = firstQuote(a.socialProofQuotes);
         return (
           '<article class="agent-admin-card" data-id="' + escapeHtml(a.id) + '" data-pk="' + escapeHtml(a.partitionKey) + '">' +
             '<div class="agent-admin-card-top">' +
@@ -129,7 +201,7 @@
             photosHtml(a.photoUrls) +
             "<p>" + escapeHtml(a.shopDescription) + "</p>" +
             '<div class="agent-tags">' +
-              (a.productCategories || []).map(function (s) {
+              cats.map(function (s) {
                 return '<span class="agent-tag">' + escapeHtml(s) + "</span>";
               }).join("") +
               (a.productCategoriesOther
@@ -164,6 +236,16 @@
                   escapeHtml(a.publishedSellerId || slugPreview(a.shopName)) +
                   '" ' + (a.publishedSellerId ? "readonly" : "") + ">" +
                   "</label>" +
+                  '<div class="seller-admin-edit">' +
+                    '<p class="seller-admin-hint">Category tags (shown on marketplace + filter chips)</p>' +
+                    categoryChecks(cats) +
+                    '<label>Social proof quote (optional)<textarea data-quote rows="2" placeholder="Short guest quote">' +
+                    escapeHtml(q.quote) +
+                    "</textarea></label>" +
+                    '<label>Reviewer first name (optional)<input type="text" data-quote-name value="' +
+                    escapeHtml(q.name) +
+                    '" placeholder="e.g. Sarah"></label>' +
+                  "</div>" +
                   '<button type="button" class="btn btn-gold" data-action="approve">' +
                   (approved ? "Update / re-publish" : "Publish to marketplace") +
                   "</button>" +
@@ -215,8 +297,9 @@
       list.innerHTML =
         "<h2>Live marketplace <span>(" + sellers.length + " of " + (data.max || 10) + ")</span></h2>" +
         sellers.map(function (s) {
+          var q = firstQuote(s.socialProofQuotes);
           return (
-            '<article class="agent-admin-card">' +
+            '<article class="agent-admin-card" data-seller-live-id="' + escapeHtml(s.id) + '">' +
               '<div class="agent-admin-card-top">' +
                 (s.photoUrls && s.photoUrls[0]
                   ? '<img class="agent-admin-photo" src="' + escapeHtml(s.photoUrls[0]) + '" alt="">'
@@ -227,8 +310,26 @@
                 '<p class="agent-meta"><a href="' + escapeHtml(s.shopUrl || s.etsyUrl || "") + '" target="_blank" rel="noopener noreferrer">' +
                 escapeHtml(s.shopUrl || s.etsyUrl || "") + "</a></p>" +
                 '<p class="agent-meta"><a href="/marketplace/#' + encodeURIComponent(s.id) +
-                '">/marketplace/#' + escapeHtml(s.id) + "</a></p></div></div>" +
+                '">/marketplace/#' + escapeHtml(s.id) + "</a></p>" +
+                '<p class="agent-meta">Visits: ' + escapeHtml(String(s.visitCount || 0)) + "</p>" +
+                "</div></div>" +
               "<p>" + escapeHtml(s.description) + "</p>" +
+              '<div class="agent-tags">' +
+                (s.categories || []).map(function (c) {
+                  return '<span class="agent-tag">' + escapeHtml(c) + "</span>";
+                }).join("") +
+              "</div>" +
+              '<div class="seller-admin-edit">' +
+                '<p class="seller-admin-hint">Edit tags &amp; social proof, then save</p>' +
+                categoryChecks(s.categories || []) +
+                '<label>Social proof quote<textarea data-quote rows="2" placeholder="Short guest quote">' +
+                escapeHtml(q.quote) +
+                "</textarea></label>" +
+                '<label>Reviewer first name<input type="text" data-quote-name value="' +
+                escapeHtml(q.name) +
+                '" placeholder="e.g. Sarah"></label>' +
+                '<button type="button" class="btn btn-gold" data-action="save-live">Save shop card</button>' +
+              "</div>" +
             "</article>"
           );
         }).join("");
@@ -242,12 +343,16 @@
     var pk = card.getAttribute("data-pk");
     var featuredEl = card.querySelector("[data-featured]");
     var idEl = card.querySelector("[data-seller-id]");
+    var edits = readEditFields(card);
     var payload = {
       partitionKey: pk,
       action: action,
       featured: featuredEl ? featuredEl.checked : false,
-      sellerId: idEl ? idEl.value.trim() : ""
+      sellerId: idEl ? idEl.value.trim() : "",
+      socialProofQuotes: edits.socialProofQuotes
     };
+    // Only override categories when the admin checked at least one (avoids wiping legacy tags)
+    if (edits.categories.length) payload.categories = edits.categories;
     var res = await fetch(
       "/api/seller-applications/" + encodeURIComponent(id) + "?key=" + encodeURIComponent(key()),
       {
@@ -258,6 +363,23 @@
     );
     var data = await res.json().catch(function () { return {}; });
     if (!res.ok) throw new Error(data.error || "Update failed");
+    return data;
+  }
+
+  async function saveLive(card) {
+    var id = card.getAttribute("data-seller-live-id");
+    if (!id) throw new Error("Missing seller id");
+    var edits = readEditFields(card);
+    var res = await fetch(
+      "/api/sellers/" + encodeURIComponent(id) + "?key=" + encodeURIComponent(key()),
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(edits)
+      }
+    );
+    var data = await res.json().catch(function () { return {}; });
+    if (!res.ok) throw new Error(data.error || "Save failed");
     return data;
   }
 
@@ -274,6 +396,12 @@
     var action = btn.getAttribute("data-action");
     btn.disabled = true;
     try {
+      if (action === "save-live") {
+        await saveLive(card);
+        showStatus("Live shop card updated.", true);
+        loadLive();
+        return;
+      }
       var data = await moderate(card, action);
       if (action === "approve") {
         showStatus("Published — live on the marketplace" + (data.marketplacePath ? " (" + data.marketplacePath + ")" : ""), true);

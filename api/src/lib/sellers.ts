@@ -4,6 +4,20 @@ export const APPLICATIONS_TABLE = "SellerApplications";
 export const PUBLISHED_TABLE = "PublishedSellers";
 export const MAX_PUBLISHED_SHOPS = 10;
 
+/** Canonical marketplace category tags (apply form + filters). */
+export const SELLER_CATEGORIES = [
+  "Door magnets",
+  "Fish extender gifts",
+  "Cabin décor",
+  "Personalized keepsakes",
+  "Celebration / birthday",
+  "Packing organizers",
+  "Lanyards & credentials",
+  "Luggage tags",
+  "Apparel",
+  "Printables",
+] as const;
+
 export { adminAuthOk as adminKeyOk } from "./adminAuth";
 
 export function table(name: string): TableClient {
@@ -28,11 +42,84 @@ export function splitCsv(value: unknown): string[] {
   return str ? str.split(", ").filter(Boolean) : [];
 }
 
-/** Public marketplace card payload. */
-export function toPublicSeller(entity: Record<string, unknown>) {
+export function joinCsv(arr: string[]): string {
+  return arr.filter(Boolean).join(", ");
+}
+
+export type SocialProofQuote = { quote: string; name?: string };
+
+export function parseSocialProofQuotes(value: unknown): SocialProofQuote[] {
+  if (!value) return [];
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => {
+        if (!item || typeof item !== "object") return null;
+        const quote = String((item as { quote?: unknown }).quote ?? "").trim();
+        if (!quote) return null;
+        const name = String((item as { name?: unknown }).name ?? "").trim();
+        return name ? { quote, name } : { quote };
+      })
+      .filter((q): q is SocialProofQuote => Boolean(q));
+  }
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (!trimmed) return [];
+    try {
+      return parseSocialProofQuotes(JSON.parse(trimmed));
+    } catch {
+      // Legacy: plain quote string
+      return [{ quote: trimmed.slice(0, 280) }];
+    }
+  }
+  return [];
+}
+
+export function serializeSocialProofQuotes(quotes: SocialProofQuote[]): string {
+  return JSON.stringify(
+    quotes
+      .map((q) => {
+        const quote = String(q.quote || "").trim().slice(0, 280);
+        if (!quote) return null;
+        const name = String(q.name || "").trim().slice(0, 60);
+        return name ? { quote, name } : { quote };
+      })
+      .filter(Boolean)
+  );
+}
+
+/** Resolve public category list from entity fields. */
+export function resolveCategories(entity: Record<string, unknown>): string[] {
+  // Prefer JSON `categories` when present (admin edits / newer rows)
+  if (typeof entity.categories === "string" && entity.categories.trim()) {
+    try {
+      const parsed = JSON.parse(entity.categories);
+      if (Array.isArray(parsed)) {
+        return parsed.map((c) => String(c).trim()).filter(Boolean);
+      }
+    } catch {
+      /* fall through */
+    }
+  }
+  if (Array.isArray(entity.categories)) {
+    return entity.categories.map((c) => String(c).trim()).filter(Boolean);
+  }
+
   const categories = splitCsv(entity.productCategories);
   const other = String(entity.productCategoriesOther ?? "").trim();
   if (other) categories.push(other);
+  return categories;
+}
+
+/** Public marketplace card payload. */
+export function toPublicSeller(entity: Record<string, unknown>) {
+  const quotes = parseSocialProofQuotes(entity.socialProofQuotes);
+  const visitRaw = entity.visitCount;
+  const visitCount =
+    typeof visitRaw === "number"
+      ? visitRaw
+      : typeof visitRaw === "string" && visitRaw.trim()
+        ? Number(visitRaw) || 0
+        : 0;
 
   return {
     id: String(entity.rowKey),
@@ -40,8 +127,10 @@ export function toPublicSeller(entity: Record<string, unknown>) {
     shopUrl: String(entity.shopUrl ?? entity.etsyShopUrl ?? entity.etsyUrl ?? ""),
     description: String(entity.shopDescription ?? entity.description ?? ""),
     photoUrls: splitCsv(entity.photoUrls),
-    categories,
+    categories: resolveCategories(entity),
     featured: Boolean(entity.featured),
+    socialProofQuotes: quotes,
+    visitCount: Math.max(0, Math.floor(visitCount)),
     socialLinks: {
       instagram: entity.instagramUrl ? String(entity.instagramUrl) : null,
       tiktok: entity.tiktokUrl ? String(entity.tiktokUrl) : null,
@@ -59,4 +148,70 @@ export async function countPublishedSellers(): Promise<number> {
     if (!entity.status || entity.status === "published") n += 1;
   }
   return n;
+}
+
+/** One-time-friendly defaults for founding shop Bels Castle Creations. */
+export const BELS_CASTLE_DEFAULTS = {
+  categories: [
+    "Door magnets",
+    "Fish extender gifts",
+    "Cabin décor",
+    "Personalized keepsakes",
+    "Celebration / birthday",
+  ],
+  socialProofQuotes: [
+    {
+      quote:
+        "Our door magnets made embarkation day feel magical — and the fish extender gifts were a hit with the whole sailing.",
+      name: "Sarah",
+    },
+  ] as SocialProofQuote[],
+};
+
+/**
+ * If a known founding shop is live without tags/quotes, persist sensible defaults.
+ * Safe to call on every list — only writes when fields are empty.
+ */
+export async function maybeBackfillFoundingSeller(
+  entity: Record<string, unknown>
+): Promise<Record<string, unknown>> {
+  const id = String(entity.rowKey || "");
+  if (id !== "bels-castle-creations") return entity;
+
+  const categories = resolveCategories(entity);
+  const quotes = parseSocialProofQuotes(entity.socialProofQuotes);
+  const needsCategories = categories.length === 0;
+  const needsQuotes = quotes.length === 0;
+  if (!needsCategories && !needsQuotes) return entity;
+
+  const patch: {
+    partitionKey: string;
+    rowKey: string;
+    categories?: string;
+    productCategories?: string;
+    socialProofQuotes?: string;
+  } = {
+    partitionKey: "directory",
+    rowKey: id,
+  };
+
+  let next = { ...entity };
+  if (needsCategories) {
+    patch.categories = JSON.stringify(BELS_CASTLE_DEFAULTS.categories);
+    patch.productCategories = joinCsv([...BELS_CASTLE_DEFAULTS.categories]);
+    next = { ...next, ...patch };
+  }
+  if (needsQuotes) {
+    patch.socialProofQuotes = serializeSocialProofQuotes(BELS_CASTLE_DEFAULTS.socialProofQuotes);
+    next = { ...next, socialProofQuotes: patch.socialProofQuotes };
+  }
+
+  try {
+    const client = table(PUBLISHED_TABLE);
+    await client.updateEntity(patch, "Merge");
+  } catch {
+    /* non-fatal — still return enriched public payload */
+  }
+
+  return next;
 }

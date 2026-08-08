@@ -1,5 +1,11 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
-import { MAX_PUBLISHED_SHOPS, PUBLISHED_TABLE, table, toPublicSeller } from "../lib/sellers";
+import {
+  MAX_PUBLISHED_SHOPS,
+  PUBLISHED_TABLE,
+  maybeBackfillFoundingSeller,
+  table,
+  toPublicSeller,
+} from "../lib/sellers";
 
 export async function listPublishedSellers(
   request: HttpRequest,
@@ -16,7 +22,8 @@ export async function listPublishedSellers(
 
     for await (const entity of client.listEntities()) {
       if (entity.status && entity.status !== "published") continue;
-      sellers.push(toPublicSeller(entity as Record<string, unknown>));
+      const enriched = await maybeBackfillFoundingSeller(entity as Record<string, unknown>);
+      sellers.push(toPublicSeller(enriched));
     }
 
     sellers.sort((a, b) => {

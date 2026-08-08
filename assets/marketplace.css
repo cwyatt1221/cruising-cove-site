@@ -34,16 +34,57 @@
   .mp-card-photos.single{grid-template-rows:220px;}
 }
 .mp-card-body{padding:20px 22px 22px;display:flex;flex-direction:column;flex:1;gap:10px;}
+.mp-card-cats{display:flex;flex-wrap:wrap;gap:6px;}
 .mp-cat{
-  font-size:0.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:0;
+  display:inline-block;font-size:0.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--navy);background:rgba(201,162,75,.16);padding:4px 8px;border-radius:2px;margin:0;
 }
 .mp-card h3{font-family:var(--font-serif);font-size:1.35rem;font-weight:500;color:var(--navy);margin:0;}
 .mp-card p{
   font-size:0.92rem;line-height:1.55;color:var(--muted);margin:0;flex:1;
   display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;
 }
-.mp-card-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px;}
+.mp-quote{
+  margin:0;padding:10px 12px;border-left:3px solid rgba(201,162,75,.65);
+  background:rgba(26,42,74,.03);border-radius:0 2px 2px 0;
+}
+.mp-quote p{
+  font-size:0.88rem;line-height:1.45;color:var(--navy);font-style:italic;margin:0;
+  display:block;-webkit-line-clamp:unset;overflow:visible;
+}
+.mp-quote cite{
+  display:block;margin-top:6px;font-size:0.78rem;font-style:normal;font-weight:600;
+  letter-spacing:.04em;color:var(--muted);
+}
+.mp-card-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:6px;}
 .mp-card-actions .btn{font-size:0.82rem;padding:9px 14px;}
+.mp-visits{
+  font-size:0.78rem;color:var(--muted);letter-spacing:.02em;
+}
+.mp-visits[hidden]{display:none !important;}
+
+.mp-filters{
+  display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;margin:0 0 22px;
+}
+.mp-filters[hidden]{display:none !important;}
+.mp-filters-label{
+  font-size:0.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+}
+.mp-filter-chips{display:flex;flex-wrap:wrap;gap:8px;}
+.mp-chip{
+  appearance:none;border:1px solid rgba(26,42,74,.14);background:var(--cream);
+  color:var(--navy);font:inherit;font-size:0.8rem;font-weight:600;padding:7px 12px;
+  border-radius:2px;cursor:pointer;line-height:1.2;
+}
+.mp-chip:hover{border-color:rgba(201,162,75,.55);}
+.mp-chip.is-active{
+  background:var(--navy);color:var(--cream);border-color:var(--navy);
+}
+.mp-filter-reset{
+  appearance:none;border:0;background:none;padding:0;margin:0 0 0 4px;
+  color:var(--navy);font:inherit;font-weight:600;text-decoration:underline;
+  text-underline-offset:2px;cursor:pointer;
+}
 .mp-open-label{
   font-size:0.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
   color:var(--teal);margin:0;

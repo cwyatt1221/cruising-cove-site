@@ -93,8 +93,14 @@
   <span class="mp-count" id="slotCount">0 of 10 spots filled</span>
   <p class="mp-note">Listings appear here once a shop is approved. Spots remain for founding partners — <a href="/marketplace/sellers/">apply for a slot</a>.</p>
 
+  <div class="mp-filters" id="shopFilters" hidden>
+    <span class="mp-filters-label">Filter by</span>
+    <div class="mp-filter-chips" id="filterChips" role="group" aria-label="Shop categories"></div>
+  </div>
+
   <div class="mp-grid" id="shopGrid"></div>
   <p class="mp-empty" id="emptyState" hidden>No shops listed yet — founding partners are being selected. <a href="/marketplace/sellers/">Apply for a spot</a>.</p>
+  <p class="mp-empty" id="filterEmpty" hidden>No shops match that category. <button type="button" class="mp-filter-reset" id="filterReset">Show all shops</button></p>
 
   <div class="mp-band">
     <div>
@@ -121,13 +127,106 @@
 
     var grid=document.getElementById('shopGrid');
     var empty=document.getElementById('emptyState');
+    var filterEmpty=document.getElementById('filterEmpty');
+    var filterReset=document.getElementById('filterReset');
     var slotCount=document.getElementById('slotCount');
+    var filtersEl=document.getElementById('shopFilters');
+    var chipsEl=document.getElementById('filterChips');
+    var allShops=[];
+    var activeFilter='';
+    var maxSlots=10;
 
-    function render(shops, max){
-      max = max || window.CC_MAX_SHOPS || 10;
-      grid.innerHTML = '';
-      slotCount.textContent = shops.length + ' of ' + max + ' spots filled';
-      empty.hidden = shops.length > 0;
+    function escapeHtml(str){
+      return String(str==null?'':str)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;');
+    }
+
+    function visitLabel(n){
+      var count=Math.max(0, Math.floor(Number(n)||0));
+      if(count<=0) return '';
+      return count===1 ? '1 visit' : count+' visits';
+    }
+
+    function sessionKey(id){
+      return 'cc_shop_visit_'+String(id||'');
+    }
+
+    function alreadyVisitedThisSession(id){
+      try{ return sessionStorage.getItem(sessionKey(id))==='1'; }catch(_){ return false; }
+    }
+
+    function markVisitedThisSession(id){
+      try{ sessionStorage.setItem(sessionKey(id),'1'); }catch(_){}
+    }
+
+    function recordVisit(shopId, countEl){
+      if(!shopId || alreadyVisitedThisSession(shopId)) return;
+      markVisitedThisSession(shopId);
+      fetch('/api/sellers/'+encodeURIComponent(shopId)+'/visit',{ method:'POST' })
+        .then(function(res){ return res.json().then(function(data){ return { ok:res.ok, data:data }; }); })
+        .then(function(result){
+          if(!result.ok) return;
+          var n=result.data && typeof result.data.visitCount==='number' ? result.data.visitCount : null;
+          if(n==null) return;
+          // Keep in-memory list in sync for re-filters
+          for(var i=0;i<allShops.length;i++){
+            if(allShops[i].id===shopId){ allShops[i].visitCount=n; break; }
+          }
+          if(countEl){
+            countEl.hidden=false;
+            countEl.textContent=visitLabel(n);
+          }
+        })
+        .catch(function(){});
+    }
+
+    function uniqueCategories(shops){
+      var seen={};
+      var out=[];
+      shops.forEach(function(shop){
+        (shop.categories||[]).forEach(function(cat){
+          var c=String(cat||'').trim();
+          if(!c || seen[c]) return;
+          seen[c]=true;
+          out.push(c);
+        });
+      });
+      out.sort(function(a,b){ return a.localeCompare(b); });
+      return out;
+    }
+
+    function renderFilters(){
+      var cats=uniqueCategories(allShops);
+      if(!cats.length){
+        filtersEl.hidden=true;
+        chipsEl.innerHTML='';
+        return;
+      }
+      filtersEl.hidden=false;
+      var html='<button type="button" class="mp-chip'+(activeFilter?'':' is-active')+'" data-filter="">All</button>';
+      cats.forEach(function(cat){
+        html+='<button type="button" class="mp-chip'+(activeFilter===cat?' is-active':'')+'" data-filter="'+escapeHtml(cat)+'">'+escapeHtml(cat)+'</button>';
+      });
+      chipsEl.innerHTML=html;
+    }
+
+    function filteredShops(){
+      if(!activeFilter) return allShops;
+      return allShops.filter(function(shop){
+        return (shop.categories||[]).indexOf(activeFilter)!==-1;
+      });
+    }
+
+    function render(){
+      var shops=filteredShops();
+      grid.innerHTML='';
+      slotCount.textContent=allShops.length+' of '+maxSlots+' spots filled';
+      empty.hidden=allShops.length>0;
+      filterEmpty.hidden=!(allShops.length>0 && shops.length===0);
+      renderFilters();
 
       shops.forEach(function(shop){
         var photos=(shop.photoUrls||[]).slice(0,3);
@@ -142,32 +241,85 @@
         }
         photoHtml+='</div>';
 
+        var cats=(shop.categories||[]).filter(Boolean);
+        var catHtml=cats.length
+          ? '<div class="mp-card-cats">'+cats.map(function(c){
+              return '<span class="mp-cat">'+escapeHtml(c)+'</span>';
+            }).join('')+'</div>'
+          : '';
+
+        var quotes=shop.socialProofQuotes||[];
+        var quote=quotes[0];
+        var quoteHtml='';
+        if(quote && quote.quote){
+          quoteHtml=
+            '<blockquote class="mp-quote">'+
+              '<p>“'+escapeHtml(quote.quote)+'”</p>'+
+              (quote.name ? '<cite>— '+escapeHtml(quote.name)+'</cite>' : '')+
+            '</blockquote>';
+        }
+
+        var visits=visitLabel(shop.visitCount);
+        var visitsHtml=visits
+          ? '<span class="mp-visits" data-visit-count>'+escapeHtml(visits)+'</span>'
+          : '<span class="mp-visits" data-visit-count hidden></span>';
+
         var card=document.createElement('article');
         card.className='mp-card';
-        if(shop.id) card.id = shop.id;
+        if(shop.id) card.id=shop.id;
         card.innerHTML=
           photoHtml+
           '<div class="mp-card-body">'+
-            '<h3>'+shop.name+'</h3>'+
-            '<p>'+(shop.description||'')+'</p>'+
+            catHtml+
+            '<h3>'+escapeHtml(shop.name)+'</h3>'+
+            '<p>'+escapeHtml(shop.description||'')+'</p>'+
+            quoteHtml+
             '<div class="mp-card-actions">'+
-              '<a class="btn btn-gold" href="'+(shop.shopUrl||shop.etsyUrl||'#')+'" target="_blank" rel="noopener noreferrer" data-cc-event="shop_click" data-cc-id="'+(shop.id||'')+'" data-shop-id="'+(shop.id||'')+'">Visit shop</a>'+
+              '<a class="btn btn-gold" href="'+escapeHtml(shop.shopUrl||shop.etsyUrl||'#')+'" target="_blank" rel="noopener noreferrer" data-cc-event="shop_click" data-cc-id="'+escapeHtml(shop.id||'')+'" data-shop-id="'+escapeHtml(shop.id||'')+'" data-visit-shop="1">Visit shop</a>'+
+              visitsHtml+
             '</div>'+
           '</div>';
         grid.appendChild(card);
       });
     }
 
+    chipsEl.addEventListener('click',function(e){
+      var chip=e.target.closest('[data-filter]');
+      if(!chip) return;
+      activeFilter=chip.getAttribute('data-filter')||'';
+      render();
+    });
+
+    if(filterReset){
+      filterReset.addEventListener('click',function(){
+        activeFilter='';
+        render();
+      });
+    }
+
+    grid.addEventListener('click',function(e){
+      var link=e.target.closest('[data-visit-shop]');
+      if(!link) return;
+      var shopId=link.getAttribute('data-shop-id')||link.getAttribute('data-cc-id')||'';
+      var card=link.closest('.mp-card');
+      var countEl=card ? card.querySelector('[data-visit-count]') : null;
+      recordVisit(shopId, countEl);
+    });
+
     async function load(){
       try{
-        var res = await fetch('/api/sellers');
-        var data = await res.json();
+        var res=await fetch('/api/sellers');
+        var data=await res.json();
         if(res.ok && Array.isArray(data.sellers)){
-          render(data.sellers, data.max || 10);
+          allShops=data.sellers;
+          maxSlots=data.max||10;
+          render();
           return;
         }
       }catch(_){}
-      render(window.CC_SHOPS || [], window.CC_MAX_SHOPS || 10);
+      allShops=window.CC_SHOPS||[];
+      maxSlots=window.CC_MAX_SHOPS||10;
+      render();
     }
 
     load();

@@ -5,6 +5,9 @@ import {
   PUBLISHED_TABLE,
   adminKeyOk,
   countPublishedSellers,
+  joinCsv,
+  parseSocialProofQuotes,
+  serializeSocialProofQuotes,
   slugifyName,
   table,
   toPublicSeller,
@@ -15,6 +18,11 @@ interface ModerateBody {
   action?: string;
   featured?: boolean;
   sellerId?: string;
+  /** Override categories when approving / re-publishing */
+  categories?: string[];
+  productCategories?: string[];
+  productCategoriesOther?: string;
+  socialProofQuotes?: unknown;
 }
 
 async function uniqueSellerId(preferred: string): Promise<string> {
@@ -141,6 +149,55 @@ export async function moderateSellerApplication(
     const sellerId = existingId || (await uniqueSellerId(preferred));
     const featured = Boolean(body.featured);
 
+    const catsSource = body.categories ?? body.productCategories;
+    let productCategories = String(application.productCategories || "").trim();
+    let productCategoriesOther =
+      body.productCategoriesOther !== undefined
+        ? String(body.productCategoriesOther || "").trim()
+        : String(application.productCategoriesOther || "").trim();
+    let categoriesJson = "";
+
+    if (Array.isArray(catsSource)) {
+      const categories = catsSource.map((c) => String(c).trim()).filter(Boolean);
+      productCategories = joinCsv(categories);
+      categoriesJson = JSON.stringify(categories);
+      if (body.productCategoriesOther === undefined) productCategoriesOther = "";
+    } else if (productCategories) {
+      // Mirror CSV into JSON for newer readers
+      categoriesJson = JSON.stringify(
+        productCategories
+          .split(", ")
+          .map((c) => c.trim())
+          .filter(Boolean)
+          .concat(productCategoriesOther ? [productCategoriesOther] : [])
+      );
+    }
+
+    let socialProofQuotes = String(application.socialProofQuotes || "").trim();
+    if (body.socialProofQuotes !== undefined) {
+      socialProofQuotes = serializeSocialProofQuotes(parseSocialProofQuotes(body.socialProofQuotes));
+    }
+
+    // Preserve visit counter on re-publish
+    let visitCount = 0;
+    if (existingId) {
+      try {
+        const prev = await published.getEntity("directory", existingId);
+        const raw = (prev as { visitCount?: unknown }).visitCount;
+        visitCount =
+          typeof raw === "number"
+            ? Math.max(0, Math.floor(raw))
+            : typeof raw === "string" && raw.trim()
+              ? Math.max(0, Math.floor(Number(raw) || 0))
+              : 0;
+        if (!socialProofQuotes && (prev as { socialProofQuotes?: unknown }).socialProofQuotes) {
+          socialProofQuotes = String((prev as { socialProofQuotes?: unknown }).socialProofQuotes || "");
+        }
+      } catch {
+        /* new or missing row — start at 0 */
+      }
+    }
+
     const entity = {
       partitionKey: "directory",
       rowKey: sellerId,
@@ -152,8 +209,11 @@ export async function moderateSellerApplication(
       emailNotify: String(application.email || "").trim(),
       shopDescription: String(application.shopDescription || "").trim(),
       photoUrls: String(application.photoUrls || "").trim(),
-      productCategories: String(application.productCategories || "").trim(),
-      productCategoriesOther: String(application.productCategoriesOther || "").trim(),
+      productCategories,
+      productCategoriesOther,
+      categories: categoriesJson,
+      socialProofQuotes,
+      visitCount,
       audienceSize: String(application.audienceSize || "").trim(),
       willingToBarter: String(application.willingToBarter || "").trim(),
       otherNotes: String(application.otherNotes || "").trim(),
@@ -189,6 +249,10 @@ export async function moderateSellerApplication(
         moderatedAt: now,
         publishedSellerId: sellerId,
         featured,
+        productCategories,
+        productCategoriesOther,
+        categories: categoriesJson,
+        socialProofQuotes,
       },
       "Merge"
     );

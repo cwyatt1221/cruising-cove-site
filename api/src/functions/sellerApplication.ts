@@ -16,6 +16,8 @@ interface SellerApplicationInput {
   shopDescription?: string;
   photoUrls?: string[];
   productCategories?: string[];
+  /** Alias for productCategories (marketplace tags) */
+  categories?: string[];
   productCategoriesOther?: string;
   instagramUrl?: string;
   tiktokUrl?: string;
@@ -61,15 +63,24 @@ export async function submitSellerApplication(request: HttpRequest, context: Inv
     return { status: 400, jsonBody: { error: "Upload at least one product photo." } };
   }
 
-  const productCategories = Array.isArray(body.productCategories)
-    ? body.productCategories.map((c) => String(c).trim()).filter(Boolean)
-    : [];
+  const productCategories = (
+    Array.isArray(body.productCategories)
+      ? body.productCategories
+      : Array.isArray(body.categories)
+        ? body.categories
+        : []
+  )
+    .map((c) => String(c).trim())
+    .filter(Boolean);
   const productCategoriesOther = String(body.productCategoriesOther ?? "").trim();
   if (productCategories.length === 0 && !productCategoriesOther) {
     return { status: 400, jsonBody: { error: "Select at least one product category (or describe one under Other)." } };
   }
 
   const photoUrls = (body.photoUrls ?? []).slice(0, MAX_PHOTOS);
+  const categoriesJson = JSON.stringify(
+    productCategories.concat(productCategoriesOther ? [productCategoriesOther] : [])
+  );
 
   try {
     const client = await getTableClient();
@@ -87,6 +98,7 @@ export async function submitSellerApplication(request: HttpRequest, context: Inv
       photoUrls: csv(photoUrls),
       productCategories: csv(productCategories),
       productCategoriesOther: productCategoriesOther,
+      categories: categoriesJson,
       instagramUrl: body.instagramUrl ?? "",
       tiktokUrl: body.tiktokUrl ?? "",
       facebookUrl: body.facebookUrl ?? "",

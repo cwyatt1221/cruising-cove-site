@@ -128,8 +128,10 @@ Shops apply for one of ten marketplace slots:
 | `GET /api/seller-applications?key=…` | List apps (`REPORT_ACCESS_KEY`) |
 | `POST /api/seller-applications/{id}?key=…` | Approve / reject / unpublish (`REPORT_ACCESS_KEY`) |
 | `GET /api/sellers` | Public published marketplace cards (max 10) |
+| `POST /api/sellers/{id}/visit` | Increment shop visit counter (once per browser session on the client) |
+| `POST /api/sellers/{id}?key=…` | Admin edit categories + social-proof quotes on a live shop |
 
-Tables: `SellerApplications`, `PublishedSellers`. Frontend: `/marketplace/sellers/`, admin at `/marketplace/sellers/admin.html`, live directory at `/marketplace/`.
+Tables: `SellerApplications`, `PublishedSellers`. Public card fields include `categories`, `socialProofQuotes`, and `visitCount`. Frontend: `/marketplace/sellers/`, admin at `/marketplace/sellers/admin.html`, live directory at `/marketplace/`.
 
 ## Analytics
 
