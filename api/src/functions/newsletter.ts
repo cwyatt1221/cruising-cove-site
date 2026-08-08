@@ -126,6 +126,7 @@ export async function submitNewsletter(
       shipLabel,
       embarkationDate,
       sailingTips: wantsSailingTips,
+      tipsSent: "[]",
       pageUrl,
       submittedAt,
     });

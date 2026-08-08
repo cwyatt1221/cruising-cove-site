@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "prestart": "npm run build",
-    "start": "func start"
+    "start": "func start",
+    "test:newsletter-tips": "tsc && node dist/src/lib/newsletterTips.test.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.0",

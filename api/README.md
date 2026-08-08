@@ -28,6 +28,44 @@ Tables: `PlannerTrips`, `PlannerReviews`, `PlannerSuggestions`, `PlannerPackingI
 
 Frontend: `/planning/my-cruise.html`. Admin UI: `/planning/my-cruise-admin.html`.
 
+## Newsletter & sailing tip drips
+
+| Route / job | Purpose |
+| --- | --- |
+| `POST /api/newsletter` | Store signup (`NewsletterSignups`); owner notify via Resend |
+| Timer `newsletterTipsTimer` | Daily **14:00 UTC** — tip emails to subscribers with `sailingTips` + `embarkationDate` |
+| `GET/POST /api/newsletter/tips/run?key=…&dryRun=1` | Manual/admin run (`REPORT_ACCESS_KEY`); use `dryRun=1` to preview without sending |
+
+Table: `NewsletterSignups` (partitionKey = email, rowKey = signup id). Tip idempotency: `tipsSent` JSON array of milestone ids (`d90`, `d60`, `d30`, `d14`, `d7`, `d0`), plus `lastTipSentAt` / `lastTipMilestone` after a send. Past embarkation dates are skipped (no post-cruise drip in v1).
+
+Milestone windows (days until embark, UTC):
+
+| Id | Window | Subject style |
+| --- | --- | --- |
+| `d90` | 61–90 | `{Ship} sailing tip: 90 days to go` |
+| `d60` | 31–60 | …60 days to go |
+| `d30` | 15–30 | …30 days to go |
+| `d14` | 8–14 | …14 days to go |
+| `d7` | 1–7 | …7 days to go |
+| `d0` | 0 | …embarkation day |
+
+Tips link to real planning pages (booking windows, Castaway Club, packing list, kids clubs, embarkation checklist, agents, etc.). Requires `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `STORAGE_CONNECTION_STRING`; optional `PUBLIC_SITE_URL`, `NEWSLETTER_NOTIFY_EMAIL` (owner notify on signup only — tip emails go to the subscriber).
+
+Frontend signup: homepage / nav newsletter form in `assets/site-nav.js`.
+
+### Local test
+
+```bash
+cd api
+npm install
+npm run test:newsletter-tips   # milestone selection unit tests (no email)
+npm start                      # Core Tools; timer fires on its cron while running
+# Dry-run against storage (no send):
+curl "http://localhost:7071/api/newsletter/tips/run?key=$REPORT_ACCESS_KEY&dryRun=1"
+# Live send once (careful — emails real subscribers due today):
+curl -X POST "http://localhost:7071/api/newsletter/tips/run?key=$REPORT_ACCESS_KEY"
+```
+
 ## Community (Phase 1)
 
 On-site sailing boards keyed by Disney ship + embarkation date:
@@ -98,6 +136,7 @@ Table: `SiteEvents`. Frontend loads Clarity + click tracker via `/assets/analyti
 - No content moderation or per-IP rate limiting beyond a basic question-length cap.
 - No admin UI for reviewing logged questions — you'd query the table directly for now
   (Azure Storage Explorer, a free desktop app, is the easiest way to browse it).
+- Newsletter tip drips have no subscriber unsubscribe link yet (v1); post-cruise “leave a review” drip is skipped.
 
 ## One-time setup (do this before it will work)
 
