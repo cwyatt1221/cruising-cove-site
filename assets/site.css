@@ -163,16 +163,16 @@ body.cc-admin-logged-in .site-header{top:42px;}
   padding:0 4px 10px;
   border-bottom:1px solid rgba(26,42,74,.08);
   font-family:var(--font-serif);
-  font-size:0.92rem;
-  font-weight:500;
+  font-size:1.05rem;
+  font-weight:700;
   line-height:1.35;
   letter-spacing:0.01em;
-  color:rgba(26,42,74,.72);
+  color:rgba(26,42,74,.82);
   max-width:100%;
 }
 .nav-visitor-count strong{
   color:var(--navy);
-  font-weight:600;
+  font-weight:800;
 }
 .site-nav-bar .nav-cta{
   display:flex;align-items:center;gap:10px;flex:0 0 auto;
@@ -316,10 +316,11 @@ body.cc-admin-logged-in .site-header{top:42px;}
     border-right:1px solid rgba(26,42,74,.1);
     flex:0 1 auto;
     min-width:0;
-    max-width:min(440px, 46%);
-    font-size:0.84rem;
+    max-width:min(480px, 48%);
+    font-size:0.95rem;
+    font-weight:700;
     line-height:1.3;
-    color:rgba(26,42,74,.62);
+    color:rgba(26,42,74,.78);
   }
   .site-nav-bar .nav-links > a{
     padding:4px 0 6px;
