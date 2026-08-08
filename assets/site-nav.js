@@ -1129,11 +1129,11 @@
     var mode = visitorCaptionMode();
     var html;
     if (mode === "mobile") {
-      html = "<strong>" + formatted + "</strong> guests ashore";
+      html = "<strong>" + formatted + "</strong> guests aboard";
     } else if (mode === "short") {
-      html = "Welcome aboard — <strong>" + formatted + "</strong> guests ashore";
+      html = "Welcome, fellow DCL lover — <strong>" + formatted + "</strong> guests aboard";
     } else {
-      html = "Welcome aboard — <strong>" + formatted + "</strong> guests have come ashore";
+      html = "Welcome, fellow DCL lover — <strong>" + formatted + "</strong> guests have come aboard";
     }
     el.innerHTML = html;
   }
