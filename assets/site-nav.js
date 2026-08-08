@@ -527,6 +527,8 @@
 
   function ensureNewsletterFooter() {
     if (document.querySelector("[data-cc-newsletter-footer]")) return;
+    // Pages with an in-content callout already expose signup — skip the footer band.
+    if (document.querySelector("[data-cc-newsletter], #newsletter")) return;
     if (location.pathname.indexOf("/privacy") === 0) return;
 
     var band = document.createElement("aside");
