@@ -146,7 +146,7 @@ Site owner only (`AGENT_LEAD_NOTIFY_EMAIL`, default `cgrove0712@gmail.com`) — 
 | Marketplace **Visit shop** | `POST /api/sellers/{id}/visit` | `Marketplace click: {shop} ({n} visits)` |
 | Agent profile open | `POST /api/agents/{id}/visit` | `Agent profile click: {name} ({n} views)` |
 
-Each email includes name/id, timestamp, page URL (`path` JSON body or Referer), and the running counter. Counters increment on every recorded visit; emails are soft-rate-limited to **at most one per shop or agent per hour** (`lastNotifyAt` on the published entity). Existing `agent_request_click` and agent-request form emails are unchanged.
+Each email includes name/id, timestamp, page URL (`path` JSON body or Referer), and the running counter. Counters increment on every recorded visit; emails are soft-rate-limited to **at most one per shop or agent per hour** (`lastNotifyAt` is written only after Resend succeeds). Response fields: `notified` (email actually sent), optional `notifySkipped: "cooldown"`, optional `notifyError` (Resend failure reason, no secrets). Bypass cooldown for testing: `POST .../visit?force=1&key=…` (`REPORT_ACCESS_KEY` or admin session). Existing `agent_request_click` and agent-request form emails are unchanged.
 
 ## Analytics
 

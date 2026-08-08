@@ -1,6 +1,6 @@
 /** Owner-only click emails for marketplace shops and agent profiles. */
 
-import { escapeHtml, notifyEmail, sendEmail } from "./email";
+import { escapeHtml, notifyEmail, sendEmailResult, type SendEmailResult } from "./email";
 
 export const CLICK_NOTIFY_COOLDOWN_MS = 60 * 60 * 1000; // 1 hour per shop / agent
 
@@ -33,7 +33,7 @@ export async function notifyMarketplaceClick(opts: {
   visitCount: number;
   path?: string;
   at?: string;
-}): Promise<boolean> {
+}): Promise<SendEmailResult> {
   const name = String(opts.shopName || opts.shopId || "Shop").trim() || "Shop";
   const id = String(opts.shopId || "").trim();
   const count = Math.max(0, Math.floor(opts.visitCount));
@@ -60,7 +60,7 @@ export async function notifyMarketplaceClick(opts: {
     </ul>
     <p>Owner-only notice — the seller is not emailed.</p>
   `;
-  return sendEmail(notifyEmail(), subject, html, text);
+  return sendEmailResult(notifyEmail(), subject, html, text);
 }
 
 export async function notifyAgentProfileClick(opts: {
@@ -69,7 +69,7 @@ export async function notifyAgentProfileClick(opts: {
   visitCount: number;
   path?: string;
   at?: string;
-}): Promise<boolean> {
+}): Promise<SendEmailResult> {
   const name = String(opts.agentName || opts.agentId || "Agent").trim() || "Agent";
   const id = String(opts.agentId || "").trim();
   const count = Math.max(0, Math.floor(opts.visitCount));
@@ -96,5 +96,5 @@ export async function notifyAgentProfileClick(opts: {
     </ul>
     <p>Owner-only notice — the agent is not emailed.</p>
   `;
-  return sendEmail(notifyEmail(), subject, html, text);
+  return sendEmailResult(notifyEmail(), subject, html, text);
 }

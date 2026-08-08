@@ -4,15 +4,21 @@ export function notifyEmail(): string {
   return (process.env.AGENT_LEAD_NOTIFY_EMAIL || "cgrove0712@gmail.com").trim();
 }
 
-export async function sendEmail(
+export type SendEmailResult =
+  | { ok: true }
+  | { ok: false; reason: string; status?: number };
+
+/** Send via Resend. Returns structured failure reason (no secrets). */
+export async function sendEmailResult(
   to: string,
   subject: string,
   html: string,
   text: string
-): Promise<boolean> {
+): Promise<SendEmailResult> {
   const key = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM_EMAIL || "Cruising Cove <onboarding@resend.dev>";
-  if (!key || !to) return false;
+  if (!key) return { ok: false, reason: "RESEND_API_KEY missing" };
+  if (!to) return { ok: false, reason: "missing recipient" };
 
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -22,7 +28,31 @@ export async function sendEmail(
     },
     body: JSON.stringify({ from, to: [to], subject, html, text }),
   });
-  return res.ok;
+  if (res.ok) return { ok: true };
+
+  let detail = "";
+  try {
+    detail = (await res.text()).replace(/\s+/g, " ").trim().slice(0, 240);
+  } catch {
+    /* ignore */
+  }
+  const reason = detail
+    ? `Resend HTTP ${res.status}: ${detail}`
+    : `Resend HTTP ${res.status}`;
+  console.warn(
+    `sendEmail failed status=${res.status} fromHost=${from.includes("<") ? from.slice(from.indexOf("<") + 1, from.indexOf(">")) : from} subject=${subject.slice(0, 80)} detail=${detail || "(empty)"}`
+  );
+  return { ok: false, reason, status: res.status };
+}
+
+export async function sendEmail(
+  to: string,
+  subject: string,
+  html: string,
+  text: string
+): Promise<boolean> {
+  const result = await sendEmailResult(to, subject, html, text);
+  return result.ok;
 }
 
 export function escapeHtml(value: unknown): string {

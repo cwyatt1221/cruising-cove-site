@@ -1,4 +1,5 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
+import { adminAuthOk } from "../lib/adminAuth";
 import { PUBLISHED_TABLE, table, toPublicSeller } from "../lib/sellers";
 import {
   notifyMarketplaceClick,
@@ -10,6 +11,7 @@ import {
  * Increment a published shop's visit counter (Visit shop clicks).
  * Soft-fails for unknown/unpublished shops so marketplace UX stays quiet.
  * Owner email is rate-limited (at most once per shop per hour); counter always increments.
+ * Pass force=1 with REPORT_ACCESS_KEY (or admin session) to bypass cooldown.
  */
 export async function recordSellerVisit(
   request: HttpRequest,
@@ -21,7 +23,7 @@ export async function recordSellerVisit(
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Headers": "Content-Type, x-cc-admin-key",
       },
     };
   }
@@ -41,6 +43,9 @@ export async function recordSellerVisit(
   if (!path) {
     path = (request.headers.get("referer") || "").slice(0, 300);
   }
+
+  const forceRequested = (request.query.get("force") || "").trim() === "1";
+  const force = forceRequested && (await adminAuthOk(request));
 
   try {
     const client = table(PUBLISHED_TABLE);
@@ -74,29 +79,50 @@ export async function recordSellerVisit(
 
     const visitCount = parseVisitCount(entity.visitCount) + 1;
     const nowIso = new Date().toISOString();
-    const sendNotify = shouldSendClickNotify(entity.lastNotifyAt);
+    const attemptNotify = force || shouldSendClickNotify(entity.lastNotifyAt);
+
+    // Always increment the counter; only stamp lastNotifyAt after a successful send.
     await client.updateEntity(
       {
         partitionKey: "directory",
         rowKey: sellerId,
         visitCount,
-        ...(sendNotify ? { lastNotifyAt: nowIso } : {}),
       },
       "Merge"
     );
 
-    if (sendNotify) {
+    let notified = false;
+    let notifySkipped: string | undefined;
+    let notifyError: string | undefined;
+
+    if (!attemptNotify) {
+      notifySkipped = "cooldown";
+    } else {
       try {
-        const shopName = String(entity.name || sellerId);
-        const sent = await notifyMarketplaceClick({
+        const shopName = String(entity.shopName || entity.name || sellerId);
+        const result = await notifyMarketplaceClick({
           shopName,
           shopId: sellerId,
           visitCount,
           path: path || "/marketplace/",
           at: nowIso,
         });
-        if (!sent) context.warn("Seller visit notify email not sent (check RESEND_API_KEY).");
+        if (result.ok) {
+          notified = true;
+          await client.updateEntity(
+            {
+              partitionKey: "directory",
+              rowKey: sellerId,
+              lastNotifyAt: nowIso,
+            },
+            "Merge"
+          );
+        } else {
+          notifyError = result.reason;
+          context.warn(`Seller visit notify email not sent: ${result.reason}`);
+        }
       } catch (err) {
+        notifyError = "notify threw";
         context.error("Seller visit notify email failed:", err);
       }
     }
@@ -108,7 +134,10 @@ export async function recordSellerVisit(
         success: true,
         id: sellerId,
         visitCount,
-        notified: sendNotify,
+        notified,
+        ...(notifySkipped ? { notifySkipped } : {}),
+        ...(notifyError ? { notifyError } : {}),
+        ...(forceRequested && !force ? { forceDenied: true } : {}),
         seller: toPublicSeller({ ...entity, visitCount }),
       },
     };
