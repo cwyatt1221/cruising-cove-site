@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Community moderation | Cruising Cove</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/agents.css">
+<style>
+  .mod-filter-row{display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin:12px 0 4px;}
+  .mod-filter-row label{display:block;font-size:0.82rem;color:var(--muted);margin-bottom:4px;}
+  .mod-filter-row input,.mod-filter-row select{
+    min-width:220px;padding:8px 10px;border:1px solid rgba(26,42,74,.18);
+    background:#fff;font:inherit;
+  }
+  .mod-badge{
+    display:inline-block;margin-left:6px;padding:1px 7px;font-size:0.72rem;
+    letter-spacing:.02em;text-transform:uppercase;border:1px solid rgba(26,42,74,.2);
+    color:var(--navy);vertical-align:middle;
+  }
+  .mod-badge.warn{border-color:rgba(160,90,20,.35);color:#8a4b12;}
+  .mod-badge.danger{border-color:rgba(140,40,40,.35);color:#8a2a2a;}
+  .mod-badge.kind{border-color:rgba(30,110,120,.35);color:var(--teal);}
+  .mod-body{
+    margin:10px 0;padding:10px 12px;background:rgba(255,255,255,.55);
+    border-left:3px solid rgba(201,162,75,.55);white-space:pre-wrap;word-break:break-word;
+    line-height:1.45;
+  }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <nav class="site-nav-bar" aria-label="Primary">
+      <a class="logo" href="/">Cruising Cove</a>
+      <div class="nav-cta">
+        <a href="/admin/" class="btn btn-outline">Admin home</a>
+        <a href="/community/" class="btn btn-outline">Community</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main class="agent-admin-shell">
+  <div class="wrap" style="max-width:960px;">
+    <section class="agent-admin-panel">
+      <h1>Community moderation</h1>
+      <p class="agent-admin-sub">Review recent posts and board chat, hide or delete content, and mute members on a sailing board.</p>
+      <div class="agent-admin-key">
+        <label for="adminPassword">Admin password</label>
+        <input id="adminPassword" type="password" autocomplete="current-password">
+      </div>
+      <div class="agent-admin-actions">
+        <button type="button" class="btn btn-gold" id="adminLoginBtn">Sign in</button>
+        <button type="button" class="btn btn-outline" id="adminLogoutBtn" hidden>Sign out</button>
+      </div>
+      <div class="mod-filter-row">
+        <div>
+          <label for="sailingFilter">Sailing key (optional)</label>
+          <input id="sailingFilter" type="text" list="sailingKeys" placeholder="e.g. disney-wish_2026-08-15" autocomplete="off">
+          <datalist id="sailingKeys"></datalist>
+        </div>
+      </div>
+      <div class="agent-admin-actions">
+        <button type="button" class="btn btn-gold" id="loadFeed">Recent content</button>
+        <button type="button" class="btn btn-outline" id="loadMutes">Active mutes</button>
+      </div>
+      <p class="agent-admin-status" id="adminStatus" hidden></p>
+      <div id="adminList" class="agent-admin-list"></div>
+    </section>
+  </div>
+</main>
+
+<script src="/assets/admin-auth.js"></script>
+<script>
+(function () {
+  var list = document.getElementById("adminList");
+  var statusEl = document.getElementById("adminStatus");
+  var sailingFilter = document.getElementById("sailingFilter");
+  var sailingKeys = document.getElementById("sailingKeys");
+  var mode = "feed";
+
+  function key() {
+    return (window.CCAdminAuth && window.CCAdminAuth.getToken()) || "";
+  }
+
+  function escapeHtml(str) {
+    return String(str == null ? "" : str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function showStatus(msg, ok) {
+    statusEl.hidden = false;
+    statusEl.textContent = msg;
+    statusEl.className = "agent-admin-status " + (ok ? "ok" : "err");
+  }
+
+  function sailingParam() {
+    return (sailingFilter.value || "").trim();
+  }
+
+  function fillSailingKeys(keys) {
+    if (!Array.isArray(keys) || !keys.length) return;
+    sailingKeys.innerHTML = keys
+      .map(function (k) {
+        return "<option value=\"" + escapeHtml(k) + "\"></option>";
+      })
+      .join("");
+  }
+
+  function statusBadges(item) {
+    var html = '<span class="mod-badge kind">' + escapeHtml(item.kind || "") + "</span>";
+    if (item.deleted) html += '<span class="mod-badge danger">deleted</span>';
+    else if (item.hidden) html += '<span class="mod-badge warn">hidden</span>';
+    return html;
+  }
+
+  function renderFeed(items) {
+    if (!items.length) {
+      list.innerHTML = "<p class='agent-admin-empty'>No recent posts or chat messages.</p>";
+      return;
+    }
+    list.innerHTML =
+      "<h2>Recent content <span>(" + items.length + ")</span></h2>" +
+      items
+        .map(function (item) {
+          var mutedAlready = item.hidden || item.deleted;
+          return (
+            '<article class="agent-admin-card" data-kind="' +
+            escapeHtml(item.kind) +
+            '" data-id="' +
+            escapeHtml(item.id) +
+            '" data-sailing="' +
+            escapeHtml(item.sailingKey) +
+            '" data-user-id="' +
+            escapeHtml(item.userId) +
+            '" data-display-name="' +
+            escapeHtml(item.displayName) +
+            '">' +
+            "<h3>" +
+            escapeHtml(item.displayName || "Member") +
+            statusBadges(item) +
+            "</h3>" +
+            '<p class="agent-meta">' +
+            escapeHtml(item.sailingKey) +
+            (item.email ? " · " + escapeHtml(item.email) : "") +
+            (item.createdAt ? " · " + escapeHtml(item.createdAt) : "") +
+            "</p>" +
+            '<div class="mod-body">' +
+            escapeHtml(item.body || "") +
+            "</div>" +
+            '<div class="agent-admin-card-actions">' +
+            (!mutedAlready
+              ? '<button type="button" class="btn btn-outline" data-action="hide">Hide</button>' +
+                '<button type="button" class="btn btn-outline" data-action="delete">Delete</button>'
+              : "") +
+            (item.userId
+              ? '<button type="button" class="btn btn-gold" data-action="mute">Mute member</button>'
+              : "") +
+            "</div></article>"
+          );
+        })
+        .join("");
+  }
+
+  function renderMutes(rows) {
+    if (!rows.length) {
+      list.innerHTML = "<p class='agent-admin-empty'>No active mutes.</p>";
+      return;
+    }
+    list.innerHTML =
+      "<h2>Active mutes <span>(" + rows.length + ")</span></h2>" +
+      rows
+        .map(function (row) {
+          return (
+            '<article class="agent-admin-card" data-sailing="' +
+            escapeHtml(row.sailingKey) +
+            '" data-user-id="' +
+            escapeHtml(row.userId) +
+            '">' +
+            "<h3>" +
+            escapeHtml(row.displayName || row.userId || "Member") +
+            ' <span class="mod-badge warn">muted</span></h3>' +
+            '<p class="agent-meta">' +
+            escapeHtml(row.sailingKey) +
+            (row.email ? " · " + escapeHtml(row.email) : "") +
+            (row.mutedAt ? " · muted " + escapeHtml(row.mutedAt) : "") +
+            "</p>" +
+            (row.reason
+              ? "<p class='agent-meta'>Reason: " + escapeHtml(row.reason) + "</p>"
+              : "") +
+            '<div class="agent-admin-card-actions">' +
+            '<button type="button" class="btn btn-gold" data-action="unmute">Unmute</button>' +
+            "</div></article>"
+          );
+        })
+        .join("");
+  }
+
+  async function loadFeed() {
+    mode = "feed";
+    if (!key()) {
+      list.innerHTML = "<p class='agent-admin-empty'>Sign in with your admin password.</p>";
+      return;
+    }
+    list.innerHTML = "<p class='agent-admin-empty'>Loading…</p>";
+    statusEl.hidden = true;
+    try {
+      var url =
+        "/api/community/moderation?view=feed&key=" + encodeURIComponent(key()) + "&limit=80";
+      var sk = sailingParam();
+      if (sk) url += "&sailingKey=" + encodeURIComponent(sk);
+      var res = await fetch(url);
+      var data = await res.json().catch(function () {
+        return {};
+      });
+      if (!res.ok) throw new Error(data.error || "Failed to load");
+      fillSailingKeys(data.sailingKeys || []);
+      renderFeed(data.items || []);
+    } catch (err) {
+      list.innerHTML =
+        "<p class='agent-admin-empty'>" + escapeHtml(err.message || "Failed") + "</p>";
+    }
+  }
+
+  async function loadMutes() {
+    mode = "mutes";
+    if (!key()) {
+      list.innerHTML = "<p class='agent-admin-empty'>Sign in with your admin password.</p>";
+      return;
+    }
+    list.innerHTML = "<p class='agent-admin-empty'>Loading…</p>";
+    statusEl.hidden = true;
+    try {
+      var url =
+        "/api/community/moderation?view=mutes&key=" + encodeURIComponent(key()) + "&limit=100";
+      var sk = sailingParam();
+      if (sk) url += "&sailingKey=" + encodeURIComponent(sk);
+      var res = await fetch(url);
+      var data = await res.json().catch(function () {
+        return {};
+      });
+      if (!res.ok) throw new Error(data.error || "Failed to load");
+      renderMutes(data.mutes || []);
+    } catch (err) {
+      list.innerHTML =
+        "<p class='agent-admin-empty'>" + escapeHtml(err.message || "Failed") + "</p>";
+    }
+  }
+
+  async function postAction(payload) {
+    var res = await fetch("/api/community/moderation?key=" + encodeURIComponent(key()), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    var data = await res.json().catch(function () {
+      return {};
+    });
+    if (!res.ok) throw new Error(data.error || "Action failed");
+    return data;
+  }
+
+  document.getElementById("loadFeed").addEventListener("click", loadFeed);
+  document.getElementById("loadMutes").addEventListener("click", loadMutes);
+
+  list.addEventListener("click", async function (e) {
+    var btn = e.target.closest("[data-action]");
+    if (!btn || !key()) return;
+    var card = btn.closest(".agent-admin-card");
+    if (!card) return;
+    var action = btn.getAttribute("data-action");
+    btn.disabled = true;
+    try {
+      if (action === "hide" || action === "delete") {
+        await postAction({
+          action: action,
+          kind: card.getAttribute("data-kind"),
+          sailingKey: card.getAttribute("data-sailing"),
+          id: card.getAttribute("data-id"),
+        });
+        showStatus(action === "hide" ? "Content hidden." : "Content deleted.", true);
+        loadFeed();
+        return;
+      }
+      if (action === "mute") {
+        var reason = window.prompt(
+          "Optional mute reason for " + (card.getAttribute("data-display-name") || "member") + ":",
+          ""
+        );
+        if (reason === null) {
+          btn.disabled = false;
+          return;
+        }
+        await postAction({
+          action: "mute",
+          sailingKey: card.getAttribute("data-sailing"),
+          userId: card.getAttribute("data-user-id"),
+          reason: reason,
+        });
+        showStatus("Member muted on this board.", true);
+        if (mode === "mutes") loadMutes();
+        else loadFeed();
+        return;
+      }
+      if (action === "unmute") {
+        await postAction({
+          action: "unmute",
+          sailingKey: card.getAttribute("data-sailing"),
+          userId: card.getAttribute("data-user-id"),
+        });
+        showStatus("Member unmuted.", true);
+        loadMutes();
+        return;
+      }
+    } catch (err) {
+      showStatus(err.message || "Something went wrong.", false);
+      btn.disabled = false;
+    }
+  });
+
+  window.CCAdminAuth.bind({
+    passwordInput: document.getElementById("adminPassword"),
+    loginBtn: document.getElementById("adminLoginBtn"),
+    logoutBtn: document.getElementById("adminLogoutBtn"),
+    statusEl: statusEl,
+    onReady: function () {
+      loadFeed();
+    },
+  });
+})();
+</script>
+</body>
+</html>

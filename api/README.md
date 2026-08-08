@@ -86,18 +86,21 @@ On-site sailing boards keyed by Disney ship + embarkation date:
 | `GET/POST /api/community/sailings/{key}/chat` | Board chat (auth + member; GET list, POST send) |
 | `GET/POST /api/community/sailings/{key}/signups` | Fish Extender, Pixie Dust & Book trade lists |
 | `DELETE /api/community/sailings/{key}/signups/{type}` | Leave a list (`fish-extender` \| `pixie-dust` \| `book-trade`) |
+| `GET/POST /api/community/moderation?key=…` | Admin moderation (`REPORT_ACCESS_KEY` or admin session): feed / mutes; hide, delete, mute, unmute |
 
-Tables: `CommunityUsers`, `CommunitySessions`, `CommunitySailings`, `CommunityMembers`, `CommunityPosts`, `CommunityReplies`, `CommunityChatMessages`, `CommunitySignups`.
+Tables: `CommunityUsers`, `CommunitySessions`, `CommunitySailings`, `CommunityMembers`, `CommunityPosts`, `CommunityReplies`, `CommunityChatMessages`, `CommunitySignups`, `CommunityMutes`, `CommunityModLog`.
 
 **Board email notifications (v1):** When someone newly joins a sailing board, posts on it, or sends a board chat message, other members with an email on their community account are emailed via Resend (`sendEmail`). The actor (joiner/poster/chat author) is never emailed. Preference is stored on `CommunityMembers.emailNotify` (boolean, **on by default**; missing/legacy rows treated as on). Members can toggle “Email me about this sailing” on `/community/sailing.html`. Emails are short board links only — no cabin/passport content. Fan-out is best-effort (concurrency-limited); join/post/chat still succeed if Resend fails. Requires `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, and optional `PUBLIC_SITE_URL`. Skipped for v1: FE/Pixie/Book trade signup emails, digests, push/SMS, in-app center.
 
-**Board chat (v1):** Per-sailing chat for signed-in members only (`CommunityChatMessages`, partition = sailing key). Messages capped at 500 characters with a soft ~4s rate limit per author. UI on `/community/sailing.html` polls about every 4s while the tab is visible. Out of scope for v1: DMs, reactions, image uploads, typing indicators, moderation dashboard, delete-own-message.
+**Board chat (v1):** Per-sailing chat for signed-in members only (`CommunityChatMessages`, partition = sailing key). Messages capped at 500 characters with a soft ~4s rate limit per author. UI on `/community/sailing.html` polls about every 4s while the tab is visible. Out of scope for v1: DMs, reactions, image uploads, typing indicators, delete-own-message.
+
+**Moderation (v1):** Site admins can review recent posts and chat (optional `sailingKey` filter), soft-**hide** or soft-**delete** content (`hidden` / `deleted` flags — omitted from public GET posts/chat), and **mute** / **unmute** a member on a board (`CommunityMutes`, PK = sailing key, RK = userId). Muted members receive a clear 403 on post, reply, and chat. Quiet actions are written to `CommunityModLog`. Admin UI: `/community/admin.html` (linked from `/admin/`). Skipped for v1: member Report button, auto-mod / AI, IP bans, full audit UI.
 
 Requires the same `STORAGE_CONNECTION_STRING` as the rest of the API. Frontend: `/community/`.
 
 Fish Extender sign-ups require a cabin number. Pixie Dust cabin is optional. Book trade (`type: "book-trade"`) accepts optional `cabin`, `bringing`, `bringingNote`, `lookingFor`, `notes`, required `audience` (`kids` \| `adults` \| `both`), and optional `displayName` (defaults to community account name). Cabin and display name are visible to that sailing’s board viewers.
 
-Phase 2 (not built): DMs, moderation queue, email verification, FE matchmaking pairs, gift-list signup emails.
+Phase 2 (not built): DMs, email verification, FE matchmaking pairs, gift-list signup emails, member reporting.
 
 ## Agent directory applications
 

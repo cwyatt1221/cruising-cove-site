@@ -10,6 +10,7 @@ import {
   requireUser,
   table,
 } from "../lib/community";
+import { isContentVisible, isUserMuted, MUTE_ERROR } from "../lib/communityModeration";
 import { notifyMembersOfPost } from "../lib/communityNotify";
 
 async function assertMember(sailingKey: string, userId: string): Promise<boolean> {
@@ -53,7 +54,9 @@ async function listRepliesForSailing(sailingKey: string) {
   const client = await table(REPLIES_TABLE);
   const iter = client.listEntities({ queryOptions: { filter: `PartitionKey eq '${sailingKey}'` } });
   for await (const entity of iter) {
-    replies.push(serializeReply(entity as Record<string, unknown>));
+    const row = entity as Record<string, unknown>;
+    if (!isContentVisible(row)) continue;
+    replies.push(serializeReply(row));
     if (replies.length >= 500) break;
   }
   replies.sort((a, b) => String(a.createdAt).localeCompare(String(b.createdAt)));
@@ -80,7 +83,9 @@ export async function listPosts(request: HttpRequest, context: InvocationContext
     const client = await table(POSTS_TABLE);
     const iter = client.listEntities({ queryOptions: { filter: `PartitionKey eq '${key}'` } });
     for await (const entity of iter) {
-      posts.push(serializePost(entity as Record<string, unknown>));
+      const row = entity as Record<string, unknown>;
+      if (!isContentVisible(row)) continue;
+      posts.push(serializePost(row));
       if (posts.length >= 100) break;
     }
 
@@ -116,6 +121,10 @@ export async function createPost(request: HttpRequest, context: InvocationContex
 
   if (!(await assertMember(key, user.userId))) {
     return corsJson(403, { error: "Join this sailing community before posting." });
+  }
+
+  if (await isUserMuted(key, user.userId)) {
+    return corsJson(403, { error: MUTE_ERROR });
   }
 
   let body: { body?: string };
@@ -315,6 +324,10 @@ export async function createReply(request: HttpRequest, context: InvocationConte
     return corsJson(403, { error: "Join this sailing community before replying." });
   }
 
+  if (await isUserMuted(key, user.userId)) {
+    return corsJson(403, { error: MUTE_ERROR });
+  }
+
   let body: { body?: string };
   try {
     body = (await request.json()) as typeof body;
@@ -326,7 +339,8 @@ export async function createReply(request: HttpRequest, context: InvocationConte
   if (text.length < 1) return corsJson(400, { error: "Reply cannot be empty." });
 
   try {
-    await (await table(POSTS_TABLE)).getEntity(key, postId);
+    const post = (await (await table(POSTS_TABLE)).getEntity(key, postId)) as Record<string, unknown>;
+    if (!isContentVisible(post)) return corsJson(404, { error: "Post not found." });
   } catch {
     return corsJson(404, { error: "Post not found." });
   }

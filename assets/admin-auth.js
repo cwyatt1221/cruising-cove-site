@@ -28,6 +28,11 @@
       blurb: "Guest photos and comments",
     },
     {
+      href: "/community/admin.html",
+      label: "Community",
+      blurb: "Posts, board chat, hide/delete, mutes",
+    },
+    {
       href: "/planning/my-cruise-admin.html",
       label: "My Cruise & reviews",
       blurb: "Packing suggestions, port/excursion/venue reviews",

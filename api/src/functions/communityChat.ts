@@ -16,6 +16,7 @@ import {
   normalizeChatBody,
   validateChatBody,
 } from "../lib/communityChat";
+import { isContentVisible, isUserMuted, MUTE_ERROR } from "../lib/communityModeration";
 import { notifyMembersOfChat } from "../lib/communityNotify";
 
 async function assertMember(sailingKey: string, userId: string): Promise<boolean> {
@@ -73,7 +74,9 @@ export async function listChatMessages(
     const client = await table(CHAT_MESSAGES_TABLE);
     const iter = client.listEntities({ queryOptions: { filter: `PartitionKey eq '${key}'` } });
     for await (const entity of iter) {
-      newestFirst.push(serializeMessage(entity as Record<string, unknown>));
+      const row = entity as Record<string, unknown>;
+      if (!isContentVisible(row)) continue;
+      newestFirst.push(serializeMessage(row));
       if (newestFirst.length >= CHAT_LIST_LIMIT) break;
     }
     const messages = newestFirst.slice().reverse();
@@ -98,6 +101,10 @@ export async function createChatMessage(
 
   if (!(await assertMember(key, user.userId))) {
     return corsJson(403, { error: "Join this sailing community before chatting." });
+  }
+
+  if (await isUserMuted(key, user.userId)) {
+    return corsJson(403, { error: MUTE_ERROR });
   }
 
   let body: { body?: string };
