@@ -1269,7 +1269,8 @@
 
   async function submitReview(form) {
     if (!Community || !Community.getToken()) {
-      toast("Sign in via Community to leave a review.");
+      location.href =
+        "/community/login.html?next=" + encodeURIComponent(location.pathname + location.search);
       return;
     }
     var trip = activeTrip() || {};
@@ -1299,7 +1300,8 @@
 
   async function submitPortReview(form) {
     if (!Community || !Community.getToken()) {
-      toast("Sign in via Community to leave a review.");
+      location.href =
+        "/community/login.html?next=" + encodeURIComponent(location.pathname + location.search);
       return;
     }
     var trip = activeTrip() || {};
@@ -1328,7 +1330,8 @@
 
   async function submitSuggestion(form) {
     if (!Community || !Community.getToken()) {
-      toast("Sign in via Community to suggest packing items.");
+      location.href =
+        "/community/login.html?next=" + encodeURIComponent(location.pathname + location.search);
       return;
     }
     var fd = new FormData(form);

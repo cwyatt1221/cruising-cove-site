@@ -485,14 +485,15 @@
     if(empty) empty.style.display='none';
     creators.forEach(function(c){
       var card=document.createElement('article');
-      card.className='creator-card';
+      card.className='creator-card is-linked';
+      var profileHref='/marketplace/creators/profile.html?id='+encodeURIComponent(c.id);
       card.innerHTML=
         '<h3>'+c.name+'</h3>'+
         '<p class="meta">'+(c.channel||'')+'</p>'+
         '<p class="bio">'+(c.bio||'')+'</p>'+
         '<div class="creator-tags">'+(c.specialties||[]).map(function(s){return '<span class="creator-tag">'+s+'</span>';}).join('')+'</div>'+
         '<div class="creator-card-actions">'+
-          '<a class="btn btn-outline" href="/marketplace/creators/profile.html?id='+encodeURIComponent(c.id)+'">View profile</a>'+
+          '<a class="btn btn-outline creator-card-link" href="'+profileHref+'">View profile</a>'+
           (c.youtubeUrl?'<a class="btn btn-gold" href="'+c.youtubeUrl+'" target="_blank" rel="noopener noreferrer">YouTube</a>':'')+
         '</div>';
       grid.appendChild(card);

@@ -87,7 +87,7 @@
 <main style="max-width:860px;margin:0 auto;padding:32px clamp(1.2rem,5vw,4rem) 80px;">
   <p class="meta" id="creatorMeta" style="color:var(--muted);margin:0 0 18px;"></p>
   <div class="creator-tags" id="creatorTags" style="margin-bottom:28px;"></div>
-  <p style="margin:0 0 28px;"><a id="youtubeLink" class="btn btn-gold" href="#" target="_blank" rel="noopener noreferrer">Visit YouTube channel</a></p>
+  <p style="margin:0 0 28px;"><a id="youtubeLink" class="btn btn-gold" href="/marketplace/creators/" target="_blank" rel="noopener noreferrer" hidden>Visit YouTube channel</a></p>
 
   <section class="video-embed-section">
     <span class="label mono">&mdash; Featured on Cruising Cove</span>
@@ -112,10 +112,11 @@
 
     var id=new URLSearchParams(location.search).get('id');
     var creator=(window.CC_CREATORS||[]).find(function(c){ return c.id===id; });
+    var yt=document.getElementById('youtubeLink');
     if(!creator){
       document.getElementById('creatorName').textContent='Expert not found';
       document.getElementById('creatorBio').textContent='This Founding Cruise Expert profile isn’t available yet.';
-      document.getElementById('youtubeLink').style.display='none';
+      if(yt) yt.hidden=true;
       return;
     }
 
@@ -123,7 +124,14 @@
     document.getElementById('creatorName').textContent=creator.name;
     document.getElementById('creatorBio').textContent=creator.bio||'';
     document.getElementById('creatorMeta').textContent=(creator.channel||'')+(creator.specialties&&creator.specialties.length?' · '+creator.specialties.join(' · '):'');
-    document.getElementById('youtubeLink').href=creator.youtubeUrl;
+    if(yt){
+      if(creator.youtubeUrl){
+        yt.href=creator.youtubeUrl;
+        yt.hidden=false;
+      }else{
+        yt.hidden=true;
+      }
+    }
 
     var tags=document.getElementById('creatorTags');
     (creator.specialties||[]).forEach(function(s){

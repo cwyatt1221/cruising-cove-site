@@ -162,7 +162,8 @@
       if (!a.dataset.ccOrigLabel) a.dataset.ccOrigLabel = (a.textContent || "").trim();
       a.setAttribute("aria-disabled", "true");
       a.classList.add("is-disabled");
-      a.setAttribute("href", "#");
+      // Keep the real href so analytics can intercept; never use href="#" (Clarity dead clicks).
+      a.setAttribute("href", href);
       if (agentId && agentId === lock.agentId) {
         a.textContent = "Requested";
         a.title = "You already requested this agent.";

@@ -40,8 +40,13 @@
   transition:transform .18s ease, box-shadow .18s ease;
   position:relative;overflow:hidden;
 }
-.agent-card:hover{transform:translateY(-2px);box-shadow:0 14px 28px -18px rgba(15,28,51,.35);}
+.agent-card.is-linked{cursor:pointer;}
+.agent-card.is-linked:hover{transform:translateY(-2px);box-shadow:0 14px 28px -18px rgba(15,28,51,.35);}
 .agent-card.featured{border-top-color:var(--gold);}
+/* Stretch View profile over the card so avatar/title clicks aren't dead. */
+.agent-card-link::after{
+  content:"";position:absolute;inset:0;z-index:1;
+}
 .agent-card.sample::before,
 .agent-profile-sample::before{
   content:"SAMPLE";
@@ -89,16 +94,18 @@
 }
 .agent-badge.teal{background:rgba(30,92,92,.12);color:var(--teal);}
 .agent-pitch{font-size:0.95rem;line-height:1.55;color:var(--ink);margin:0;flex:1;}
-.agent-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.agent-tags{display:flex;flex-wrap:wrap;gap:6px;position:relative;z-index:3;}
 .agent-tag{
+  appearance:none;border:0;display:inline-block;font:inherit;
   font-size:0.78rem;color:var(--muted);background:var(--cream-2);
-  padding:4px 10px;border-radius:20px;
+  padding:4px 10px;border-radius:20px;margin:0;cursor:pointer;line-height:1.2;
 }
-.agent-card-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px;}
-.agent-card-actions .btn{font-size:0.82rem;padding:9px 14px;}
+.agent-tag:hover{background:rgba(201,162,75,.22);color:var(--navy);}
+.agent-card-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px;position:relative;z-index:2;}
+.agent-card-actions .btn{font-size:0.82rem;padding:9px 14px;position:relative;z-index:2;}
 a.btn.is-disabled,
 a.btn[aria-disabled="true"]{
-  opacity:.55;pointer-events:none;cursor:not-allowed;
+  opacity:.55;cursor:not-allowed;
   background:var(--cream-2,#f3efe6);color:var(--muted);border-color:rgba(26,42,74,.12);
 }
 

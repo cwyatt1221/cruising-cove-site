@@ -231,8 +231,9 @@
       renderFilters();
       agents.forEach(function(agent){
         var card=document.createElement('article');
-        card.className='agent-card'+(agent.featured?' featured':'')+(agent.sample?' sample':'');
+        card.className='agent-card is-linked'+(agent.featured?' featured':'')+(agent.sample?' sample':'');
         var profileHref=window.CC_profilePath(agent);
+        var tags=specialtyTokens(agent);
         card.innerHTML=
           '<div class="agent-card-top">'+
             avatarHtml(agent)+
@@ -247,9 +248,11 @@
             '</div>'+
           '</div>'+
           '<p class="agent-pitch">'+escapeHtml(agent.pitch)+'</p>'+
-          '<div class="agent-tags">'+(agent.specialties||[]).map(function(s){return '<span class="agent-tag">'+escapeHtml(s)+'</span>';}).join('')+'</div>'+
+          '<div class="agent-tags">'+tags.map(function(s){
+            return '<button type="button" class="agent-tag" data-filter-tag="'+escapeHtml(s)+'">'+escapeHtml(s)+'</button>';
+          }).join('')+'</div>'+
           '<div class="agent-card-actions">'+
-            '<a class="btn btn-outline" href="'+escapeHtml(profileHref)+'">View profile</a>'+
+            '<a class="btn btn-outline agent-card-link" href="'+escapeHtml(profileHref)+'">View profile</a>'+
             '<a class="btn btn-gold" href="/agents/request.html?agent='+encodeURIComponent(agent.id)+'">Request this agent</a>'+
           '</div>';
         grid.appendChild(card);
@@ -265,6 +268,15 @@
       var btn=e.target.closest('[data-filter]');
       if(!btn) return;
       activeFilter=btn.getAttribute('data-filter')||'';
+      renderAgents();
+    });
+
+    grid.addEventListener('click',function(e){
+      var tagBtn=e.target.closest('[data-filter-tag]');
+      if(!tagBtn) return;
+      e.preventDefault();
+      e.stopPropagation();
+      activeFilter=tagBtn.getAttribute('data-filter-tag')||'';
       renderAgents();
     });
 

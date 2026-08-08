@@ -347,7 +347,8 @@
 
   function reportContent(kind, id) {
     if (!CC.getUser()) {
-      alert('Sign in to report content.');
+      location.href =
+        '/community/login.html?next=' + encodeURIComponent(location.pathname + location.search);
       return;
     }
     var reason = window.prompt('Optional note for moderators (why are you reporting this?):', '');

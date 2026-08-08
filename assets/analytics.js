@@ -100,7 +100,30 @@
     track("application_submit_error", data);
   }
 
-  window.CCAnalytics = { track: track, reportSubmitError: reportSubmitError };
+  function flashNotice(message) {
+    var text = String(message || "").trim();
+    if (!text) return;
+    var el = document.getElementById("cc-flash-notice");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "cc-flash-notice";
+      el.setAttribute("role", "status");
+      el.style.cssText =
+        "position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:9999;" +
+        "max-width:min(92vw,420px);padding:12px 16px;border-radius:4px;" +
+        "background:#0f1c33;color:#f5f0e1;font:600 0.9rem/1.4 Source Sans 3,system-ui,sans-serif;" +
+        "box-shadow:0 12px 28px -14px rgba(15,28,51,.55);opacity:0;transition:opacity .18s ease;";
+      document.body.appendChild(el);
+    }
+    el.textContent = text;
+    el.style.opacity = "1";
+    clearTimeout(flashNotice._t);
+    flashNotice._t = setTimeout(function () {
+      el.style.opacity = "0";
+    }, 3200);
+  }
+
+  window.CCAnalytics = { track: track, reportSubmitError: reportSubmitError, flashNotice: flashNotice };
 
   function ensureBrandMail() {
     document.querySelectorAll(".site-nav-bar > .logo, .site-footer .foot-top > .logo").forEach(function (logo) {
@@ -170,6 +193,10 @@
       if (href.indexOf("/agents/request") !== -1) {
         if (a.getAttribute("aria-disabled") === "true" || a.classList.contains("is-disabled")) {
           e.preventDefault();
+          flashNotice(
+            a.getAttribute("title") ||
+              "You already have an open agent request. Other agents stay locked until Cruising Cove unlocks your account."
+          );
           return;
         }
         if (!isSignedIn()) {
