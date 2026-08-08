@@ -130,6 +130,23 @@ export async function moderateAgentApplication(
     const agentId = existingId || (await uniqueAgentId(preferred));
     const featured = Boolean(body.featured);
 
+    // Preserve visit counter + notify cooldown on re-publish
+    let visitCount = 0;
+    let lastNotifyAt = "";
+    try {
+      const prev = await published.getEntity("directory", agentId);
+      const raw = (prev as { visitCount?: unknown }).visitCount;
+      visitCount =
+        typeof raw === "number"
+          ? Math.max(0, Math.floor(raw))
+          : typeof raw === "string" && raw.trim()
+            ? Math.max(0, Math.floor(Number(raw) || 0))
+            : 0;
+      lastNotifyAt = String((prev as { lastNotifyAt?: unknown }).lastNotifyAt || "").trim();
+    } catch {
+      /* new publish */
+    }
+
     const entity = {
       partitionKey: "directory",
       rowKey: agentId,
@@ -163,6 +180,8 @@ export async function moderateAgentApplication(
       tiktokUrl: String(application.tiktokUrl || "").trim(),
       featured,
       sample: false,
+      visitCount,
+      lastNotifyAt,
       applicationPartitionKey: partitionKey,
       applicationRowKey: rowKey,
       publishedAt: now,

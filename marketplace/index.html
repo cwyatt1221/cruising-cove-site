@@ -165,7 +165,11 @@
     function recordVisit(shopId, countEl){
       if(!shopId || alreadyVisitedThisSession(shopId)) return;
       markVisitedThisSession(shopId);
-      fetch('/api/sellers/'+encodeURIComponent(shopId)+'/visit',{ method:'POST' })
+      fetch('/api/sellers/'+encodeURIComponent(shopId)+'/visit',{
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body: JSON.stringify({ path: location.pathname + location.search })
+      })
         .then(function(res){ return res.json().then(function(data){ return { ok:res.ok, data:data }; }); })
         .then(function(result){
           if(!result.ok) return;

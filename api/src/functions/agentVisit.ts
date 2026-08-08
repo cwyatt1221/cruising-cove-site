@@ -1,17 +1,17 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
-import { PUBLISHED_TABLE, table, toPublicSeller } from "../lib/sellers";
+import { PUBLISHED_TABLE, table, toPublicAgent } from "../lib/agents";
 import {
-  notifyMarketplaceClick,
+  notifyAgentProfileClick,
   parseVisitCount,
   shouldSendClickNotify,
 } from "../lib/clickNotify";
 
 /**
- * Increment a published shop's visit counter (Visit shop clicks).
- * Soft-fails for unknown/unpublished shops so marketplace UX stays quiet.
- * Owner email is rate-limited (at most once per shop per hour); counter always increments.
+ * Increment a published agent's profile view counter.
+ * Soft-fails for unknown/unpublished agents so profile UX stays quiet.
+ * Owner email is rate-limited (at most once per agent per hour); counter always increments.
  */
-export async function recordSellerVisit(
+export async function recordAgentVisit(
   request: HttpRequest,
   context: InvocationContext
 ): Promise<HttpResponseInit> {
@@ -26,9 +26,9 @@ export async function recordSellerVisit(
     };
   }
 
-  const sellerId = (request.params.id || "").trim();
-  if (!sellerId) {
-    return { status: 400, jsonBody: { error: "Seller id is required." } };
+  const agentId = (request.params.id || "").trim();
+  if (!agentId) {
+    return { status: 400, jsonBody: { error: "Agent id is required." } };
   }
 
   let path = "";
@@ -48,7 +48,7 @@ export async function recordSellerVisit(
 
     let entity: Record<string, unknown>;
     try {
-      entity = (await client.getEntity("directory", sellerId)) as Record<string, unknown>;
+      entity = (await client.getEntity("directory", agentId)) as Record<string, unknown>;
     } catch (err: unknown) {
       const status =
         typeof err === "object" && err && "statusCode" in err
@@ -58,7 +58,7 @@ export async function recordSellerVisit(
         return {
           status: 404,
           headers: { "Access-Control-Allow-Origin": "*" },
-          jsonBody: { error: "Seller not found." },
+          jsonBody: { error: "Agent not found." },
         };
       }
       throw err;
@@ -68,7 +68,7 @@ export async function recordSellerVisit(
       return {
         status: 404,
         headers: { "Access-Control-Allow-Origin": "*" },
-        jsonBody: { error: "Seller not found." },
+        jsonBody: { error: "Agent not found." },
       };
     }
 
@@ -78,7 +78,7 @@ export async function recordSellerVisit(
     await client.updateEntity(
       {
         partitionKey: "directory",
-        rowKey: sellerId,
+        rowKey: agentId,
         visitCount,
         ...(sendNotify ? { lastNotifyAt: nowIso } : {}),
       },
@@ -87,17 +87,17 @@ export async function recordSellerVisit(
 
     if (sendNotify) {
       try {
-        const shopName = String(entity.name || sellerId);
-        const sent = await notifyMarketplaceClick({
-          shopName,
-          shopId: sellerId,
+        const agentName = String(entity.name || agentId);
+        const sent = await notifyAgentProfileClick({
+          agentName,
+          agentId,
           visitCount,
-          path: path || "/marketplace/",
+          path: path || `/agents/profile.html?id=${encodeURIComponent(agentId)}`,
           at: nowIso,
         });
-        if (!sent) context.warn("Seller visit notify email not sent (check RESEND_API_KEY).");
+        if (!sent) context.warn("Agent visit notify email not sent (check RESEND_API_KEY).");
       } catch (err) {
-        context.error("Seller visit notify email failed:", err);
+        context.error("Agent visit notify email failed:", err);
       }
     }
 
@@ -106,14 +106,14 @@ export async function recordSellerVisit(
       headers: { "Access-Control-Allow-Origin": "*" },
       jsonBody: {
         success: true,
-        id: sellerId,
+        id: agentId,
         visitCount,
         notified: sendNotify,
-        seller: toPublicSeller({ ...entity, visitCount }),
+        agent: toPublicAgent({ ...entity, visitCount }),
       },
     };
   } catch (err) {
-    context.error("recordSellerVisit error:", err);
+    context.error("recordAgentVisit error:", err);
     return {
       status: 500,
       headers: { "Access-Control-Allow-Origin": "*" },
@@ -122,9 +122,9 @@ export async function recordSellerVisit(
   }
 }
 
-app.http("recordSellerVisit", {
+app.http("recordAgentVisit", {
   methods: ["POST", "OPTIONS"],
   authLevel: "anonymous",
-  route: "sellers/{id}/visit",
-  handler: recordSellerVisit,
+  route: "agents/{id}/visit",
+  handler: recordAgentVisit,
 });

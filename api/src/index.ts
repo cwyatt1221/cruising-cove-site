@@ -15,6 +15,7 @@ import "./functions/listAgentApplications";
 import "./functions/moderateAgentApplication";
 import "./functions/uploadAgentPhoto";
 import "./functions/publishedAgents";
+import "./functions/agentVisit";
 import "./functions/communityAuth";
 import "./functions/communitySailings";
 import "./functions/communityPosts";

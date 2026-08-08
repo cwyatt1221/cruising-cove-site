@@ -229,6 +229,36 @@
     }
   }
 
+  function visitSessionKey(agentId) {
+    return "cc_agent_visit_" + String(agentId || "");
+  }
+
+  function alreadyVisitedThisSession(agentId) {
+    try {
+      return sessionStorage.getItem(visitSessionKey(agentId)) === "1";
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function markVisitedThisSession(agentId) {
+    try {
+      sessionStorage.setItem(visitSessionKey(agentId), "1");
+    } catch (_) {}
+  }
+
+  /** Durable profile view counter + owner email (rate-limited server-side). */
+  function recordProfileVisit(agentId) {
+    if (!agentId || alreadyVisitedThisSession(agentId)) return;
+    markVisitedThisSession(agentId);
+    fetch("/api/agents/" + encodeURIComponent(agentId) + "/visit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path: location.pathname + location.search }),
+      keepalive: true,
+    }).catch(function () {});
+  }
+
   async function load() {
     var id = new URLSearchParams(location.search).get("id") || "";
     if (!id) {
@@ -243,6 +273,7 @@
         var data = await res.json();
         if (data.agent) {
           render(data.agent);
+          recordProfileVisit(id);
           return;
         }
       }
