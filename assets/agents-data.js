@@ -100,8 +100,8 @@ window.CC_profilePath = function (agent) {
 window.CC_AGENT_PHOTO_OVERRIDES = {
   "emily-schultz": "/assets/agent-photos/emily-schultz.jpg",
   "martina-yost": "/assets/agent-photos/martina-yost.jpg",
-  "kim-fanning": "/assets/agent-photos/kim-fanning.jpg",
-  "donna-walters": "/assets/agent-photos/donna-walters.jpg",
+  "kim-fanning": "/assets/agent-photos/kim-fanning.jpg?v=2",
+  "donna-walters": "/assets/agent-photos/donna-walters.jpg?v=2",
   "shana-matos": "/assets/agent-photos/shana-matos.jpg",
   "rebekah-lukins": "/assets/agent-photos/rebekah-lukins.jpg"
 };
