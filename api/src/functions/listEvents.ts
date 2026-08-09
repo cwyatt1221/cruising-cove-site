@@ -16,7 +16,7 @@ function getTableClient(): TableClient {
 
 export async function listEvents(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   if (!(await adminAuthOk(request))) {
-    return { status: 401, jsonBody: { error: "Missing or invalid 'key' query parameter." } };
+    return { status: 401, jsonBody: { error: "Sign in as admin (password session) or pass a valid key." } };
   }
 
   const typeFilter = request.query.get("type");

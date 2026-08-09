@@ -13,6 +13,11 @@
       blurb: "Sign in and jump to every moderation tool",
     },
     {
+      href: "/admin/searches.html",
+      label: "Site searches",
+      blurb: "What visitors type in the site search box",
+    },
+    {
       href: "/agents/admin.html",
       label: "Travel agents",
       blurb: "Agent applications, directory publish, guest request locks",

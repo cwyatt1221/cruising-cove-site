@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Site searches | Cruising Cove Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/agents.css">
+<style>
+  .search-admin-row{display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin:12px 0 4px;}
+  .search-admin-row label{display:block;font-size:0.82rem;color:var(--muted);margin-bottom:4px;}
+  .search-admin-row select{
+    min-width:140px;padding:8px 10px;border:1px solid rgba(26,42,74,.18);
+    background:#fff;font:inherit;
+  }
+  .search-admin-table{width:100%;border-collapse:collapse;margin:12px 0 24px;font-size:0.95rem;}
+  .search-admin-table th,.search-admin-table td{
+    text-align:left;padding:10px 8px;border-bottom:1px solid rgba(26,42,74,.1);
+    vertical-align:top;
+  }
+  .search-admin-table th{font-size:0.78rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);}
+  .search-admin-table .count{font-variant-numeric:tabular-nums;font-weight:700;color:var(--navy);}
+  .search-admin-meta{font-size:0.85rem;color:var(--muted);}
+  .search-admin-empty{margin:16px 0;color:var(--muted);}
+  .search-admin-section h2{
+    margin:1.6rem 0 0.4rem;font-family:var(--font-serif);font-weight:500;
+    font-size:1.35rem;color:var(--navy);
+  }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <nav class="site-nav-bar" aria-label="Primary">
+      <a class="logo" href="/">Cruising Cove</a>
+      <div class="nav-cta">
+        <a href="/admin/" class="btn btn-outline">Admin home</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main class="agent-admin-shell">
+  <div class="wrap" style="max-width:960px;">
+    <section class="agent-admin-panel">
+      <h1>Site searches</h1>
+      <p class="agent-admin-sub">Sign in with your admin password to see what visitors type in the site search box. No report access key needed.</p>
+      <div class="agent-admin-key">
+        <label for="adminPassword">Admin password</label>
+        <input id="adminPassword" type="password" autocomplete="current-password">
+      </div>
+      <div class="agent-admin-actions">
+        <button type="button" class="btn btn-gold" id="adminLoginBtn">Sign in</button>
+        <button type="button" class="btn btn-outline" id="adminLogoutBtn" hidden>Sign out</button>
+      </div>
+      <div class="search-admin-row">
+        <div>
+          <label for="daysSelect">Look back</label>
+          <select id="daysSelect">
+            <option value="7">7 days</option>
+            <option value="30" selected>30 days</option>
+            <option value="90">90 days</option>
+          </select>
+        </div>
+      </div>
+      <div class="agent-admin-actions">
+        <button type="button" class="btn btn-gold" id="loadSearches">Load searches</button>
+        <button type="button" class="btn btn-outline" id="loadClicks">Load result clicks</button>
+      </div>
+      <p class="agent-admin-status" id="adminStatus" hidden></p>
+      <div id="adminResults"></div>
+    </section>
+  </div>
+</main>
+
+<script src="/assets/admin-auth.js"></script>
+<script>
+(function () {
+  var statusEl = document.getElementById("adminStatus");
+  var results = document.getElementById("adminResults");
+  var daysSelect = document.getElementById("daysSelect");
+
+  function token() {
+    return (window.CCAdminAuth && window.CCAdminAuth.getToken()) || "";
+  }
+
+  function escapeHtml(str) {
+    return String(str == null ? "" : str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function showStatus(msg, ok) {
+    statusEl.hidden = !msg;
+    statusEl.textContent = msg || "";
+    statusEl.className = "agent-admin-status" + (msg ? (ok ? " ok" : " err") : "");
+  }
+
+  function formatWhen(iso) {
+    if (!iso) return "—";
+    try {
+      var d = new Date(iso);
+      if (Number.isNaN(d.getTime())) return escapeHtml(iso);
+      return d.toLocaleString();
+    } catch (_) {
+      return escapeHtml(iso);
+    }
+  }
+
+  function renderReport(data, mode) {
+    var tops = (data.topTargets || []).filter(function (row) {
+      return !mode || row.type === mode;
+    });
+    var recent = (data.recent || []).filter(function (row) {
+      return !mode || row.type === mode;
+    });
+
+    var html = "";
+    html += '<p class="search-admin-meta">Last ' + escapeHtml(String(data.days || "")) +
+      " days · " + escapeHtml(String(data.totalEvents || 0)) + " events" +
+      (data.countsByType ? " · types: " + escapeHtml(JSON.stringify(data.countsByType)) : "") +
+      "</p>";
+
+    html += '<div class="search-admin-section"><h2>Top queries</h2>';
+    if (!tops.length) {
+      html += '<p class="search-admin-empty">No searches yet for this window. Try the search box on the live site after deploy, then reload.</p>';
+    } else {
+      html += '<table class="search-admin-table"><thead><tr><th>Query / target</th><th>Count</th></tr></thead><tbody>';
+      tops.forEach(function (row) {
+        html +=
+          "<tr><td>" +
+          escapeHtml(row.target || "—") +
+          '</td><td class="count">' +
+          escapeHtml(String(row.count || 0)) +
+          "</td></tr>";
+      });
+      html += "</tbody></table>";
+    }
+    html += "</div>";
+
+    html += '<div class="search-admin-section"><h2>Recent</h2>';
+    if (!recent.length) {
+      html += '<p class="search-admin-empty">Nothing recent yet.</p>';
+    } else {
+      html += '<table class="search-admin-table"><thead><tr><th>When</th><th>Query</th><th>Details</th><th>Page</th></tr></thead><tbody>';
+      recent.forEach(function (row) {
+        var meta = row.meta || {};
+        var q = meta.query || row.target || "—";
+        var detail = [];
+        if (meta.resultCount != null) detail.push(meta.resultCount + " results");
+        if (meta.href) detail.push(meta.href);
+        if (meta.title) detail.push(meta.title);
+        if (meta.via) detail.push("via " + meta.via);
+        html +=
+          "<tr><td>" +
+          formatWhen(row.recordedAt) +
+          "</td><td><strong>" +
+          escapeHtml(q) +
+          "</strong></td><td class=\"search-admin-meta\">" +
+          escapeHtml(detail.join(" · ") || "—") +
+          "</td><td class=\"search-admin-meta\">" +
+          escapeHtml(row.path || "—") +
+          "</td></tr>";
+      });
+      html += "</tbody></table>";
+    }
+    html += "</div>";
+
+    results.innerHTML = html;
+  }
+
+  async function load(type) {
+    var key = token();
+    if (!key) {
+      showStatus("Sign in with your admin password first.", false);
+      return;
+    }
+    var days = daysSelect.value || "30";
+    showStatus("Loading…", true);
+    results.innerHTML = "";
+    try {
+      var url =
+        "/api/events-report?type=" +
+        encodeURIComponent(type) +
+        "&days=" +
+        encodeURIComponent(days) +
+        "&key=" +
+        encodeURIComponent(key);
+      var res = await fetch(url);
+      var data = await res.json().catch(function () { return {}; });
+      if (!res.ok) throw new Error(data.error || "Could not load report (" + res.status + ")");
+      showStatus("Loaded " + type.replace(/_/g, " ") + ".", true);
+      renderReport(data, type);
+    } catch (err) {
+      showStatus((err && err.message) || "Load failed.", false);
+    }
+  }
+
+  document.getElementById("loadSearches").addEventListener("click", function () {
+    load("site_search");
+  });
+  document.getElementById("loadClicks").addEventListener("click", function () {
+    load("site_search_click");
+  });
+
+  window.CCAdminAuth.bind({
+    passwordInput: document.getElementById("adminPassword"),
+    loginBtn: document.getElementById("adminLoginBtn"),
+    logoutBtn: document.getElementById("adminLogoutBtn"),
+    statusEl: statusEl,
+    onReady: function () {
+      showStatus("Signed in. Load searches to see what visitors typed.", true);
+      load("site_search");
+    },
+  });
+
+  if (token()) {
+    showStatus("Already signed in. Load searches anytime.", true);
+  } else {
+    showStatus("Sign in to unlock site search reports.", false);
+  }
+})();
+</script>
+</body>
+</html>
