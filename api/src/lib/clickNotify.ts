@@ -1,4 +1,8 @@
-/** Owner-only click emails for marketplace shops and agent profiles. */
+/**
+ * Click helpers + agent profile owner-notify emails.
+ * Marketplace shop clicks no longer email per click — sellers get a Monday weekly report
+ * (see sellerClicks.ts). notifyMarketplaceClick remains for tests / manual tooling.
+ */
 
 import { escapeHtml, notifyEmail, sendEmailResult, type SendEmailResult } from "./email";
 

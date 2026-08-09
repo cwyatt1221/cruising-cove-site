@@ -8,7 +8,9 @@
     "prestart": "npm run build",
     "start": "func start",
     "test:newsletter-tips": "tsc && node dist/src/lib/newsletterTips.test.js",
+    "sample:bridget-welcome": "tsc && node scripts/render-bridget-welcome.mjs",
     "test:click-notify": "tsc && node dist/src/lib/clickNotify.test.js",
+    "test:seller-clicks": "tsc && node dist/src/lib/sellerClicks.test.js",
     "test:community-notify": "tsc && node dist/src/lib/communityNotify.test.js",
     "test:community-chat": "tsc && node dist/src/lib/communityChat.test.js",
     "test:community-moderation": "tsc && node dist/src/lib/communityModeration.test.js"

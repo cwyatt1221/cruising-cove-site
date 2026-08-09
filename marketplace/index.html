@@ -150,32 +150,21 @@
       return count===1 ? '1 visit' : count+' visits';
     }
 
-    function sessionKey(id){
-      return 'cc_shop_visit_'+String(id||'');
-    }
-
-    function alreadyVisitedThisSession(id){
-      try{ return sessionStorage.getItem(sessionKey(id))==='1'; }catch(_){ return false; }
-    }
-
-    function markVisitedThisSession(id){
-      try{ sessionStorage.setItem(sessionKey(id),'1'); }catch(_){}
-    }
-
     function recordVisit(shopId, countEl){
-      if(!shopId || alreadyVisitedThisSession(shopId)) return;
-      markVisitedThisSession(shopId);
+      if(!shopId) return;
+      // Count every Visit shop click-out (common outbound-click pattern).
+      // Weekly totals are emailed to the store owner each Monday.
       fetch('/api/sellers/'+encodeURIComponent(shopId)+'/visit',{
         method:'POST',
         headers:{ 'Content-Type':'application/json' },
-        body: JSON.stringify({ path: location.pathname + location.search })
+        body: JSON.stringify({ path: location.pathname + location.search }),
+        keepalive: true
       })
         .then(function(res){ return res.json().then(function(data){ return { ok:res.ok, data:data }; }); })
         .then(function(result){
           if(!result.ok) return;
           var n=result.data && typeof result.data.visitCount==='number' ? result.data.visitCount : null;
           if(n==null) return;
-          // Keep in-memory list in sync for re-filters
           for(var i=0;i<allShops.length;i++){
             if(allShops[i].id===shopId){ allShops[i].visitCount=n; break; }
           }

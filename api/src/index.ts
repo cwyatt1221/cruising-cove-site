@@ -7,6 +7,7 @@ import "./functions/listSellerApplications";
 import "./functions/moderateSellerApplication";
 import "./functions/publishedSellers";
 import "./functions/sellerVisit";
+import "./functions/sellerClickWeekly";
 import "./functions/updatePublishedSeller";
 import "./functions/uploadSellerPhoto";
 import "./functions/agentLead";

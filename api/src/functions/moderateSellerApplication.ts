@@ -178,9 +178,10 @@ export async function moderateSellerApplication(
       socialProofQuotes = serializeSocialProofQuotes(parseSocialProofQuotes(body.socialProofQuotes));
     }
 
-    // Preserve visit counter + notify cooldown on re-publish
+    // Preserve visit counter + weekly-report stamp on re-publish
     let visitCount = 0;
-    let lastNotifyAt = "";
+    let lastClickReportWeek = "";
+    let lastClickReportAt = "";
     if (existingId) {
       try {
         const prev = await published.getEntity("directory", existingId);
@@ -191,7 +192,12 @@ export async function moderateSellerApplication(
             : typeof raw === "string" && raw.trim()
               ? Math.max(0, Math.floor(Number(raw) || 0))
               : 0;
-        lastNotifyAt = String((prev as { lastNotifyAt?: unknown }).lastNotifyAt || "").trim();
+        lastClickReportWeek = String(
+          (prev as { lastClickReportWeek?: unknown }).lastClickReportWeek || ""
+        ).trim();
+        lastClickReportAt = String(
+          (prev as { lastClickReportAt?: unknown }).lastClickReportAt || ""
+        ).trim();
         if (!socialProofQuotes && (prev as { socialProofQuotes?: unknown }).socialProofQuotes) {
           socialProofQuotes = String((prev as { socialProofQuotes?: unknown }).socialProofQuotes || "");
         }
@@ -216,7 +222,8 @@ export async function moderateSellerApplication(
       categories: categoriesJson,
       socialProofQuotes,
       visitCount,
-      lastNotifyAt,
+      lastClickReportWeek,
+      lastClickReportAt,
       audienceSize: String(application.audienceSize || "").trim(),
       willingToBarter: String(application.willingToBarter || "").trim(),
       otherNotes: String(application.otherNotes || "").trim(),
