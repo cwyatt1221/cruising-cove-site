@@ -696,6 +696,10 @@
   };
 
   var ARTICLE_EXTRA_LINKS = {
+    "welcome-aboard-martina": [
+      { href: "/agents/profile.html?id=martina-yost", title: "Martina Yost’s profile", meta: "Agents" },
+      { href: "/agents/", title: "Browse travel agents", meta: "Agents" },
+    ],
     "welcome-aboard-kim": [{ href: "/agents/", title: "Browse travel agents", meta: "Agents" }],
     "welcome-aboard-donna": [{ href: "/agents/", title: "Browse travel agents", meta: "Agents" }],
     "welcome-aboard-shana": [{ href: "/agents/", title: "Browse travel agents", meta: "Agents" }],

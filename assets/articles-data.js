@@ -6,9 +6,17 @@
 (function (global) {
   var FEATURED_SLOTS = 10;
   /** Pin the first homepage carousel slide. Set to null to rotate by ISO week. */
-  var CAROUSEL_START_ID = "welcome-aboard-emily";
+  var CAROUSEL_START_ID = "welcome-aboard-martina";
 
   var articles = [
+    {
+      id: "welcome-aboard-martina",
+      title: "Welcome Aboard Martina — Our Newest Travel Agent",
+      excerpt:
+        "Meet Martina Yost of Magic Mom Travel — a Disney Cruise specialist for young families, first-timers, and smart budget planning.",
+      date: "2026-08-09",
+      url: "/articles/welcome-aboard-martina.html",
+    },
     {
       id: "welcome-aboard-emily",
       title: "Welcome Aboard Emily — Our Newest Travel Agent",
