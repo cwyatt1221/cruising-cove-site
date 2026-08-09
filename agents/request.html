@@ -78,16 +78,49 @@
   <p class="intro">Sign in required. Select the agent you’d like to work with and tell us about your sailing. After you request one agent, other request buttons stay locked until Cruising Cove unlocks your account.</p>
   <p class="intro" style="margin-top:-8px;">Your request details are shared only with the agent you choose — we do not sell your personal information or provide account or form details to third parties for their marketing. <a href="/privacy/" style="color:var(--teal);text-decoration:underline;">Privacy</a></p>
 
-  <div id="authGate" class="agent-preview" hidden>
-    <strong>Sign in to request an agent</strong>
-    <p style="margin-top:8px">A free Cruising Cove account lets us notify you and keep your request tied to one agent at a time.</p>
-    <p style="margin-top:12px"><a class="btn btn-gold" id="authGateLink" href="/community/login.html">Sign in / Register</a></p>
-  </div>
+  <div class="agent-preview" id="agentPreview" aria-live="polite"></div>
   <div id="lockNotice" class="agent-preview" hidden></div>
 
-  <div class="agent-preview" id="agentPreview" aria-live="polite"></div>
+  <div id="authGate" class="agent-auth-gate" hidden>
+    <strong>Sign in to request this agent</strong>
+    <p>A free Cruising Cove account lets us notify you and keep your request tied to one agent at a time. You stay on this page after you sign in.</p>
 
-  <form class="agent-form" id="leadForm" novalidate>
+    <div class="agent-auth-tabs" role="tablist" aria-label="Account">
+      <button type="button" class="agent-auth-tab is-active" role="tab" aria-selected="true" data-auth-tab="login" id="authTabLogin">Sign in</button>
+      <button type="button" class="agent-auth-tab" role="tab" aria-selected="false" data-auth-tab="register" id="authTabRegister">Create account</button>
+    </div>
+
+    <form class="agent-form agent-auth-form" id="inlineLoginForm" autocomplete="on">
+      <label for="inlineLoginEmail">Email <span class="req">*</span></label>
+      <input id="inlineLoginEmail" name="email" type="email" required autocomplete="email">
+
+      <label for="inlineLoginPassword">Password <span class="req">*</span></label>
+      <input id="inlineLoginPassword" name="password" type="password" required autocomplete="current-password" minlength="8">
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-gold" id="inlineLoginBtn">Sign in</button>
+        <p class="form-status" id="inlineLoginMsg" role="status"></p>
+      </div>
+    </form>
+
+    <form class="agent-form agent-auth-form" id="inlineRegisterForm" autocomplete="on" hidden>
+      <label for="inlineRegName">Display name <span class="req">*</span></label>
+      <input id="inlineRegName" name="displayName" type="text" required minlength="2" maxlength="40" autocomplete="nickname" placeholder="How you’ll appear on Cruising Cove">
+
+      <label for="inlineRegEmail">Email <span class="req">*</span></label>
+      <input id="inlineRegEmail" name="email" type="email" required autocomplete="email">
+
+      <label for="inlineRegPassword">Password (8+ characters) <span class="req">*</span></label>
+      <input id="inlineRegPassword" name="password" type="password" required autocomplete="new-password" minlength="8">
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-gold" id="inlineRegisterBtn">Create account</button>
+        <p class="form-status" id="inlineRegisterMsg" role="status"></p>
+      </div>
+    </form>
+  </div>
+
+  <form class="agent-form" id="leadForm" novalidate hidden>
     <fieldset>
       <legend>Your agent</legend>
       <p class="field-hint"><a href="/agents/">Browse the directory</a> if you haven’t chosen someone yet.</p>
@@ -175,48 +208,53 @@
     var form=document.getElementById('leadForm');
     var authGate=document.getElementById('authGate');
     var lockNotice=document.getElementById('lockNotice');
-    var authGateLink=document.getElementById('authGateLink');
     var select=document.getElementById('agentId');
     var preview=document.getElementById('agentPreview');
+    var inlineLoginForm=document.getElementById('inlineLoginForm');
+    var inlineRegisterForm=document.getElementById('inlineRegisterForm');
     var params=new URLSearchParams(location.search);
     var preselect=params.get('agent')||'';
     var agentMap={};
     var activeLock=null;
-
-    authGateLink.setAttribute('href', CC.loginUrl(location.pathname+location.search));
+    var requestReady=false;
 
     function showAuthGate(){
       authGate.hidden=false;
-      authGate.classList.add('visible');
       form.hidden=true;
-      preview.hidden=true;
-      preview.classList.remove('visible');
       lockNotice.hidden=true;
       lockNotice.classList.remove('visible');
     }
 
     function hideAuthGate(){
-      // .visible { display:block } beats the HTML hidden attribute without !important CSS —
-      // always clear both so Sign in never sits on top of the real form.
       authGate.hidden=true;
-      authGate.classList.remove('visible');
     }
 
-    if(!CC.getToken() || !CC.getUser()){
-      if(CC.getToken() && !CC.getUser()) CC.clearSession();
-      showAuthGate();
-      return;
+    function setAuthTab(which){
+      var loginOn=which==='login';
+      document.getElementById('authTabLogin').classList.toggle('is-active', loginOn);
+      document.getElementById('authTabRegister').classList.toggle('is-active', !loginOn);
+      document.getElementById('authTabLogin').setAttribute('aria-selected', loginOn ? 'true' : 'false');
+      document.getElementById('authTabRegister').setAttribute('aria-selected', loginOn ? 'false' : 'true');
+      inlineLoginForm.hidden=!loginOn;
+      inlineRegisterForm.hidden=loginOn;
     }
 
-    hideAuthGate();
-    form.hidden=false;
+    document.getElementById('authTabLogin').addEventListener('click', function(){ setAuthTab('login'); });
+    document.getElementById('authTabRegister').addEventListener('click', function(){ setAuthTab('register'); });
 
-    var user=CC.getUser()||{};
-    if(user.displayName && !document.getElementById('guestName').value){
-      document.getElementById('guestName').value=user.displayName;
+    function showAuthMsg(el, text, ok){
+      el.className='form-status '+(ok ? 'ok' : 'err');
+      el.textContent=text||'';
     }
-    if(user.email && !document.getElementById('email').value){
-      document.getElementById('email').value=user.email;
+
+    function prefillUser(){
+      var user=CC.getUser()||{};
+      if(user.displayName && !document.getElementById('guestName').value){
+        document.getElementById('guestName').value=user.displayName;
+      }
+      if(user.email && !document.getElementById('email').value){
+        document.getElementById('email').value=user.email;
+      }
     }
 
     function updatePreview(){
@@ -227,7 +265,8 @@
         return;
       }
       preview.className='agent-preview visible';
-      preview.innerHTML='<strong>'+agent.name+'</strong><p>'+agent.pitch+'</p><p style="margin-top:8px"><a href="'+window.CC_profilePath(agent)+'">View full profile →</a></p>';
+      preview.innerHTML='<strong>'+CC.escapeHtml(agent.name)+'</strong><p>'+CC.escapeHtml(agent.pitch||'')+
+        '</p><p style="margin-top:8px"><a href="'+window.CC_profilePath(agent)+'">View full profile →</a></p>';
     }
 
     function applyLockUI(lock){
@@ -236,7 +275,7 @@
         lockNotice.hidden=true;
         lockNotice.classList.remove('visible');
         lockNotice.innerHTML='';
-        form.hidden=false;
+        if(requestReady) form.hidden=false;
         select.disabled=false;
         return;
       }
@@ -256,6 +295,67 @@
       }
     }
 
+    function unlockRequestForm(){
+      hideAuthGate();
+      requestReady=true;
+      prefillUser();
+      form.hidden=false;
+      CC.getAgentRequestLock().then(applyLockUI);
+    }
+
+    function afterInlineAuth(data, msgEl, successText){
+      CC.setSession(data.token, data.user);
+      showAuthMsg(msgEl, successText, true);
+      unlockRequestForm();
+      if(window.CCAnalytics && CCAnalytics.track){
+        CCAnalytics.track('agent_request_auth', { agent: preselect || select.value || '' });
+      }
+    }
+
+    inlineLoginForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var msg=document.getElementById('inlineLoginMsg');
+      var submit=document.getElementById('inlineLoginBtn');
+      submit.disabled=true;
+      showAuthMsg(msg, 'Signing in…', true);
+      CC.api('/community/login', {
+        method:'POST',
+        body:{
+          email:document.getElementById('inlineLoginEmail').value,
+          password:document.getElementById('inlineLoginPassword').value
+        }
+      }).then(function(data){
+        afterInlineAuth(data, msg, 'Signed in — continue your request below.');
+      }).catch(function(err){
+        showAuthMsg(msg, err.message || 'Sign-in failed.', false);
+      }).finally(function(){
+        submit.disabled=false;
+      });
+    });
+
+    inlineRegisterForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var msg=document.getElementById('inlineRegisterMsg');
+      var submit=document.getElementById('inlineRegisterBtn');
+      submit.disabled=true;
+      showAuthMsg(msg, 'Creating account…', true);
+      CC.api('/community/register', {
+        method:'POST',
+        body:{
+          displayName:document.getElementById('inlineRegName').value,
+          email:document.getElementById('inlineRegEmail').value,
+          password:document.getElementById('inlineRegPassword').value
+        }
+      }).then(function(data){
+        afterInlineAuth(data, msg, 'Account created — continue your request below.');
+      }).catch(function(err){
+        showAuthMsg(msg, err.message || 'Could not register.', false);
+      }).finally(function(){
+        submit.disabled=false;
+      });
+    });
+
+    // Always keep the chosen agent visible while signing in on this page.
     window.CC_loadDirectoryAgents().then(function(agents){
       agents.forEach(function(agent){
         agentMap[agent.id]=agent;
@@ -270,7 +370,13 @@
 
     select.addEventListener('change', updatePreview);
 
-    CC.getAgentRequestLock().then(applyLockUI);
+    if(!CC.getToken() || !CC.getUser()){
+      if(CC.getToken() && !CC.getUser()) CC.clearSession();
+      showAuthGate();
+      setAuthTab('login');
+    } else {
+      unlockRequestForm();
+    }
 
     var statusEl=document.getElementById('formStatus');
     var submitBtn=document.getElementById('submitBtn');
@@ -280,7 +386,13 @@
       statusEl.className='form-status';
       statusEl.textContent='';
 
-      if(!CC.requireSignIn(location.pathname+location.search)) return;
+      if(!CC.getToken() || !CC.getUser()){
+        showAuthGate();
+        setAuthTab('login');
+        showAuthMsg(document.getElementById('inlineLoginMsg'), 'Sign in to send your request.', false);
+        authGate.scrollIntoView({ behavior:'smooth', block:'start' });
+        return;
+      }
       if(activeLock){
         statusEl.className='form-status err';
         statusEl.textContent='Your account is locked to one agent request right now.';
