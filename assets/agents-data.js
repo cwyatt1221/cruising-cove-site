@@ -101,7 +101,7 @@ window.CC_AGENT_PHOTO_OVERRIDES = {
   "emily-schultz": "/assets/agent-photos/emily-schultz.jpg?v=7",
   "martina-yost": "/assets/agent-photos/martina-yost.jpg?v=6",
   "kim-fanning": "/assets/agent-photos/kim-fanning.jpg?v=2",
-  "donna-walters": "/assets/agent-photos/donna-walters.jpg?v=4",
+  "donna-walters": "/assets/agent-photos/donna-walters.jpg?v=5",
   "shana-matos": "/assets/agent-photos/shana-matos.jpg?v=2",
   "rebekah-lukins": "/assets/agent-photos/rebekah-lukins.jpg?v=2"
 };
