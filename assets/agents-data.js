@@ -96,6 +96,33 @@ window.CC_profilePath = function (agent) {
   return "/agents/profile.html?id=" + encodeURIComponent(agent.id);
 };
 
+/** Pre-cropped headshots for directory circles (full-body uploads stay in blob storage). */
+window.CC_AGENT_PHOTO_OVERRIDES = {
+  "emily-schultz": "/assets/agent-photos/emily-schultz.jpg",
+  "martina-yost": "/assets/agent-photos/martina-yost.jpg",
+  "kim-fanning": "/assets/agent-photos/kim-fanning.jpg",
+  "donna-walters": "/assets/agent-photos/donna-walters.jpg",
+  "shana-matos": "/assets/agent-photos/shana-matos.jpg",
+  "rebekah-lukins": "/assets/agent-photos/rebekah-lukins.jpg"
+};
+
+window.CC_slugifyName = function (name) {
+  return String(name || "")
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
+};
+
+window.CC_agentPhotoUrl = function (agent) {
+  if (!agent) return null;
+  var slug = agent.slug || window.CC_slugifyName(agent.name);
+  var override = slug && window.CC_AGENT_PHOTO_OVERRIDES[slug];
+  return override || agent.photoUrl || null;
+};
+
 window.CC_loadDirectoryAgents = async function () {
   var live = [];
   try {

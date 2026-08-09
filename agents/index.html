@@ -9,17 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/site.css">
-<link rel="stylesheet" href="/assets/agents.css?v=facezoom3">
-<style>
-  /* Tight face crop — kept inline so CDN-cached agents.css can’t leave full-body shots. */
-  .agent-avatar-photo{overflow:hidden!important;}
-  .agent-avatar-photo img{
-    object-fit:cover!important;
-    object-position:center 16%!important;
-    transform:scale(2.2)!important;
-    transform-origin:center 16%!important;
-  }
-</style>
+<link rel="stylesheet" href="/assets/agents.css?v=facecrop1">
 </head>
 <body>
 
@@ -168,8 +158,9 @@
     }
 
     function avatarHtml(agent){
-      if(agent.photoUrl){
-        return '<div class="agent-avatar agent-avatar-photo"><img src="'+escapeHtml(agent.photoUrl)+'" alt=""></div>';
+      var photo=window.CC_agentPhotoUrl?window.CC_agentPhotoUrl(agent):agent.photoUrl;
+      if(photo){
+        return '<div class="agent-avatar agent-avatar-photo"><img src="'+escapeHtml(photo)+'" alt=""></div>';
       }
       return '<div class="agent-avatar" aria-hidden="true">'+escapeHtml(initials(agent.name))+'</div>';
     }

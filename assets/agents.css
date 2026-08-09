@@ -77,8 +77,8 @@
 .agent-avatar-lg{width:140px;height:140px;font-size:2rem;}
 .agent-avatar-photo{padding:0;background:var(--cream-2);overflow:hidden;}
 .agent-avatar-photo img{
-  width:100%;height:100%;object-fit:cover;object-position:center 16%;
-  display:block;transform:scale(2.2);transform-origin:center 16%;
+  width:100%;height:100%;object-fit:cover;object-position:center center;
+  display:block;
 }
 .agent-side-card .agent-avatar{
   margin-left:auto;margin-right:auto;
