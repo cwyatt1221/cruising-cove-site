@@ -26,9 +26,13 @@
     margin:0 0 1.6rem;padding:20px 22px;
     background:var(--cream);border:1px solid rgba(26,42,74,.08);border-left:3px solid var(--gold);
   }
-  .agent-feature-hero img{
-    width:180px;height:180px;border-radius:50%;object-fit:cover;object-position:center 20%;
-    border:2px solid rgba(201,162,75,.45);flex-shrink:0;
+  .agent-feature-photo{
+    width:180px;height:180px;border-radius:50%;overflow:hidden;flex-shrink:0;
+    border:2px solid rgba(201,162,75,.45);background:var(--cream-2);
+  }
+  .agent-feature-photo img{
+    width:100%;height:100%;object-fit:cover;object-position:center 22%;
+    display:block;border:0;transform:scale(1.42);transform-origin:center 28%;
   }
   .agent-feature-hero h2{
     font-family:var(--font-serif);font-weight:500;font-size:1.45rem;
@@ -118,7 +122,7 @@
       <p class="article-meta">Published August 2, 2026 · <a href="/agents/" style="color:var(--teal);">Travel agents</a></p>
 
       <div class="agent-feature-hero">
-        <img src="https://cruisingcovelogs.blob.core.windows.net/agent-photos/e2698628-d880-4d0c-a2fd-2dd217b2d02c.jpg?sv=2026-06-06&amp;spr=https&amp;se=2036-08-02T20%3A36%3A57Z&amp;sr=b&amp;sp=r&amp;sig=Q232dLyRFHl%2FSi28%2BmL62rAt0IQdPNlxd7H3leupD%2BQ%3D" alt="Donna Walters">
+        <div class="agent-feature-photo"><img src="https://cruisingcovelogs.blob.core.windows.net/agent-photos/e2698628-d880-4d0c-a2fd-2dd217b2d02c.jpg?sv=2026-06-06&amp;spr=https&amp;se=2036-08-02T20%3A36%3A57Z&amp;sr=b&amp;sp=r&amp;sig=Q232dLyRFHl%2FSi28%2BmL62rAt0IQdPNlxd7H3leupD%2BQ%3D" alt="Donna Walters"></div>
         <div>
           <h2>Donna Walters</h2>
           <p class="meta">EnchantAway Travel · Celebration, FL</p>

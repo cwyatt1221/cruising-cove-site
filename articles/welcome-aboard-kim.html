@@ -26,9 +26,13 @@
     margin:0 0 1.6rem;padding:20px 22px;
     background:var(--cream);border:1px solid rgba(26,42,74,.08);border-left:3px solid var(--gold);
   }
-  .agent-feature-hero img{
-    width:180px;height:180px;border-radius:50%;object-fit:cover;object-position:center 20%;
-    border:2px solid rgba(201,162,75,.45);flex-shrink:0;
+  .agent-feature-photo{
+    width:180px;height:180px;border-radius:50%;overflow:hidden;flex-shrink:0;
+    border:2px solid rgba(201,162,75,.45);background:var(--cream-2);
+  }
+  .agent-feature-photo img{
+    width:100%;height:100%;object-fit:cover;object-position:center 22%;
+    display:block;border:0;transform:scale(1.42);transform-origin:center 28%;
   }
   .agent-feature-hero h2{
     font-family:var(--font-serif);font-weight:500;font-size:1.45rem;
@@ -157,7 +161,7 @@
       <p class="article-meta">Published August 5, 2026 · <a href="/agents/" style="color:var(--teal);">Travel agents</a></p>
 
       <div class="agent-feature-hero">
-        <img src="https://cruisingcovelogs.blob.core.windows.net/agent-photos/d4121e6e-c95c-4d7c-bcc5-b8f1a72761be.jpg?sv=2026-06-06&amp;spr=https&amp;se=2036-08-05T18%3A13%3A28Z&amp;sr=b&amp;sp=r&amp;sig=g7V6VENvt4UBo3IdKfFYWNuolWfs1vfNxr1jBfn3bUs%3D" alt="Kim Fanning">
+        <div class="agent-feature-photo"><img src="https://cruisingcovelogs.blob.core.windows.net/agent-photos/d4121e6e-c95c-4d7c-bcc5-b8f1a72761be.jpg?sv=2026-06-06&amp;spr=https&amp;se=2036-08-05T18%3A13%3A28Z&amp;sr=b&amp;sp=r&amp;sig=g7V6VENvt4UBo3IdKfFYWNuolWfs1vfNxr1jBfn3bUs%3D" alt="Kim Fanning"></div>
         <div>
           <h2>Kim Fanning</h2>
           <p class="meta">Magical World Vacations · Jackson, NJ</p>
