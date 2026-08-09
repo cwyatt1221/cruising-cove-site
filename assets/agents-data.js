@@ -98,8 +98,8 @@ window.CC_profilePath = function (agent) {
 
 /** Pre-cropped headshots for directory circles (full-body uploads stay in blob storage). */
 window.CC_AGENT_PHOTO_OVERRIDES = {
-  "emily-schultz": "/assets/agent-photos/emily-schultz.jpg?v=5",
-  "martina-yost": "/assets/agent-photos/martina-yost.jpg?v=4",
+  "emily-schultz": "/assets/agent-photos/emily-schultz.jpg?v=6",
+  "martina-yost": "/assets/agent-photos/martina-yost.jpg?v=5",
   "kim-fanning": "/assets/agent-photos/kim-fanning.jpg?v=2",
   "donna-walters": "/assets/agent-photos/donna-walters.jpg?v=4",
   "shana-matos": "/assets/agent-photos/shana-matos.jpg?v=2",
