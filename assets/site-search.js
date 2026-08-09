@@ -146,6 +146,22 @@
     var input = wrap.querySelector("#ccSiteSearchInput");
     var results = wrap.querySelector("#ccSiteSearchResults");
     var timer = null;
+    var lastTrackedQuery = "";
+
+    function trackSearch(query, resultCount) {
+      var q = String(query || "").trim().slice(0, 120);
+      if (q.length < 2) return;
+      // Avoid logging every keystroke variant of the same settled query.
+      var key = q.toLowerCase() + "|" + String(resultCount);
+      if (key === lastTrackedQuery) return;
+      lastTrackedQuery = key;
+      if (window.CCAnalytics && typeof CCAnalytics.track === "function") {
+        CCAnalytics.track("site_search", {
+          query: q,
+          resultCount: typeof resultCount === "number" ? resultCount : null,
+        });
+      }
+    }
 
     function closeResults() {
       results.hidden = true;
@@ -162,6 +178,7 @@
         results.innerHTML = '<p class="cc-site-search-empty">No matches for “' + escapeHtml(query.trim()) + '”</p>';
         results.hidden = false;
         input.setAttribute("aria-expanded", "true");
+        trackSearch(query, 0);
         return;
       }
       results.innerHTML = items
@@ -169,6 +186,8 @@
           return (
             '<a class="cc-site-search-item" role="option" href="' +
             escapeHtml(item.page.url) +
+            '" data-cc-search-hit="1" data-cc-search-title="' +
+            escapeHtml(item.page.title || "") +
             '">' +
             "<strong>" +
             escapeHtml(item.page.title) +
@@ -180,6 +199,7 @@
         .join("");
       results.hidden = false;
       input.setAttribute("aria-expanded", "true");
+      trackSearch(query, items.length);
     }
 
     function runSearch() {
@@ -196,7 +216,8 @@
 
     input.addEventListener("input", function () {
       clearTimeout(timer);
-      timer = setTimeout(runSearch, 140);
+      // Slightly longer debounce so we store settled queries, not every keystroke.
+      timer = setTimeout(runSearch, 320);
     });
     input.addEventListener("focus", function () {
       loadIndex();
@@ -211,8 +232,28 @@
         var first = results.querySelector(".cc-site-search-item");
         if (first && !results.hidden) {
           e.preventDefault();
+          if (window.CCAnalytics && typeof CCAnalytics.track === "function") {
+            CCAnalytics.track("site_search_click", {
+              query: String(input.value || "").trim().slice(0, 120),
+              href: first.getAttribute("href") || "",
+              title: first.getAttribute("data-cc-search-title") || "",
+              via: "enter",
+            });
+          }
           window.location.href = first.getAttribute("href");
         }
+      }
+    });
+    results.addEventListener("click", function (e) {
+      var a = e.target && e.target.closest ? e.target.closest("a.cc-site-search-item") : null;
+      if (!a) return;
+      if (window.CCAnalytics && typeof CCAnalytics.track === "function") {
+        CCAnalytics.track("site_search_click", {
+          query: String(input.value || "").trim().slice(0, 120),
+          href: a.getAttribute("href") || "",
+          title: a.getAttribute("data-cc-search-title") || "",
+          via: "click",
+        });
       }
     });
     document.addEventListener("click", function (e) {

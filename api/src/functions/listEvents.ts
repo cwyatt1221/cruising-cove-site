@@ -45,7 +45,9 @@ export async function listEvents(request: HttpRequest, context: InvocationContex
       } catch {
         meta = {};
       }
-      const target = String(meta.agent || meta.shop || meta.href || entity.path || "unknown");
+      const target = String(
+        meta.query || meta.agent || meta.shop || meta.href || entity.path || "unknown"
+      ).slice(0, 200);
       const targetKey = `${type}:${target}`;
       byTarget[targetKey] = (byTarget[targetKey] || 0) + 1;
 
