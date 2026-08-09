@@ -102,8 +102,8 @@ window.CC_AGENT_PHOTO_OVERRIDES = {
   "martina-yost": "/assets/agent-photos/martina-yost.jpg?v=2",
   "kim-fanning": "/assets/agent-photos/kim-fanning.jpg?v=2",
   "donna-walters": "/assets/agent-photos/donna-walters.jpg?v=2",
-  "shana-matos": "/assets/agent-photos/shana-matos.jpg",
-  "rebekah-lukins": "/assets/agent-photos/rebekah-lukins.jpg"
+  "shana-matos": "/assets/agent-photos/shana-matos.jpg?v=2",
+  "rebekah-lukins": "/assets/agent-photos/rebekah-lukins.jpg?v=2"
 };
 
 window.CC_slugifyName = function (name) {
