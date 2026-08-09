@@ -98,9 +98,12 @@
 .agent-tag{
   appearance:none;border:0;display:inline-block;font:inherit;
   font-size:0.78rem;color:var(--muted);background:var(--cream-2);
-  padding:4px 10px;border-radius:20px;margin:0;cursor:pointer;line-height:1.2;
+  padding:4px 10px;border-radius:20px;margin:0;cursor:default;line-height:1.2;
 }
-.agent-tag:hover{background:rgba(201,162,75,.22);color:var(--navy);}
+button.agent-tag{
+  cursor:pointer;
+}
+button.agent-tag:hover{background:rgba(201,162,75,.22);color:var(--navy);}
 .agent-card-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px;position:relative;z-index:2;}
 .agent-card-actions .btn{font-size:0.82rem;padding:9px 14px;position:relative;z-index:2;}
 a.btn.is-disabled,
@@ -144,6 +147,8 @@ a.btn[aria-disabled="true"]{
   padding:16px 18px;margin:0 0 22px;
 }
 .agent-preview.visible{display:block;}
+/* .visible { display:block } must not override the hidden attribute */
+.agent-preview[hidden]{display:none !important;}
 .agent-preview strong{display:block;font-family:var(--font-serif);font-size:1.15rem;color:var(--navy);margin-bottom:4px;}
 .agent-preview p{margin:0;font-size:0.9rem;color:var(--muted);line-height:1.5;}
 
@@ -151,6 +156,7 @@ a.btn[aria-disabled="true"]{
   background:var(--cream);border:1px solid rgba(26,42,74,.08);
   border-radius:4px;padding:8px 28px 28px;
 }
+.agent-form[hidden]{display:none !important;}
 .agent-form fieldset{border:none;padding:22px 0;margin:0;border-bottom:1px solid rgba(26,42,74,.08);}
 .agent-form fieldset:last-of-type{border-bottom:none;}
 .agent-form legend{font-family:var(--font-serif);font-size:1.2rem;font-weight:500;color:var(--navy);padding:0;}

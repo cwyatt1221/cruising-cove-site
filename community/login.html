@@ -147,9 +147,27 @@
   }
 
   var CC = window.CCCommunity;
-  var next = new URLSearchParams(location.search).get('next') || '/community/';
+  function safeNext() {
+    var raw = new URLSearchParams(location.search).get('next') || '/community/';
+    // Unwrap nested next=login?next=… a few times if analytics double-wrapped it.
+    for (var i = 0; i < 3; i++) {
+      try {
+        var u = new URL(raw, location.href);
+        if (u.origin !== location.origin) return '/community/';
+        if (/\/community\/login\.html$/i.test(u.pathname)) {
+          raw = u.searchParams.get('next') || '/community/';
+          continue;
+        }
+        return u.pathname + u.search + u.hash;
+      } catch (e) {
+        return '/community/';
+      }
+    }
+    return '/community/';
+  }
+  var next = safeNext();
 
-  function go(){ location.href = next; }
+  function go(){ location.replace(next); }
 
   if (CC.getToken() && CC.getUser()) go();
 

@@ -78,12 +78,12 @@
   <p class="intro">Sign in required. Select the agent you’d like to work with and tell us about your sailing. After you request one agent, other request buttons stay locked until Cruising Cove unlocks your account.</p>
   <p class="intro" style="margin-top:-8px;">Your request details are shared only with the agent you choose — we do not sell your personal information or provide account or form details to third parties for their marketing. <a href="/privacy/" style="color:var(--teal);text-decoration:underline;">Privacy</a></p>
 
-  <div id="authGate" class="agent-preview visible" hidden>
+  <div id="authGate" class="agent-preview" hidden>
     <strong>Sign in to request an agent</strong>
     <p style="margin-top:8px">A free Cruising Cove account lets us notify you and keep your request tied to one agent at a time.</p>
     <p style="margin-top:12px"><a class="btn btn-gold" id="authGateLink" href="/community/login.html">Sign in / Register</a></p>
   </div>
-  <div id="lockNotice" class="agent-preview visible" hidden></div>
+  <div id="lockNotice" class="agent-preview" hidden></div>
 
   <div class="agent-preview" id="agentPreview" aria-live="polite"></div>
 
@@ -183,14 +183,33 @@
     var agentMap={};
     var activeLock=null;
 
-    authGateLink.href=CC.loginUrl(location.pathname+location.search);
+    authGateLink.setAttribute('href', CC.loginUrl(location.pathname+location.search));
 
-    if(!CC.getToken()){
+    function showAuthGate(){
       authGate.hidden=false;
+      authGate.classList.add('visible');
       form.hidden=true;
       preview.hidden=true;
+      preview.classList.remove('visible');
+      lockNotice.hidden=true;
+      lockNotice.classList.remove('visible');
+    }
+
+    function hideAuthGate(){
+      // .visible { display:block } beats the HTML hidden attribute without !important CSS —
+      // always clear both so Sign in never sits on top of the real form.
+      authGate.hidden=true;
+      authGate.classList.remove('visible');
+    }
+
+    if(!CC.getToken() || !CC.getUser()){
+      if(CC.getToken() && !CC.getUser()) CC.clearSession();
+      showAuthGate();
       return;
     }
+
+    hideAuthGate();
+    form.hidden=false;
 
     var user=CC.getUser()||{};
     if(user.displayName && !document.getElementById('guestName').value){
@@ -215,11 +234,14 @@
       activeLock=lock;
       if(!lock){
         lockNotice.hidden=true;
+        lockNotice.classList.remove('visible');
+        lockNotice.innerHTML='';
         form.hidden=false;
         select.disabled=false;
         return;
       }
       lockNotice.hidden=false;
+      lockNotice.classList.add('visible');
       lockNotice.innerHTML=
         '<strong>Request already submitted</strong>'+
         '<p style="margin-top:8px">You requested <strong>'+CC.escapeHtml(lock.agentName||lock.agentId)+

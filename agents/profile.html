@@ -216,7 +216,8 @@
     document.getElementById("sideTitle").textContent = "Request " + (agent.name.split(" ")[0] || "this agent");
     var requestBtn = document.getElementById("requestBtn");
     requestBtn.href = "/agents/request.html?agent=" + encodeURIComponent(agent.id);
-    requestBtn.dataset.ccRequestHref = requestBtn.href;
+    // Store the relative path — requestBtn.href (property) is absolute and breaks login next=.
+    requestBtn.dataset.ccRequestHref = "/agents/request.html?agent=" + encodeURIComponent(agent.id);
     requestBtn.textContent = "Request this agent";
     if (window.CCCommunity) {
       window.CCCommunity.getAgentRequestLock().then(function (lock) {

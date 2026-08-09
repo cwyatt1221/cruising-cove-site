@@ -64,7 +64,32 @@
   }
 
   function loginRedirect(next) {
-    location.href = "/community/login.html?next=" + encodeURIComponent(next || location.pathname + location.search);
+    var dest = next || location.pathname + location.search;
+    // Unwrap login URLs and always store a same-origin path (never absolute https://…).
+    try {
+      var u = new URL(dest, location.href);
+      if (/\/community\/login\.html$/i.test(u.pathname)) {
+        dest = u.searchParams.get("next") || location.pathname + location.search;
+        u = new URL(dest, location.href);
+      }
+      if (u.origin === location.origin) {
+        dest = u.pathname + u.search + u.hash;
+      } else {
+        dest = location.pathname + location.search;
+      }
+    } catch (e) {
+      /* keep dest */
+    }
+    location.href = "/community/login.html?next=" + encodeURIComponent(dest);
+  }
+
+  /** True only for the agent request page itself — not login?next=…/agents/request… */
+  function isAgentRequestHref(href) {
+    try {
+      return /\/agents\/request\.html$/i.test(new URL(href, location.href).pathname);
+    } catch (e) {
+      return false;
+    }
   }
 
   function track(type, meta) {
@@ -167,11 +192,6 @@
         /etsy\.com/i.test(href);
 
       if (isShopLink) {
-        if (!isSignedIn()) {
-          e.preventDefault();
-          loginRedirect(location.pathname + location.search);
-          return;
-        }
         track(custom || "shop_click", {
           href: href.slice(0, 300),
           label: label,
@@ -190,7 +210,7 @@
         return;
       }
 
-      if (href.indexOf("/agents/request") !== -1) {
+      if (isAgentRequestHref(href)) {
         if (a.getAttribute("aria-disabled") === "true" || a.classList.contains("is-disabled")) {
           e.preventDefault();
           flashNotice(
@@ -199,17 +219,17 @@
           );
           return;
         }
-        if (!isSignedIn()) {
-          e.preventDefault();
-          loginRedirect(href);
-          return;
-        }
+        // Unsigned users navigate to request.html (auth gate + Sign in link). Do not
+        // preventDefault + JS redirect — that reads as a Clarity dead click and can
+        // misfire when href is a login URL whose next= mentions /agents/request.
         var agentMatch = href.match(/[?&]agent=([^&]+)/);
-        track("agent_request_click", {
-          href: href.slice(0, 300),
-          label: label,
-          agent: agentMatch ? decodeURIComponent(agentMatch[1]) : "",
-        });
+        if (isSignedIn()) {
+          track("agent_request_click", {
+            href: href.slice(0, 300),
+            label: label,
+            agent: agentMatch ? decodeURIComponent(agentMatch[1]) : "",
+          });
+        }
         return;
       }
 

@@ -112,9 +112,23 @@
     }
   }
 
+  /** Prefer same-origin path+query+hash so next= never becomes an absolute URL. */
+  function toInternalPath(dest) {
+    if (!dest) return location.pathname + location.search + location.hash;
+    try {
+      var u = new URL(String(dest), location.href);
+      if (u.origin !== location.origin) return location.pathname + location.search + location.hash;
+      if (/\/community\/login\.html$/i.test(u.pathname)) {
+        return toInternalPath(u.searchParams.get("next") || "/community/");
+      }
+      return u.pathname + u.search + u.hash;
+    } catch (e) {
+      return location.pathname + location.search + location.hash;
+    }
+  }
+
   function loginUrl(next) {
-    var dest = next || location.pathname + location.search + location.hash;
-    return "/community/login.html?next=" + encodeURIComponent(dest);
+    return "/community/login.html?next=" + encodeURIComponent(toInternalPath(next));
   }
 
   function requireSignIn(next) {
@@ -138,14 +152,27 @@
   /**
    * Disable "Request this agent" links when the user already has a locked request.
    */
+  function isAgentRequestHref(href) {
+    try {
+      return /\/agents\/request\.html$/i.test(new URL(href, location.href).pathname);
+    } catch (e) {
+      return false;
+    }
+  }
+
   function applyAgentRequestLocks(root, lock) {
     var scope = root || document;
     var links = scope.querySelectorAll('a[href*="/agents/request"], a[data-cc-request-href]');
     links.forEach(function (a) {
       if (!a.dataset.ccRequestHref) {
-        a.dataset.ccRequestHref = a.getAttribute("href") || "";
+        // getAttribute keeps a relative path; the .href property is always absolute.
+        a.dataset.ccRequestHref = toInternalPath(a.getAttribute("href") || "");
+      } else {
+        a.dataset.ccRequestHref = toInternalPath(a.dataset.ccRequestHref);
       }
       var href = a.dataset.ccRequestHref || "";
+      // Ignore login?next=…/agents/request… and other non-request destinations.
+      if (!isAgentRequestHref(href)) return;
       var match = href.match(/[?&]agent=([^&]+)/);
       var agentId = match ? decodeURIComponent(match[1]) : "";
       if (!lock || !lock.locked) {
