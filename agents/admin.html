@@ -53,6 +53,18 @@
       </div>
       <div id="locksList" class="agent-admin-list"></div>
     </section>
+
+    <section class="agent-admin-panel" style="margin-top:28px;">
+      <h2 style="font-family:var(--font-serif);font-weight:500;font-size:1.45rem;margin:0 0 8px;">Submitted request forms</h2>
+      <p class="agent-admin-sub">Full guest request log — open each form, email it to the travel agent, and use the list to follow up with guests and agents.</p>
+      <div class="agent-admin-actions">
+        <button type="button" class="btn btn-gold" id="loadLeads">Load all requests</button>
+        <button type="button" class="btn btn-outline" id="filterLeadsAll">All</button>
+        <button type="button" class="btn btn-outline" id="filterLeadsLocked">Locked</button>
+        <button type="button" class="btn btn-outline" id="filterLeadsUnsent">Not emailed yet</button>
+      </div>
+      <div id="leadsList" class="agent-admin-list"></div>
+    </section>
   </div>
 </main>
 
@@ -298,6 +310,52 @@
   });
 
   var locksList = document.getElementById("locksList");
+  var leadsList = document.getElementById("leadsList");
+  var allLeads = [];
+  var leadsFilter = "all";
+
+  function formatWhen(iso) {
+    if (!iso) return "—";
+    try {
+      return new Date(iso).toLocaleString(undefined, {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+      });
+    } catch (e) {
+      return iso;
+    }
+  }
+
+  function fieldLine(label, value) {
+    var v = String(value || "").trim();
+    if (!v) return "";
+    return (
+      "<li><strong>" +
+      escapeHtml(label) +
+      ":</strong> " +
+      escapeHtml(v) +
+      "</li>"
+    );
+  }
+
+  async function unlockGuest(userId, leadId, agentId) {
+    var res = await fetch("/api/agent-lead?key=" + encodeURIComponent(key()), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "unlock",
+        userId: userId,
+        leadId: leadId,
+        agentId: agentId,
+      }),
+    });
+    var data = await res.json().catch(function () { return {}; });
+    if (!res.ok) throw new Error(data.error || "Unlock failed");
+    return data;
+  }
 
   async function loadLocks() {
     if (!key()) {
@@ -309,16 +367,90 @@
       var res = await fetch("/api/agent-lead?key=" + encodeURIComponent(key()));
       var data = await res.json().catch(function () { return {}; });
       if (!res.ok) throw new Error(data.error || "Could not load locks");
+      if (Array.isArray(data.leads)) allLeads = data.leads;
       var rows = data.locks || [];
       if (!rows.length) {
         locksList.innerHTML = "<p class='agent-admin-empty'>No locked guest requests.</p>";
-        return;
+      } else {
+        locksList.innerHTML = rows
+          .map(function (row) {
+            return (
+              '<article class="agent-admin-card" data-user-id="' +
+              escapeHtml(row.userId) +
+              '" data-lead-id="' +
+              escapeHtml(row.leadId || "") +
+              '" data-agent-id="' +
+              escapeHtml(row.agentId || "") +
+              '">' +
+              "<h3>" +
+              escapeHtml(row.guestName || row.email || "Guest") +
+              "</h3>" +
+              '<p class="agent-meta">' +
+              escapeHtml(row.email || "") +
+              " · requested " +
+              escapeHtml(row.agentName || row.agentId || "agent") +
+              (row.submittedAt ? " · " + escapeHtml(formatWhen(row.submittedAt)) : "") +
+              "</p>" +
+              '<div class="agent-admin-card-actions">' +
+              '<button type="button" class="btn btn-gold" data-unlock>Unlock other agents</button>' +
+              "</div></article>"
+            );
+          })
+          .join("");
       }
-      locksList.innerHTML = rows
+      renderLeads();
+    } catch (err) {
+      locksList.innerHTML =
+        "<p class='agent-admin-empty'>" + escapeHtml(err.message || "Failed") + "</p>";
+    }
+  }
+
+  function filteredLeads() {
+    return allLeads.filter(function (row) {
+      if (leadsFilter === "locked") return row.status === "locked";
+      if (leadsFilter === "unsent") return !row.agentEmailedAt;
+      return true;
+    });
+  }
+
+  function renderLeads() {
+    if (!key()) {
+      leadsList.innerHTML = "<p class='agent-admin-empty'>Sign in with your admin password.</p>";
+      return;
+    }
+    var rows = filteredLeads();
+    if (!allLeads.length) {
+      leadsList.innerHTML =
+        "<p class='agent-admin-empty'>No submitted requests yet. Click “Load all requests” after guests submit forms.</p>";
+      return;
+    }
+    if (!rows.length) {
+      leadsList.innerHTML = "<p class='agent-admin-empty'>No requests match this filter.</p>";
+      return;
+    }
+    leadsList.innerHTML =
+      "<h2>Request log <span>(" +
+      rows.length +
+      (leadsFilter === "all" ? "" : " filtered") +
+      ")</span></h2>" +
+      rows
         .map(function (row) {
+          var emailed = !!row.agentEmailedAt;
+          var locked = row.status === "locked";
+          var details =
+            fieldLine("Phone", row.phone) +
+            fieldLine("Party", row.partySize) +
+            fieldLine("When", row.sailingWindow) +
+            fieldLine("Ship / destination", row.shipInterest) +
+            fieldLine("First Disney cruise", row.firstTimer) +
+            fieldLine("Notes", row.notes) +
+            fieldLine(
+              "Account",
+              [row.userDisplayName, row.userEmail].filter(Boolean).join(" · ")
+            );
           return (
             '<article class="agent-admin-card" data-user-id="' +
-            escapeHtml(row.userId) +
+            escapeHtml(row.userId || "") +
             '" data-lead-id="' +
             escapeHtml(row.leadId || "") +
             '" data-agent-id="' +
@@ -326,50 +458,158 @@
             '">' +
             "<h3>" +
             escapeHtml(row.guestName || row.email || "Guest") +
+            " → " +
+            escapeHtml(row.agentName || row.agentId || "Agent") +
             "</h3>" +
             '<p class="agent-meta">' +
             escapeHtml(row.email || "") +
-            " · requested " +
-            escapeHtml(row.agentName || row.agentId || "agent") +
-            (row.submittedAt ? " · " + escapeHtml(row.submittedAt) : "") +
+            (row.phone ? " · " + escapeHtml(row.phone) : "") +
+            " · submitted " +
+            escapeHtml(formatWhen(row.submittedAt)) +
+            (locked ? " · <strong>locked</strong>" : " · unlocked") +
+            (emailed
+              ? " · emailed agent " +
+                escapeHtml(formatWhen(row.agentEmailedAt)) +
+                (row.agentEmailedTo ? " (" + escapeHtml(row.agentEmailedTo) + ")" : "") +
+                (row.agentEmailCount > 1 ? " · " + row.agentEmailCount + "×" : "")
+              : " · <strong>not emailed to agent yet</strong>") +
             "</p>" +
+            (details ? "<ul style='margin:10px 0 0;padding-left:1.15rem;font-size:0.92rem;line-height:1.55;'>" + details + "</ul>" : "") +
             '<div class="agent-admin-card-actions">' +
-            '<button type="button" class="btn btn-gold" data-unlock>Unlock other agents</button>' +
+            '<button type="button" class="btn btn-gold" data-email-agent>' +
+            (emailed ? "Email form to agent again" : "Email form to agent") +
+            "</button>" +
+            (locked
+              ? '<button type="button" class="btn btn-outline" data-unlock>Unlock other agents</button>'
+              : "") +
+            (row.agentId
+              ? '<a class="btn btn-outline" href="/agents/profile.html?id=' +
+                encodeURIComponent(row.agentId) +
+                '" target="_blank" rel="noopener">Agent profile</a>'
+              : "") +
             "</div></article>"
           );
         })
         .join("");
+  }
+
+  async function loadLeads() {
+    if (!key()) {
+      leadsList.innerHTML = "<p class='agent-admin-empty'>Sign in with your admin password.</p>";
+      return;
+    }
+    leadsList.innerHTML = "<p class='agent-admin-empty'>Loading…</p>";
+    try {
+      var res = await fetch("/api/agent-lead?key=" + encodeURIComponent(key()));
+      var data = await res.json().catch(function () { return {}; });
+      if (!res.ok) throw new Error(data.error || "Could not load requests");
+      allLeads = data.leads || [];
+      renderLeads();
+      // Keep locks in sync when reloading the log.
+      var rows = data.locks || [];
+      if (!rows.length) {
+        locksList.innerHTML = "<p class='agent-admin-empty'>No locked guest requests.</p>";
+      } else {
+        locksList.innerHTML = rows
+          .map(function (row) {
+            return (
+              '<article class="agent-admin-card" data-user-id="' +
+              escapeHtml(row.userId) +
+              '" data-lead-id="' +
+              escapeHtml(row.leadId || "") +
+              '" data-agent-id="' +
+              escapeHtml(row.agentId || "") +
+              '">' +
+              "<h3>" +
+              escapeHtml(row.guestName || row.email || "Guest") +
+              "</h3>" +
+              '<p class="agent-meta">' +
+              escapeHtml(row.email || "") +
+              " · requested " +
+              escapeHtml(row.agentName || row.agentId || "agent") +
+              (row.submittedAt ? " · " + escapeHtml(formatWhen(row.submittedAt)) : "") +
+              "</p>" +
+              '<div class="agent-admin-card-actions">' +
+              '<button type="button" class="btn btn-gold" data-unlock>Unlock other agents</button>' +
+              "</div></article>"
+            );
+          })
+          .join("");
+      }
     } catch (err) {
-      locksList.innerHTML =
+      leadsList.innerHTML =
         "<p class='agent-admin-empty'>" + escapeHtml(err.message || "Failed") + "</p>";
     }
   }
 
   document.getElementById("loadLocks").addEventListener("click", loadLocks);
-  locksList.addEventListener("click", async function (e) {
-    var btn = e.target.closest("[data-unlock]");
-    if (!btn) return;
+  document.getElementById("loadLeads").addEventListener("click", loadLeads);
+  document.getElementById("filterLeadsAll").addEventListener("click", function () {
+    leadsFilter = "all";
+    renderLeads();
+  });
+  document.getElementById("filterLeadsLocked").addEventListener("click", function () {
+    leadsFilter = "locked";
+    renderLeads();
+  });
+  document.getElementById("filterLeadsUnsent").addEventListener("click", function () {
+    leadsFilter = "unsent";
+    renderLeads();
+  });
+
+  async function onUnlockClick(btn) {
     var card = btn.closest(".agent-admin-card");
     if (!card || !key()) return;
     btn.disabled = true;
+    try {
+      await unlockGuest(
+        card.getAttribute("data-user-id"),
+        card.getAttribute("data-lead-id"),
+        card.getAttribute("data-agent-id")
+      );
+      showStatus("Unlocked — they can request another agent.", true);
+      await loadLeads();
+    } catch (err) {
+      showStatus(err.message || "Unlock failed", false);
+      btn.disabled = false;
+    }
+  }
+
+  locksList.addEventListener("click", async function (e) {
+    var btn = e.target.closest("[data-unlock]");
+    if (!btn) return;
+    onUnlockClick(btn);
+  });
+
+  leadsList.addEventListener("click", async function (e) {
+    var unlockBtn = e.target.closest("[data-unlock]");
+    if (unlockBtn) {
+      onUnlockClick(unlockBtn);
+      return;
+    }
+    var emailBtn = e.target.closest("[data-email-agent]");
+    if (!emailBtn) return;
+    var card = emailBtn.closest(".agent-admin-card");
+    if (!card || !key()) return;
+    if (!confirm("Email this guest’s full request form to the travel agent?")) return;
+    emailBtn.disabled = true;
     try {
       var res = await fetch("/api/agent-lead?key=" + encodeURIComponent(key()), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          action: "unlock",
-          userId: card.getAttribute("data-user-id"),
+          action: "email-agent",
           leadId: card.getAttribute("data-lead-id"),
           agentId: card.getAttribute("data-agent-id"),
         }),
       });
       var data = await res.json().catch(function () { return {}; });
-      if (!res.ok) throw new Error(data.error || "Unlock failed");
-      showStatus("Unlocked — they can request another agent.", true);
-      loadLocks();
+      if (!res.ok) throw new Error(data.error || "Email failed");
+      showStatus("Emailed form to " + (data.emailedTo || "the agent") + ".", true);
+      await loadLeads();
     } catch (err) {
-      showStatus(err.message || "Unlock failed", false);
-      btn.disabled = false;
+      showStatus(err.message || "Email failed", false);
+      emailBtn.disabled = false;
     }
   });
 
@@ -380,7 +620,7 @@
     statusEl: statusEl,
     onReady: function () {
       loadApps("pending");
-      loadLocks();
+      loadLeads();
     }
   });
 })();

@@ -1,9 +1,10 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import { TableClient, odata } from "@azure/data-tables";
 import { randomUUID } from "crypto";
-import { escapeHtml, notifyEmail, notifyOwnerOfSubmitError, safeField, sendEmail } from "../lib/email";
+import { escapeHtml, notifyEmail, notifyOwnerOfSubmitError, safeField, sendEmail, sendEmailResult } from "../lib/email";
 import { requireUser } from "../lib/community";
 import { adminAuthOk } from "../lib/adminAuth";
+import { PUBLISHED_TABLE, table as agentsTable } from "../lib/agents";
 
 const LEADS_TABLE = "AgentLeads";
 const LOCKS_TABLE = "AgentRequestLocks";
@@ -24,6 +25,8 @@ interface AgentLeadInput {
   firstTimer?: string;
   consent?: boolean;
 }
+
+type LeadEntity = Record<string, unknown>;
 
 function table(name: string): TableClient {
   const connectionString = process.env.STORAGE_CONNECTION_STRING;
@@ -63,6 +66,129 @@ async function getActiveLock(userId: string) {
   }
 }
 
+function serializeLead(entity: LeadEntity) {
+  return {
+    leadId: String(entity.rowKey || ""),
+    agentId: String(entity.agentId || entity.partitionKey || ""),
+    agentName: String(entity.agentName || ""),
+    status: String(entity.status || ""),
+    guestName: String(entity.guestName || ""),
+    email: String(entity.email || ""),
+    phone: String(entity.phone || ""),
+    partySize: String(entity.partySize || ""),
+    sailingWindow: String(entity.sailingWindow || ""),
+    shipInterest: String(entity.shipInterest || ""),
+    notes: String(entity.notes || ""),
+    firstTimer: String(entity.firstTimer || ""),
+    userId: String(entity.userId || ""),
+    userEmail: String(entity.userEmail || ""),
+    userDisplayName: String(entity.userDisplayName || ""),
+    submittedAt: String(entity.submittedAt || ""),
+    unlockedAt: String(entity.unlockedAt || ""),
+    agentEmailedAt: String(entity.agentEmailedAt || ""),
+    agentEmailedTo: String(entity.agentEmailedTo || ""),
+    agentEmailCount: Number(entity.agentEmailCount || 0) || 0,
+    lastAgentEmailStatus: String(entity.lastAgentEmailStatus || ""),
+  };
+}
+
+async function listLocks() {
+  const locks = await locksClient();
+  const list = [];
+  for await (const entity of locks.listEntities({
+    queryOptions: { filter: odata`PartitionKey eq ${"user"} and status eq ${"locked"}` },
+  })) {
+    list.push({
+      userId: String(entity.rowKey),
+      agentId: String(entity.agentId || ""),
+      agentName: String(entity.agentName || ""),
+      leadId: String(entity.leadId || ""),
+      guestName: String(entity.guestName || ""),
+      email: String(entity.email || ""),
+      submittedAt: String(entity.submittedAt || ""),
+      status: "locked",
+    });
+  }
+  list.sort((a, b) => (b.submittedAt || "").localeCompare(a.submittedAt || ""));
+  return list;
+}
+
+async function listLeads() {
+  const leads = await leadsClient();
+  const list = [];
+  for await (const entity of leads.listEntities()) {
+    list.push(serializeLead(entity as LeadEntity));
+  }
+  list.sort((a, b) => (b.submittedAt || "").localeCompare(a.submittedAt || ""));
+  return list;
+}
+
+async function agentNotifyEmail(agentId: string): Promise<{ email: string; name: string }> {
+  try {
+    const client = agentsTable(PUBLISHED_TABLE);
+    await client.createTable();
+    const entity = await client.getEntity("directory", agentId);
+    return {
+      email: String(entity.emailNotify || entity.email || "").trim(),
+      name: String(entity.name || entity.fullName || "").trim(),
+    };
+  } catch {
+    return { email: "", name: "" };
+  }
+}
+
+function siteBase(): string {
+  return (process.env.PUBLIC_SITE_URL || "https://www.cruisingcove.com").replace(/\/$/, "");
+}
+
+function leadEmailBodies(lead: ReturnType<typeof serializeLead>) {
+  const agentLabel = lead.agentName || lead.agentId;
+  const site = siteBase();
+  const subject = `New Disney cruise guest request via Cruising Cove — ${lead.guestName || "Guest"}`;
+  const text = [
+    "A guest requested you through Cruising Cove.",
+    "",
+    `Guest: ${lead.guestName || "—"}`,
+    `Email: ${lead.email || "—"}`,
+    `Phone: ${lead.phone || "—"}`,
+    `Account name: ${lead.userDisplayName || "—"}`,
+    `Account email: ${lead.userEmail || "—"}`,
+    "",
+    `Party: ${lead.partySize || "—"}`,
+    `When they hope to sail: ${lead.sailingWindow || "—"}`,
+    `Ship / destination: ${lead.shipInterest || "—"}`,
+    `First Disney cruise: ${lead.firstTimer || "—"}`,
+    `Notes: ${lead.notes || "—"}`,
+    "",
+    `Submitted: ${lead.submittedAt || "—"}`,
+    `Your Cruising Cove profile: ${site}/agents/profile.html?id=${encodeURIComponent(lead.agentId)}`,
+    "",
+    "You can reply directly to the guest email above. Cruising Cove does not take a cut — Disney pays your commission as usual.",
+  ].join("\n");
+  const html = `
+    <p>A guest requested <strong>${escapeHtml(agentLabel)}</strong> through Cruising Cove.</p>
+    <h3 style="font-family:Georgia,serif;color:#1a2a4a;">Guest details</h3>
+    <ul>
+      <li><strong>Name:</strong> ${escapeHtml(lead.guestName || "—")}</li>
+      <li><strong>Email:</strong> <a href="mailto:${escapeHtml(lead.email || "")}">${escapeHtml(lead.email || "—")}</a></li>
+      <li><strong>Phone:</strong> ${escapeHtml(lead.phone || "—")}</li>
+      <li><strong>Cruising Cove account:</strong> ${escapeHtml(lead.userDisplayName || "—")} &lt;${escapeHtml(lead.userEmail || "—")}&gt;</li>
+    </ul>
+    <h3 style="font-family:Georgia,serif;color:#1a2a4a;">Sailing interests</h3>
+    <ul>
+      <li><strong>Party:</strong> ${escapeHtml(lead.partySize || "—")}</li>
+      <li><strong>When:</strong> ${escapeHtml(lead.sailingWindow || "—")}</li>
+      <li><strong>Ship / destination:</strong> ${escapeHtml(lead.shipInterest || "—")}</li>
+      <li><strong>First Disney cruise:</strong> ${escapeHtml(lead.firstTimer || "—")}</li>
+      <li><strong>Notes:</strong> ${escapeHtml(lead.notes || "—")}</li>
+    </ul>
+    <p style="color:#555;">Submitted ${escapeHtml(lead.submittedAt || "—")}<br>
+    <a href="${escapeHtml(site)}/agents/profile.html?id=${encodeURIComponent(lead.agentId)}">Your Cruising Cove profile</a></p>
+    <p>Reply directly to the guest. Cruising Cove does not take a cut — Disney pays your commission as usual.</p>
+  `;
+  return { subject, text, html };
+}
+
 function cors(status: number, body: unknown): HttpResponseInit {
   return {
     status,
@@ -84,27 +210,11 @@ export async function agentLeadHandler(
   if (request.method === "GET") {
     if (await adminAuthOk(request)) {
       try {
-        const locks = await locksClient();
-        const list = [];
-        for await (const entity of locks.listEntities({
-          queryOptions: { filter: odata`PartitionKey eq ${"user"} and status eq ${"locked"}` },
-        })) {
-          list.push({
-            userId: String(entity.rowKey),
-            agentId: String(entity.agentId || ""),
-            agentName: String(entity.agentName || ""),
-            leadId: String(entity.leadId || ""),
-            guestName: String(entity.guestName || ""),
-            email: String(entity.email || ""),
-            submittedAt: String(entity.submittedAt || ""),
-            status: "locked",
-          });
-        }
-        list.sort((a, b) => (b.submittedAt || "").localeCompare(a.submittedAt || ""));
-        return cors(200, { locks: list });
+        const [locks, leads] = await Promise.all([listLocks(), listLeads()]);
+        return cors(200, { locks, leads });
       } catch (err) {
-        context.error("list agent locks failed:", err);
-        return cors(500, { error: "Could not list locked requests." });
+        context.error("list agent locks/leads failed:", err);
+        return cors(500, { error: "Could not list guest requests." });
       }
     }
 
@@ -174,6 +284,86 @@ export async function agentLeadHandler(
     }
   }
 
+  if (String(body.action || "") === "email-agent") {
+    if (!(await adminAuthOk(request))) {
+      return cors(401, { error: "Missing or invalid admin key." });
+    }
+    const leadId = String(body.leadId || "").trim();
+    const agentId = String(body.agentId || "").trim();
+    if (!leadId || !agentId) return cors(400, { error: "leadId and agentId are required." });
+
+    try {
+      const leads = await leadsClient();
+      let leadEntity: LeadEntity;
+      try {
+        leadEntity = (await leads.getEntity(agentId, leadId)) as LeadEntity;
+      } catch {
+        return cors(404, { error: "Request form not found." });
+      }
+
+      const lead = serializeLead(leadEntity);
+      const agent = await agentNotifyEmail(agentId);
+      if (!agent.email || !agent.email.includes("@")) {
+        return cors(400, {
+          error:
+            "This agent has no notification email on file. Add emailNotify on their published profile, then try again.",
+        });
+      }
+
+      const { subject, text, html } = leadEmailBodies(lead);
+      const result = await sendEmailResult(agent.email, subject, html, text);
+      const now = new Date().toISOString();
+      const count = (Number(leadEntity.agentEmailCount || 0) || 0) + (result.ok ? 1 : 0);
+
+      await leads.updateEntity(
+        {
+          ...leadEntity,
+          partitionKey: agentId,
+          rowKey: leadId,
+          agentEmailedAt: result.ok ? now : String(leadEntity.agentEmailedAt || ""),
+          agentEmailedTo: result.ok ? agent.email : String(leadEntity.agentEmailedTo || ""),
+          agentEmailCount: count,
+          lastAgentEmailStatus: result.ok ? "sent" : `failed: ${result.reason}`,
+          lastAgentEmailAttemptAt: now,
+        },
+        "Replace"
+      );
+
+      if (!result.ok) {
+        context.warn("email-agent failed:", result.reason);
+        return cors(502, { error: `Could not email agent: ${result.reason}` });
+      }
+
+      // Optional owner receipt so you know a lead was forwarded.
+      try {
+        await sendEmail(
+          notifyEmail(),
+          `Forwarded agent request to ${lead.agentName || agentId}`,
+          `<p>You emailed the guest request for <strong>${escapeHtml(lead.guestName || "guest")}</strong> to <strong>${escapeHtml(agent.email)}</strong> (${escapeHtml(lead.agentName || agentId)}).</p>`,
+          `Forwarded guest request for ${lead.guestName || "guest"} to ${agent.email} (${lead.agentName || agentId}).`
+        );
+      } catch (err) {
+        context.warn("email-agent owner receipt failed:", err);
+      }
+
+      return cors(200, {
+        success: true,
+        emailedTo: agent.email,
+        emailedAt: now,
+        lead: serializeLead({
+          ...leadEntity,
+          agentEmailedAt: now,
+          agentEmailedTo: agent.email,
+          agentEmailCount: count,
+          lastAgentEmailStatus: "sent",
+        }),
+      });
+    } catch (err) {
+      context.error("email-agent failed:", err);
+      return cors(500, { error: "Could not email this form to the agent." });
+    }
+  }
+
   const user = await requireUser(request.headers);
   if (!user) {
     return cors(401, { error: "Sign in required to request an agent." });
@@ -223,6 +413,11 @@ export async function agentLeadHandler(
       userDisplayName: user.displayName,
       unlockedAt: "",
       submittedAt: now.toISOString(),
+      agentEmailedAt: "",
+      agentEmailedTo: "",
+      agentEmailCount: 0,
+      lastAgentEmailStatus: "",
+      lastAgentEmailAttemptAt: "",
     });
 
     const locks = await locksClient();
@@ -266,7 +461,7 @@ export async function agentLeadHandler(
   }
 
   const agentLabel = agentName || agentId;
-  const site = (process.env.PUBLIC_SITE_URL || "https://www.cruisingcove.com").replace(/\/$/, "");
+  const site = siteBase();
   const subject = `New agent request: ${agentLabel}`;
   const text = [
     "A signed-in guest submitted an agent request on Cruising Cove.",
@@ -283,7 +478,7 @@ export async function agentLeadHandler(
     `Notes: ${body.notes || "—"}`,
     "",
     `Lead id: ${leadId}`,
-    `Unlock in admin: ${site}/agents/admin.html`,
+    `Review & email agent: ${site}/agents/admin.html`,
     `Profile: ${site}/agents/profile.html?id=${encodeURIComponent(agentId)}`,
   ].join("\n");
   const html = `
@@ -302,7 +497,7 @@ export async function agentLeadHandler(
     </ul>
     <p>Other agent request buttons stay locked for this account until you unlock them.</p>
     <p>Lead id: ${escapeHtml(leadId)}<br>
-    <a href="${escapeHtml(site)}/agents/admin.html">Open agent admin to unlock</a> ·
+    <a href="${escapeHtml(site)}/agents/admin.html">Open agent admin to review &amp; email the agent</a> ·
     <a href="${escapeHtml(site)}/agents/profile.html?id=${encodeURIComponent(agentId)}">View agent profile</a></p>
   `;
   try {
