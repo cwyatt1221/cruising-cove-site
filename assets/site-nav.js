@@ -39,7 +39,6 @@
     '<a href="/special-cruises/">Special sailings</a>' +
     '<a href="/excursions/">Excursions</a>' +
     '<a href="/pirate-night/">Pirate Night</a>' +
-    '<a href="/faq/">FAQ</a>' +
     '<a href="/articles/">Articles</a>' +
     '<a href="/agents/when-an-agent-helps.html">When an agent helps</a>' +
     "</div>" +
@@ -47,13 +46,13 @@
     '<a href="/community/">Community</a>' +
     '<a href="/gallery/">Gallery</a>' +
     '<a href="/marketplace/">Marketplace</a>' +
+    '<a href="/faq/">FAQ</a>' +
     '<a href="/newsletter/">Newsletter</a>' +
     '<button type="button" class="cc-nav-feedback" data-cc-feedback="1">Give Feedback</button>';
 
   var ONBOARD_HREFS = ["/dining/", "/entertainment/"];
   var PLAN_HREFS = [
     "/excursions/",
-    "/faq/",
     "/articles/",
     "/special-cruises/",
     "/pirate-night/",
@@ -103,9 +102,9 @@
   function normalizePrimaryNav() {
     var links = document.getElementById("primaryNav");
     if (!links) return;
-    if (links.getAttribute("data-cc-nav") === "v8") return;
+    if (links.getAttribute("data-cc-nav") === "v9") return;
     links.innerHTML = NAV_HTML;
-    links.setAttribute("data-cc-nav", "v8");
+    links.setAttribute("data-cc-nav", "v9");
   }
 
   function removeAuthLink() {
