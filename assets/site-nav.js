@@ -48,7 +48,7 @@
     '<a href="/gallery/">Gallery</a>' +
     '<a href="/marketplace/">Marketplace</a>' +
     '<a href="/newsletter/">Newsletter</a>' +
-    '<a href="#feedback" data-cc-feedback="1">Give Feedback</a>';
+    '<button type="button" class="cc-nav-feedback" data-cc-feedback="1">Give Feedback</button>';
 
   var ONBOARD_HREFS = ["/dining/", "/entertainment/"];
   var PLAN_HREFS = [
@@ -103,9 +103,9 @@
   function normalizePrimaryNav() {
     var links = document.getElementById("primaryNav");
     if (!links) return;
-    if (links.getAttribute("data-cc-nav") === "v7") return;
+    if (links.getAttribute("data-cc-nav") === "v8") return;
     links.innerHTML = NAV_HTML;
-    links.setAttribute("data-cc-nav", "v7");
+    links.setAttribute("data-cc-nav", "v8");
   }
 
   function removeAuthLink() {
@@ -135,20 +135,31 @@
     if (!links) return;
 
     var existing = links.querySelector("[data-cc-feedback]");
-    var a = existing;
-    if (!a) {
-      a = document.createElement("a");
-      a.setAttribute("data-cc-feedback", "1");
-      a.textContent = "Give Feedback";
-      links.appendChild(a);
+    var btn = existing;
+    // Upgrade legacy <a href="#feedback"> to a real button (Clarity dead-click fix).
+    if (btn && btn.tagName !== "BUTTON") {
+      var replacement = document.createElement("button");
+      replacement.type = "button";
+      replacement.className = "cc-nav-feedback";
+      replacement.setAttribute("data-cc-feedback", "1");
+      replacement.textContent = btn.textContent || "Give Feedback";
+      btn.parentNode.replaceChild(replacement, btn);
+      btn = replacement;
+    }
+    if (!btn) {
+      btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "cc-nav-feedback";
+      btn.setAttribute("data-cc-feedback", "1");
+      btn.textContent = "Give Feedback";
+      links.appendChild(btn);
     }
 
-    a.setAttribute("href", "#feedback");
-    a.setAttribute("role", "button");
-    if (a.getAttribute("data-cc-feedback-bound") === "1") return;
-    a.setAttribute("data-cc-feedback-bound", "1");
-    a.addEventListener("click", function (e) {
-      e.preventDefault();
+    btn.removeAttribute("href");
+    btn.removeAttribute("role");
+    if (btn.getAttribute("data-cc-feedback-bound") === "1") return;
+    btn.setAttribute("data-cc-feedback-bound", "1");
+    btn.addEventListener("click", function () {
       openFeedbackModal();
     });
   }
@@ -398,7 +409,7 @@
       "</div>" +
       '<label class="cc-newsletter-check" for="' + tipsId + '">' +
       '<input id="' + tipsId + '" name="sailingTips" type="checkbox" value="1">' +
-      "<span>Send sailing-specific tips if I share a ship or date</span>" +
+      "<span>Send a welcome note and milestone sailing tips if I share a ship or date</span>" +
       "</label>" +
       '<p class="cc-newsletter-status" id="' + statusId + '" role="status" aria-live="polite" hidden></p>' +
       '<div class="cc-newsletter-actions">' +
@@ -556,7 +567,7 @@
       '<div class="cc-newsletter-copy">' +
       '<p class="cc-newsletter-eyebrow">Newsletter</p>' +
       "<h2 class=\"display\">Cruise tips in your inbox</h2>" +
-      "<p>Planning notes, ship updates, and packing reminders — free, no spam.</p>" +
+      "<p>A welcome note plus sailing tips timed to your cruise — free, no spam, not weekly.</p>" +
       "</div>" +
       '<div class="cc-newsletter-cta">' +
       '<a class="btn btn-gold" href="/newsletter/">Join the newsletter</a>' +
@@ -700,15 +711,19 @@
       { href: "/agents/profile.html?id=martina-yost", title: "Martina Yost’s profile", meta: "Agents" },
       { href: "/agents/", title: "Browse travel agents", meta: "Agents" },
     ],
-    "welcome-aboard-kim": [{ href: "/agents/", title: "Browse travel agents", meta: "Agents" }],
+    "welcome-aboard-emily": [
+      { href: "/agents/profile.html?id=emily-schultz", title: "Emily Schultz’s profile", meta: "Agents" },
+      { href: "/agents/", title: "Browse travel agents", meta: "Agents" },
+    ],
+    "welcome-aboard-kim": [
+      { href: "/agents/profile.html?id=kim-fanning", title: "Kim Fanning’s profile", meta: "Agents" },
+      { href: "/agents/", title: "Browse travel agents", meta: "Agents" },
+    ],
     "welcome-aboard-donna": [{ href: "/agents/", title: "Browse travel agents", meta: "Agents" }],
     "welcome-aboard-shana": [{ href: "/agents/", title: "Browse travel agents", meta: "Agents" }],
     "welcome-aboard-rebekah": [{ href: "/agents/", title: "Browse travel agents", meta: "Agents" }],
     "welcome-aboard-bels-castle-creations": [
       { href: "/marketplace/", title: "Visit the marketplace", meta: "Marketplace" },
-    ],
-    "marketplace-sellers-application-fixed": [
-      { href: "/marketplace/sellers/", title: "Seller applications", meta: "Marketplace" },
     ],
     "disney-cruise-booking-and-cost": [
       { href: "/planning/disney-cruise-cost.html", title: "What a Disney cruise costs", meta: "Plan" },

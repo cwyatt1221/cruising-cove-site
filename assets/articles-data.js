@@ -58,14 +58,6 @@
       url: "/articles/welcome-aboard-bels-castle-creations.html",
     },
     {
-      id: "marketplace-sellers-application-fixed",
-      title: "Oooops — Marketplace Seller Applications Are Fixed",
-      excerpt:
-        "Our seller application had a hiccup. It’s fixed now — apply for a Curated 10 shop spot, or browse trusted sellers for Disney cruise essentials.",
-      date: "2026-08-04",
-      url: "/articles/marketplace-sellers-application-fixed.html",
-    },
-    {
       id: "disney-destiny-hidden-secrets",
       title: "What Most People Don't Know Happens on the Disney Destiny",
       excerpt:
