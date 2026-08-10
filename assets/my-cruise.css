@@ -21,6 +21,34 @@
 .mc-auth .who{margin:0;font-size:0.9rem;color:#d7dae3;}
 .mc-auth a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;}
 
+.mc-first-path{
+  background:var(--cream-2, #f7f1e6);
+  padding:48px 0 44px;
+  border-bottom:1px solid rgba(26,42,74,.08);
+}
+.mc-first-path .section-label{margin:0 0 10px;}
+.mc-first-path h2{
+  font-family:var(--font-serif);
+  font-size:clamp(1.75rem,3.2vw,2.35rem);
+  font-weight:500;
+  color:var(--navy);
+  line-height:1.2;
+  margin:0 0 14px;
+  max-width:28ch;
+}
+.mc-first-path-copy{
+  max-width:52ch;
+  color:var(--muted);
+  line-height:1.6;
+  margin:0 0 22px;
+}
+.mc-first-path-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin:0;
+}
+
 .mc-shell{padding:36px 0 72px;}
 .mc-grid{
   display:grid;grid-template-columns:minmax(260px,320px) minmax(0,1fr);
