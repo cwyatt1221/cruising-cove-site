@@ -90,6 +90,7 @@ export function shipLabel(slug: string): string {
     "disney-wish": "Disney Wish",
     "disney-treasure": "Disney Treasure",
     "disney-destiny": "Disney Destiny",
+    "disney-believe": "Disney Believe",
     "disney-dream": "Disney Dream",
     "disney-fantasy": "Disney Fantasy",
     "disney-magic": "Disney Magic",

@@ -13,6 +13,7 @@ const SHIPS: { slug: string; label: string }[] = [
   { slug: "disney-wish", label: "Disney Wish" },
   { slug: "disney-treasure", label: "Disney Treasure" },
   { slug: "disney-destiny", label: "Disney Destiny" },
+  { slug: "disney-believe", label: "Disney Believe" },
   { slug: "disney-adventure", label: "Disney Adventure" },
 ];
 

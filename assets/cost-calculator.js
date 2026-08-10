@@ -17,6 +17,7 @@
     wish: 1.12,
     treasure: 1.15,
     destiny: 1.15,
+    believe: 1.15,
     adventure: 1.2,
   };
 

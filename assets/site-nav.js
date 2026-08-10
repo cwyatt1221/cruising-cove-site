@@ -351,6 +351,7 @@
     { slug: "disney-wish", label: "Disney Wish" },
     { slug: "disney-treasure", label: "Disney Treasure" },
     { slug: "disney-destiny", label: "Disney Destiny" },
+    { slug: "disney-believe", label: "Disney Believe" },
     { slug: "disney-adventure", label: "Disney Adventure" },
   ];
 
@@ -703,6 +704,7 @@
     "disney-wonder": ["bluey-on-disney-cruise-line-2026", "which-disney-ship-should-you-choose"],
     "disney-magic": ["which-disney-ship-should-you-choose", "10-hidden-disney-cruise-secrets"],
     "disney-adventure": ["which-disney-ship-should-you-choose"],
+    "disney-believe": ["which-disney-ship-should-you-choose", "disney-wish-vs-disney-treasure"],
   };
 
   var ARTICLE_EXTRA_LINKS = {

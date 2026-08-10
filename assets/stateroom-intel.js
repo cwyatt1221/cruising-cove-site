@@ -64,6 +64,7 @@
     "disney-wish": "wish",
     "disney-treasure": "wish",
     "disney-destiny": "wish",
+    "disney-believe": "wish",
     "disney-adventure": "adventure",
   };
 

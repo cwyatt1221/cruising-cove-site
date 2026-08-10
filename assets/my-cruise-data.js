@@ -7,6 +7,7 @@
     { slug: "disney-wish", name: "Disney Wish", class: "wish" },
     { slug: "disney-treasure", name: "Disney Treasure", class: "wish" },
     { slug: "disney-destiny", name: "Disney Destiny", class: "wish" },
+    { slug: "disney-believe", name: "Disney Believe", class: "wish" },
     { slug: "disney-dream", name: "Disney Dream", class: "dream" },
     { slug: "disney-fantasy", name: "Disney Fantasy", class: "dream" },
     { slug: "disney-magic", name: "Disney Magic", class: "magic" },
@@ -179,6 +180,11 @@
       "Disney princesses",
       "Marvel on themed sailings",
     ],
+    "disney-believe": [
+      "Mickey & friends",
+      "Character meets tied to Believe theming (TBA)",
+      "Disney princesses when offered — confirm Navigator once sailings open",
+    ],
     "disney-dream": [
       "Mickey & friends",
       "Disney princesses + Royal Gathering",
@@ -228,6 +234,12 @@
       "Disney Seas the Adventure",
       "Pirate Night (itinerary-dependent)",
       "AquaMouse",
+    ],
+    "disney-believe": [
+      "Wish-class theatre lineup (titles TBA)",
+      "Deck parties when scheduled (including Pirate Night when itinerary supports it)",
+      "Youth clubs & character meets — confirm when Disney publishes the Believe program",
+      "AquaMouse expected (Wish-class) — confirm closer to debut",
     ],
     "disney-dream": [
       "Disney’s Believe",

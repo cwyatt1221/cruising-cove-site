@@ -15,6 +15,7 @@ const SHIPS = [
   "disney-wish",
   "disney-treasure",
   "disney-destiny",
+  "disney-believe",
   "disney-dream",
   "disney-fantasy",
   "disney-magic",
