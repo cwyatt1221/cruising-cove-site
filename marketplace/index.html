@@ -90,8 +90,8 @@
 </div>
 
 <div class="mp-main" id="directory">
-  <span class="mp-count" id="slotCount">0 of 10 spots filled</span>
-  <p class="mp-note">Listings appear here once a shop is approved. Spots remain for founding partners — <a href="/marketplace/sellers/">apply for a slot</a>.</p>
+  <span class="mp-count" id="slotCount">1 of 10 spots filled</span>
+  <p class="mp-note" id="slotNote"><strong>Bels Castle Creations</strong> is live — door magnets, fish extender gifts, and cabin décor. <strong>9 founding spots</strong> remain — <a href="/marketplace/sellers/">apply for a slot</a>.</p>
 
   <div class="mp-filters" id="shopFilters" hidden>
     <span class="mp-filters-label">Filter by</span>
@@ -99,12 +99,12 @@
   </div>
 
   <div class="mp-grid" id="shopGrid"></div>
-  <p class="mp-empty" id="emptyState" hidden>No shops listed yet — founding partners are being selected. <a href="/marketplace/sellers/">Apply for a spot</a>.</p>
+  <p class="mp-empty" id="emptyState" hidden>Shops couldn’t load right now. Try refreshing, or <a href="/marketplace/sellers/">apply for a spot</a>.</p>
   <p class="mp-empty" id="filterEmpty" hidden>No shops match that category. <button type="button" class="mp-filter-reset" id="filterReset">Show all shops</button></p>
 
   <div class="mp-band">
     <div>
-      <h2>One of ten spots</h2>
+      <h2 id="slotBandHeading">9 founding spots remain</h2>
       <p>Apply with your shop URL, a short description, and product photos. If selected, you’re one of only ten shops featured on Cruising Cove.</p>
     </div>
     <a class="btn btn-gold mp-band-link" href="/marketplace/sellers/">Apply for a slot</a>
@@ -130,6 +130,8 @@
     var filterEmpty=document.getElementById('filterEmpty');
     var filterReset=document.getElementById('filterReset');
     var slotCount=document.getElementById('slotCount');
+    var slotNote=document.getElementById('slotNote');
+    var slotBandHeading=document.getElementById('slotBandHeading');
     var filtersEl=document.getElementById('shopFilters');
     var chipsEl=document.getElementById('filterChips');
     var allShops=[];
@@ -142,6 +144,36 @@
         .replace(/</g,'&lt;')
         .replace(/>/g,'&gt;')
         .replace(/"/g,'&quot;');
+    }
+
+    function openSlots(){
+      return Math.max(0, maxSlots - allShops.length);
+    }
+
+    function updateSlotCopy(){
+      var open=openSlots();
+      slotCount.textContent=allShops.length+' of '+maxSlots+' spots filled';
+      if(slotBandHeading){
+        slotBandHeading.textContent=open===1
+          ? '1 founding spot remains'
+          : open+' founding spots remain';
+      }
+      if(!slotNote) return;
+      if(!allShops.length){
+        slotNote.innerHTML='Spots remain for founding partners — <a href="/marketplace/sellers/">apply for a slot</a>.';
+        return;
+      }
+      var names=allShops.map(function(s){ return s.name; }).filter(Boolean);
+      var lead='';
+      if(names.length===1){
+        lead='<strong>'+escapeHtml(names[0])+'</strong> is live.';
+      } else if(names.length>1){
+        lead='<strong>'+escapeHtml(String(names.length))+' shops</strong> are live.';
+      }
+      var remain=open===1
+        ? '<strong>1 founding spot</strong> remains'
+        : '<strong>'+escapeHtml(String(open))+' founding spots</strong> remain';
+      slotNote.innerHTML=lead+' '+remain+' — <a href="/marketplace/sellers/">apply for a slot</a>.';
     }
 
     function visitLabel(n){
@@ -216,7 +248,7 @@
     function render(){
       var shops=filteredShops();
       grid.innerHTML='';
-      slotCount.textContent=allShops.length+' of '+maxSlots+' spots filled';
+      updateSlotCopy();
       empty.hidden=allShops.length>0;
       filterEmpty.hidden=!(allShops.length>0 && shops.length===0);
       renderFilters();
@@ -313,10 +345,15 @@
     });
 
     async function load(){
+      // Paint static curated shops immediately so the directory isn't empty while the API loads.
+      allShops=window.CC_SHOPS||[];
+      maxSlots=window.CC_MAX_SHOPS||10;
+      if(allShops.length) render();
+
       try{
         var res=await fetch('/api/sellers');
         var data=await res.json();
-        if(res.ok && Array.isArray(data.sellers)){
+        if(res.ok && Array.isArray(data.sellers) && data.sellers.length){
           allShops=data.sellers;
           maxSlots=data.max||10;
           render();
