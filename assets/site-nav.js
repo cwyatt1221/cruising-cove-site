@@ -13,34 +13,33 @@
     '<div class="nav-dropdown-menu">' +
     '<a href="/dining/">Dining</a>' +
     '<a href="/entertainment/">Entertainment</a>' +
+    '<a href="/planning/kids-clubs.html">Kids clubs</a>' +
+    '<a href="/planning/wifi.html">Wi-Fi packages</a>' +
+    '<a href="/planning/gratuities.html">Gratuities</a>' +
+    '<a href="/pirate-night/">Pirate Night</a>' +
     "</div>" +
     "</div>" +
     '<div class="nav-dropdown" data-cc-nav-group="plan">' +
     '<button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">Plan</button>' +
-    '<div class="nav-dropdown-menu">' +
+    '<div class="nav-dropdown-menu nav-dropdown-menu--plan">' +
+    '<p class="nav-menu-label">Start here</p>' +
     '<a href="/planning/my-cruise.html">My Cruise planner</a>' +
-    '<a href="/planning/disney-cruise-cost.html">What it costs</a>' +
     '<a href="/planning/first-cruise.html">First-cruise path</a>' +
     '<a href="/planning/sailing-timeline.html">Sailing timeline</a>' +
-    '<a href="/planning/deposit-final-payment.html">Deposit &amp; final payment</a>' +
+    '<a href="/planning/disney-cruise-cost.html">What it costs</a>' +
+    '<p class="nav-menu-label">Book &amp; pay</p>' +
     '<a href="/planning/booking-windows.html">Booking windows</a>' +
+    '<a href="/planning/deposit-final-payment.html">Deposit &amp; final payment</a>' +
     '<a href="/planning/castaway-club.html">Castaway Club</a>' +
-    '<a href="/planning/embarkation-day-checklist.html">Embarkation day</a>' +
-    '<a href="/planning/kids-clubs.html">Kids clubs</a>' +
-    '<a href="/planning/cabin-intel.html">Cabin intel</a>' +
-    '<a href="/planning/gratuities.html">Gratuities</a>' +
-    '<a href="/planning/wifi.html">Wi-Fi packages</a>' +
-    '<a href="/planning/seasickness.html">Seasickness</a>' +
-    '<a href="/planning/accessibility.html">Accessibility</a>' +
-    '<a href="/planning/june-2026-policy-changes.html">June 2026 changes</a>' +
-    '<a href="/planning/stateroom-guides.html">Stateroom guides</a>' +
     '<a href="/planning/compare-sailings.html">Compare sailings</a>' +
+    '<p class="nav-menu-label">Cabins</p>' +
+    '<a href="/planning/stateroom-guides.html">Stateroom guides</a>' +
+    '<a href="/planning/cabin-intel.html">Cabin intel</a>' +
+    '<p class="nav-menu-label">Get ready</p>' +
     '<a href="/planning/disney-cruise-packing-list.html">Packing list</a>' +
-    '<a href="/special-cruises/">Special sailings</a>' +
-    '<a href="/excursions/">Excursions</a>' +
-    '<a href="/pirate-night/">Pirate Night</a>' +
-    '<a href="/articles/">Articles</a>' +
-    '<a href="/agents/when-an-agent-helps.html">When an agent helps</a>' +
+    '<a href="/planning/embarkation-day-checklist.html">Embarkation day</a>' +
+    '<a href="/planning/accessibility.html">Accessibility</a>' +
+    '<a class="nav-menu-footer" href="/planning/">All planning guides →</a>' +
     "</div>" +
     "</div>" +
     '<a href="/community/">Community</a>' +
@@ -50,21 +49,27 @@
     '<a href="/newsletter/">Newsletter</a>' +
     '<button type="button" class="cc-nav-feedback" data-cc-feedback="1">Give Feedback</button>';
 
-  var ONBOARD_HREFS = ["/dining/", "/entertainment/"];
-  var PLAN_HREFS = [
-    "/excursions/",
-    "/articles/",
-    "/special-cruises/",
+  var ONBOARD_HREFS = [
+    "/dining/",
+    "/entertainment/",
+    "/planning/kids-clubs.html",
+    "/planning/wifi.html",
+    "/planning/gratuities.html",
     "/pirate-night/",
-    "/planning/",
-    "/agents/when-an-agent-helps.html",
   ];
+  var PLAN_HREFS = ["/planning/"];
 
   function pathMatches(path, href) {
     if (!href) return false;
     if (path === href) return true;
     var base = href.replace(/\.html$/, "");
     return href !== "/" && (path.indexOf(href) === 0 || path.indexOf(base) === 0);
+  }
+
+  function pathInHrefs(path, hrefs) {
+    return hrefs.some(function (h) {
+      return pathMatches(path, h);
+    });
   }
 
   function enhanceToggle() {
@@ -102,9 +107,9 @@
   function normalizePrimaryNav() {
     var links = document.getElementById("primaryNav");
     if (!links) return;
-    if (links.getAttribute("data-cc-nav") === "v9") return;
+    if (links.getAttribute("data-cc-nav") === "v10") return;
     links.innerHTML = NAV_HTML;
-    links.setAttribute("data-cc-nav", "v9");
+    links.setAttribute("data-cc-nav", "v10");
   }
 
   function removeAuthLink() {
@@ -1078,9 +1083,9 @@
     links.querySelectorAll(".nav-dropdown").forEach(function (dd) {
       var group = dd.getAttribute("data-cc-nav-group");
       var hrefs = group === "onboard" ? ONBOARD_HREFS : group === "plan" ? PLAN_HREFS : [];
-      var onGroup = hrefs.some(function (h) {
-        return pathMatches(path, h);
-      });
+      var onGroup = pathInHrefs(path, hrefs);
+      // Kids clubs / Wi-Fi / gratuities live under /planning/ but belong to Onboard.
+      if (group === "plan" && pathInHrefs(path, ONBOARD_HREFS)) onGroup = false;
       if (!onGroup) return;
       dd.classList.add("current");
       var btn = dd.querySelector(".nav-dropdown-toggle");
