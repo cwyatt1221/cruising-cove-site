@@ -6,9 +6,29 @@
 (function (global) {
   var FEATURED_SLOTS = 10;
   /** Pin the first homepage carousel slide. Set to null to rotate by ISO week. */
-  var CAROUSEL_START_ID = "what-a-disney-cruise-travel-agent-can-do";
+  var CAROUSEL_START_ID = "welcome-aboard-bels-castle-creations";
 
   var articles = [
+    {
+      id: "welcome-aboard-bels-castle-creations",
+      title: "Handmade extras for the trip you're already planning.",
+      excerpt:
+        "Custom door magnets, fish extender gifts, and cabin décor made for Disney sailings — the first of ten shops we're hand-picking for the marketplace.",
+      date: "2026-08-05",
+      url: "/articles/welcome-aboard-bels-castle-creations.html",
+      kind: "featured-shop",
+      eyebrow: "Featured Shop",
+      badge: "Bels Castle Creations · Founding Shop No. 1",
+      primaryCta: {
+        label: "Shop Bels Castle Creations",
+        href: "https://belscastlecreations.etsy.com/",
+        external: true,
+      },
+      secondaryCta: {
+        label: "See all shops",
+        href: "/marketplace/",
+      },
+    },
     {
       id: "what-a-disney-cruise-travel-agent-can-do",
       title: "What a Disney Cruise Travel Agent Can Actually Do For You",
@@ -24,14 +44,6 @@
         "What Pixie Dusting is vs Fish Extenders, etiquette, gift ideas, and how Cruising Cove sailing Pixie Dust sign-ups work.",
       date: "2026-08-06",
       url: "/articles/disney-cruise-pixie-dusting.html",
-    },
-    {
-      id: "welcome-aboard-bels-castle-creations",
-      title: "Welcome Aboard Bels Castle Creations — First Marketplace Shop",
-      excerpt:
-        "Meet our first Curated 10 shop — custom Disney cruise door magnets, fish extender gifts, cabin décor, and personalized keepsakes.",
-      date: "2026-08-05",
-      url: "/articles/welcome-aboard-bels-castle-creations.html",
     },
     {
       id: "disney-destiny-hidden-secrets",

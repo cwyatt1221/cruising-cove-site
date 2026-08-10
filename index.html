@@ -184,6 +184,13 @@
     font-family:var(--font-serif);font-size:clamp(1.55rem,2.6vw,2rem);
     font-weight:400;line-height:1.2;color:var(--navy);margin:0 0 14px;
   }
+  .week-feature .week-badge{
+    display:inline-block;margin:0 0 14px;padding:6px 11px;
+    font-size:0.78rem;font-weight:600;letter-spacing:.04em;
+    color:var(--navy);background:rgba(201,162,75,.14);
+    border:1px solid rgba(201,162,75,.55);border-radius:2px;
+  }
+  .week-feature .week-badge[hidden]{display:none;}
   .week-feature .excerpt{
     font-size:0.98rem;line-height:1.6;color:var(--muted);margin:0 0 22px;
   }
@@ -586,13 +593,14 @@
 
 <section class="why-section" id="featured-articles">
   <div class="wrap">
-    <div class="week-feature" id="weekFeature" aria-label="Featured articles">
-      <p class="section-label">Featured articles</p>
-      <h2 id="weekTitle">Disney Cruise Fish Extenders: Everything First-Time Cruisers Need to Know</h2>
-      <p class="excerpt" id="weekExcerpt">What Fish Extenders are, how gift exchanges work, how to find a group for your sailing, gift ideas, and where to buy or sell cruise essentials.</p>
+    <div class="week-feature" id="weekFeature" aria-label="Featured Shop">
+      <p class="section-label" id="weekLabel">Featured Shop</p>
+      <h2 id="weekTitle">Handmade extras for the trip you're already planning.</h2>
+      <span class="week-badge" id="weekBadge">Bels Castle Creations · Founding Shop No. 1</span>
+      <p class="excerpt" id="weekExcerpt">Custom door magnets, fish extender gifts, and cabin décor made for Disney sailings — the first of ten shops we're hand-picking for the marketplace.</p>
       <div class="week-actions">
-        <a class="btn btn-gold" id="weekCta" href="/articles/disney-cruise-fish-extenders.html">Read the article</a>
-        <a class="archive-link" href="/articles/">All articles</a>
+        <a class="btn btn-gold" id="weekCta" href="https://belscastlecreations.etsy.com/" target="_blank" rel="noopener noreferrer">Shop Bels Castle Creations</a>
+        <a class="archive-link" id="weekSecondary" href="/marketplace/">See all shops</a>
       </div>
       <div class="week-pager" id="weekPager" hidden>
         <button type="button" class="week-pager-btn" id="weekPrev" aria-label="Previous article">Previous</button>
@@ -799,9 +807,12 @@
     }
 
     var idx = 0;
+    var label = document.getElementById('weekLabel');
     var title = document.getElementById('weekTitle');
+    var badge = document.getElementById('weekBadge');
     var excerpt = document.getElementById('weekExcerpt');
     var cta = document.getElementById('weekCta');
+    var secondary = document.getElementById('weekSecondary');
     var pager = document.getElementById('weekPager');
     var prev = document.getElementById('weekPrev');
     var next = document.getElementById('weekNext');
@@ -812,11 +823,38 @@
     function render() {
       var article = slides[idx];
       if (!article) return;
+      var isShop = article.kind === 'featured-shop';
+      if (label) label.textContent = article.eyebrow || (isShop ? 'Featured Shop' : 'Featured articles');
       if (title) title.textContent = article.title;
+      if (badge) {
+        if (article.badge) {
+          badge.hidden = false;
+          badge.textContent = article.badge;
+        } else {
+          badge.hidden = true;
+          badge.textContent = '';
+        }
+      }
       if (excerpt) excerpt.textContent = article.excerpt || '';
       if (cta) {
-        cta.href = article.url;
-        cta.textContent = 'Read the article';
+        var primary = article.primaryCta || null;
+        cta.href = (primary && primary.href) || article.url;
+        cta.textContent = (primary && primary.label) || 'Read the article';
+        if (primary && primary.external) {
+          cta.setAttribute('target', '_blank');
+          cta.setAttribute('rel', 'noopener noreferrer');
+        } else {
+          cta.removeAttribute('target');
+          cta.removeAttribute('rel');
+        }
+      }
+      if (secondary) {
+        var second = article.secondaryCta || null;
+        secondary.href = (second && second.href) || '/articles/';
+        secondary.textContent = (second && second.label) || 'All articles';
+      }
+      if (feature) {
+        feature.setAttribute('aria-label', isShop ? 'Featured Shop' : 'Featured articles');
       }
       if (count) count.textContent = (idx + 1) + ' / ' + slides.length;
       if (prev) prev.disabled = slides.length < 2;
