@@ -288,57 +288,6 @@
   .save-section{background:#c7cdd6;}
   .save-note{font-size:0.875rem;color:var(--muted);margin-top:20px;max-width:70ch;}
 
-  /* ---------- WELCOME DUO (agent + marketplace) ---------- */
-  .welcome-duo{
-    background:var(--cream-2);
-    padding:56px 0 0;
-  }
-  .welcome-duo .section-label{margin-bottom:10px;}
-  .welcome-duo > .wrap > h2{
-    font-family:var(--font-serif);font-weight:500;
-    font-size:clamp(1.55rem,2.8vw,1.95rem);
-    color:var(--navy);margin:0 0 22px;max-width:32ch;line-height:1.2;
-  }
-  .welcome-duo-grid{
-    display:grid;grid-template-columns:1fr 1fr;gap:0;
-    background:var(--navy);border-radius:8px;overflow:hidden;
-  }
-  .welcome-duo-col{
-    padding:36px 32px;color:var(--cream);
-    display:flex;flex-direction:column;min-height:100%;
-  }
-  .welcome-duo-col + .welcome-duo-col{
-    border-left:1px solid rgba(201,162,75,.28);
-  }
-  .welcome-duo-col .duo-eyebrow{
-    font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;
-    color:var(--gold);margin:0 0 10px;font-weight:600;
-  }
-  .welcome-duo-col h3{
-    font-family:var(--font-serif);font-weight:500;
-    font-size:clamp(1.35rem,2.2vw,1.6rem);
-    color:var(--cream);margin:0 0 12px;line-height:1.2;
-  }
-  .welcome-duo-col p{
-    color:#c7cbd6;font-size:1rem;line-height:1.6;margin:0 0 20px;flex:1;
-  }
-  .welcome-duo-col .duo-actions{
-    display:flex;flex-wrap:wrap;gap:10px;align-items:center;
-  }
-  .welcome-duo-col a.duo-story{
-    font-size:0.92rem;color:var(--cream);
-    border-bottom:1px solid rgba(201,162,75,.55);padding-bottom:1px;
-  }
-  .welcome-duo-col a.duo-story:hover{color:var(--gold);}
-  @media (max-width:800px){
-    .welcome-duo{padding:40px 0 0;}
-    .welcome-duo-grid{grid-template-columns:1fr;}
-    .welcome-duo-col{padding:28px 22px 32px;}
-    .welcome-duo-col + .welcome-duo-col{
-      border-left:none;border-top:1px solid rgba(201,162,75,.28);
-    }
-  }
-
   /* ---------- FAMILY ---------- */
   .family-block{
     background:var(--navy);border-radius:8px;display:flex;gap:0;
@@ -539,33 +488,6 @@
       <a href="/agents/">Find an Agent</a>
       <a href="/marketplace/">Marketplace</a>
     </nav>
-  </div>
-</section>
-
-<section class="welcome-duo" id="welcome-aboard" aria-label="Welcome aboard">
-  <div class="wrap">
-    <p class="section-label reveal">Welcome aboard</p>
-    <h2 class="reveal">Two new faces — a travel agent and our first marketplace shop.</h2>
-    <div class="welcome-duo-grid reveal">
-      <div class="welcome-duo-col">
-        <p class="duo-eyebrow">Newest travel agent</p>
-        <h3>Martina Yost</h3>
-        <p>Magic Mom Travel — young families, first-timers, and smart Disney cruise budget planning.</p>
-        <div class="duo-actions">
-          <a class="btn btn-gold" href="/agents/profile.html?id=martina-yost">View her profile</a>
-          <a class="duo-story" href="/articles/welcome-aboard-martina.html">Read the welcome →</a>
-        </div>
-      </div>
-      <div class="welcome-duo-col">
-        <p class="duo-eyebrow">First marketplace shop</p>
-        <h3>Bels Castle Creations</h3>
-        <p>Custom Disney cruise door magnets, fish extender gifts, cabin décor, and personalized keepsakes for every sailing.</p>
-        <div class="duo-actions">
-          <a class="btn btn-gold" href="/marketplace/#bels-castle-creations">Shop the marketplace</a>
-          <a class="duo-story" href="/articles/welcome-aboard-bels-castle-creations.html">Read the welcome →</a>
-        </div>
-      </div>
-    </div>
   </div>
 </section>
 
