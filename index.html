@@ -254,8 +254,8 @@
     transition:transform .25s ease, box-shadow .25s ease;
   }
   /* Hover lift only on linked cards — plain .card tiles are content, not CTAs. */
-  .card a,.cards a.card{color:inherit;text-decoration:none;display:block;}
-  .cards a.card{cursor:pointer;}
+  .card a,.cards a.card{color:inherit;text-decoration:none;}
+  .cards a.card{cursor:pointer;display:flex;flex-direction:column;height:100%;}
   .cards a.card:hover{transform:translateY(-3px);box-shadow:0 16px 28px -18px rgba(15,28,51,.35);}
   .card-media{
     height:130px;overflow:hidden;
@@ -293,14 +293,29 @@
     background-image:url('/assets/images/spiderman-dining-meet.jpg');
     background-position:center 35%;
   }
+  /* Keep why-row + ship-row cards equal height with matching media strips */
+  .cards-3,
+  .cards-5{
+    align-items:stretch;
+  }
   .cards-3 .card,
-  .cards-3 a.card{
+  .cards-3 a.card,
+  .cards-5 .card,
+  .cards-5 a.card{
     display:flex;
     flex-direction:column;
     height:100%;
+    min-height:0;
   }
-  .cards-3 .card-body{flex:1;}
-  .cards-3 .card-media{height:168px;flex-shrink:0;}
+  .cards-3 .card-body,
+  .cards-5 .card-body{
+    flex:1 1 auto;
+  }
+  .cards-3 .card-media,
+  .cards-5 .card-media{
+    height:168px;
+    flex:0 0 168px;
+  }
   .cards-3 .card-body p+p{margin-top:12px;}
   .card-body{padding:22px 24px 26px;}
   .card h3{
