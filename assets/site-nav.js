@@ -707,21 +707,6 @@
   };
 
   var ARTICLE_EXTRA_LINKS = {
-    "welcome-aboard-martina": [
-      { href: "/agents/profile.html?id=martina-yost", title: "Martina Yost’s profile", meta: "Agents" },
-      { href: "/agents/", title: "Browse travel agents", meta: "Agents" },
-    ],
-    "welcome-aboard-emily": [
-      { href: "/agents/profile.html?id=emily-schultz", title: "Emily Schultz’s profile", meta: "Agents" },
-      { href: "/agents/", title: "Browse travel agents", meta: "Agents" },
-    ],
-    "welcome-aboard-kim": [
-      { href: "/agents/profile.html?id=kim-fanning", title: "Kim Fanning’s profile", meta: "Agents" },
-      { href: "/agents/", title: "Browse travel agents", meta: "Agents" },
-    ],
-    "welcome-aboard-donna": [{ href: "/agents/", title: "Browse travel agents", meta: "Agents" }],
-    "welcome-aboard-shana": [{ href: "/agents/", title: "Browse travel agents", meta: "Agents" }],
-    "welcome-aboard-rebekah": [{ href: "/agents/", title: "Browse travel agents", meta: "Agents" }],
     "welcome-aboard-bels-castle-creations": [
       { href: "/marketplace/", title: "Visit the marketplace", meta: "Marketplace" },
     ],

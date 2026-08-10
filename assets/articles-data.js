@@ -6,17 +6,9 @@
 (function (global) {
   var FEATURED_SLOTS = 10;
   /** Pin the first homepage carousel slide. Set to null to rotate by ISO week. */
-  var CAROUSEL_START_ID = "welcome-aboard-martina";
+  var CAROUSEL_START_ID = "what-a-disney-cruise-travel-agent-can-do";
 
   var articles = [
-    {
-      id: "welcome-aboard-martina",
-      title: "Welcome Aboard Martina — Our Newest Travel Agent",
-      excerpt:
-        "Meet Martina Yost of Magic Mom Travel — a Disney Cruise specialist for young families, first-timers, and smart budget planning.",
-      date: "2026-08-09",
-      url: "/articles/welcome-aboard-martina.html",
-    },
     {
       id: "what-a-disney-cruise-travel-agent-can-do",
       title: "What a Disney Cruise Travel Agent Can Actually Do For You",
@@ -26,28 +18,12 @@
       url: "/articles/what-a-disney-cruise-travel-agent-can-do.html",
     },
     {
-      id: "welcome-aboard-emily",
-      title: "Welcome Aboard Emily — Our Newest Travel Agent",
-      excerpt:
-        "Meet Emily Schultz of Magic Mom Travel — a Disney Cruise specialist for families, first-timers, and autism- and sensory-friendly sailings.",
-      date: "2026-08-07",
-      url: "/articles/welcome-aboard-emily.html",
-    },
-    {
       id: "disney-cruise-pixie-dusting",
       title: "Disney Cruise Pixie Dusting: Guest-to-Guest Surprises Explained",
       excerpt:
         "What Pixie Dusting is vs Fish Extenders, etiquette, gift ideas, and how Cruising Cove sailing Pixie Dust sign-ups work.",
       date: "2026-08-06",
       url: "/articles/disney-cruise-pixie-dusting.html",
-    },
-    {
-      id: "welcome-aboard-kim",
-      title: "Welcome Aboard Kim — Our Newest Travel Agent",
-      excerpt:
-        "Meet Kim Fanning of Magical World Vacations — a Disney Cruise specialist for personalized family planning and neurodivergent-friendly travel.",
-      date: "2026-08-05",
-      url: "/articles/welcome-aboard-kim.html",
     },
     {
       id: "welcome-aboard-bels-castle-creations",
@@ -122,14 +98,6 @@
       url: "/articles/disney-destiny-toddler-tips.html",
     },
     {
-      id: "welcome-aboard-donna",
-      title: "Welcome Aboard Donna — Our Newest Travel Agent",
-      excerpt:
-        "Meet Donna Walters of EnchantAway Travel — a Disney Cruise specialist for personalized family planning, first-timers, and medical needs.",
-      date: "2026-08-02",
-      url: "/articles/welcome-aboard-donna.html",
-    },
-    {
       id: "worlds-of-marvel",
       title: "Worlds of Marvel: The Complete Guide to Disney Cruise Line's Marvel Dining Room",
       excerpt:
@@ -144,22 +112,6 @@
         "What Fish Extenders are, how gift exchanges work, how to find a group for your sailing, gift ideas, and where to buy or sell cruise essentials.",
       date: "2026-08-01",
       url: "/articles/disney-cruise-fish-extenders.html",
-    },
-    {
-      id: "welcome-aboard-shana",
-      title: "Welcome Aboard Shana — Our Newest Travel Agent",
-      excerpt:
-        "Meet Shana Matos of Friend Like Me Travel Co — a Disney Cruise specialist for families, gluten-free travel, and autism-friendly sailings.",
-      date: "2026-07-31",
-      url: "/articles/welcome-aboard-shana.html",
-    },
-    {
-      id: "welcome-aboard-rebekah",
-      title: "Welcome Aboard Rebekah — Our Newest Travel Agent",
-      excerpt:
-        "Meet Rebekah Lukins of Best Day Ever with Bek — a Disney Cruise specialist for families with young kids, private islands, and Alaska sailings.",
-      date: "2026-07-30",
-      url: "/articles/welcome-aboard-rebekah.html",
     },
     {
       id: "bluey-on-disney-cruise-line-2026",

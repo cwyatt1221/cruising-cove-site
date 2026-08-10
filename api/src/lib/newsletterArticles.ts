@@ -19,23 +19,10 @@ const ARTICLES: NewsletterArticle[] = [
     path: "/articles/what-a-disney-cruise-travel-agent-can-do.html",
   },
   {
-    title: "Welcome Aboard Emily — Our Newest Travel Agent",
-    excerpt:
-      "Meet Emily Schultz of Magic Mom Travel — families, first-timers, and sensory-friendly sailings.",
-    date: "2026-08-07",
-    path: "/articles/welcome-aboard-emily.html",
-  },
-  {
     title: "Disney Cruise Pixie Dusting: Guest-to-Guest Surprises Explained",
     excerpt: "Etiquette, gift ideas, and how sailing Pixie Dust sign-ups work on Cruising Cove.",
     date: "2026-08-06",
     path: "/articles/disney-cruise-pixie-dusting.html",
-  },
-  {
-    title: "Welcome Aboard Kim — Our Newest Travel Agent",
-    excerpt: "Kim Fanning of Magical World Vacations — personalized family and neurodivergent-friendly planning.",
-    date: "2026-08-05",
-    path: "/articles/welcome-aboard-kim.html",
   },
   {
     title: "Welcome Aboard Bels Castle Creations — First Marketplace Shop",
