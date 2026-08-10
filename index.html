@@ -293,28 +293,43 @@
     background-image:url('/assets/images/spiderman-dining-meet.jpg');
     background-position:center 35%;
   }
-  /* Keep why-row + ship-row cards equal height with matching media strips */
+  /* Keep why / ship / port cards tall like the first why-row */
   .cards-3,
   .cards-5{
     align-items:stretch;
   }
-  .cards-3 .card,
-  .cards-3 a.card,
-  .cards-5 .card,
-  .cards-5 a.card{
+  .why-section .card,
+  .why-section a.card,
+  .ship-section .card,
+  .ship-section a.card,
+  .port-section .card,
+  .port-section a.card{
     display:flex;
     flex-direction:column;
     height:100%;
-    min-height:0;
+    min-height:32.5rem;
   }
-  .cards-3 .card-body,
-  .cards-5 .card-body{
+  .why-section .card-body,
+  .ship-section .card-body,
+  .port-section .card-body{
     flex:1 1 auto;
   }
-  .cards-3 .card-media,
-  .cards-5 .card-media{
+  .why-section .card-media,
+  .ship-section .card-media,
+  .port-section .card-media{
     height:168px;
     flex:0 0 168px;
+    margin-top:auto;
+  }
+  @media (max-width:900px){
+    .why-section .card,
+    .why-section a.card,
+    .ship-section .card,
+    .ship-section a.card,
+    .port-section .card,
+    .port-section a.card{
+      min-height:0;
+    }
   }
   .cards-3 .card-body p+p{margin-top:12px;}
   .card-body{padding:22px 24px 26px;}
@@ -576,39 +591,39 @@
     <h2 class="reveal">Kids’ clubs, restaurants, shows, and character meets — ship by ship.</h2>
     <div class="cards cards-5">
       <a class="card reveal" href="/planning/kids-clubs.html">
-        <div class="card-media warm" aria-hidden="true"></div>
         <div class="card-body">
           <h3>Kids' clubs</h3>
           <p>Oceaneer, Edge, Vibe, and nursery ages with typical hours and embarkation check-in notes on each ship guide.</p>
         </div>
+        <div class="card-media warm" aria-hidden="true"></div>
       </a>
       <a class="card reveal" href="/dining/">
-        <div class="card-media has-photo spiderman-dining" role="img" aria-label="Spider-Man character visit during rotational dining"></div>
         <div class="card-body">
           <h3>Restaurants</h3>
           <p>The full rotational dining lineup, which nights land where, and how far ahead to book the reservation-only rooms like Palo and Remy before they're gone.</p>
         </div>
+        <div class="card-media has-photo spiderman-dining" role="img" aria-label="Spider-Man character visit during rotational dining"></div>
       </a>
       <a class="card reveal" href="/entertainment/">
-        <div class="card-media night" aria-hidden="true"></div>
         <div class="card-body">
           <h3>Shows</h3>
           <p>Stage productions per ship with “book-first” seating tips — which shows fill early and how dining seatings pair with showtimes.</p>
         </div>
+        <div class="card-media night" aria-hidden="true"></div>
       </a>
       <a class="card reveal" href="/entertainment/">
-        <div class="card-media has-photo royal-tea" role="img" aria-label="Royal Court Royal Tea with Belle, Cinderella, Tiana, and a young guest"></div>
         <div class="card-body">
           <h3>Character meet-ups</h3>
           <p>How Navigator posts meet times, which characters draw the longest lines, and when to schedule a free character phone call before you sail.</p>
         </div>
+        <div class="card-media has-photo royal-tea" role="img" aria-label="Royal Court Royal Tea with Belle, Cinderella, Tiana, and a young guest"></div>
       </a>
       <a class="card reveal" href="/articles/10-hidden-disney-cruise-secrets.html">
-        <div class="card-media slate" aria-hidden="true"></div>
         <div class="card-body">
           <h3>Hidden gems &amp; ship secrets</h3>
           <p>Secret decks, quiet locations, the best photo spots, hidden Mickeys, adult-only areas, and the best place to watch fireworks — the details that make your cruise feel like an insider's trip.</p>
         </div>
+        <div class="card-media slate" aria-hidden="true"></div>
       </a>
     </div>
   </div>
@@ -620,25 +635,25 @@
     <h2 class="reveal">Every port explained — from the day you dock to the day you fly home.</h2>
     <div class="cards cards-3">
       <a class="card reveal" href="/ports/adventures.html">
-        <div class="card-media aqua" aria-hidden="true"></div>
         <div class="card-body">
           <h3>Port Adventures</h3>
           <p>Which excursion actually fits your family? Guides for toddler-friendly, beach days, budget stops, and Disney-run vs. independent — with real examples at common Disney ports. Side-by-side comparisons live under Excursions.</p>
         </div>
+        <div class="card-media aqua" aria-hidden="true"></div>
       </a>
       <a class="card reveal" href="/ports/guides.html">
-        <div class="card-media clay" aria-hidden="true"></div>
         <div class="card-body">
           <h3>Port Guides</h3>
           <p>Everything you need before you step off the ship — transportation, food, shopping, safety, timing, and the one thing locals say not to miss.</p>
         </div>
+        <div class="card-media clay" aria-hidden="true"></div>
       </a>
       <a class="card reveal" href="/ports/departure-ports.html">
-        <div class="card-media slate" aria-hidden="true"></div>
         <div class="card-body">
           <h3>Departure ports</h3>
           <p>The nearest airports, where to stay the night before, and parking, rideshare, and transfer options compared by real cost and time — so the trip starts smooth, not scrambled.</p>
         </div>
+        <div class="card-media slate" aria-hidden="true"></div>
       </a>
     </div>
   </div>
