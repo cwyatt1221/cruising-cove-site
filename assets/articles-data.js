@@ -18,6 +18,14 @@
       url: "/articles/welcome-aboard-martina.html",
     },
     {
+      id: "what-a-disney-cruise-travel-agent-can-do",
+      title: "What a Disney Cruise Travel Agent Can Actually Do For You",
+      excerpt:
+        "Same price as booking direct — plus planning help, training-backed expertise, advocacy when things go wrong, and how to ask about onboard credit.",
+      date: "2026-08-09",
+      url: "/articles/what-a-disney-cruise-travel-agent-can-do.html",
+    },
+    {
       id: "welcome-aboard-emily",
       title: "Welcome Aboard Emily — Our Newest Travel Agent",
       excerpt:
