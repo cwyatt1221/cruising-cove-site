@@ -281,6 +281,19 @@
     background-image:url('/assets/images/anchor-drop.jpg');
     background-position:center 62%;
   }
+  .card-media.navigator{
+    background-image:url('/assets/images/disney-navigator-countdown.jpg');
+    background-position:center top;
+  }
+  .cards-3 .card,
+  .cards-3 a.card{
+    display:flex;
+    flex-direction:column;
+    height:100%;
+  }
+  .cards-3 .card-body{flex:1;}
+  .cards-3 .card-media{height:168px;flex-shrink:0;}
+  .cards-3 .card-body p+p{margin-top:12px;}
   .card-body{padding:22px 24px 26px;}
   .card h3{
     font-family:var(--font-serif);font-size:1.2rem;font-weight:500;
@@ -514,17 +527,19 @@
         <div class="card-media has-photo anchor" role="img" aria-label="Anchor resting in sand"></div>
       </a>
       <a class="card reveal" href="/planning/cabin-intel.html">
-        <div class="card-media has-photo stateroom" role="img" aria-label="Disney Treasure verandah stateroom"></div>
         <div class="card-body">
           <h3>Know your stateroom before you book it</h3>
           <p>Thin cabin intel — elevator proximity, obstructed verandahs, connecting rooms, and noise patterns — so you can pick smarter before you pay.</p>
         </div>
+        <div class="card-media has-photo stateroom" role="img" aria-label="Disney Treasure verandah stateroom"></div>
       </a>
       <a class="card reveal" href="/planning/my-cruise.html">
         <div class="card-body">
           <h3>Know what to book first</h3>
           <p>Use the My Cruise planner or the booking-window helper for cabanas, Port Adventures, and specialty dining by Castaway Club tier — then lock the must-dos when your window opens.</p>
+          <p>Before your window opens, download the <strong>Disney Navigator</strong> app — it's how you'll actually book cabanas, Port Adventures, and dining once your reservation window goes live, plus it's your onboard countdown, daily schedule, and Navigator's chat while you're on the ship.</p>
         </div>
+        <div class="card-media has-photo navigator" role="img" aria-label="Disney Cruise Line Navigator countdown for a Disney Dream sailing"></div>
       </a>
     </div>
   </div>
