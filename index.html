@@ -292,7 +292,7 @@
   .card-media.spiderman-dining{
     background-image:url('/assets/images/spiderman-dining-meet.jpg');
     background-size:cover;
-    background-position:center 40%;
+    background-position:center 28%;
   }
   /* Keep why / ship / port cards tall like the first why-row */
   .cards-3,
@@ -322,6 +322,16 @@
     flex:0 0 168px;
     margin-top:auto;
   }
+  /* Restaurants + character meet-ups: photo fills the space why-card copy usually occupies */
+  .ship-section a.card.is-photo-led .card-body{
+    flex:0 0 auto;
+  }
+  .ship-section a.card.is-photo-led .card-media{
+    flex:1 1 auto;
+    height:auto;
+    min-height:20rem;
+    margin-top:auto;
+  }
   @media (max-width:900px){
     .why-section .card,
     .why-section a.card,
@@ -330,6 +340,11 @@
     .port-section .card,
     .port-section a.card{
       min-height:0;
+    }
+    .ship-section a.card.is-photo-led .card-media{
+      min-height:14rem;
+      flex:0 0 auto;
+      height:14rem;
     }
   }
   .cards-3 .card-body p+p{margin-top:12px;}
@@ -598,7 +613,7 @@
         </div>
         <div class="card-media warm" aria-hidden="true"></div>
       </a>
-      <a class="card reveal" href="/dining/">
+      <a class="card reveal is-photo-led" href="/dining/">
         <div class="card-body">
           <h3>Restaurants</h3>
           <p>The full rotational dining lineup, which nights land where, and how far ahead to book the reservation-only rooms like Palo and Remy before they're gone.</p>
@@ -612,7 +627,7 @@
         </div>
         <div class="card-media night" aria-hidden="true"></div>
       </a>
-      <a class="card reveal" href="/entertainment/">
+      <a class="card reveal is-photo-led" href="/entertainment/">
         <div class="card-body">
           <h3>Character meet-ups</h3>
           <p>How Navigator posts meet times, which characters draw the longest lines, and when to schedule a free character phone call before you sail.</p>
