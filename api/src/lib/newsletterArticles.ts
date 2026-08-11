@@ -12,6 +12,12 @@ export type NewsletterArticle = {
 
 const ARTICLES: NewsletterArticle[] = [
   {
+    title: "Disney Cruise Booking & Cost: Your Questions Answered",
+    excerpt: "What’s included, agent vs Disney booking, insurance, discounts, and kids pricing.",
+    date: "2026-08-11",
+    path: "/articles/disney-cruise-booking-and-cost.html",
+  },
+  {
     title: "Sparkle for sail days and park days — Shimmering Ever After",
     excerpt: "Sequin mouse ears and embroidered apparel from Founding Shop No. 2.",
     date: "2026-08-10",
@@ -41,12 +47,6 @@ const ARTICLES: NewsletterArticle[] = [
     excerpt: "Kiss Goodnight timing, Loki and Facilier takeovers, and Sanctum secrets.",
     date: "2026-08-05",
     path: "/articles/disney-destiny-hidden-secrets.html",
-  },
-  {
-    title: "Disney Cruise Booking & Cost: Your Questions Answered",
-    excerpt: "What’s included, agent vs Disney booking, insurance, discounts, and kids pricing.",
-    date: "2026-08-04",
-    path: "/articles/disney-cruise-booking-and-cost.html",
   },
 ];
 

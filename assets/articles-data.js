@@ -6,9 +6,17 @@
 (function (global) {
   var FEATURED_SLOTS = 10;
   /** Pin the first homepage carousel slide. Set to null to rotate by ISO week. */
-  var CAROUSEL_START_ID = "welcome-aboard-shimmering-ever-after";
+  var CAROUSEL_START_ID = "disney-cruise-booking-and-cost";
 
   var articles = [
+    {
+      id: "disney-cruise-booking-and-cost",
+      title: "Disney Cruise Booking & Cost: Your Questions Answered",
+      excerpt:
+        "What’s included in the fare, booking with an agent vs Disney, travel insurance, discounts, and how kids are priced.",
+      date: "2026-08-11",
+      url: "/articles/disney-cruise-booking-and-cost.html",
+    },
     {
       id: "welcome-aboard-shimmering-ever-after",
       title: "Sparkle for sail days and park days.",
@@ -72,14 +80,6 @@
         "Grand Hall Kiss Goodnight timing, Kiss Goodnightmares, Loki and Facilier takeovers, Sanctum secrets, and architecture details most guests walk past.",
       date: "2026-08-05",
       url: "/articles/disney-destiny-hidden-secrets.html",
-    },
-    {
-      id: "disney-cruise-booking-and-cost",
-      title: "Disney Cruise Booking & Cost: Your Questions Answered",
-      excerpt:
-        "What’s included in the fare, booking with an agent vs Disney, travel insurance, discounts, and how kids are priced.",
-      date: "2026-08-04",
-      url: "/articles/disney-cruise-booking-and-cost.html",
     },
     {
       id: "which-disney-ship-should-you-choose",
