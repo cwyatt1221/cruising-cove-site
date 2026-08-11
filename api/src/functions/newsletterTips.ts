@@ -3,9 +3,9 @@ import { TableClient } from "@azure/data-tables";
 import { randomBytes } from "crypto";
 import { adminAuthOk } from "../lib/adminAuth";
 import { sendEmail } from "../lib/email";
+import { buildSailingEmail } from "../lib/newsletterSailingEmail";
 import {
   TipMilestoneId,
-  buildTipEmail,
   daysUntilEmbark,
   parseTipsSent,
   selectMilestone,
@@ -122,8 +122,16 @@ export async function runNewsletterTipDrip(
     const needsUnsubToken = !unsubToken;
     if (needsUnsubToken) unsubToken = randomBytes(24).toString("hex");
     const unsubUrl = `${siteBase()}/newsletter/unsubscribe.html?token=${encodeURIComponent(unsubToken)}`;
-    const subject = tipSubject(shipLabel, milestone);
-    const content = buildTipEmail(milestone.id, { name, shipLabel, embarkationDate, unsubUrl });
+    const shipSlug = String(entity.shipSlug ?? "").trim();
+    const content = await buildSailingEmail({
+      kind: milestone.id,
+      name,
+      shipSlug,
+      shipLabel,
+      embarkationDate,
+      unsubUrl,
+    });
+    const subject = content.subject || tipSubject(shipLabel, milestone);
 
     if (dryRun) {
       if (result.details.length < limitDetails) {

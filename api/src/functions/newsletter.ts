@@ -2,6 +2,7 @@ import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/fu
 import { TableClient } from "@azure/data-tables";
 import { randomBytes, randomUUID } from "crypto";
 import { escapeHtml, notifyOwnerOfSubmitError, safeField, sendEmail } from "../lib/email";
+import { buildNewsletterWelcomeEmail } from "../lib/welcomeAboard";
 
 const TABLE_NAME = "NewsletterSignups";
 
@@ -217,6 +218,7 @@ export async function submitNewsletter(
       embarkationDate,
       sailingTips: wantsSailingTips,
       tipsSent: "[]",
+      welcomeSentAt: "",
       pageUrl,
       submittedAt,
       active: true,
@@ -291,6 +293,39 @@ export async function submitNewsletter(
     context.error("Newsletter notify email failed:", err);
   }
 
+  // Guest welcome: themed Welcome Aboard when ship + date exist, else Welcome to the Cove.
+  try {
+    const site = (process.env.PUBLIC_SITE_URL || "https://www.cruisingcove.com").replace(/\/$/, "");
+    const unsubUrl = `${site}/newsletter/unsubscribe.html?token=${encodeURIComponent(unsubToken)}`;
+    const welcome = buildNewsletterWelcomeEmail({
+      name,
+      shipSlug,
+      shipLabel,
+      embarkationDate,
+      unsubUrl,
+    });
+    const welcomeOk = await sendEmail(email, welcome.subject, welcome.html, welcome.text);
+    if (welcomeOk) {
+      try {
+        const client = await getTableClient();
+        await client.updateEntity(
+          {
+            partitionKey: email,
+            rowKey: signupId,
+            welcomeSentAt: new Date().toISOString(),
+          },
+          "Merge"
+        );
+      } catch (markErr) {
+        context.warn("Welcome sent but welcomeSentAt not saved:", markErr);
+      }
+    } else {
+      context.warn("Welcome email not sent (check RESEND_API_KEY / RESEND_FROM_EMAIL).");
+    }
+  } catch (welcomeErr) {
+    context.error("Welcome email failed:", welcomeErr);
+  }
+
   return {
     status: 200,
     jsonBody: {
@@ -298,8 +333,8 @@ export async function submitNewsletter(
       signupId,
       sailingTips: wantsSailingTips,
       message: wantsSailingTips
-        ? "You're on the list — we'll send cruise tips, and sailing notes when we have your ship and date."
-        : "You're on the list — thanks for joining the Cruising Cove newsletter.",
+        ? "You're on the list — check your inbox for a welcome note, then sailing tips at key milestones before your cruise."
+        : "You're on the list — check your inbox for a welcome note from Cruising Cove.",
     },
   };
 }

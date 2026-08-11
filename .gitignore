@@ -3,3 +3,10 @@
 # Remotion / tool deps
 tools/**/node_modules/
 tools/**/.chrome/
+
+# Welcome Aboard email renders
+output/*.html
+
+# Local / secrets
+.tmp-azure/
+api/.sample-env

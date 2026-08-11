@@ -150,21 +150,21 @@ function escapeForEmail(value: string): string {
     .replace(/"/g, "&quot;");
 }
 
-export function buildTipEmail(
+export type MilestoneTipContent = {
+  paragraphs: string[];
+  links: TipLinks;
+};
+
+export function getMilestoneTipContent(
   milestoneId: TipMilestoneId,
-  opts: { name: string; shipLabel: string; embarkationDate: string; unsubUrl?: string }
-): TipEmailContent {
-  const { name, shipLabel, embarkationDate, unsubUrl } = opts;
-  const dateNote = embarkationDate ? ` Embarkation: ${embarkationDate}.` : "";
-  const footer = { unsubUrl };
+  opts: { embarkationDate?: string } = {}
+): MilestoneTipContent {
+  const dateNote = opts.embarkationDate ? ` Embarkation: ${opts.embarkationDate}.` : "";
 
   switch (milestoneId) {
     case "d90":
-      return buildTip({
-        name,
-        shipLabel,
-        ...footer,
-        body: [
+      return {
+        paragraphs: [
           `You're about 90 days out.${dateNote} This is a great window to confirm Castaway Club timing and start planning port adventures, dining, and kids clubs — windows open at different times by tier.`,
           "We don’t invent exact open dates here: use our booking-windows and Castaway Club guides so you know when your tier can book, then set a reminder in My Cruise if you like.",
           "Still booking or comparing sailings? A Disney-specialist agent can help with itineraries and cabin choices at no extra cost to you vs booking direct.",
@@ -174,13 +174,10 @@ export function buildTipEmail(
           { label: "Castaway Club overview", path: "/planning/castaway-club.html" },
           { label: "Find an agent", path: "/agents/" },
         ],
-      });
+      };
     case "d60":
-      return buildTip({
-        name,
-        shipLabel,
-        ...footer,
-        body: [
+      return {
+        paragraphs: [
           `About 60 days to go.${dateNote} Gather travel docs early (passports / birth certificates as needed), and note when online check-in opens for your sailing so you’re ready the moment it does.`,
           "Skim the sailing timeline and deposit / final-payment guide so due dates don’t sneak up. If anything looks off on your reservation, it’s easier to fix now than in the final weeks.",
         ],
@@ -189,13 +186,10 @@ export function buildTipEmail(
           { label: "Deposit & final payment", path: "/planning/deposit-final-payment.html" },
           { label: "Before-you-go prep", path: "/articles/before-you-go-disney-cruise-prep.html" },
         ],
-      });
+      };
     case "d30":
-      return buildTip({
-        name,
-        shipLabel,
-        ...footer,
-        body: [
+      return {
+        paragraphs: [
           `One month out.${dateNote} Start a packing list, lock in must-do reservations (dining, spa, kids clubs where applicable), and peek at port days so you’re not improvising everything at the pier.`,
           "Kids clubs have age bands and registration steps — worth reading before you board. If you’re still sorting logistics, an agent can still help with changes.",
         ],
@@ -204,13 +198,10 @@ export function buildTipEmail(
           { label: "Kids clubs guide", path: "/planning/kids-clubs.html" },
           { label: "My Cruise planner", path: "/planning/my-cruise.html" },
         ],
-      });
+      };
     case "d14":
-      return buildTip({
-        name,
-        shipLabel,
-        ...footer,
-        body: [
+      return {
+        paragraphs: [
           `Two weeks out.${dateNote} Run through final payments if anything is still due, finish online check-in when it’s open, and walk the embarkation-day checklist so port morning feels calm.`,
           "Double-check what you need at the terminal (IDs, boarding docs, medication) and leave room in the suitcase for Pirate Night and any port days.",
         ],
@@ -219,13 +210,10 @@ export function buildTipEmail(
           { label: "Deposit & final payment", path: "/planning/deposit-final-payment.html" },
           { label: "Packing list", path: "/planning/disney-cruise-packing-list.html" },
         ],
-      });
+      };
     case "d7":
-      return buildTip({
-        name,
-        shipLabel,
-        ...footer,
-        body: [
+      return {
+        paragraphs: [
           `Final week.${dateNote} Confirm arrival plans to the port, download any apps Disney recommends for your sailing, and set aside boarding documents where you’ll find them at 5 a.m.`,
           "A quick pass on seasickness prep, Wi‑Fi plans, and gratuities means fewer “wait, did we…?” moments once you’re onboard.",
         ],
@@ -234,13 +222,10 @@ export function buildTipEmail(
           { label: "Seasickness tips", path: "/planning/seasickness.html" },
           { label: "Wi‑Fi guide", path: "/planning/wifi.html" },
         ],
-      });
+      };
     case "d0":
-      return buildTip({
-        name,
-        shipLabel,
-        ...footer,
-        body: [
+      return {
+        paragraphs: [
           `It’s embarkation day — have an amazing cruise!${dateNote}`,
           "Keep IDs and boarding docs handy, follow your arrival window, and use the embarkation checklist if you want a last calm scan before you leave for the terminal.",
           "Once you’re home, we’d love a review of your ship or ports in My Cruise — it helps the next family plan.",
@@ -250,10 +235,24 @@ export function buildTipEmail(
           { label: "My Cruise (reviews & planner)", path: "/planning/my-cruise.html" },
           { label: "Community sailing boards", path: "/community/" },
         ],
-      });
+      };
     default: {
       const _exhaustive: never = milestoneId;
       throw new Error(`Unknown milestone: ${_exhaustive}`);
     }
   }
+}
+
+export function buildTipEmail(
+  milestoneId: TipMilestoneId,
+  opts: { name: string; shipLabel: string; embarkationDate: string; unsubUrl?: string }
+): TipEmailContent {
+  const content = getMilestoneTipContent(milestoneId, { embarkationDate: opts.embarkationDate });
+  return buildTip({
+    name: opts.name,
+    shipLabel: opts.shipLabel,
+    unsubUrl: opts.unsubUrl,
+    body: content.paragraphs,
+    links: content.links,
+  });
 }

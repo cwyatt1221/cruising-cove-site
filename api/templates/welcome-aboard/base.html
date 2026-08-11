@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome Aboard — Cruising Cove</title>
+<!-- Mobile padding only; all other styles are inlined for Outlook/Gmail. -->
+<style>
+  @media only screen and (max-width: 480px) {
+    .masthead, .section, .snapshot, .footer { padding-left: 22px !important; padding-right: 22px !important; }
+    .masthead-title { font-size: 26px !important; }
+  }
+</style>
+</head>
+<body style="margin:0;padding:0;background-color:#E4DCCB;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;color:#1C2530;">
+<div style="width:100%;background-color:#E4DCCB;padding:32px 0;">
+  <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;max-width:640px;margin:0 auto;background-color:#FFFFFF;">
+
+    <!-- MASTHEAD -->
+    <tr>
+      <td class="masthead" style="background-color:#0B2545;background-image:linear-gradient(180deg,#0B2545 0%,#123159 100%);padding:36px 40px 30px;text-align:center;">
+        <p style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#C9A24B;margin:0 0 10px;">Cruising Cove</p>
+        <h1 class="masthead-title" style="font-family:Georgia,'Playfair Display','Times New Roman',serif;font-size:34px;line-height:1.1;color:#FFFFFF;margin:0 0 6px;letter-spacing:0.5px;">Welcome Aboard</h1>
+        <p style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:14px;color:#F4E9D8;margin:0;">{{SHIP_NAME}} &nbsp;•&nbsp; {{SAIL_DATE}} &nbsp;•&nbsp; {{ITINERARY_NAME}}</p>
+      </td>
+    </tr>
+
+    <!-- WAVE DIVIDER -->
+    <tr>
+      <td style="background-color:#0B2545;line-height:0;font-size:0;">
+        <svg viewBox="0 0 640 24" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block;width:100%;height:24px;">
+          <path d="M0,0 L640,0 L640,10 C 560,22 480,2 400,12 C 320,22 240,2 160,12 C 80,22 40,10 0,14 Z" fill="#F4E9D8"/>
+        </svg>
+      </td>
+    </tr>
+
+    <!-- VOYAGE SNAPSHOT -->
+    <tr>
+      <td class="snapshot" style="background-color:#F4E9D8;padding:18px 40px;">
+        <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;">
+          <tr>
+            <td style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;text-transform:uppercase;letter-spacing:1px;font-size:10px;color:#E8785A;font-weight:bold;padding:4px 10px 4px 0;white-space:nowrap;">Departs</td>
+            <td style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:12px;color:#0B2545;padding:4px 0;">{{DEPARTURE_PORT}} — {{DEPARTURE_TIME}}</td>
+            <td style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;text-transform:uppercase;letter-spacing:1px;font-size:10px;color:#E8785A;font-weight:bold;padding:4px 10px 4px 12px;white-space:nowrap;">Returns</td>
+            <td style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:12px;color:#0B2545;padding:4px 0;">{{RETURN_PORT}} — {{RETURN_TIME}}</td>
+          </tr>
+          <tr>
+            <td style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;text-transform:uppercase;letter-spacing:1px;font-size:10px;color:#E8785A;font-weight:bold;padding:4px 10px 4px 0;white-space:nowrap;">Muster Drill</td>
+            <td style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:12px;color:#0B2545;padding:4px 0;">{{MUSTER_TIME}} — {{MUSTER_LOCATION}}</td>
+            <td style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;text-transform:uppercase;letter-spacing:1px;font-size:10px;color:#E8785A;font-weight:bold;padding:4px 10px 4px 12px;white-space:nowrap;">Weather</td>
+            <td style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:12px;color:#0B2545;padding:4px 0;">{{WEATHER_SUMMARY}}</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+    <!-- CAPTAIN'S WELCOME -->
+    <tr>
+      <td class="section" style="padding:30px 40px;border-bottom:1px solid #ECE4D6;background-color:#FBF8F2;">
+        <p style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#E8785A;font-weight:bold;margin:0 0 8px;">A Word From the Bridge</p>
+        <h2 style="font-family:Georgia,'Playfair Display','Times New Roman',serif;font-size:22px;color:#0B2545;margin:0 0 12px;">Welcome, {{GUEST_NAME}}!</h2>
+        <p style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:14px;line-height:1.6;color:#1C2530;margin:0 0 12px;">{{CAPTAINS_WELCOME_MESSAGE}}</p>
+        <p style="font-family:Georgia,'Playfair Display','Times New Roman',serif;font-style:italic;font-size:15px;color:#0B2545;margin:16px 0 0;">— {{CAPTAIN_NAME}}, Captain of the {{SHIP_NAME}}</p>
+      </td>
+    </tr>
+
+    <!-- GETTING STARTED -->
+    <tr>
+      <td class="section" style="padding:30px 40px;border-bottom:1px solid #ECE4D6;">
+        <p style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#E8785A;font-weight:bold;margin:0 0 8px;">Before You Unpack</p>
+        <h2 style="font-family:Georgia,'Playfair Display','Times New Roman',serif;font-size:22px;color:#0B2545;margin:0 0 12px;">Getting Started</h2>
+        <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;">
+          <tr>
+            <td width="50%" style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:13px;padding:10px 12px 10px 0;vertical-align:top;color:#1C2530;">
+              <span style="font-weight:bold;color:#0B2545;display:block;margin-bottom:2px;">🎫 Key Card &amp; App</span>{{KEY_CARD_INSTRUCTIONS}}
+            </td>
+            <td width="50%" style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:13px;padding:10px 0 10px 12px;vertical-align:top;color:#1C2530;">
+              <span style="font-weight:bold;color:#0B2545;display:block;margin-bottom:2px;">🍽️ Dining Reservations</span>{{DINING_INSTRUCTIONS}}
+            </td>
+          </tr>
+          <tr>
+            <td width="50%" style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:13px;padding:10px 12px 10px 0;vertical-align:top;color:#1C2530;">
+              <span style="font-weight:bold;color:#0B2545;display:block;margin-bottom:2px;">📶 Onboard WiFi</span>{{WIFI_INSTRUCTIONS}}
+            </td>
+            <td width="50%" style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:13px;padding:10px 0 10px 12px;vertical-align:top;color:#1C2530;">
+              <span style="font-weight:bold;color:#0B2545;display:block;margin-bottom:2px;">🛟 Muster Drill</span>{{MUSTER_TIME}} at {{MUSTER_LOCATION}}
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+    <!-- THIS WEEK HIGHLIGHTS -->
+    <tr>
+      <td class="section" style="padding:30px 40px;border-bottom:1px solid #ECE4D6;">
+        <p style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#E8785A;font-weight:bold;margin:0 0 8px;">On the Horizon</p>
+        <h2 style="font-family:Georgia,'Playfair Display','Times New Roman',serif;font-size:22px;color:#0B2545;margin:0 0 12px;">This Week's Highlights</h2>
+        <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;">
+          <tr>
+            <td style="padding:8px 0;border-bottom:1px dashed #E0D6C2;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;color:#E8785A;font-weight:bold;width:90px;font-size:12px;letter-spacing:0.5px;text-transform:uppercase;vertical-align:top;">{{EVENT_1_TIME}}</td>
+            <td style="padding:8px 0;border-bottom:1px dashed #E0D6C2;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:14px;color:#1C2530;vertical-align:top;">{{EVENT_1_DESCRIPTION}}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 0;border-bottom:1px dashed #E0D6C2;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;color:#E8785A;font-weight:bold;width:90px;font-size:12px;letter-spacing:0.5px;text-transform:uppercase;vertical-align:top;">{{EVENT_2_TIME}}</td>
+            <td style="padding:8px 0;border-bottom:1px dashed #E0D6C2;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:14px;color:#1C2530;vertical-align:top;">{{EVENT_2_DESCRIPTION}}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 0;border-bottom:1px dashed #E0D6C2;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;color:#E8785A;font-weight:bold;width:90px;font-size:12px;letter-spacing:0.5px;text-transform:uppercase;vertical-align:top;">{{EVENT_3_TIME}}</td>
+            <td style="padding:8px 0;border-bottom:1px dashed #E0D6C2;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:14px;color:#1C2530;vertical-align:top;">{{EVENT_3_DESCRIPTION}}</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+
+    <!-- FULL ITINERARY -->
+    <tr>
+      <td class="section" style="padding:30px 40px;border-bottom:1px solid #ECE4D6;">
+        <p style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#E8785A;font-weight:bold;margin:0 0 8px;">Your Route</p>
+        <h2 style="font-family:Georgia,'Playfair Display','Times New Roman',serif;font-size:22px;color:#0B2545;margin:0 0 12px;">Itinerary</h2>
+        <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;">
+          {{ITINERARY_ROWS}}
+        </table>
+        <p style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:12px;line-height:1.5;color:#6B7280;margin:12px 0 0;">Confirm times and any itinerary changes in My Reservations / the Disney Cruise Line Navigator app.</p>
+      </td>
+    </tr>
+
+    <!-- PORT PREVIEW -->
+    <tr>
+      <td class="section" style="padding:30px 40px;border-bottom:1px solid #ECE4D6;">
+        <p style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#E8785A;font-weight:bold;margin:0 0 8px;">First Landfall</p>
+        <h2 style="font-family:Georgia,'Playfair Display','Times New Roman',serif;font-size:22px;color:#0B2545;margin:0 0 12px;">Port Day Preview</h2>
+        <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;background-color:#0B2545;border-radius:4px;">
+          <tr>
+            <td style="padding:22px 24px;">
+              <h3 style="font-family:Georgia,'Playfair Display','Times New Roman',serif;font-size:18px;color:#C9A24B;margin:0 0 8px;">{{PORT_NAME}}</h3>
+              <p style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;color:#F4E9D8;font-size:13px;margin:0 0 10px;">{{PORT_ARRIVAL_TIME}} — {{PORT_DEPARTURE_TIME}}</p>
+              <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;">
+                <tr><td style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;color:#FFFFFF;font-size:13px;line-height:1.7;padding:0 0 0 4px;">• {{EXCURSION_1}}</td></tr>
+                <tr><td style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;color:#FFFFFF;font-size:13px;line-height:1.7;padding:0 0 0 4px;">• {{EXCURSION_2}}</td></tr>
+                <tr><td style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;color:#FFFFFF;font-size:13px;line-height:1.7;padding:0 0 0 4px;">• {{EXCURSION_3}}</td></tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+    <!-- GOOD TO KNOW -->
+    <tr>
+      <td class="section" style="padding:30px 40px;">
+        <p style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#E8785A;font-weight:bold;margin:0 0 8px;">Fine Print, Friendly Tone</p>
+        <h2 style="font-family:Georgia,'Playfair Display','Times New Roman',serif;font-size:22px;color:#0B2545;margin:0 0 12px;">Good to Know</h2>
+        <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;">
+          <tr>
+            <td width="50%" style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:13px;padding:10px 12px 10px 0;vertical-align:top;color:#1C2530;">
+              <span style="font-weight:bold;color:#0B2545;display:block;margin-bottom:2px;">👔 Dress Code Tonight</span>{{DRESS_CODE}}
+            </td>
+            <td width="50%" style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:13px;padding:10px 0 10px 12px;vertical-align:top;color:#1C2530;">
+              <span style="font-weight:bold;color:#0B2545;display:block;margin-bottom:2px;">💳 Onboard Credit</span>{{ONBOARD_CREDIT_INFO}}
+            </td>
+          </tr>
+          <tr>
+            <td width="50%" style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:13px;padding:10px 12px 10px 0;vertical-align:top;color:#1C2530;">
+              <span style="font-weight:bold;color:#0B2545;display:block;margin-bottom:2px;">⭐ Loyalty Program</span>{{LOYALTY_INFO}}
+            </td>
+            <td width="50%" style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:13px;padding:10px 0 10px 12px;vertical-align:top;color:#1C2530;">
+              <span style="font-weight:bold;color:#0B2545;display:block;margin-bottom:2px;">☎️ Guest Services</span>{{GUEST_SERVICES_CONTACT}}
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+
+    <!-- MORE FROM THE COVE -->
+    <tr>
+      <td class="section" style="padding:30px 40px;border-bottom:1px solid #ECE4D6;">
+        <p style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#E8785A;font-weight:bold;margin:0 0 8px;">More from the Cove</p>
+        <h2 style="font-family:Georgia,'Playfair Display','Times New Roman',serif;font-size:22px;color:#0B2545;margin:0 0 12px;">Helpful links</h2>
+        <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;">
+          <tr>
+            <td width="50%" style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:13px;padding:10px 12px 10px 0;vertical-align:top;color:#1C2530;">
+              <span style="font-weight:bold;color:#0B2545;display:block;margin-bottom:2px;">🧭 Travel agent directory</span>
+              <a href="{{AGENTS_URL}}" style="color:#0B2545;text-decoration:underline;">Find free expert help</a>
+            </td>
+            <td width="50%" style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:13px;padding:10px 0 10px 12px;vertical-align:top;color:#1C2530;">
+              <span style="font-weight:bold;color:#0B2545;display:block;margin-bottom:2px;">🛍️ Marketplace</span>
+              <a href="{{MARKETPLACE_URL}}" style="color:#0B2545;text-decoration:underline;">Browse cruise shops</a>
+            </td>
+          </tr>
+          <tr>
+            <td width="50%" style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:13px;padding:10px 12px 10px 0;vertical-align:top;color:#1C2530;">
+              <span style="font-weight:bold;color:#0B2545;display:block;margin-bottom:2px;">🧳 Packing list</span>
+              <a href="{{PACKING_URL}}" style="color:#0B2545;text-decoration:underline;">What to bring</a>
+            </td>
+            <td width="50%" style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:13px;padding:10px 0 10px 12px;vertical-align:top;color:#1C2530;">&nbsp;</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+    <!-- FOOTER -->
+    <tr>
+      <td class="footer" style="background-color:#0B2545;padding:28px 40px;text-align:center;">
+        <p style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:12px;color:#F4E9D8;margin:0 0 6px;">Share your voyage with us</p>
+        <p style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:12px;color:#C9A24B;font-weight:bold;letter-spacing:0.5px;margin:0 0 6px;">{{SOCIAL_HASHTAG}}</p>
+      </td>
+    </tr>
+
+  </table>
+</div>
+</body>
+</html>
