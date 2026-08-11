@@ -12,6 +12,12 @@ export type NewsletterArticle = {
 
 const ARTICLES: NewsletterArticle[] = [
   {
+    title: "Sparkle for sail days and park days — Shimmering Ever After",
+    excerpt: "Sequin mouse ears and embroidered apparel from Founding Shop No. 2.",
+    date: "2026-08-10",
+    path: "/articles/welcome-aboard-shimmering-ever-after.html",
+  },
+  {
     title: "What a Disney Cruise Travel Agent Can Actually Do For You",
     excerpt:
       "Same price as booking direct — planning help, expertise, advocacy, and how to ask about onboard credit.",

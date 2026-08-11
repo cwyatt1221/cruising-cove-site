@@ -6,6 +6,24 @@
 window.CC_MAX_SHOPS = 10;
 window.CC_SHOPS = [
   {
+    id: "shimmering-ever-after",
+    name: "Shimmering Ever After",
+    shopUrl: "https://www.etsy.com/shop/shimmeringeverafter",
+    description:
+      "Hiya Pals! Come check out our shop over on Etsy, Shimmering Ever After for all your magical needs. We specialize in sparkly sequin mouse ears and embroidered apparel. It’s the perfect touch for any trip.",
+    categories: ["Apparel", "Mouse Ears"],
+    socialProofQuotes: [
+      {
+        quote:
+          "Asked the seller one week prior to my unexpected Disney trip if she can get it to me on time. She told me about the rush order and worked her magic and within two days it was on its way to me. Not only did it come on time but the quality is top notch. I got so many compliments! Will purchase from this seller again! 11/10",
+      },
+    ],
+    visitCount: 0,
+    photoUrls: [
+      "https://cruisingcovelogs.blob.core.windows.net/seller-photos/05c0c047-e24b-470b-989e-3c94f0eaef26.jpg?sv=2026-06-06&spr=https&se=2036-08-10T20%3A27%3A23Z&sr=b&sp=r&sig=8LTP7wJalaz0%2F0NqKCWoXu0pdM2lglzqGiXUUbEYiYQ%3D",
+    ],
+  },
+  {
     id: "bels-castle-creations",
     name: "Bels Castle Creations",
     shopUrl: "https://belscastlecreations.etsy.com/",

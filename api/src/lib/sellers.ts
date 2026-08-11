@@ -168,6 +168,16 @@ export const BELS_CASTLE_DEFAULTS = {
   ] as SocialProofQuote[],
 };
 
+/** Defaults for founding shop Shimmering Ever After. */
+export const SHIMMERING_EVER_AFTER_DEFAULTS = {
+  socialProofQuotes: [
+    {
+      quote:
+        "Asked the seller one week prior to my unexpected Disney trip if she can get it to me on time. She told me about the rush order and worked her magic and within two days it was on its way to me. Not only did it come on time but the quality is top notch. I got so many compliments! Will purchase from this seller again! 11/10",
+    },
+  ] as SocialProofQuote[],
+};
+
 /**
  * If a known founding shop is live without tags/quotes, persist sensible defaults.
  * Safe to call on every list — only writes when fields are empty.
@@ -176,42 +186,65 @@ export async function maybeBackfillFoundingSeller(
   entity: Record<string, unknown>
 ): Promise<Record<string, unknown>> {
   const id = String(entity.rowKey || "");
-  if (id !== "bels-castle-creations") return entity;
 
-  const categories = resolveCategories(entity);
-  const quotes = parseSocialProofQuotes(entity.socialProofQuotes);
-  const needsCategories = categories.length === 0;
-  const needsQuotes = quotes.length === 0;
-  if (!needsCategories && !needsQuotes) return entity;
+  if (id === "bels-castle-creations") {
+    const categories = resolveCategories(entity);
+    const quotes = parseSocialProofQuotes(entity.socialProofQuotes);
+    const needsCategories = categories.length === 0;
+    const needsQuotes = quotes.length === 0;
+    if (!needsCategories && !needsQuotes) return entity;
 
-  const patch: {
-    partitionKey: string;
-    rowKey: string;
-    categories?: string;
-    productCategories?: string;
-    socialProofQuotes?: string;
-  } = {
-    partitionKey: "directory",
-    rowKey: id,
-  };
+    const patch: {
+      partitionKey: string;
+      rowKey: string;
+      categories?: string;
+      productCategories?: string;
+      socialProofQuotes?: string;
+    } = {
+      partitionKey: "directory",
+      rowKey: id,
+    };
 
-  let next = { ...entity };
-  if (needsCategories) {
-    patch.categories = JSON.stringify(BELS_CASTLE_DEFAULTS.categories);
-    patch.productCategories = joinCsv([...BELS_CASTLE_DEFAULTS.categories]);
-    next = { ...next, ...patch };
+    let next = { ...entity };
+    if (needsCategories) {
+      patch.categories = JSON.stringify(BELS_CASTLE_DEFAULTS.categories);
+      patch.productCategories = joinCsv([...BELS_CASTLE_DEFAULTS.categories]);
+      next = { ...next, ...patch };
+    }
+    if (needsQuotes) {
+      patch.socialProofQuotes = serializeSocialProofQuotes(BELS_CASTLE_DEFAULTS.socialProofQuotes);
+      next = { ...next, socialProofQuotes: patch.socialProofQuotes };
+    }
+
+    try {
+      const client = table(PUBLISHED_TABLE);
+      await client.updateEntity(patch, "Merge");
+    } catch {
+      /* non-fatal — still return enriched public payload */
+    }
+
+    return next;
   }
-  if (needsQuotes) {
-    patch.socialProofQuotes = serializeSocialProofQuotes(BELS_CASTLE_DEFAULTS.socialProofQuotes);
-    next = { ...next, socialProofQuotes: patch.socialProofQuotes };
+
+  if (id === "shimmering-ever-after") {
+    const quotes = parseSocialProofQuotes(entity.socialProofQuotes);
+    if (quotes.length > 0) return entity;
+
+    const patch = {
+      partitionKey: "directory",
+      rowKey: id,
+      socialProofQuotes: serializeSocialProofQuotes(SHIMMERING_EVER_AFTER_DEFAULTS.socialProofQuotes),
+    };
+
+    try {
+      const client = table(PUBLISHED_TABLE);
+      await client.updateEntity(patch, "Merge");
+    } catch {
+      /* non-fatal */
+    }
+
+    return { ...entity, socialProofQuotes: patch.socialProofQuotes };
   }
 
-  try {
-    const client = table(PUBLISHED_TABLE);
-    await client.updateEntity(patch, "Merge");
-  } catch {
-    /* non-fatal — still return enriched public payload */
-  }
-
-  return next;
+  return entity;
 }

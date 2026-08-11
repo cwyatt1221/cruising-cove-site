@@ -6,9 +6,29 @@
 (function (global) {
   var FEATURED_SLOTS = 10;
   /** Pin the first homepage carousel slide. Set to null to rotate by ISO week. */
-  var CAROUSEL_START_ID = "welcome-aboard-bels-castle-creations";
+  var CAROUSEL_START_ID = "welcome-aboard-shimmering-ever-after";
 
   var articles = [
+    {
+      id: "welcome-aboard-shimmering-ever-after",
+      title: "Sparkle for sail days and park days.",
+      excerpt:
+        "Sequin mouse ears and embroidered apparel made for Disney trips — the second of ten shops we're hand-picking for the marketplace.",
+      date: "2026-08-10",
+      url: "/articles/welcome-aboard-shimmering-ever-after.html",
+      kind: "featured-shop",
+      eyebrow: "Featured Shop",
+      badge: "Shimmering Ever After · Founding Shop No. 2",
+      primaryCta: {
+        label: "Shop Shimmering Ever After",
+        href: "https://www.etsy.com/shop/shimmeringeverafter",
+        external: true,
+      },
+      secondaryCta: {
+        label: "See all shops",
+        href: "/marketplace/",
+      },
+    },
     {
       id: "welcome-aboard-bels-castle-creations",
       title: "Handmade extras for the trip you're already planning.",

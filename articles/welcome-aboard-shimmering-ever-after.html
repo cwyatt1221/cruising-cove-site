@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sparkle for sail days and park days — Shimmering Ever After | Cruising Cove</title>
+<meta name="description" content="Shimmering Ever After is Founding Shop No. 2 on Cruising Cove — sparkly sequin mouse ears and embroidered apparel for Disney trips. Shop their Etsy store or browse the Curated 10 marketplace.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+  .article-body{max-width:720px;}
+  .article-body h2{
+    font-family:var(--font-serif);font-weight:500;font-size:1.45rem;
+    color:var(--navy);margin:1.8rem 0 0.7rem;text-transform:none;letter-spacing:0;
+  }
+  .article-body p{margin:0 0 0.9rem;line-height:1.7;}
+  .article-body ul{margin:0.4rem 0 1rem;padding-left:1.2rem;line-height:1.65;}
+  .article-body li{margin-bottom:0.45rem;}
+  .article-meta{font-size:0.85rem;color:var(--muted);margin:0 0 1.2rem;}
+  .article-nav{margin-top:2rem;padding-top:1.2rem;border-top:1px solid rgba(26,42,74,.1);}
+  .article-nav a{color:var(--teal);text-decoration:underline;}
+  .shop-feature-hero{
+    display:flex;flex-wrap:wrap;gap:22px;align-items:center;
+    margin:0 0 1.6rem;padding:20px 22px;
+    background:var(--cream);border:1px solid rgba(26,42,74,.08);border-left:3px solid var(--gold);
+  }
+  .shop-feature-hero img{
+    width:180px;height:180px;border-radius:6px;object-fit:cover;object-position:center;
+    border:2px solid rgba(201,162,75,.45);flex-shrink:0;
+  }
+  .shop-feature-hero h2{
+    font-family:var(--font-serif);font-weight:500;font-size:1.45rem;
+    color:var(--navy);margin:0 0 6px;text-transform:none;letter-spacing:0;
+  }
+  .shop-feature-hero .meta{margin:0;color:var(--muted);font-size:0.92rem;}
+  .shop-feature-hero .shop-badge{
+    display:inline-block;margin:0 0 10px;padding:5px 10px;
+    font-size:0.75rem;font-weight:600;letter-spacing:.04em;
+    color:var(--navy);background:rgba(201,162,75,.14);
+    border:1px solid rgba(201,162,75,.55);border-radius:2px;
+  }
+  .shop-feature-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:1.2rem;}
+  .shop-review{
+    margin:0 0 1.4rem;padding:16px 18px;
+    background:rgba(201,162,75,.1);border-left:3px solid var(--gold);
+  }
+  .shop-review p{
+    margin:0;font-size:0.98rem;line-height:1.65;color:var(--navy);font-style:italic;
+  }
+  .shop-photo-row{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+    margin:0.4rem 0 1.4rem;
+  }
+  .shop-photo-row.single{grid-template-columns:minmax(0,280px);}
+  .shop-photo-row img{
+    width:100%;aspect-ratio:1;object-fit:cover;border-radius:4px;
+    border:1px solid rgba(26,42,74,.1);
+  }
+  @media (max-width:700px){
+    .shop-photo-row{grid-template-columns:1fr 1fr 1fr;gap:6px;}
+    .shop-photo-row.single{grid-template-columns:1fr;}
+    .shop-feature-hero img{width:140px;height:140px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <nav class="site-nav-bar" aria-label="Primary">
+      <a class="logo" href="/">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M1 8c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0" stroke="#c9a24b" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </span>
+        Cruising Cove
+      </a>
+      <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primaryNav">
+        <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="nav-toggle-label">Menu</span>
+      </button>
+      <div class="nav-links" id="primaryNav" data-cc-nav="v4">
+        <a href="/ships/">Ships</a>
+        <a href="/ports/">Ports</a>
+        <a href="/community/">Community</a>
+        <a href="/gallery/">Gallery</a>
+        <a href="/marketplace/">Marketplace</a>
+      </div>
+      <div class="nav-cta">
+        <a href="/agents/" class="btn btn-gold">Find an Agent</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <span class="eyebrow mono">Featured Shop</span>
+    <h1>Sparkle for sail days and park days.</h1>
+    <p class="lede">Sequin mouse ears and embroidered apparel made for Disney trips — the second of ten shops we're hand-picking for the marketplace.</p>
+  </div>
+  <div class="tide" aria-hidden="true">
+    <svg viewBox="0 0 1200 56" preserveAspectRatio="none">
+      <path d="M0,28 C150,50 300,6 450,28 C600,50 750,6 900,28 C1050,50 1150,18 1200,26 L1200,56 L0,56 Z" fill="#faf7ee"></path>
+    </svg>
+  </div>
+</div>
+
+<main>
+  <section>
+    <div class="article-body">
+      <p class="article-meta">Published August 10, 2026 · <a href="/marketplace/" style="color:var(--teal);">Marketplace</a></p>
+
+      <div class="shop-feature-hero">
+        <img src="https://cruisingcovelogs.blob.core.windows.net/seller-photos/05c0c047-e24b-470b-989e-3c94f0eaef26.jpg?sv=2026-06-06&amp;spr=https&amp;se=2036-08-10T20%3A27%3A23Z&amp;sr=b&amp;sp=r&amp;sig=8LTP7wJalaz0%2F0NqKCWoXu0pdM2lglzqGiXUUbEYiYQ%3D" alt="Shimmering Ever After sequin mouse ears">
+        <div>
+          <span class="shop-badge">Shimmering Ever After · Founding Shop No. 2</span>
+          <h2>Shimmering Ever After</h2>
+          <p class="meta">Mouse ears · Embroidered apparel</p>
+        </div>
+      </div>
+
+      <p>Hiya Pals! Come check out Shimmering Ever After on Etsy for sparkly sequin mouse ears and embroidered apparel — the perfect touch for any Disney trip, whether you’re packing for a cruise, a park day, or both.</p>
+
+      <blockquote class="shop-review">
+        <p>“Asked the seller one week prior to my unexpected Disney trip if she can get it to me on time. She told me about the rush order and worked her magic and within two days it was on its way to me. Not only did it come on time but the quality is top notch. I got so many compliments! Will purchase from this seller again! 11/10”</p>
+      </blockquote>
+
+      <div class="shop-photo-row single" aria-label="Product photo from Shimmering Ever After">
+        <img src="https://cruisingcovelogs.blob.core.windows.net/seller-photos/05c0c047-e24b-470b-989e-3c94f0eaef26.jpg?sv=2026-06-06&amp;spr=https&amp;se=2036-08-10T20%3A27%3A23Z&amp;sr=b&amp;sp=r&amp;sig=8LTP7wJalaz0%2F0NqKCWoXu0pdM2lglzqGiXUUbEYiYQ%3D" alt="Shimmering Ever After product sample">
+      </div>
+
+      <h2>Why they’re Founding Shop No. 2</h2>
+      <p>The Cruising Cove Marketplace is a <strong>Curated 10</strong> — only ten shops at a time, chosen for Disney cruise families who are already planning, packing, and shopping for their sailing. Shimmering Ever After joins as Founding Shop No. 2: wearable sparkle and embroidered pieces that travel as easily from embarkation day photos to park queues.</p>
+
+      <h2>What you’ll find</h2>
+      <ul>
+        <li>Sparkly sequin mouse ears for sail days and park days</li>
+        <li>Embroidered apparel with a magical, trip-ready finish</li>
+        <li>Pieces that photograph well for stateroom, pool deck, and port days</li>
+        <li>A small, founder-led shop focused on sparkle and detail</li>
+      </ul>
+
+      <div class="shop-feature-actions">
+        <a class="btn btn-gold" href="https://www.etsy.com/shop/shimmeringeverafter" target="_blank" rel="noopener noreferrer">Shop Shimmering Ever After</a>
+        <a class="btn btn-outline" href="/marketplace/">See all shops</a>
+        <a class="btn btn-outline" href="/marketplace/#shimmering-ever-after">View marketplace listing</a>
+      </div>
+
+      <nav class="article-nav" aria-label="Article navigation">
+        <p><a href="/articles/">← All articles</a> · <a href="/marketplace/">Marketplace</a></p>
+      </nav>
+    </div>
+  </section>
+</main>
+
+<aside class="site-legal" aria-label="Legal">
+  <div class="wrap">
+    <p class="disclaimer">Cruising Cove is an independent planning guide and is not affiliated with, endorsed by, or sponsored by The Walt Disney Company, Disney Cruise Line, or any of their affiliates. Marketplace shops are independent sellers; product availability and policies are set by each shop.</p>
+  </div>
+</aside>
+<script src="/assets/site-nav.js" defer></script>
+<script src="/assets/analytics.js" defer></script>
+<script src="/assets/site-search.js" defer></script>
+<script src="/assets/chat-widget.js" defer></script>
+</body>
+</html>

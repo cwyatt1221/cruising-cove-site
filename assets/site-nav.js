@@ -716,6 +716,9 @@
     "welcome-aboard-bels-castle-creations": [
       { href: "/marketplace/", title: "Visit the marketplace", meta: "Marketplace" },
     ],
+    "welcome-aboard-shimmering-ever-after": [
+      { href: "/marketplace/", title: "Visit the marketplace", meta: "Marketplace" },
+    ],
     "disney-cruise-booking-and-cost": [
       { href: "/planning/disney-cruise-cost.html", title: "What a Disney cruise costs", meta: "Plan" },
     ],
