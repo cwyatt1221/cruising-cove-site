@@ -45,6 +45,23 @@
   }
   .ship-card-top svg{width:38px;height:38px;color:var(--gold-light);margin-bottom:10px;}
   .ship-card-top h3{color:var(--cream);font-size:1.2rem;font-weight:600;}
+  .ship-card-top.ship-card-photo{
+    min-height:148px;
+    padding:16px 20px;
+    display:flex;
+    align-items:flex-end;
+    background-color:var(--navy-deep);
+    background-image:url('/assets/images/disney-treasure-stern.jpg');
+    background-size:cover;
+    background-position:center;
+  }
+  .ship-card-top.ship-card-photo::after{
+    content:"";
+    position:absolute; inset:0;
+    background:linear-gradient(to top, rgba(15,28,51,0.78) 0%, rgba(15,28,51,0.15) 55%, transparent 100%);
+    pointer-events:none;
+  }
+  .ship-card-top.ship-card-photo h3{position:relative;z-index:1;}
   .ship-card-body{padding:16px 20px 20px;flex:1;display:flex;flex-direction:column;}
   .ship-card-body p{font-size:0.88rem;color:var(--muted);line-height:1.5;margin:0 0 14px;flex:1;}
   .ship-card-cta{
@@ -180,8 +197,7 @@
     </a>
 
     <a class="ship-card" href="/ships/disney-treasure.html">
-      <div class="ship-card-top">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 18l1.5-9h13L20 18"/><path d="M6 9V4h3v5"/><path d="M2 20h20"/></svg>
+      <div class="ship-card-top ship-card-photo" role="img" aria-label="Disney Treasure stern nameplate with Peter Pan and Captain Hook">
         <h3>Disney Treasure</h3>
       </div>
       <div class="ship-card-body">
