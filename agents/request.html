@@ -80,6 +80,7 @@
 
   <div class="agent-preview" id="agentPreview" aria-live="polite"></div>
   <div id="lockNotice" class="agent-preview" hidden></div>
+  <div id="confirmPanel" class="agent-preview" hidden></div>
 
   <div id="authGate" class="agent-auth-gate" hidden>
     <strong>Sign in to request this agent</strong>
@@ -208,15 +209,45 @@
     var form=document.getElementById('leadForm');
     var authGate=document.getElementById('authGate');
     var lockNotice=document.getElementById('lockNotice');
+    var confirmPanel=document.getElementById('confirmPanel');
     var select=document.getElementById('agentId');
     var preview=document.getElementById('agentPreview');
     var inlineLoginForm=document.getElementById('inlineLoginForm');
     var inlineRegisterForm=document.getElementById('inlineRegisterForm');
     var params=new URLSearchParams(location.search);
     var preselect=params.get('agent')||'';
+    var confirmToken=params.get('confirm')||'';
     var agentMap={};
     var activeLock=null;
     var requestReady=false;
+
+    function bookingCheckboxHtml(checked, interactive){
+      return (
+        '<label style="display:flex;gap:10px;align-items:flex-start;margin-top:14px;text-transform:none;letter-spacing:0;font-weight:500;font-size:0.92rem;">'+
+        '<input type="checkbox" id="bookingConfirmedByAgent" '+(checked?'checked ':'')+(interactive?'':'disabled ')+'style="width:auto;margin-top:3px;">'+
+        '<span>Booking confirmed by agent</span>'+
+        '</label>'
+      );
+    }
+
+    function requestSummaryHtml(row){
+      function line(label, value){
+        if(!value) return '';
+        return '<li><strong>'+CC.escapeHtml(label)+':</strong> '+CC.escapeHtml(value)+'</li>';
+      }
+      return (
+        '<ul style="margin:10px 0 0;padding-left:1.15rem;font-size:0.92rem;line-height:1.55;">'+
+        line('Guest', row.guestName)+
+        line('Email', row.email)+
+        line('Phone', row.phone)+
+        line('Party', row.partySize)+
+        line('When', row.sailingWindow)+
+        line('Ship / destination', row.shipInterest)+
+        line('First Disney cruise', row.firstTimer)+
+        line('Notes', row.notes)+
+        '</ul>'
+      );
+    }
 
     function showAuthGate(){
       authGate.hidden=false;
@@ -285,6 +316,11 @@
         '<strong>Request already submitted</strong>'+
         '<p style="margin-top:8px">You requested <strong>'+CC.escapeHtml(lock.agentName||lock.agentId)+
         '</strong>. Other agents stay locked until Cruising Cove unlocks your account.</p>'+
+        requestSummaryHtml(lock)+
+        bookingCheckboxHtml(!!lock.bookingConfirmedByAgent, false)+
+        (lock.bookingConfirmedAt
+          ? '<p style="margin-top:8px;font-size:0.88rem;color:var(--muted,#666)">Confirmed '+CC.escapeHtml(lock.bookingConfirmedAt)+'</p>'
+          : '')+
         '<p style="margin-top:12px"><a class="btn btn-outline" href="'+
         (lock.agentId?('/agents/profile.html?id='+encodeURIComponent(lock.agentId)):'/agents/')+
         '">View that agent</a></p>';
@@ -292,6 +328,80 @@
       if(lock.agentId){
         select.value=lock.agentId;
         updatePreview();
+      }
+    }
+
+    function showConfirmPanel(lead, token){
+      authGate.hidden=true;
+      form.hidden=true;
+      lockNotice.hidden=true;
+      confirmPanel.hidden=false;
+      confirmPanel.classList.add('visible');
+      var confirmed=!!lead.bookingConfirmedByAgent;
+      confirmPanel.innerHTML=
+        '<strong>Confirm guest booking</strong>'+
+        '<p style="margin-top:8px">Guest request for <strong>'+CC.escapeHtml(lead.agentName||lead.agentId||'agent')+
+        '</strong>. Check the box below once this guest has booked with you.</p>'+
+        requestSummaryHtml(lead)+
+        bookingCheckboxHtml(confirmed, !confirmed)+
+        '<div class="form-actions" style="margin-top:14px">'+
+        (confirmed
+          ? ''
+          : '<button type="button" class="btn btn-gold" id="confirmBookingBtn">Save confirmation</button>')+
+        '<p class="form-status" id="confirmStatus" role="status"></p>'+
+        '</div>';
+      var statusEl=document.getElementById('confirmStatus');
+      if(confirmed){
+        statusEl.className='form-status ok';
+        statusEl.textContent='Booking already confirmed'+(lead.bookingConfirmedAt ? ' · '+lead.bookingConfirmedAt : '')+'.';
+        return;
+      }
+      document.getElementById('confirmBookingBtn').addEventListener('click', async function(){
+        var box=document.getElementById('bookingConfirmedByAgent');
+        if(!box.checked){
+          statusEl.className='form-status err';
+          statusEl.textContent='Check “Booking confirmed by agent” before saving.';
+          return;
+        }
+        var btn=document.getElementById('confirmBookingBtn');
+        btn.disabled=true;
+        btn.textContent='Saving…';
+        try{
+          var data=await fetch('/api/agent-lead', {
+            method:'POST',
+            headers:{ 'Content-Type':'application/json' },
+            body: JSON.stringify({ action:'confirm-booking', token:token, confirmed:true })
+          }).then(async function(res){
+            var body=await res.json().catch(function(){ return {}; });
+            if(!res.ok) throw new Error(body.error || 'Could not confirm booking');
+            return body;
+          });
+          showConfirmPanel(data.lead || Object.assign({}, lead, { bookingConfirmedByAgent:true }), token);
+        }catch(err){
+          statusEl.className='form-status err';
+          statusEl.textContent=err.message || 'Could not confirm booking.';
+          btn.disabled=false;
+          btn.textContent='Save confirmation';
+        }
+      });
+    }
+
+    async function bootConfirmMode(token){
+      confirmPanel.hidden=false;
+      confirmPanel.classList.add('visible');
+      confirmPanel.innerHTML='<p>Loading booking confirmation…</p>';
+      authGate.hidden=true;
+      form.hidden=true;
+      try{
+        var res=await fetch('/api/agent-lead?confirm='+encodeURIComponent(token));
+        var data=await res.json().catch(function(){ return {}; });
+        if(!res.ok) throw new Error(data.error || 'Invalid confirm link');
+        showConfirmPanel(data.lead || {}, token);
+      }catch(err){
+        confirmPanel.innerHTML=
+          '<strong>Could not open confirmation</strong>'+
+          '<p style="margin-top:8px" class="form-status err">'+CC.escapeHtml(err.message || 'Invalid link')+'</p>'+
+          '<p style="margin-top:12px"><a class="btn btn-outline" href="/agents/">Back to directory</a></p>';
       }
     }
 
@@ -370,7 +480,9 @@
 
     select.addEventListener('change', updatePreview);
 
-    if(!CC.getToken() || !CC.getUser()){
+    if(confirmToken){
+      bootConfirmMode(confirmToken);
+    } else if(!CC.getToken() || !CC.getUser()){
       if(CC.getToken() && !CC.getUser()) CC.clearSession();
       showAuthGate();
       setAuthTab('login');

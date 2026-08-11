@@ -200,7 +200,8 @@
           <input type="text" id="btNotes" maxlength="280" placeholder="Deck tips, flexible on genres…">
         </div>
         <div class="actions">
-          <button type="submit" class="btn btn-gold">Join Book trade</button>
+          <button type="submit" class="btn btn-gold" id="btSubmit">Join Book trade</button>
+          <button type="button" class="btn btn-outline" id="btCancelEdit" hidden>Cancel</button>
         </div>
         <p class="form-msg" id="btMsg" hidden></p>
       </form>
@@ -280,6 +281,8 @@
   var statusActions = document.getElementById('statusActions');
   var sailingMeta = null;
   var isMember = false;
+  var myBookTradeSignup = null;
+  var btEditMode = false;
   var chatList = document.getElementById('chatList');
   var chatEmpty = document.getElementById('chatEmpty');
   var chatForm = document.getElementById('chatForm');
@@ -671,6 +674,39 @@
     return value || '';
   }
 
+  function fillBookTradeForm(signup) {
+    var user = CC.getUser() || {};
+    document.getElementById('btDisplayName').value = (signup && signup.displayName) || user.displayName || '';
+    document.getElementById('btCabin').value = (signup && signup.cabin) || '';
+    document.getElementById('btBringing').value = (signup && signup.bringing) || '';
+    document.getElementById('btBringingNote').value = (signup && signup.bringingNote) || '';
+    document.getElementById('btLookingFor').value = (signup && signup.lookingFor) || '';
+    document.getElementById('btAudience').value = (signup && signup.audience) || 'both';
+    document.getElementById('btNotes').value = (signup && signup.notes) || '';
+  }
+
+  function setBookTradeFormMode(editing) {
+    btEditMode = !!editing;
+    document.getElementById('btSubmit').textContent = editing ? 'Save changes' : 'Join Book trade';
+    document.getElementById('btCancelEdit').hidden = !editing;
+    var msg = document.getElementById('btMsg');
+    msg.hidden = true;
+    msg.textContent = '';
+  }
+
+  function openBookTradeEditor(editing) {
+    var btForm = document.getElementById('btForm');
+    if (editing) {
+      fillBookTradeForm(myBookTradeSignup);
+      setBookTradeFormMode(true);
+    } else {
+      fillBookTradeForm(null);
+      setBookTradeFormMode(false);
+    }
+    btForm.hidden = false;
+    btForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
   function renderBookTradeList(el, items) {
     if (!items || !items.length) {
       el.innerHTML = '<li class="notes">Nobody signed up yet — be the first to list a book.</li>';
@@ -709,6 +745,10 @@
       renderFishGroups(groups, groupSize);
       renderSignupList(document.getElementById('pdList'), pd, true);
       renderBookTradeList(document.getElementById('btList'), bt);
+      var me = CC.getUser();
+      myBookTradeSignup = (me && me.userId)
+        ? (bt.find(function(s){ return s.userId === me.userId; }) || null)
+        : null;
       setSignupActions(!!data.myFishExtender, !!data.myPixieDust, !!data.myBookTrade, data.myFishExtenderGroup);
     }).catch(function(){
       var wrap = document.getElementById('feGroups');
@@ -771,19 +811,26 @@
     }
 
     if (myBookTrade) {
-      btActions.innerHTML = '<button type="button" class="btn btn-outline" id="leaveBt">Leave Book trade</button>';
+      btActions.innerHTML =
+        '<button type="button" class="btn btn-gold" id="editBt">Edit Book trade</button>' +
+        '<button type="button" class="btn btn-outline" id="leaveBt">Leave Book trade</button>';
+      document.getElementById('editBt').addEventListener('click', function(){
+        openBookTradeEditor(true);
+      });
       document.getElementById('leaveBt').addEventListener('click', function(){
         CC.api('/community/sailings/' + encodeURIComponent(key) + '/signups/book-trade', { method: 'DELETE' })
-          .then(loadSignups)
+          .then(function(){
+            myBookTradeSignup = null;
+            setBookTradeFormMode(false);
+            document.getElementById('btForm').hidden = true;
+            return loadSignups();
+          })
           .catch(function(err){ alert(err.message || 'Could not leave.'); });
       });
     } else {
       btActions.innerHTML = '<button type="button" class="btn btn-gold" id="openBt">Join Book trade</button>';
       document.getElementById('openBt').addEventListener('click', function(){
-        var user = CC.getUser();
-        var nameField = document.getElementById('btDisplayName');
-        if (user && user.displayName && !nameField.value) nameField.value = user.displayName;
-        btForm.hidden = false;
+        openBookTradeEditor(false);
       });
     }
   }
@@ -897,25 +944,41 @@
   document.getElementById('btForm').addEventListener('submit', function(e){
     e.preventDefault();
     var msg = document.getElementById('btMsg');
-    CC.api('/community/sailings/' + encodeURIComponent(key) + '/signups', {
-      method: 'POST',
-      body: {
-        type: 'book-trade',
-        displayName: document.getElementById('btDisplayName').value,
-        cabin: document.getElementById('btCabin').value,
-        bringing: document.getElementById('btBringing').value,
-        bringingNote: document.getElementById('btBringingNote').value,
-        lookingFor: document.getElementById('btLookingFor').value,
-        audience: document.getElementById('btAudience').value,
-        notes: document.getElementById('btNotes').value
-      }
-    }).then(function(){
-      msg.hidden = false; msg.className = 'form-msg ok'; msg.textContent = 'You’re on the Book trade list.';
+    var payload = {
+      displayName: document.getElementById('btDisplayName').value,
+      cabin: document.getElementById('btCabin').value,
+      bringing: document.getElementById('btBringing').value,
+      bringingNote: document.getElementById('btBringingNote').value,
+      lookingFor: document.getElementById('btLookingFor').value,
+      audience: document.getElementById('btAudience').value,
+      notes: document.getElementById('btNotes').value
+    };
+    var req = btEditMode
+      ? CC.api('/community/sailings/' + encodeURIComponent(key) + '/signups/book-trade', {
+          method: 'PATCH',
+          body: payload
+        })
+      : CC.api('/community/sailings/' + encodeURIComponent(key) + '/signups', {
+          method: 'POST',
+          body: Object.assign({ type: 'book-trade' }, payload)
+        });
+    req.then(function(){
+      msg.hidden = false;
+      msg.className = 'form-msg ok';
+      msg.textContent = btEditMode ? 'Book trade listing updated.' : 'You’re on the Book trade list.';
       document.getElementById('btForm').hidden = true;
+      setBookTradeFormMode(false);
       return loadSignups();
     }).catch(function(err){
-      msg.hidden = false; msg.className = 'form-msg error'; msg.textContent = err.message || 'Could not sign up.';
+      msg.hidden = false;
+      msg.className = 'form-msg error';
+      msg.textContent = err.message || (btEditMode ? 'Could not update.' : 'Could not sign up.');
     });
+  });
+
+  document.getElementById('btCancelEdit').addEventListener('click', function(){
+    document.getElementById('btForm').hidden = true;
+    setBookTradeFormMode(false);
   });
 
   CC.api('/community/sailings/' + encodeURIComponent(key)).then(function(data){

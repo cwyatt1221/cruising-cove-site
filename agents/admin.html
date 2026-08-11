@@ -473,6 +473,10 @@
                 (row.agentEmailedTo ? " (" + escapeHtml(row.agentEmailedTo) + ")" : "") +
                 (row.agentEmailCount > 1 ? " · " + row.agentEmailCount + "×" : "")
               : " · <strong>not emailed to agent yet</strong>") +
+            (row.bookingConfirmedByAgent
+              ? " · <strong>booking confirmed</strong>" +
+                (row.bookingConfirmedAt ? " " + escapeHtml(formatWhen(row.bookingConfirmedAt)) : "")
+              : " · booking not confirmed") +
             "</p>" +
             (details ? "<ul style='margin:10px 0 0;padding-left:1.15rem;font-size:0.92rem;line-height:1.55;'>" + details + "</ul>" : "") +
             '<div class="agent-admin-card-actions">' +

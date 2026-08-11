@@ -369,6 +369,112 @@ export async function deleteSignup(request: HttpRequest, context: InvocationCont
   }
 }
 
+/** Update own Book trade listing (title, notes, audience, etc.). */
+export async function updateSignup(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
+  if (request.method === "OPTIONS") return corsJson(204, {});
+
+  const user = await requireUser(request.headers);
+  if (!user) return corsJson(401, { error: "Sign in to edit your Book trade listing." });
+
+  const key = request.params.sailingKey;
+  const typeRaw = (request.params.type || "").trim();
+  if (!key || !parseSailingKey(key)) return corsJson(400, { error: "Invalid sailing key." });
+  if (typeRaw !== "book-trade") {
+    return corsJson(400, { error: "Only Book trade listings can be edited." });
+  }
+
+  if (!(await assertMember(key, user.userId))) {
+    return corsJson(403, { error: "Join this sailing community before editing your listing." });
+  }
+
+  let body: {
+    displayName?: string;
+    cabin?: string;
+    notes?: string;
+    bringing?: string;
+    bringingNote?: string;
+    lookingFor?: string;
+    audience?: string;
+  };
+  try {
+    body = (await request.json()) as typeof body;
+  } catch {
+    return corsJson(400, { error: "Request body must be valid JSON." });
+  }
+
+  const nameRaw = (body.displayName ?? "").trim() || user.displayName;
+  const displayName = nameRaw.slice(0, 60);
+  if (!displayName) {
+    return corsJson(400, { error: "Display name is required for Book trade." });
+  }
+  const audienceRaw = (body.audience ?? "both").trim().toLowerCase();
+  if (!isBookTradeAudience(audienceRaw)) {
+    return corsJson(400, { error: "audience must be kids, adults, or both." });
+  }
+  const cabin = (body.cabin ?? "").trim().slice(0, 20);
+  const notes = (body.notes ?? "").trim().slice(0, 280);
+  const bringing = (body.bringing ?? "").trim().slice(0, 120);
+  const bringingNote = (body.bringingNote ?? "").trim().slice(0, 160);
+  const lookingFor = (body.lookingFor ?? "").trim().slice(0, 120);
+
+  const rowKey = signupRowKey("book-trade", user.userId);
+  const client = await table(SIGNUPS_TABLE);
+
+  try {
+    let existing: Record<string, unknown>;
+    try {
+      existing = (await client.getEntity(key, rowKey)) as Record<string, unknown>;
+    } catch {
+      return corsJson(404, { error: "You’re not on the Book trade list for this sailing." });
+    }
+    if (!isCurrentGeneration(existing)) {
+      return corsJson(404, { error: "You’re not on the Book trade list for this sailing." });
+    }
+    if (String(existing.userId ?? "") !== user.userId) {
+      return corsJson(403, { error: "You can only edit your own Book trade listing." });
+    }
+
+    const now = new Date().toISOString();
+    await client.updateEntity(
+      {
+        partitionKey: key,
+        rowKey,
+        etag: existing.etag as string | undefined,
+        displayName,
+        cabin,
+        notes,
+        bringing,
+        bringingNote,
+        lookingFor,
+        audience: audienceRaw,
+        updatedAt: now,
+      },
+      "Merge"
+    );
+
+    return corsJson(200, {
+      success: true,
+      signup: {
+        type: "book-trade",
+        userId: user.userId,
+        displayName,
+        cabin,
+        notes,
+        joinedAt: String(existing.joinedAt ?? ""),
+        groupNumber: null,
+        bringing,
+        bringingNote,
+        lookingFor,
+        audience: audienceRaw,
+        updatedAt: now,
+      },
+    });
+  } catch (err) {
+    context.error("updateSignup failed:", err);
+    return corsJson(500, { error: "Could not update your Book trade listing." });
+  }
+}
+
 /** Admin: wipe all Fish Extender + Pixie Dust + Book trade rows for a sailing (current + legacy). */
 export async function clearSignups(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   if (request.method === "OPTIONS") return corsJson(204, {});
@@ -410,8 +516,13 @@ app.http("signupsCollection", {
 });
 
 app.http("deleteSignup", {
-  methods: ["DELETE", "OPTIONS"],
+  methods: ["DELETE", "PATCH", "PUT", "OPTIONS"],
   authLevel: "anonymous",
   route: "community/sailings/{sailingKey}/signups/{type}",
-  handler: deleteSignup,
+  handler: async (request, context) => {
+    if (request.method === "PATCH" || request.method === "PUT") {
+      return updateSignup(request, context);
+    }
+    return deleteSignup(request, context);
+  },
 });

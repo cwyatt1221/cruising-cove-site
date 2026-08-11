@@ -1,6 +1,6 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import { TableClient, odata } from "@azure/data-tables";
-import { randomUUID } from "crypto";
+import { randomBytes, randomUUID } from "crypto";
 import { escapeHtml, notifyEmail, notifyOwnerOfSubmitError, safeField, sendEmail, sendEmailResult } from "../lib/email";
 import { requireUser } from "../lib/community";
 import { adminAuthOk } from "../lib/adminAuth";
@@ -24,6 +24,8 @@ interface AgentLeadInput {
   notes?: string;
   firstTimer?: string;
   consent?: boolean;
+  token?: string;
+  confirmed?: boolean;
 }
 
 type LeadEntity = Record<string, unknown>;
@@ -46,20 +48,49 @@ async function locksClient(): Promise<TableClient> {
   return client;
 }
 
+function newBookingConfirmToken(): string {
+  return randomBytes(24).toString("hex");
+}
+
+function isBookingConfirmed(entity: LeadEntity): boolean {
+  return entity.bookingConfirmedByAgent === true || String(entity.bookingConfirmedByAgent || "") === "true";
+}
+
 async function getActiveLock(userId: string) {
   try {
     const locks = await locksClient();
     const entity = await locks.getEntity("user", userId);
     if (String(entity.status || "") !== "locked") return null;
+    let bookingConfirmedByAgent = isBookingConfirmed(entity as LeadEntity);
+    let bookingConfirmedAt = String(entity.bookingConfirmedAt || "");
+    const agentId = String(entity.agentId || "");
+    const leadId = String(entity.leadId || "");
+    if (agentId && leadId) {
+      try {
+        const lead = await (await leadsClient()).getEntity(agentId, leadId);
+        bookingConfirmedByAgent = isBookingConfirmed(lead as LeadEntity);
+        bookingConfirmedAt = String(lead.bookingConfirmedAt || bookingConfirmedAt);
+      } catch {
+        /* lead optional */
+      }
+    }
     return {
       locked: true as const,
       userId,
-      agentId: String(entity.agentId || ""),
+      agentId,
       agentName: String(entity.agentName || ""),
-      leadId: String(entity.leadId || ""),
+      leadId,
       guestName: String(entity.guestName || ""),
       email: String(entity.email || ""),
+      phone: String(entity.phone || ""),
+      partySize: String(entity.partySize || ""),
+      sailingWindow: String(entity.sailingWindow || ""),
+      shipInterest: String(entity.shipInterest || ""),
+      notes: String(entity.notes || ""),
+      firstTimer: String(entity.firstTimer || ""),
       submittedAt: String(entity.submittedAt || ""),
+      bookingConfirmedByAgent,
+      bookingConfirmedAt,
     };
   } catch {
     return null;
@@ -89,7 +120,61 @@ function serializeLead(entity: LeadEntity) {
     agentEmailedTo: String(entity.agentEmailedTo || ""),
     agentEmailCount: Number(entity.agentEmailCount || 0) || 0,
     lastAgentEmailStatus: String(entity.lastAgentEmailStatus || ""),
+    bookingConfirmedByAgent: isBookingConfirmed(entity),
+    bookingConfirmedAt: String(entity.bookingConfirmedAt || ""),
   };
+}
+
+async function findLeadByConfirmToken(token: string): Promise<LeadEntity | null> {
+  const leads = await leadsClient();
+  for await (const entity of leads.listEntities({
+    queryOptions: { filter: odata`bookingConfirmToken eq ${token}` },
+  })) {
+    return entity as LeadEntity;
+  }
+  return null;
+}
+
+function serializeLeadForConfirm(entity: LeadEntity) {
+  const lead = serializeLead(entity);
+  return {
+    leadId: lead.leadId,
+    agentId: lead.agentId,
+    agentName: lead.agentName,
+    guestName: lead.guestName,
+    email: lead.email,
+    phone: lead.phone,
+    partySize: lead.partySize,
+    sailingWindow: lead.sailingWindow,
+    shipInterest: lead.shipInterest,
+    notes: lead.notes,
+    firstTimer: lead.firstTimer,
+    submittedAt: lead.submittedAt,
+    bookingConfirmedByAgent: lead.bookingConfirmedByAgent,
+    bookingConfirmedAt: lead.bookingConfirmedAt,
+  };
+}
+
+async function ensureBookingConfirmToken(leadEntity: LeadEntity): Promise<string> {
+  const existing = String(leadEntity.bookingConfirmToken || "").trim();
+  if (existing) return existing;
+  const token = newBookingConfirmToken();
+  const leads = await leadsClient();
+  const agentId = String(leadEntity.partitionKey || leadEntity.agentId || "");
+  const leadId = String(leadEntity.rowKey || "");
+  await leads.updateEntity(
+    {
+      ...leadEntity,
+      partitionKey: agentId,
+      rowKey: leadId,
+      bookingConfirmToken: token,
+      bookingConfirmedByAgent: isBookingConfirmed(leadEntity),
+      bookingConfirmedAt: String(leadEntity.bookingConfirmedAt || ""),
+    },
+    "Replace"
+  );
+  leadEntity.bookingConfirmToken = token;
+  return token;
 }
 
 async function listLocks() {
@@ -141,9 +226,13 @@ function siteBase(): string {
   return (process.env.PUBLIC_SITE_URL || "https://www.cruisingcove.com").replace(/\/$/, "");
 }
 
-function leadEmailBodies(lead: ReturnType<typeof serializeLead>) {
+function leadEmailBodies(
+  lead: ReturnType<typeof serializeLead>,
+  bookingConfirmToken: string
+) {
   const agentLabel = lead.agentName || lead.agentId;
   const site = siteBase();
+  const confirmUrl = `${site}/agents/request.html?confirm=${encodeURIComponent(bookingConfirmToken)}`;
   const subject = `New Disney cruise guest request via Cruising Cove — ${lead.guestName || "Guest"}`;
   const text = [
     "A guest requested you through Cruising Cove.",
@@ -163,7 +252,9 @@ function leadEmailBodies(lead: ReturnType<typeof serializeLead>) {
     `Submitted: ${lead.submittedAt || "—"}`,
     `Your Cruising Cove profile: ${site}/agents/profile.html?id=${encodeURIComponent(lead.agentId)}`,
     "",
-    "You can reply directly to the guest email above. Cruising Cove does not take a cut — Disney pays your commission as usual.",
+    "Reply directly to the guest email above. Cruising Cove receives an 8% cut after your commission has been paid.",
+    "",
+    `Confirm booking: ${confirmUrl}`,
   ].join("\n");
   const html = `
     <p>A guest requested <strong>${escapeHtml(agentLabel)}</strong> through Cruising Cove.</p>
@@ -184,7 +275,9 @@ function leadEmailBodies(lead: ReturnType<typeof serializeLead>) {
     </ul>
     <p style="color:#555;">Submitted ${escapeHtml(lead.submittedAt || "—")}<br>
     <a href="${escapeHtml(site)}/agents/profile.html?id=${encodeURIComponent(lead.agentId)}">Your Cruising Cove profile</a></p>
-    <p>Reply directly to the guest. Cruising Cove does not take a cut — Disney pays your commission as usual.</p>
+    <p>Reply directly to the guest. Cruising Cove receives an 8% cut after your commission has been paid.</p>
+    <p style="margin-top:20px;"><a href="${escapeHtml(confirmUrl)}" style="display:inline-block;background:#c9a24b;color:#1a2a4a;padding:12px 18px;text-decoration:none;font-weight:600;border-radius:4px;">Confirm booking</a></p>
+    <p style="color:#555;font-size:13px;">Or open this link: <a href="${escapeHtml(confirmUrl)}">${escapeHtml(confirmUrl)}</a></p>
   `;
   return { subject, text, html };
 }
@@ -208,6 +301,18 @@ export async function agentLeadHandler(
   if (request.method === "OPTIONS") return cors(204, {});
 
   if (request.method === "GET") {
+    const confirmToken = String(request.query.get("confirm") || "").trim();
+    if (confirmToken) {
+      try {
+        const leadEntity = await findLeadByConfirmToken(confirmToken);
+        if (!leadEntity) return cors(404, { error: "This confirm booking link is invalid or expired." });
+        return cors(200, { lead: serializeLeadForConfirm(leadEntity) });
+      } catch (err) {
+        context.error("confirm-token lookup failed:", err);
+        return cors(500, { error: "Could not load this booking confirmation." });
+      }
+    }
+
     if (await adminAuthOk(request)) {
       try {
         const [locks, leads] = await Promise.all([listLocks(), listLeads()]);
@@ -229,6 +334,84 @@ export async function agentLeadHandler(
     body = (await request.json()) as AgentLeadInput;
   } catch {
     return cors(400, { error: "Request body must be valid JSON." });
+  }
+
+  if (String(body.action || "") === "confirm-booking") {
+    const token = String(body.token || "").trim();
+    if (!token) return cors(400, { error: "Confirm token is required." });
+    if (body.confirmed !== true) {
+      return cors(400, { error: "confirmed must be true to mark the booking." });
+    }
+    try {
+      const leadEntity = await findLeadByConfirmToken(token);
+      if (!leadEntity) return cors(404, { error: "This confirm booking link is invalid or expired." });
+
+      const agentId = String(leadEntity.partitionKey || leadEntity.agentId || "");
+      const leadId = String(leadEntity.rowKey || "");
+      const now = new Date().toISOString();
+      const already = isBookingConfirmed(leadEntity);
+      const confirmedAt = already ? String(leadEntity.bookingConfirmedAt || now) : now;
+
+      if (!already) {
+        const leads = await leadsClient();
+        await leads.updateEntity(
+          {
+            ...leadEntity,
+            partitionKey: agentId,
+            rowKey: leadId,
+            bookingConfirmedByAgent: true,
+            bookingConfirmedAt: confirmedAt,
+          },
+          "Replace"
+        );
+
+        const userId = String(leadEntity.userId || "").trim();
+        if (userId) {
+          try {
+            const locks = await locksClient();
+            const lock = await locks.getEntity("user", userId);
+            await locks.updateEntity(
+              {
+                ...lock,
+                partitionKey: "user",
+                rowKey: userId,
+                bookingConfirmedByAgent: true,
+                bookingConfirmedAt: confirmedAt,
+              },
+              "Replace"
+            );
+          } catch {
+            /* lock optional */
+          }
+        }
+
+        try {
+          await sendEmail(
+            notifyEmail(),
+            `Booking confirmed: ${leadEntity.guestName || "Guest"} → ${leadEntity.agentName || agentId}`,
+            `<p><strong>${escapeHtml(String(leadEntity.agentName || agentId))}</strong> confirmed a booking for <strong>${escapeHtml(String(leadEntity.guestName || "guest"))}</strong>.</p>
+             <p>Lead id: ${escapeHtml(leadId)} · <a href="${escapeHtml(siteBase())}/agents/admin.html">Open agent admin</a></p>`,
+            `Agent ${leadEntity.agentName || agentId} confirmed a booking for ${leadEntity.guestName || "guest"} (lead ${leadId}).`
+          );
+        } catch (err) {
+          context.warn("confirm-booking owner notify failed:", err);
+        }
+      }
+
+      const refreshed = {
+        ...leadEntity,
+        bookingConfirmedByAgent: true,
+        bookingConfirmedAt: confirmedAt,
+      };
+      return cors(200, {
+        success: true,
+        alreadyConfirmed: already,
+        lead: serializeLeadForConfirm(refreshed),
+      });
+    } catch (err) {
+      context.error("confirm-booking failed:", err);
+      return cors(500, { error: "Could not confirm this booking." });
+    }
   }
 
   if (String(body.action || "") === "unlock") {
@@ -310,7 +493,8 @@ export async function agentLeadHandler(
         });
       }
 
-      const { subject, text, html } = leadEmailBodies(lead);
+      const bookingConfirmToken = await ensureBookingConfirmToken(leadEntity);
+      const { subject, text, html } = leadEmailBodies(lead, bookingConfirmToken);
       const result = await sendEmailResult(agent.email, subject, html, text);
       const now = new Date().toISOString();
       const count = (Number(leadEntity.agentEmailCount || 0) || 0) + (result.ok ? 1 : 0);
@@ -386,6 +570,7 @@ export async function agentLeadHandler(
   }
 
   const leadId = randomUUID();
+  const bookingConfirmToken = newBookingConfirmToken();
   const now = new Date();
   const agentId = body.agentId.trim();
   const agentName = (body.agentName ?? "").trim();
@@ -418,6 +603,9 @@ export async function agentLeadHandler(
       agentEmailCount: 0,
       lastAgentEmailStatus: "",
       lastAgentEmailAttemptAt: "",
+      bookingConfirmToken,
+      bookingConfirmedByAgent: false,
+      bookingConfirmedAt: "",
     });
 
     const locks = await locksClient();
@@ -431,8 +619,16 @@ export async function agentLeadHandler(
         leadId,
         guestName,
         email,
+        phone: body.phone.trim(),
+        partySize: body.partySize ?? "",
+        sailingWindow: body.sailingWindow ?? "",
+        shipInterest: body.shipInterest ?? "",
+        notes: body.notes ?? "",
+        firstTimer: body.firstTimer ?? "",
         submittedAt: now.toISOString(),
         unlockedAt: "",
+        bookingConfirmedByAgent: false,
+        bookingConfirmedAt: "",
       },
       "Replace"
     );
