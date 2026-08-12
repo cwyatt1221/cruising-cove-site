@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cruising Cove — Booked, or about to be — here’s where to start</title>
+<title>Cruising Cove — Booked, or about to be — start here</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/site.css">
@@ -53,7 +53,7 @@
   
   /* ---------- HERO ---------- */
   .hero{
-    position:relative;min-height:min(78vh,720px);display:flex;align-items:center;overflow:hidden;
+    position:relative;min-height:0;display:flex;align-items:center;overflow:hidden;
     padding:0;
     background:
       linear-gradient(105deg, #0a1628 0%, #0f2438 42%, #163a45 78%, #1a4a4f 100%);
@@ -66,7 +66,7 @@
     animation:heroTide 18s ease-in-out infinite alternate;
   }
   .hero::after{
-    content:"";position:absolute;left:0;right:0;bottom:0;height:72px;z-index:1;pointer-events:none;
+    content:"";position:absolute;left:0;right:0;bottom:0;height:48px;z-index:1;pointer-events:none;
     background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 72' preserveAspectRatio='none'%3E%3Cpath d='M0,36 C150,58 300,14 450,36 C600,58 750,14 900,36 C1050,58 1150,26 1200,34 L1200,72 L0,72 Z' fill='%23faf7ee' opacity='0.08'/%3E%3Cpath d='M0,44 C180,62 320,28 480,44 C640,60 780,24 940,42 C1080,58 1160,36 1200,40 L1200,72 L0,72 Z' fill='%23faf7ee' opacity='0.05'/%3E%3C/svg%3E") center bottom / 100% 100% no-repeat;
     animation:heroWave 12s ease-in-out infinite alternate;
   }
@@ -83,10 +83,10 @@
   }
   .hero-inner{
     position:relative;z-index:2;width:100%;
-    display:block;padding:72px 0 80px;
+    display:block;padding:48px 0 56px;
   }
   .hero-content{
-    max-width:38rem;
+    max-width:36rem;
     padding-right:0;
     animation:heroRise .9s ease-out both;
   }
@@ -98,31 +98,30 @@
     .hero-content{animation:none;}
   }
   .hero-brand{
-    font-family:var(--font-serif);font-size:clamp(2.6rem,5.5vw,3.85rem);
-    font-weight:600;line-height:1.05;color:var(--cream);margin:0 0 18px;letter-spacing:-0.02em;
+    font-family:var(--font-serif);font-size:clamp(2.15rem,4.4vw,3.1rem);
+    font-weight:600;line-height:1.05;color:var(--cream);margin:0 0 10px;letter-spacing:-0.02em;
   }
   .eyebrow,.section-label{
     font-size:0.75rem;font-weight:700;letter-spacing:.12em;
     text-transform:uppercase;color:var(--gold);margin:0 0 16px;
   }
-  .hero .eyebrow{margin:0 0 14px;}
+  .hero .eyebrow{margin:0 0 10px;}
   .hero h1{
-    font-family:var(--font-serif);font-size:clamp(1.85rem,3.6vw,2.55rem);
-    line-height:1.18;color:var(--cream);margin:0 0 16px;font-weight:400;
+    font-family:var(--font-serif);font-size:clamp(1.55rem,2.8vw,2.05rem);
+    line-height:1.2;color:var(--cream);margin:0 0 12px;font-weight:400;
   }
   .hero h1 em{font-style:italic;color:var(--gold);}
   .hero-content > p{
-    font-size:1.05rem;line-height:1.6;color:#c9d0d8;margin:0 0 28px;max-width:40ch;
+    font-size:1rem;line-height:1.5;color:#c9d0d8;margin:0 0 20px;max-width:38ch;
   }
-  .hero-ctas{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:0;}
+  .hero-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:0;}
   .btn-coral{
     background:#e08a6a;color:#0f1c33;border:1px solid transparent;
   }
   .btn-coral:hover{background:#e99a7e;}
 
   @media (max-width:700px){
-    .hero{min-height:0;}
-    .hero-inner{padding:52px 0 56px;}
+    .hero-inner{padding:36px 0 44px;}
   }
   .week-feature{
     max-width:720px;
@@ -449,8 +448,8 @@
     <div class="hero-content">
       <p class="hero-brand">Cruising Cove</p>
       <p class="eyebrow">Disney Cruise Line, decoded</p>
-      <h1>Booked, or about to be — here’s where to start.</h1>
-      <p>Whether you’re planning every detail yourself or want an expert to help, this is your first stop.</p>
+      <h1>Booked, or about to be — start here.</h1>
+      <p>Plan it yourself or with an expert. This is your first stop.</p>
       <div class="hero-ctas">
         <a href="/planning/my-cruise.html" class="btn btn-coral">Start planning</a>
         <a href="/planning/whats-next.html" class="btn btn-outline-light">See what’s next</a>

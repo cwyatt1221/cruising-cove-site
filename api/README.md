@@ -75,7 +75,7 @@ On-site sailing boards keyed by Disney ship + embarkation date:
 | Route | Purpose |
 | --- | --- |
 | `POST /api/community/register` | Create account (email + password, scrypt hash) |
-| `POST /api/community/login` | Sign in → session token |
+| `POST /api/community/login` | Sign in → session token; `{ action: "logout" }` revokes the session |
 | `GET /api/community/me` | Current user |
 | `GET /api/community/sailings` | List boards |
 | `POST /api/community/sailings` | Create/join a board (auth required) |

@@ -33,6 +33,22 @@
     localStorage.removeItem(USER_KEY);
   }
 
+  /** Revoke server session (best-effort), then clear local storage. */
+  async function signOut() {
+    var token = getToken();
+    if (token) {
+      try {
+        await api("/community/login", {
+          method: "POST",
+          body: { action: "logout", token: token },
+        });
+      } catch (e) {
+        /* still clear local session */
+      }
+    }
+    clearSession();
+  }
+
   async function api(path, options) {
     options = options || {};
     var headers = Object.assign({ "Content-Type": "application/json" }, options.headers || {});
@@ -90,7 +106,7 @@
     var user = getUser();
     if (user && getToken()) {
       el.innerHTML =
-        '<p class="who">Signed in as <strong>' +
+        '<p class="who">Signed in to Cruising Cove as <strong>' +
         escapeHtml(user.displayName) +
         "</strong></p>" +
         '<div class="actions">' +
@@ -99,15 +115,18 @@
       var btn = el.querySelector("[data-cc-logout]");
       if (btn) {
         btn.addEventListener("click", function () {
-          clearSession();
-          location.reload();
+          signOut().then(function () {
+            location.reload();
+          });
         });
       }
     } else {
       el.innerHTML =
-        '<p class="who">Join sailing boards with a free Cruising Cove account.</p>' +
+        '<p class="who">One free Cruising Cove account for community boards, My Cruise, gallery, and agent requests.</p>' +
         '<div class="actions">' +
-        '<a class="btn btn-gold" href="/community/login.html">Sign in / Register</a>' +
+        '<a class="btn btn-gold" href="' +
+        escapeHtml(loginUrl()) +
+        '">Sign in / Register</a>' +
         "</div>";
     }
   }
@@ -210,6 +229,7 @@
     getUser: getUser,
     setSession: setSession,
     clearSession: clearSession,
+    signOut: signOut,
     formatDate: formatDate,
     escapeHtml: escapeHtml,
     renderAuthBar: renderAuthBar,

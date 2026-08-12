@@ -863,7 +863,7 @@
       '<div class="mc-field"><label>Your review</label><textarea name="body" required minlength="20" placeholder="What ages thrived, what you’d skip, timing tips…"></textarea></div>' +
       '<div class="mc-field"><label>Ages on your sailing (optional)</label><input name="agesNote" maxlength="120" placeholder="e.g. 3, 7, adults"></div>' +
       '<button type="submit" class="btn btn-gold">Submit review</button>' +
-          '<p class="meta" style="margin-top:8px;">Requires a free community account. Reviews are moderated before they appear.</p></form>';
+          '<p class="meta" style="margin-top:8px;">Requires a free Cruising Cove account. Reviews are moderated before they appear.</p></form>';
   }
 
   async function renderPortReviews(trip) {

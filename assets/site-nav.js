@@ -39,6 +39,7 @@
     '<p class="nav-menu-label">Get ready</p>' +
     '<a href="/planning/disney-cruise-packing-list.html">Packing list</a>' +
     '<a href="/planning/embarkation-day-checklist.html">Embarkation day</a>' +
+    '<a href="/planning/disembarkation-day-checklist.html">Disembarkation day</a>' +
     '<a href="/planning/accessibility.html">Accessibility</a>' +
     '<a class="nav-menu-footer" href="/planning/">All planning guides →</a>' +
     "</div>" +
@@ -108,9 +109,125 @@
   function normalizePrimaryNav() {
     var links = document.getElementById("primaryNav");
     if (!links) return;
-    if (links.getAttribute("data-cc-nav") === "v10") return;
+    if (links.getAttribute("data-cc-nav") === "v11") return;
     links.innerHTML = NAV_HTML;
-    links.setAttribute("data-cc-nav", "v10");
+    links.setAttribute("data-cc-nav", "v11");
+  }
+
+  function loadCommunityAuth(cb) {
+    if (window.CCCommunity) {
+      if (cb) cb(window.CCCommunity);
+      return;
+    }
+    var existing = document.querySelector('script[src="/assets/community.js"]');
+    if (existing) {
+      existing.addEventListener("load", function () {
+        if (cb) cb(window.CCCommunity);
+      });
+      // Already loaded before this listener (cached/sync).
+      if (window.CCCommunity && cb) cb(window.CCCommunity);
+      return;
+    }
+    var s = document.createElement("script");
+    s.src = "/assets/community.js";
+    s.async = true;
+    s.onload = function () {
+      if (cb) cb(window.CCCommunity);
+    };
+    document.head.appendChild(s);
+  }
+
+  function escapeNavHtml(str) {
+    return String(str || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function ensureAccountNav() {
+    var host =
+      document.querySelector(".site-nav-bar .nav-cta") ||
+      document.getElementById("primaryNav");
+    if (!host) return;
+
+    var wrap = host.querySelector("[data-cc-account-nav]");
+    if (!wrap) {
+      wrap = document.createElement("div");
+      wrap.className = "cc-nav-account";
+      wrap.setAttribute("data-cc-account-nav", "1");
+      if (host.classList.contains("nav-cta")) {
+        host.insertBefore(wrap, host.firstChild);
+      } else {
+        host.appendChild(wrap);
+      }
+    }
+
+    function render(CC) {
+      if (!CC) {
+        wrap.innerHTML =
+          '<a class="cc-nav-account-signin" href="/community/login.html?next=' +
+          encodeURIComponent(location.pathname + location.search + location.hash) +
+          '">Sign in</a>';
+        return;
+      }
+      var user = CC.getUser && CC.getUser();
+      var token = CC.getToken && CC.getToken();
+      if (user && token) {
+        wrap.innerHTML =
+          '<span class="cc-nav-account-who">Hi, <strong>' +
+          escapeNavHtml(user.displayName || "there") +
+          "</strong></span>" +
+          '<button type="button" class="cc-nav-account-out" data-cc-nav-logout>Sign out</button>';
+        var btn = wrap.querySelector("[data-cc-nav-logout]");
+        if (btn) {
+          btn.addEventListener("click", function () {
+            var done = function () {
+              location.reload();
+            };
+            if (CC.signOut) {
+              CC.signOut().then(done).catch(done);
+            } else {
+              CC.clearSession();
+              done();
+            }
+          });
+        }
+      } else {
+        var href =
+          (CC.loginUrl && CC.loginUrl()) ||
+          "/community/login.html?next=" +
+            encodeURIComponent(location.pathname + location.search + location.hash);
+        wrap.innerHTML =
+          '<a class="cc-nav-account-signin" href="' + escapeNavHtml(href) + '">Sign in</a>';
+      }
+    }
+
+    // Immediate placeholder from localStorage so the control appears before script load.
+    try {
+      var raw = localStorage.getItem("cc_community_user");
+      var tok = localStorage.getItem("cc_community_token");
+      var cached = raw ? JSON.parse(raw) : null;
+      if (cached && tok) {
+        wrap.innerHTML =
+          '<span class="cc-nav-account-who">Hi, <strong>' +
+          escapeNavHtml(cached.displayName || "there") +
+          "</strong></span>" +
+          '<button type="button" class="cc-nav-account-out" data-cc-nav-logout>Sign out</button>';
+      } else {
+        wrap.innerHTML =
+          '<a class="cc-nav-account-signin" href="/community/login.html?next=' +
+          encodeURIComponent(location.pathname + location.search + location.hash) +
+          '">Sign in</a>';
+      }
+    } catch (e) {
+      wrap.innerHTML =
+        '<a class="cc-nav-account-signin" href="/community/login.html">Sign in</a>';
+    }
+
+    loadCommunityAuth(function (CC) {
+      render(CC);
+    });
   }
 
   function removeAuthLink() {
@@ -769,6 +886,7 @@
       { href: "/planning/kids-clubs.html", title: "Kids clubs guide", meta: "Plan" },
     ],
     "disney-cruise-ports-money-disembarkation": [
+      { href: "/planning/disembarkation-day-checklist.html", title: "Disembarkation day checklist", meta: "Plan" },
       { href: "/ports/", title: "Port guides", meta: "Ports" },
     ],
     "castaway-cay-vs-lookout-cay": [
@@ -1252,6 +1370,7 @@
     ensurePrivacyNote();
     ensureFirstMateNav();
     ensureFeedbackLink();
+    ensureAccountNav();
     ensureNewsletterFooter();
     ensureNewsletterCallouts();
     ensureRelatedLinks();

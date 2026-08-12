@@ -126,6 +126,22 @@ export async function communityLogin(request: HttpRequest, context: InvocationCo
     }
   }
 
+  // Member sign-out — revoke CommunitySessions row (same route; no new SWA path).
+  if (String(body.action || "") === "logout") {
+    const headerToken =
+      request.headers.get("x-cc-token")?.trim() ||
+      (request.headers.get("authorization") || "").replace(/^Bearer\s+/i, "").trim();
+    const token = String(body.token || headerToken || "").trim();
+    if (token) {
+      try {
+        await (await table(SESSIONS_TABLE)).deleteEntity("session", token);
+      } catch {
+        /* already gone */
+      }
+    }
+    return corsJson(200, { success: true });
+  }
+
   const email = normalizeEmail(body.email ?? "");
   const password = body.password ?? "";
   if (!email || !password) return corsJson(400, { error: "Email and password are required." });

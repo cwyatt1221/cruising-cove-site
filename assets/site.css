@@ -220,6 +220,32 @@ body.cc-admin-logged-in .site-header{top:42px;}
   background:transparent;box-shadow:none;
 }
 .site-nav-bar .nav-cta .btn{white-space:nowrap;}
+.cc-nav-account{
+  display:flex;align-items:center;gap:10px;flex:0 0 auto;
+  font-size:0.85rem;font-weight:600;color:var(--navy);
+}
+.cc-nav-account-who{
+  white-space:nowrap;max-width:12rem;overflow:hidden;text-overflow:ellipsis;
+}
+.cc-nav-account-who strong{font-weight:700;}
+.cc-nav-account-signin,
+.cc-nav-account-out{
+  appearance:none;background:none;border:0;margin:0;padding:0;
+  font:inherit;font-size:inherit;font-weight:700;color:var(--teal);
+  cursor:pointer;text-decoration:underline;text-underline-offset:2px;
+  white-space:nowrap;
+}
+.cc-nav-account-signin:hover,
+.cc-nav-account-out:hover{color:var(--gold);}
+.site-nav-bar .nav-links .cc-nav-account{
+  width:100%;padding:8px 4px 4px;margin-top:4px;
+  border-top:1px solid rgba(26,42,74,.08);
+}
+@media (min-width:980px){
+  .site-nav-bar .nav-links .cc-nav-account{
+    width:auto;margin:0;padding:0;border:0;
+  }
+}
 
 .nav-dropdown{position:relative;width:100%;}
 .nav-dropdown-toggle{
