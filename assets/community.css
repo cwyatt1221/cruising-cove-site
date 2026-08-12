@@ -183,6 +183,29 @@
   color:var(--navy);background:rgba(26,42,74,.06);border-radius:2px;vertical-align:middle;
 }
 .signup-list .meta{color:var(--muted);}
+.signup-list .tag.yours{
+  color:var(--teal);background:rgba(30,92,92,.1);
+}
+.signup-list .signup-item-actions{
+  display:flex;flex-wrap:wrap;gap:8px;margin-top:.45rem;
+}
+.signup-list li.is-mine{
+  background:rgba(201,162,75,.06);
+  margin:0 -.35rem;
+  padding-left:.35rem;padding-right:.35rem;
+  border-radius:2px;
+}
+.bt-chat{
+  margin-top:1.35rem;padding-top:1.15rem;
+  border-top:1px solid rgba(26,42,74,.1);
+}
+.bt-chat-label{
+  font-size:0.72rem;letter-spacing:.08em;text-transform:uppercase;
+  font-weight:700;color:var(--gold);margin:0 0 .35rem;
+}
+.bt-chat-blurb{
+  font-size:0.88rem;color:var(--muted);margin:0 0 .85rem;line-height:1.45;max-width:58ch;
+}
 .meetup-suggest{
   margin:0 0 1rem;padding:.7rem .85rem;
   background:rgba(201,162,75,.12);border-left:3px solid var(--gold);

@@ -205,6 +205,27 @@
         </div>
         <p class="form-msg" id="btMsg" hidden></p>
       </form>
+      <div class="bt-chat" id="btChat">
+        <p class="bt-chat-label">Book trade chat</p>
+        <p class="bt-chat-blurb">Coordinate meetups and swaps for this sailing — separate from the main board chat.</p>
+        <div class="board-chat" id="btChatPanel">
+          <div class="chat-list" id="btChatList" aria-live="polite"></div>
+          <p class="empty-state" id="btChatEmpty">Join this sailing to see book trade chat.</p>
+          <form class="community-form" id="btChatForm" hidden>
+            <div class="field">
+              <label for="btChatBody">Message</label>
+              <textarea id="btChatBody" maxlength="500" required placeholder="Meetup time, cabin drop-off, genre match…"></textarea>
+            </div>
+            <div class="chat-compose-row">
+              <button type="submit" class="btn btn-gold" id="btChatSend">Send</button>
+              <p class="chat-hint">Max 500 characters</p>
+            </div>
+            <p class="form-msg" id="btChatMsg" hidden></p>
+          </form>
+          <p class="board-chat-locked" id="btChatLocked">Sign in and join this sailing to chat about book trades.</p>
+          <p class="board-chat-status" id="btChatStatus" aria-hidden="true"></p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -288,8 +309,14 @@
   var chatForm = document.getElementById('chatForm');
   var chatLocked = document.getElementById('chatLocked');
   var chatStatus = document.getElementById('chatStatus');
+  var btChatList = document.getElementById('btChatList');
+  var btChatEmpty = document.getElementById('btChatEmpty');
+  var btChatForm = document.getElementById('btChatForm');
+  var btChatLocked = document.getElementById('btChatLocked');
+  var btChatStatus = document.getElementById('btChatStatus');
   var chatPollTimer = null;
   var chatFingerprint = '';
+  var btChatFingerprint = '';
   var CHAT_POLL_MS = 4000;
 
   function stopChatPoll() {
@@ -305,6 +332,7 @@
     chatPollTimer = setInterval(function(){
       if (document.hidden) return;
       loadChat({ silent: true });
+      loadBookTradeChat({ silent: true });
     }, CHAT_POLL_MS);
   }
 
@@ -314,7 +342,11 @@
       chatForm.hidden = false;
       chatLocked.hidden = true;
       chatEmpty.textContent = 'No messages yet — say hello.';
+      btChatForm.hidden = false;
+      btChatLocked.hidden = true;
+      btChatEmpty.textContent = 'No book trade messages yet — suggest a meetup time.';
       loadChat();
+      loadBookTradeChat();
       startChatPoll();
     } else {
       stopChatPoll();
@@ -330,13 +362,25 @@
         ? 'Join this sailing board above to chat with other members.'
         : 'Sign in and join this sailing to chat with other members.';
       chatStatus.textContent = '';
+      btChatForm.hidden = true;
+      btChatLocked.hidden = false;
+      btChatList.innerHTML = '';
+      btChatFingerprint = '';
+      btChatEmpty.hidden = false;
+      btChatEmpty.textContent = signedIn
+        ? 'Join this sailing to see book trade chat.'
+        : 'Sign in and join this sailing to chat about book trades.';
+      btChatLocked.textContent = signedIn
+        ? 'Join this sailing board above to use book trade chat.'
+        : 'Sign in and join this sailing to chat about book trades.';
+      btChatStatus.textContent = '';
     }
   }
 
   function loadChat(opts) {
     opts = opts || {};
     if (!isMember || !key) return Promise.resolve();
-    return CC.api('/community/sailings/' + encodeURIComponent(key) + '/chat')
+    return CC.api('/community/sailings/' + encodeURIComponent(key) + '/chat?channel=board')
       .then(function(data){
         renderChat(data.messages || [], !!opts.silent);
       })
@@ -345,6 +389,21 @@
         chatEmpty.hidden = false;
         chatEmpty.textContent = (err && err.message) || 'Could not load chat.';
         chatList.innerHTML = '';
+      });
+  }
+
+  function loadBookTradeChat(opts) {
+    opts = opts || {};
+    if (!isMember || !key) return Promise.resolve();
+    return CC.api('/community/sailings/' + encodeURIComponent(key) + '/chat?channel=book-trade')
+      .then(function(data){
+        renderBookTradeChat(data.messages || [], !!opts.silent);
+      })
+      .catch(function(err){
+        if (opts.silent) return;
+        btChatEmpty.hidden = false;
+        btChatEmpty.textContent = (err && err.message) || 'Could not load book trade chat.';
+        btChatList.innerHTML = '';
       });
   }
 
@@ -418,6 +477,53 @@
   function nearChatBottom() {
     if (!chatList) return true;
     var remaining = chatList.scrollHeight - chatList.scrollTop - chatList.clientHeight;
+    return remaining < 80;
+  }
+
+  function renderBookTradeChat(messages, silent) {
+    var nextFp = (messages || []).map(function(m){ return m.id; }).join('|');
+    var shouldStick = !silent || nearBookTradeChatBottom();
+    if (nextFp === btChatFingerprint && silent) return;
+    btChatFingerprint = nextFp;
+
+    if (!messages || !messages.length) {
+      btChatList.innerHTML = '';
+      btChatEmpty.hidden = false;
+      btChatEmpty.textContent = 'No book trade messages yet — suggest a meetup time.';
+      return;
+    }
+    btChatEmpty.hidden = true;
+    var me = CC.getUser();
+    var myId = me && me.userId ? me.userId : '';
+    btChatList.innerHTML = messages.map(function(m){
+      var mine = myId && m.userId === myId;
+      var reportBtn = (isMember && myId && !mine)
+        ? '<div class="post-actions"><button type="button" class="post-action" data-report-bt-chat="' + CC.escapeHtml(m.id) + '">Report</button></div>'
+        : '';
+      return (
+        '<article class="chat-msg' + (mine ? ' mine' : '') + '" data-chat-id="' + CC.escapeHtml(m.id) + '">' +
+          '<div class="meta">' +
+            '<p class="by">' + CC.escapeHtml(m.displayName || 'Member') + '</p>' +
+            '<p class="when">' + CC.escapeHtml(CC.formatDate(m.createdAt)) + '</p>' +
+          '</div>' +
+          '<p class="body">' + CC.escapeHtml(m.body) + '</p>' +
+          reportBtn +
+        '</article>'
+      );
+    }).join('');
+    btChatList.querySelectorAll('[data-report-bt-chat]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        reportContent('chat', btn.getAttribute('data-report-bt-chat'));
+      });
+    });
+    if (shouldStick) {
+      btChatList.scrollTop = btChatList.scrollHeight;
+    }
+  }
+
+  function nearBookTradeChatBottom() {
+    if (!btChatList) return true;
+    var remaining = btChatList.scrollHeight - btChatList.scrollTop - btChatList.clientHeight;
     return remaining < 80;
   }
 
@@ -712,21 +818,36 @@
       el.innerHTML = '<li class="notes">Nobody signed up yet — be the first to list a book.</li>';
       return;
     }
+    var me = CC.getUser();
+    var myId = me && me.userId ? me.userId : '';
     el.innerHTML = items.map(function(s){
       var bringing = s.bringing
         ? (CC.escapeHtml(s.bringing) + (s.bringingNote ? ' <span class="meta">(' + CC.escapeHtml(s.bringingNote) + ')</span>' : ''))
         : '<span class="meta">Not listed yet</span>';
       var looking = s.lookingFor ? CC.escapeHtml(s.lookingFor) : '<span class="meta">Open</span>';
       var tag = audienceLabel(s.audience);
+      var mine = myId && s.userId === myId;
       var line =
         '<span class="name">' + CC.escapeHtml(s.displayName) + '</span>' +
         (tag ? ' <span class="tag">' + CC.escapeHtml(tag) + '</span>' : '') +
+        (mine ? ' <span class="tag yours">You</span>' : '') +
         '<span class="notes">Bringing: ' + bringing + '</span>' +
         '<span class="notes">Looking for: ' + looking + '</span>';
       if (s.cabin) line += '<span class="notes">Cabin ' + CC.escapeHtml(s.cabin) + '</span>';
       if (s.notes) line += '<span class="notes">' + CC.escapeHtml(s.notes) + '</span>';
-      return '<li>' + line + '</li>';
+      if (mine) {
+        line +=
+          '<span class="signup-item-actions">' +
+            '<button type="button" class="post-action" data-edit-bt>Edit listing</button>' +
+          '</span>';
+      }
+      return '<li' + (mine ? ' class="is-mine"' : '') + '>' + line + '</li>';
     }).join('');
+    el.querySelectorAll('[data-edit-bt]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        openBookTradeEditor(true);
+      });
+    });
   }
 
   function loadSignups() {
@@ -1029,7 +1150,7 @@
     sendBtn.disabled = true;
     CC.api('/community/sailings/' + encodeURIComponent(key) + '/chat', {
       method: 'POST',
-      body: { body: text }
+      body: { body: text, channel: 'board' }
     }).then(function(){
       bodyEl.value = '';
       msg.hidden = false;
@@ -1045,12 +1166,45 @@
     });
   });
 
+  document.getElementById('btChatForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var msg = document.getElementById('btChatMsg');
+    var bodyEl = document.getElementById('btChatBody');
+    var sendBtn = document.getElementById('btChatSend');
+    var text = (bodyEl.value || '').trim();
+    if (!text) {
+      msg.hidden = false; msg.className = 'form-msg error'; msg.textContent = 'Message cannot be empty.';
+      return;
+    }
+    sendBtn.disabled = true;
+    CC.api('/community/sailings/' + encodeURIComponent(key) + '/chat', {
+      method: 'POST',
+      body: { body: text, channel: 'book-trade' }
+    }).then(function(){
+      bodyEl.value = '';
+      msg.hidden = false;
+      msg.className = 'form-msg ok';
+      msg.textContent = 'Sent.';
+      return loadBookTradeChat();
+    }).catch(function(err){
+      msg.hidden = false;
+      msg.className = 'form-msg error';
+      msg.textContent = err.message || 'Could not send.';
+    }).then(function(){
+      sendBtn.disabled = false;
+    });
+  });
+
   document.addEventListener('visibilitychange', function(){
     if (document.hidden) {
       if (chatStatus) chatStatus.textContent = '';
+      if (btChatStatus) btChatStatus.textContent = '';
       return;
     }
-    if (isMember) loadChat({ silent: true });
+    if (isMember) {
+      loadChat({ silent: true });
+      loadBookTradeChat({ silent: true });
+    }
   });
 })();
 </script>

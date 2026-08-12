@@ -70,16 +70,19 @@ export function postNotifySubject(shipName: string, embarkDate: string): string 
   return `New post on your ${short} sailing`;
 }
 
-export function chatNotifySubject(shipName: string, embarkDate: string): string {
+export function chatNotifySubject(shipName: string, embarkDate: string, channel?: string): string {
   const short = shipShortName(shipName) || "sailing";
   const when = formatEmbarkShort(embarkDate);
-  if (when) return `New chat on your ${short} sailing (${when})`;
-  return `New chat on your ${short} sailing`;
+  const room = channel === "book-trade" ? "book trade chat" : "chat";
+  if (when) return `New ${room} on your ${short} sailing (${when})`;
+  return `New ${room} on your ${short} sailing`;
 }
 
-export function sailingBoardUrl(sailingKey: string): string {
+export function sailingBoardUrl(sailingKey: string, hash?: string): string {
   const site = (process.env.PUBLIC_SITE_URL || "https://www.cruisingcove.com").replace(/\/$/, "");
-  return `${site}/community/sailing.html?key=${encodeURIComponent(sailingKey)}`;
+  const base = `${site}/community/sailing.html?key=${encodeURIComponent(sailingKey)}`;
+  const fragment = (hash || "").trim().replace(/^#/, "");
+  return fragment ? `${base}#${fragment}` : base;
 }
 
 export function buildJoinEmail(opts: {
@@ -258,24 +261,28 @@ export function buildChatEmail(opts: {
   shipName: string;
   embarkDate: string;
   sailingKey: string;
+  channel?: string;
 }): { subject: string; html: string; text: string } {
   const who = (opts.actorName || "Someone").trim() || "Someone";
   const ship = (opts.shipName || "your sailing").trim();
-  const board = sailingBoardUrl(opts.sailingKey);
-  const subject = chatNotifySubject(ship, opts.embarkDate);
+  const isBookTrade = opts.channel === "book-trade";
+  const board = sailingBoardUrl(opts.sailingKey, isBookTrade ? "btChat" : "boardChat");
+  const subject = chatNotifySubject(ship, opts.embarkDate, opts.channel);
   const short = shipShortName(ship) || "sailing";
   const when = formatEmbarkShort(opts.embarkDate);
   const sailingLine = when ? `${short} sailing (${when})` : `${short} sailing`;
+  const where = isBookTrade ? `${sailingLine} book trade chat` : `${sailingLine} board`;
+  const openLabel = isBookTrade ? "Open book trade chat" : "Open the sailing board";
   const text = [
-    `${who} sent a chat message on your ${sailingLine} board on Cruising Cove.`,
+    `${who} sent a chat message on your ${where} on Cruising Cove.`,
     "",
-    `Open the board: ${board}`,
+    `${openLabel}: ${board}`,
     "",
     "You’re getting this because you’re a member of that board. Turn off “Email me about this sailing” on the board anytime.",
   ].join("\n");
   const html = `
-    <p><strong>${escapeHtml(who)}</strong> sent a chat message on your <strong>${escapeHtml(sailingLine)}</strong> board on Cruising Cove.</p>
-    <p><a href="${escapeHtml(board)}">Open the sailing board</a></p>
+    <p><strong>${escapeHtml(who)}</strong> sent a chat message on your <strong>${escapeHtml(where)}</strong> on Cruising Cove.</p>
+    <p><a href="${escapeHtml(board)}">${escapeHtml(openLabel)}</a></p>
     <p style="color:#666;font-size:14px;">You’re getting this because you’re a member of that board. Turn off “Email me about this sailing” on the board anytime.</p>
   `;
   return { subject, html, text };
@@ -287,6 +294,7 @@ export async function notifyMembersOfChat(opts: {
   actorName: string;
   shipName: string;
   embarkDate: string;
+  channel?: string;
   log?: (msg: string, ...args: unknown[]) => void;
 }): Promise<{ attempted: number; sent: number }> {
   const email = buildChatEmail({
@@ -294,6 +302,7 @@ export async function notifyMembersOfChat(opts: {
     shipName: opts.shipName,
     embarkDate: opts.embarkDate,
     sailingKey: opts.sailingKey,
+    channel: opts.channel,
   });
   return notifySailingMembers({
     sailingKey: opts.sailingKey,

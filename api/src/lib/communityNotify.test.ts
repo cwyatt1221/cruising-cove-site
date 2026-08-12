@@ -107,8 +107,20 @@ test("email bodies link to board and omit cabin/passport", () => {
   });
   assert.strictEqual(chat.subject, "New chat on your Wish sailing (Oct 15)");
   assert.ok(chat.text.includes("Jordan sent a chat message"));
-  assert.ok(chat.text.includes("/community/sailing.html?key=disney-wish_2026-10-15"));
+  assert.ok(chat.text.includes("/community/sailing.html?key=disney-wish_2026-10-15#boardChat"));
   assert.ok(!/cabin|passport|payment/i.test(chat.text + chat.html));
+
+  const btChat = buildChatEmail({
+    actorName: "Cassondra",
+    shipName: "Disney Wish",
+    embarkDate: "2026-10-15",
+    sailingKey: "disney-wish_2026-10-15",
+    channel: "book-trade",
+  });
+  assert.strictEqual(btChat.subject, "New book trade chat on your Wish sailing (Oct 15)");
+  assert.ok(btChat.text.includes("book trade chat"));
+  assert.ok(btChat.text.includes("#btChat"));
+  assert.ok(btChat.html.includes("Open book trade chat"));
 });
 
 console.log("All community notify tests passed.");

@@ -6,6 +6,24 @@ export const CHAT_MIN_LENGTH = 1;
 export const CHAT_RATE_LIMIT_MS = 4000;
 export const CHAT_LIST_LIMIT = 100;
 
+export type ChatChannel = "board" | "book-trade";
+
+export function parseChatChannel(raw: unknown): ChatChannel {
+  const v = String(raw ?? "board")
+    .trim()
+    .toLowerCase();
+  if (v === "book-trade") return "book-trade";
+  return "board";
+}
+
+/** Legacy rows without a channel field are treated as board chat. */
+export function messageChannel(entity: Record<string, unknown>): ChatChannel {
+  if (entity.channel === undefined || entity.channel === null || entity.channel === "") {
+    return "board";
+  }
+  return parseChatChannel(entity.channel);
+}
+
 export function normalizeChatBody(raw: unknown): string {
   return String(raw ?? "")
     .trim()

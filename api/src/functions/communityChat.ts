@@ -12,8 +12,11 @@ import {
 import {
   CHAT_LIST_LIMIT,
   CHAT_MAX_LENGTH,
+  ChatChannel,
   isChatRateLimited,
+  messageChannel,
   normalizeChatBody,
+  parseChatChannel,
   validateChatBody,
 } from "../lib/communityChat";
 import { isContentVisible, isUserMuted, MUTE_ERROR } from "../lib/communityModeration";
@@ -35,14 +38,17 @@ function serializeMessage(entity: Record<string, unknown>) {
     displayName: String(entity.displayName ?? "Member"),
     userId: String(entity.userId ?? ""),
     createdAt: String(entity.createdAt ?? ""),
+    channel: messageChannel(entity),
   };
 }
 
-async function listRecentForRateLimit(sailingKey: string, limit = 20) {
+async function listRecentForRateLimit(sailingKey: string, channel: ChatChannel, limit = 20) {
   const messages: { userId: string; createdAt: string }[] = [];
   const client = await table(CHAT_MESSAGES_TABLE);
   const iter = client.listEntities({ queryOptions: { filter: `PartitionKey eq '${sailingKey}'` } });
   for await (const entity of iter) {
+    const row = entity as Record<string, unknown>;
+    if (messageChannel(row) !== channel) continue;
     messages.push({
       userId: String(entity.userId ?? ""),
       createdAt: String(entity.createdAt ?? ""),
@@ -68,6 +74,8 @@ export async function listChatMessages(
     return corsJson(403, { error: "Join this sailing community to view board chat." });
   }
 
+  const channel = parseChatChannel(request.query.get("channel"));
+
   try {
     // Reverse-time row keys → newest first; reverse for chronological chat UI.
     const newestFirst: ReturnType<typeof serializeMessage>[] = [];
@@ -76,11 +84,12 @@ export async function listChatMessages(
     for await (const entity of iter) {
       const row = entity as Record<string, unknown>;
       if (!isContentVisible(row)) continue;
+      if (messageChannel(row) !== channel) continue;
       newestFirst.push(serializeMessage(row));
       if (newestFirst.length >= CHAT_LIST_LIMIT) break;
     }
     const messages = newestFirst.slice().reverse();
-    return corsJson(200, { messages });
+    return corsJson(200, { messages, channel });
   } catch (err) {
     context.error("listChatMessages failed:", err);
     return corsJson(500, { error: "Could not load chat." });
@@ -107,19 +116,20 @@ export async function createChatMessage(
     return corsJson(403, { error: MUTE_ERROR });
   }
 
-  let body: { body?: string };
+  let body: { body?: string; channel?: string };
   try {
     body = (await request.json()) as typeof body;
   } catch {
     return corsJson(400, { error: "Request body must be valid JSON." });
   }
 
+  const channel = parseChatChannel(body.channel ?? request.query.get("channel"));
   const text = normalizeChatBody(body.body);
   const validationError = validateChatBody(text);
   if (validationError) return corsJson(400, { error: validationError });
 
   try {
-    const recent = await listRecentForRateLimit(key);
+    const recent = await listRecentForRateLimit(key, channel);
     if (isChatRateLimited(recent, user.userId)) {
       return corsJson(429, { error: "Slow down a moment — wait a few seconds between messages." });
     }
@@ -131,6 +141,7 @@ export async function createChatMessage(
       partitionKey: key,
       rowKey,
       body: text,
+      channel,
       userId: user.userId,
       displayName: user.displayName,
       email: user.email,
@@ -160,6 +171,7 @@ export async function createChatMessage(
       actorName: user.displayName,
       shipName: shipName || "Disney cruise",
       embarkDate,
+      channel,
       log: (...args) => context.warn(String(args[0]), ...args.slice(1)),
     });
 
@@ -171,6 +183,7 @@ export async function createChatMessage(
         displayName: user.displayName,
         userId: user.userId,
         createdAt: now,
+        channel,
       },
       maxLength: CHAT_MAX_LENGTH,
     });

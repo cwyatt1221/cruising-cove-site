@@ -8,7 +8,9 @@ import {
   CHAT_MAX_LENGTH,
   CHAT_RATE_LIMIT_MS,
   isChatRateLimited,
+  messageChannel,
   normalizeChatBody,
+  parseChatChannel,
   validateChatBody,
 } from "./communityChat";
 
@@ -45,6 +47,19 @@ test("isChatRateLimited soft window", () => {
   assert.strictEqual(isChatRateLimited(recent, "b", now, 500), false);
   assert.strictEqual(isChatRateLimited(recent, "c", now), false);
   assert.strictEqual(isChatRateLimited([], "a", now), false);
+});
+
+test("parseChatChannel defaults to board", () => {
+  assert.strictEqual(parseChatChannel(undefined), "board");
+  assert.strictEqual(parseChatChannel(""), "board");
+  assert.strictEqual(parseChatChannel("BOARD"), "board");
+  assert.strictEqual(parseChatChannel("book-trade"), "book-trade");
+  assert.strictEqual(parseChatChannel("dm"), "board");
+});
+
+test("messageChannel treats missing channel as board", () => {
+  assert.strictEqual(messageChannel({}), "board");
+  assert.strictEqual(messageChannel({ channel: "book-trade" }), "book-trade");
 });
 
 console.log("All community chat tests passed.");
