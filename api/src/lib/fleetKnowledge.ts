@@ -359,6 +359,7 @@ When helpful, mention the Cruising Cove path from the knowledge block (e.g. /shi
 
 Keep answers concise: 2–5 sentences unless the question needs a short list.`;
 
+/** @deprecated Prefer buildChatSystemPrompt from chatPrompt.ts */
 export function buildChatSystemPrompt(question: string): string {
   return (
     CHAT_BASE_SYSTEM_PROMPT +

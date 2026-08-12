@@ -218,6 +218,23 @@ curl -X POST http://localhost:7071/api/chat -H "Content-Type: application/json" 
 
 ## Reading the logged questions later
 Every question lands in a table called `ChatQuestions`, partitioned by day
-(`yyyy-MM-dd`), with columns: `question`, `answer`, `sessionId`, `timestamp`.
+(`yyyy-MM-dd`), with columns: `question`, `answer`, `sessionId`, `timestamp`,
+plus `retrievedPaths` / `historyTurns` when available.
 Azure Storage Explorer (free, from Microsoft) is the simplest way to browse this
 without writing a query tool.
+
+### Admin review of weak answers
+Authenticated with `REPORT_ACCESS_KEY` or an admin session (`?key=` / `x-cc-admin-key`):
+
+```bash
+# List recent logged Q&A
+curl "https://www.cruisingcove.com/api/chat/review?key=YOUR_KEY&days=7&limit=30"
+
+# Grade them, persist weak rows to ChatQuestionReviews, return a digest
+curl -X POST "https://www.cruisingcove.com/api/chat/review?key=YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"days":7,"limit":30,"persist":true}'
+```
+
+Use the digest to add facts to `api/src/lib/fleetKnowledge.ts` or
+`api/src/lib/planningKnowledge.ts`, then redeploy.

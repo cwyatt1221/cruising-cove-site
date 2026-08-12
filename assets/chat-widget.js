@@ -1,22 +1,50 @@
 /**
- * Cruising Cove chat widget.
+ * Cruising Cove Ask AI First Mate chat widget.
  * Drop <script src="/assets/chat-widget.js" defer></script> before </body> on any page.
- * Self-contained: injects its own styles and DOM, no dependencies.
  *
- * Exposes window.CruisingCoveChat.open() so any nav button on any page can
- * open the panel programmatically (e.g. an "Ask Me Anything" link in the header).
+ * Exposes window.CruisingCoveChat.open() for the nav First Mate control.
  */
 (function () {
   "use strict";
 
   const SESSION_KEY = "cc_chat_session_id";
+  const HISTORY_KEY = "cc_chat_history_v1";
+  const MAX_HISTORY = 8;
+
   function getSessionId() {
     let id = sessionStorage.getItem(SESSION_KEY);
     if (!id) {
-      id = (crypto.randomUUID ? crypto.randomUUID() : Date.now() + "-" + Math.random().toString(36).slice(2));
+      id = crypto.randomUUID
+        ? crypto.randomUUID()
+        : Date.now() + "-" + Math.random().toString(36).slice(2);
       sessionStorage.setItem(SESSION_KEY, id);
     }
     return id;
+  }
+
+  /** @returns {{role: string, content: string}[]} */
+  function loadHistory() {
+    try {
+      const raw = sessionStorage.getItem(HISTORY_KEY);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return [];
+      return parsed
+        .filter(function (t) {
+          return t && (t.role === "user" || t.role === "assistant") && typeof t.content === "string";
+        })
+        .slice(-MAX_HISTORY);
+    } catch (_) {
+      return [];
+    }
+  }
+
+  function saveHistory(history) {
+    try {
+      sessionStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(-MAX_HISTORY)));
+    } catch (_) {
+      /* ignore quota */
+    }
   }
 
   const styles = `
@@ -61,10 +89,12 @@
       flex: 1; overflow-y: auto; padding: 16px; display: flex;
       flex-direction: column; gap: 12px; background: #faf7ee;
     }
-    .cc-msg { max-width: 84%; padding: 10px 13px; border-radius: 10px; font-size: 0.88rem; line-height: 1.45; }
+    .cc-msg { max-width: 84%; padding: 10px 13px; border-radius: 10px; font-size: 0.88rem; line-height: 1.45; white-space: pre-wrap; }
     .cc-msg-user { align-self: flex-end; background: #1e5c5c; color: #f5f0e1; border-bottom-right-radius: 3px; }
     .cc-msg-bot { align-self: flex-start; background: #FFFFFF; color: #2c2c2a; border: 1px solid rgba(26,42,74,0.08); border-bottom-left-radius: 3px; }
     .cc-msg-error { align-self: flex-start; background: #FBEAE5; color: #7A2E1B; border: 1px solid #F0C7B8; }
+    .cc-msg a { color: #1e5c5c; font-weight: 600; text-decoration: underline; }
+    .cc-msg-user a { color: #f5f0e1; }
 
     .cc-typing { display: flex; gap: 4px; align-self: flex-start; padding: 10px 13px; }
     .cc-typing span {
@@ -115,43 +145,72 @@
     return e;
   }
 
+  function escapeHtml(str) {
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function linkify(text) {
+    const escaped = escapeHtml(text);
+    return escaped.replace(
+      /(https?:\/\/[^\s<]+)|(Open this guide:\s*)(\/[^\s<]+)/gi,
+      function (match, url, label, path) {
+        if (url) {
+          const clean = url.replace(/[.,);]+$/, "");
+          const trailing = url.slice(clean.length);
+          return '<a href="' + clean + '" target="_blank" rel="noopener noreferrer">' + clean + "</a>" + trailing;
+        }
+        const href = "https://www.cruisingcove.com" + path;
+        return escapeHtml(label) + '<a href="' + href + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(path) + "</a>";
+      }
+    );
+  }
+
   function buildWidget() {
     const btn = el("button", "cc-chat-btn");
-    btn.setAttribute("aria-label", "Open Ask Me Anything");
-    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="#0f1c33" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-4-1L3 20l1-5.5A8.38 8.38 0 0 1 3 11.5 8.5 8.5 0 0 1 11.5 3h.5a8.5 8.5 0 0 1 8.5 8.5z"/></svg>`;
+    btn.setAttribute("aria-label", "Open Ask AI First Mate");
+    btn.innerHTML =
+      '<svg viewBox="0 0 24 24" fill="none" stroke="#0f1c33" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-4-1L3 20l1-5.5A8.38 8.38 0 0 1 3 11.5 8.5 8.5 0 0 1 11.5 3h.5a8.5 8.5 0 0 1 8.5 8.5z"/></svg>';
 
     const panel = el("div", "cc-chat-panel");
     panel.setAttribute("role", "dialog");
-    panel.setAttribute("aria-label", "Ask Me Anything");
+    panel.setAttribute("aria-label", "Ask AI First Mate");
 
     const header = el("div", "cc-chat-header");
-    header.innerHTML = `
-      <div><h3>Ask Me Anything</h3><p>Anything about planning your Disney cruise</p></div>
-    `;
+    header.innerHTML =
+      "<div><h3>Ask AI First Mate</h3><p>Ships, ports, packing, costs — with memory</p></div>";
     const closeBtn = el("button", "cc-chat-close", "&times;");
-    closeBtn.setAttribute("aria-label", "Close Ask Me Anything");
+    closeBtn.setAttribute("aria-label", "Close Ask AI First Mate");
     header.appendChild(closeBtn);
 
     const messages = el("div", "cc-chat-messages");
     messages.setAttribute("aria-live", "polite");
 
-    const welcomeMsg = el("div", "cc-msg cc-msg-bot",
-      "Hi! I can help with ships, staterooms, dining, ports, budgeting, and more. What would you like to know?");
+    const welcomeMsg = el(
+      "div",
+      "cc-msg cc-msg-bot",
+      "Hi! I’m your AI First Mate. Ask about ships, stern characters, ports, packing, or costs — I’ll remember this chat and point you to the right Cruising Cove guide."
+    );
     messages.appendChild(welcomeMsg);
 
     const inputRow = el("div", "cc-chat-input-row");
     const input = el("input", "cc-chat-input");
     input.type = "text";
-    input.placeholder = "Ask me anything...";
-    input.setAttribute("aria-label", "Ask me anything");
+    input.placeholder = "Ask AI First Mate...";
+    input.setAttribute("aria-label", "Ask AI First Mate");
     const sendBtn = el("button", "cc-chat-send");
     sendBtn.setAttribute("aria-label", "Send question");
-    sendBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="#0f1c33" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>`;
+    sendBtn.innerHTML =
+      '<svg viewBox="0 0 24 24" fill="none" stroke="#0f1c33" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
     inputRow.appendChild(input);
     inputRow.appendChild(sendBtn);
 
-    const disclaimer = el("div", "cc-chat-disclaimer",
-      "Cruising Cove is an independent, unofficial resource — not affiliated with Disney.");
+    const disclaimer = el(
+      "div",
+      "cc-chat-disclaimer",
+      "Cruising Cove is an independent, unofficial resource — not affiliated with Disney."
+    );
 
     panel.appendChild(header);
     panel.appendChild(messages);
@@ -161,34 +220,51 @@
     document.body.appendChild(btn);
     document.body.appendChild(panel);
 
+    /** @type {{role: string, content: string}[]} */
+    let history = loadHistory();
+
     function togglePanel(open) {
       const isOpen = open !== undefined ? open : !panel.classList.contains("cc-open");
       panel.classList.toggle("cc-open", isOpen);
       if (isOpen) input.focus();
     }
 
-    btn.addEventListener("click", () => togglePanel());
-    closeBtn.addEventListener("click", () => togglePanel(false));
+    btn.addEventListener("click", function () {
+      togglePanel();
+    });
+    closeBtn.addEventListener("click", function () {
+      togglePanel(false);
+    });
 
-    // Expose so nav buttons on any page can open the chat programmatically.
     window.CruisingCoveChat = {
-      open: () => togglePanel(true),
-      close: () => togglePanel(false),
-      toggle: () => togglePanel(),
+      open: function () {
+        togglePanel(true);
+      },
+      close: function () {
+        togglePanel(false);
+      },
+      toggle: function () {
+        togglePanel();
+      },
+      clearHistory: function () {
+        history = [];
+        saveHistory(history);
+      },
     };
 
     function addMessage(text, kind) {
-      const msg = el("div", "cc-msg cc-msg-" + kind, escapeHtml(text));
+      const msg = el("div", "cc-msg cc-msg-" + kind);
+      if (kind === "bot") msg.innerHTML = linkify(text);
+      else msg.textContent = text;
       messages.appendChild(msg);
       messages.scrollTop = messages.scrollHeight;
       return msg;
     }
 
-    function escapeHtml(str) {
-      const div = document.createElement("div");
-      div.textContent = str;
-      return div.innerHTML;
-    }
+    // Restore prior turns into the UI (welcome stays first).
+    history.forEach(function (turn) {
+      addMessage(turn.content, turn.role === "user" ? "user" : "bot");
+    });
 
     function showTyping() {
       const typing = el("div", "cc-typing", "<span></span><span></span><span></span>");
@@ -209,32 +285,46 @@
       sendBtn.disabled = true;
       const typingEl = showTyping();
 
+      const historyForRequest = history.slice();
+
       try {
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ question, sessionId: getSessionId() }),
+          body: JSON.stringify({
+            question: question,
+            sessionId: getSessionId(),
+            history: historyForRequest,
+          }),
         });
         typingEl.remove();
 
         if (!res.ok) {
-          const body = await res.json().catch(() => ({}));
+          const body = await res.json().catch(function () {
+            return {};
+          });
           addMessage(body.error || "Something went wrong. Please try again.", "error");
         } else {
           const data = await res.json();
-          addMessage(data.answer, "bot");
+          const answer = data.answer || "";
+          addMessage(answer, "bot");
+          history.push({ role: "user", content: question });
+          history.push({ role: "assistant", content: answer });
+          history = history.slice(-MAX_HISTORY);
+          saveHistory(history);
         }
       } catch (err) {
         typingEl.remove();
-        addMessage("Couldn't reach Ask Me Anything right now. Please try again in a moment.", "error");
+        addMessage("Couldn't reach Ask AI First Mate right now. Please try again in a moment.", "error");
       } finally {
         sending = false;
         sendBtn.disabled = false;
+        input.focus();
       }
     }
 
     sendBtn.addEventListener("click", send);
-    input.addEventListener("keydown", (e) => {
+    input.addEventListener("keydown", function (e) {
       if (e.key === "Enter") send();
     });
   }
