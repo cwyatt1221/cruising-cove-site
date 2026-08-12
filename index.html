@@ -120,52 +120,6 @@
   }
   .btn-coral:hover{background:#e99a7e;}
 
-  .agents-band{
-    background:var(--navy-deep);color:var(--cream);padding:64px 0;
-    border-top:1px solid rgba(245,240,225,.08);
-  }
-  .agents-band .eyebrow{color:var(--gold);}
-  .agents-band h2{
-    font-family:var(--font-serif);font-size:clamp(1.85rem,3.4vw,2.45rem);
-    font-weight:400;line-height:1.2;color:var(--cream);margin:0 0 16px;max-width:28ch;
-  }
-  .agents-band h2 em{font-style:italic;color:var(--gold);}
-  .agents-band .excerpt{
-    font-size:1rem;line-height:1.65;color:#c7cbd6;margin:0 0 22px;max-width:62ch;
-  }
-  .agents-band .hero-perks{
-    display:grid;grid-template-columns:1fr 1fr;gap:0;
-    margin:28px 0 0;padding:0;list-style:none;
-    border-top:1px solid rgba(245,240,225,.14);
-  }
-  .agents-band .hero-perks li{
-    margin:0;padding:16px 18px 16px 0;
-    border-bottom:1px solid rgba(245,240,225,.14);
-  }
-  .agents-band .hero-perks li:nth-child(odd){
-    padding-right:18px;
-    border-right:1px solid rgba(245,240,225,.14);
-  }
-  .agents-band .hero-perks li:nth-child(even){padding-left:18px;padding-right:0;}
-  .agents-band .hero-perks .perk-icon{
-    display:flex;align-items:center;justify-content:flex-start;
-    width:22px;height:22px;margin:0 0 8px;color:var(--gold);
-  }
-  .agents-band .hero-perks .perk-icon svg{width:20px;height:20px;display:block;}
-  .agents-band .hero-perks strong{
-    display:block;font-size:0.78rem;letter-spacing:.06em;text-transform:uppercase;
-    color:var(--cream);margin:0 0 5px;font-weight:700;
-  }
-  .agents-band .hero-perks span{
-    display:block;font-size:0.86rem;line-height:1.45;color:#c7cbd6;
-  }
-  @media (max-width:560px){
-    .agents-band .hero-perks{grid-template-columns:1fr;}
-    .agents-band .hero-perks li:nth-child(odd),
-    .agents-band .hero-perks li:nth-child(even){
-      border-right:none;padding-left:0;padding-right:0;
-    }
-  }
   @media (max-width:700px){
     .hero{min-height:0;}
     .hero-inner{padding:52px 0 56px;}
@@ -511,45 +465,6 @@
     <span><b>MAGIC</b> · WONDER · <b>DREAM</b> · FANTASY · <b>WISH</b> · TREASURE · <b>DESTINY</b> · ADVENTURE ·&nbsp;</span>
   </div>
 </div>
-
-<section class="agents-band" id="agents" aria-label="Travel agents">
-  <div class="wrap">
-    <p class="eyebrow">Travel agents</p>
-    <h2>Expert guidance. Exclusive knowledge. <em>No extra cost.</em></h2>
-    <p class="excerpt">Disney-specialist travel agents help you plan the vacation you actually want—at no additional cost to you. Whether you’re hoping to secure a Royal Gathering, choose the best stateroom, celebrate a special occasion, or simply avoid costly mistakes, your agent is there every step of the way. Disney pays their commission, so you receive personalized planning without paying more.</p>
-    <a class="btn btn-gold" href="/agents/">Match me with an Agent</a>
-    <ul class="hero-perks">
-      <li>
-        <span class="perk-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M12 3.5 13.6 8h4.7l-3.8 2.8 1.5 4.6L12 12.9 7.9 15.4l1.5-4.6L5.6 8h4.7L12 3.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
-        </span>
-        <strong>No Extra Cost</strong>
-        <span>Disney pays the commission—not you.</span>
-      </li>
-      <li>
-        <span class="perk-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M7 15c0-2.8 2.2-4.5 5-4.5s5 1.7 5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8.5 8.2c.7-1.4 2-2.2 3.5-2.2s2.8.8 3.5 2.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M12 5V3.5M9 18h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-        </span>
-        <strong>Hard-to-Get Reservations</strong>
-        <span>Help booking Royal Gathering and other popular experiences.</span>
-      </li>
-      <li>
-        <span class="perk-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M3 15.5 12 6l9 9.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 18h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8.5 18V12.5M12 18v-8M15.5 18v-5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-        </span>
-        <strong>Disney Cruise Experts</strong>
-        <span>Cabin recommendations, itineraries, and insider tips.</span>
-      </li>
-      <li>
-        <span class="perk-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M5.5 6.5h13a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H11l-3.5 2.5V17.5h-2a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
-        </span>
-        <strong>Personal Support</strong>
-        <span>One person to answer questions before, during, and after booking.</span>
-      </li>
-    </ul>
-  </div>
-</section>
 
 <section class="why-section" id="featured-articles">
   <div class="wrap">
