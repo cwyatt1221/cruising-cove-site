@@ -12,6 +12,12 @@ export type NewsletterArticle = {
 
 const ARTICLES: NewsletterArticle[] = [
   {
+    title: "More Itineraries on Cruising Cove: Panama Canal & New Port Guides",
+    excerpt: "Panama Canal sailings plus Cabo, Puerto Vallarta, and Cartagena guides.",
+    date: "2026-08-11",
+    path: "/articles/new-panama-canal-itineraries.html",
+  },
+  {
     title: "Disney Cruise Booking & Cost: Your Questions Answered",
     excerpt: "What’s included, agent vs Disney booking, insurance, discounts, and kids pricing.",
     date: "2026-08-11",

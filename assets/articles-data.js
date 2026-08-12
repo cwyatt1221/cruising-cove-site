@@ -6,9 +6,17 @@
 (function (global) {
   var FEATURED_SLOTS = 10;
   /** Pin the first homepage carousel slide. Set to null to rotate by ISO week. */
-  var CAROUSEL_START_ID = "disney-cruise-booking-and-cost";
+  var CAROUSEL_START_ID = "new-panama-canal-itineraries";
 
   var articles = [
+    {
+      id: "new-panama-canal-itineraries",
+      title: "More Itineraries on Cruising Cove: Panama Canal & New Port Guides",
+      excerpt:
+        "We’ve added Panama Canal coverage plus Cabo San Lucas, Puerto Vallarta, and Cartagena guides — here’s what’s live and where to start.",
+      date: "2026-08-11",
+      url: "/articles/new-panama-canal-itineraries.html",
+    },
     {
       id: "disney-cruise-booking-and-cost",
       title: "Disney Cruise Booking & Cost: Your Questions Answered",
