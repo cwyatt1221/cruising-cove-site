@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cruising Cove — Plan your Disney cruise like you already know the ship</title>
+<title>Cruising Cove — Booked, or about to be — here’s where to start</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/site.css">
@@ -53,20 +53,21 @@
   
   /* ---------- HERO ---------- */
   .hero{
-    position:relative;min-height:0;display:flex;align-items:stretch;overflow:hidden;
+    position:relative;min-height:min(78vh,720px);display:flex;align-items:center;overflow:hidden;
     padding:0;
-    background:var(--navy-deep);
+    background:
+      linear-gradient(105deg, #0a1628 0%, #0f2438 42%, #163a45 78%, #1a4a4f 100%);
   }
   .hero::before{
     content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
     background:
-      radial-gradient(ellipse 80% 55% at 70% 120%, rgba(30,92,92,.35), transparent 55%),
-      radial-gradient(ellipse 50% 40% at 10% 90%, rgba(201,162,75,.12), transparent 50%);
+      radial-gradient(ellipse 70% 60% at 85% 40%, rgba(45,110,105,.38), transparent 58%),
+      radial-gradient(ellipse 45% 50% at 15% 80%, rgba(201,162,75,.1), transparent 55%);
     animation:heroTide 18s ease-in-out infinite alternate;
   }
   .hero::after{
     content:"";position:absolute;left:0;right:0;bottom:0;height:72px;z-index:1;pointer-events:none;
-    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 72' preserveAspectRatio='none'%3E%3Cpath d='M0,36 C150,58 300,14 450,36 C600,58 750,14 900,36 C1050,58 1150,26 1200,34 L1200,72 L0,72 Z' fill='%230f1c33' opacity='0.55'/%3E%3Cpath d='M0,44 C180,62 320,28 480,44 C640,60 780,24 940,42 C1080,58 1160,36 1200,40 L1200,72 L0,72 Z' fill='%230f1c33' opacity='0.35'/%3E%3C/svg%3E") center bottom / 100% 100% no-repeat;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 72' preserveAspectRatio='none'%3E%3Cpath d='M0,36 C150,58 300,14 450,36 C600,58 750,14 900,36 C1050,58 1150,26 1200,34 L1200,72 L0,72 Z' fill='%23faf7ee' opacity='0.08'/%3E%3Cpath d='M0,44 C180,62 320,28 480,44 C640,60 780,24 940,42 C1080,58 1160,36 1200,40 L1200,72 L0,72 Z' fill='%23faf7ee' opacity='0.05'/%3E%3C/svg%3E") center bottom / 100% 100% no-repeat;
     animation:heroWave 12s ease-in-out infinite alternate;
   }
   @keyframes heroTide{
@@ -82,99 +83,92 @@
   }
   .hero-inner{
     position:relative;z-index:2;width:100%;
-    display:grid;grid-template-columns:1fr 1fr;
-    gap:0;align-items:start;padding:64px 0 56px;
+    display:block;padding:72px 0 80px;
   }
   .hero-content{
-    max-width:none;
-    padding-right:40px;
+    max-width:38rem;
+    padding-right:0;
+    animation:heroRise .9s ease-out both;
+  }
+  @keyframes heroRise{
+    from{opacity:0;transform:translateY(18px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .hero-content{animation:none;}
+  }
+  .hero-brand{
+    font-family:var(--font-serif);font-size:clamp(2.6rem,5.5vw,3.85rem);
+    font-weight:600;line-height:1.05;color:var(--cream);margin:0 0 18px;letter-spacing:-0.02em;
   }
   .eyebrow,.section-label{
     font-size:0.75rem;font-weight:700;letter-spacing:.12em;
     text-transform:uppercase;color:var(--gold);margin:0 0 16px;
   }
+  .hero .eyebrow{margin:0 0 14px;}
   .hero h1{
-    font-family:var(--font-serif);font-size:clamp(2.2rem,4.2vw,3.1rem);
-    line-height:1.1;color:var(--cream);margin:0 0 18px;font-weight:400;
+    font-family:var(--font-serif);font-size:clamp(1.85rem,3.6vw,2.55rem);
+    line-height:1.18;color:var(--cream);margin:0 0 16px;font-weight:400;
   }
   .hero h1 em{font-style:italic;color:var(--gold);}
   .hero-content > p{
-    font-size:1.02rem;line-height:1.6;color:#d7dae3;margin:0 0 24px;max-width:48ch;
+    font-size:1.05rem;line-height:1.6;color:#c9d0d8;margin:0 0 28px;max-width:40ch;
   }
-  .hero-ctas{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:28px;}
+  .hero-ctas{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:0;}
+  .btn-coral{
+    background:#e08a6a;color:#0f1c33;border:1px solid transparent;
+  }
+  .btn-coral:hover{background:#e99a7e;}
 
-  .hero-aside{
-    border-left:1px solid rgba(245,240,225,.18);
-    padding:0 0 0 40px;
-    max-width:none;
-    justify-self:stretch;
+  .agents-band{
+    background:var(--navy-deep);color:var(--cream);padding:64px 0;
+    border-top:1px solid rgba(245,240,225,.08);
   }
-  .hero-aside .eyebrow{margin-bottom:16px;}
-  .hero-aside h2{
-    font-family:var(--font-serif);font-size:clamp(1.85rem,3.4vw,2.55rem);
-    font-weight:400;line-height:1.15;color:var(--cream);margin:0 0 16px;max-width:none;
+  .agents-band .eyebrow{color:var(--gold);}
+  .agents-band h2{
+    font-family:var(--font-serif);font-size:clamp(1.85rem,3.4vw,2.45rem);
+    font-weight:400;line-height:1.2;color:var(--cream);margin:0 0 16px;max-width:28ch;
   }
-  .hero-aside h2 em{font-style:italic;color:var(--gold);}
-  .hero-aside h2 a{color:inherit;text-decoration:none;}
-  .hero-aside h2 a:hover{color:var(--gold);}
-  .hero-aside h2 a:hover em{color:var(--cream);}
-  .hero-aside .excerpt{
-    font-size:0.98rem;line-height:1.6;color:#d7dae3;margin:0 0 14px;max-width:52ch;
+  .agents-band h2 em{font-style:italic;color:var(--gold);}
+  .agents-band .excerpt{
+    font-size:1rem;line-height:1.65;color:#c7cbd6;margin:0 0 22px;max-width:62ch;
   }
-  .hero-aside .aside-cta{
-    display:inline-block;margin:0 0 26px;
-  }
-
-  .hero-perks a.perk-link{
-    color:inherit;text-decoration:none;display:block;
-  }
-  .hero-perks a.perk-link:hover strong{color:var(--gold);}
-  .hero-perks a.perk-link:hover span{color:#e4e7ee;}
-  .hero-perks{
+  .agents-band .hero-perks{
     display:grid;grid-template-columns:1fr 1fr;gap:0;
-    margin:0;padding:0;list-style:none;
+    margin:28px 0 0;padding:0;list-style:none;
     border-top:1px solid rgba(245,240,225,.14);
   }
-  .hero-perks li{
+  .agents-band .hero-perks li{
     margin:0;padding:16px 18px 16px 0;
     border-bottom:1px solid rgba(245,240,225,.14);
   }
-  .hero-perks li:nth-child(odd){
+  .agents-band .hero-perks li:nth-child(odd){
     padding-right:18px;
     border-right:1px solid rgba(245,240,225,.14);
   }
-  .hero-perks li:nth-child(even){padding-left:18px;padding-right:0;}
-  .hero-perks .perk-icon{
+  .agents-band .hero-perks li:nth-child(even){padding-left:18px;padding-right:0;}
+  .agents-band .hero-perks .perk-icon{
     display:flex;align-items:center;justify-content:flex-start;
     width:22px;height:22px;margin:0 0 8px;color:var(--gold);
   }
-  .hero-perks .perk-icon svg{width:20px;height:20px;display:block;}
-  .hero-perks strong{
+  .agents-band .hero-perks .perk-icon svg{width:20px;height:20px;display:block;}
+  .agents-band .hero-perks strong{
     display:block;font-size:0.78rem;letter-spacing:.06em;text-transform:uppercase;
     color:var(--cream);margin:0 0 5px;font-weight:700;
   }
-  .hero-perks span{
+  .agents-band .hero-perks span{
     display:block;font-size:0.86rem;line-height:1.45;color:#c7cbd6;
   }
-  @media (max-width:960px){
-    .hero-inner{grid-template-columns:1fr;gap:36px;padding:56px 0 48px;}
-    .hero-content{padding-right:0;}
-    .hero-aside{
-      justify-self:stretch;max-width:none;
-      border-left:none;border-top:1px solid rgba(245,240,225,.18);
-      padding:28px 0 0;
-    }
-  }
   @media (max-width:560px){
-    .hero-perks{grid-template-columns:1fr;}
-    .hero-perks li:nth-child(odd),
-    .hero-perks li:nth-child(even){
+    .agents-band .hero-perks{grid-template-columns:1fr;}
+    .agents-band .hero-perks li:nth-child(odd),
+    .agents-band .hero-perks li:nth-child(even){
       border-right:none;padding-left:0;padding-right:0;
     }
   }
   @media (max-width:700px){
     .hero{min-height:0;}
-    .hero-inner{padding:48px 0 40px;}
+    .hero-inner{padding:52px 0 56px;}
   }
   .week-feature{
     max-width:720px;
@@ -499,88 +493,15 @@
 <section class="hero" id="top">
   <div class="wrap hero-inner">
     <div class="hero-content">
+      <p class="hero-brand">Cruising Cove</p>
       <p class="eyebrow">Disney Cruise Line, decoded</p>
-      <h1>Chart your course<br>before you ever <em>board</em>.</h1>
-      <p>Every ship, every itinerary — all in one place, so you can plan with confidence, whether you're booking a year out or just a few weeks away.</p>
+      <h1>Booked, or about to be — here’s where to start.</h1>
+      <p>Whether you’re planning every detail yourself or want an expert to help, this is your first stop.</p>
       <div class="hero-ctas">
-        <a href="/planning/first-cruise.html" class="btn btn-gold">First-cruise path</a>
-        <a href="/planning/sailing-timeline.html" class="btn btn-outline-light">Your sailing timeline</a>
+        <a href="/planning/my-cruise.html" class="btn btn-coral">Start planning</a>
+        <a href="/planning/whats-next.html" class="btn btn-outline-light">See what’s next</a>
       </div>
-      <ul class="hero-perks">
-        <li>
-          <a class="perk-link" href="/ships/">
-            <span class="perk-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none"><path d="M3 15.5 12 6l9 9.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 18h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8.5 18V12.5M12 18v-8M15.5 18v-5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-            </span>
-            <strong>Every Ship</strong>
-            <span>Full specs, deck guides, and what makes each one different.</span>
-          </a>
-        </li>
-        <li>
-          <a class="perk-link" href="/ports/">
-            <span class="perk-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s6-5.2 6-10a6 6 0 1 0-12 0c0 4.8 6 10 6 10Z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="11" r="2.2" stroke="currentColor" stroke-width="1.6"/></svg>
-            </span>
-            <strong>Key Ports</strong>
-            <span>Guides for the destinations Disney sails to most.</span>
-          </a>
-        </li>
-        <li>
-          <a class="perk-link" href="/planning/stateroom-guides.html">
-            <span class="perk-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none"><path d="M4 18V9.5A2.5 2.5 0 0 1 6.5 7H17a3 3 0 0 1 3 3v8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M3 18h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8 11h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-            </span>
-            <strong>Stateroom Guides</strong>
-            <span>See what each category offers so you find the right fit.</span>
-          </a>
-        </li>
-        <li>
-          <a class="perk-link" href="/planning/compare-sailings.html">
-            <span class="perk-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="15" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M8 3.5V7M16 3.5V7M4 10h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-            </span>
-            <strong>Plan Ahead</strong>
-            <span>Save favorites and compare itineraries side by side.</span>
-          </a>
-        </li>
-      </ul>
     </div>
-    <aside class="hero-aside" id="agents" aria-label="Travel agents">
-      <p class="eyebrow">Travel agents</p>
-      <h2><a href="/agents/">Expert guidance.<br>Exclusive knowledge.<br><em>No extra cost.</em></a></h2>
-      <p class="excerpt">Disney-specialist travel agents are Disney experts who help you plan the vacation you actually want—at no additional cost to you. Whether you're hoping to secure a Royal Gathering, choose the best stateroom, celebrate a special occasion, or simply avoid costly mistakes, your agent is there every step of the way. Disney pays their commission, so you receive personalized planning without paying more.</p>
-      <a class="btn btn-gold aside-cta" href="/agents/">Match me with an Agent</a>
-      <ul class="hero-perks">
-        <li>
-          <span class="perk-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M12 3.5 13.6 8h4.7l-3.8 2.8 1.5 4.6L12 12.9 7.9 15.4l1.5-4.6L5.6 8h4.7L12 3.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
-          </span>
-          <strong>No Extra Cost</strong>
-          <span>Disney pays the commission—not you.</span>
-        </li>
-        <li>
-          <span class="perk-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M7 15c0-2.8 2.2-4.5 5-4.5s5 1.7 5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8.5 8.2c.7-1.4 2-2.2 3.5-2.2s2.8.8 3.5 2.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M12 5V3.5M9 18h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          </span>
-          <strong>Hard-to-Get Reservations</strong>
-          <span>Help booking Royal Gathering and other popular experiences.</span>
-        </li>
-        <li>
-          <span class="perk-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M3 15.5 12 6l9 9.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 18h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8.5 18V12.5M12 18v-8M15.5 18v-5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          </span>
-          <strong>Disney Cruise Experts</strong>
-          <span>Cabin recommendations, itineraries, and insider tips.</span>
-        </li>
-        <li>
-          <span class="perk-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M5.5 6.5h13a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H11l-3.5 2.5V17.5h-2a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
-          </span>
-          <strong>Personal Support</strong>
-          <span>One person to answer questions before, during, and after booking.</span>
-        </li>
-      </ul>
-    </aside>
   </div>
 </section>
 
@@ -590,6 +511,45 @@
     <span><b>MAGIC</b> · WONDER · <b>DREAM</b> · FANTASY · <b>WISH</b> · TREASURE · <b>DESTINY</b> · ADVENTURE ·&nbsp;</span>
   </div>
 </div>
+
+<section class="agents-band" id="agents" aria-label="Travel agents">
+  <div class="wrap">
+    <p class="eyebrow">Travel agents</p>
+    <h2>Expert guidance. Exclusive knowledge. <em>No extra cost.</em></h2>
+    <p class="excerpt">Disney-specialist travel agents help you plan the vacation you actually want—at no additional cost to you. Whether you’re hoping to secure a Royal Gathering, choose the best stateroom, celebrate a special occasion, or simply avoid costly mistakes, your agent is there every step of the way. Disney pays their commission, so you receive personalized planning without paying more.</p>
+    <a class="btn btn-gold" href="/agents/">Match me with an Agent</a>
+    <ul class="hero-perks">
+      <li>
+        <span class="perk-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 3.5 13.6 8h4.7l-3.8 2.8 1.5 4.6L12 12.9 7.9 15.4l1.5-4.6L5.6 8h4.7L12 3.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        </span>
+        <strong>No Extra Cost</strong>
+        <span>Disney pays the commission—not you.</span>
+      </li>
+      <li>
+        <span class="perk-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M7 15c0-2.8 2.2-4.5 5-4.5s5 1.7 5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8.5 8.2c.7-1.4 2-2.2 3.5-2.2s2.8.8 3.5 2.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M12 5V3.5M9 18h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </span>
+        <strong>Hard-to-Get Reservations</strong>
+        <span>Help booking Royal Gathering and other popular experiences.</span>
+      </li>
+      <li>
+        <span class="perk-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M3 15.5 12 6l9 9.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 18h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8.5 18V12.5M12 18v-8M15.5 18v-5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </span>
+        <strong>Disney Cruise Experts</strong>
+        <span>Cabin recommendations, itineraries, and insider tips.</span>
+      </li>
+      <li>
+        <span class="perk-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5.5 6.5h13a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H11l-3.5 2.5V17.5h-2a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        </span>
+        <strong>Personal Support</strong>
+        <span>One person to answer questions before, during, and after booking.</span>
+      </li>
+    </ul>
+  </div>
+</section>
 
 <section class="why-section" id="featured-articles">
   <div class="wrap">

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Should you book it yourself, or use an agent? | Cruising Cove</title>
+<meta name="description" content="Same price either way — Disney pays the agent’s commission. Decide in two minutes whether to book your Disney cruise yourself or use a travel agent.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+  .decide-intro{
+    font-size:1.02rem;line-height:1.65;color:var(--muted);max-width:52ch;margin:0 0 8px;
+  }
+  .decide-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:8px 0 0;
+  }
+  .decide-card{
+    background:var(--cream);border:1px solid rgba(26,42,74,.1);
+    border-radius:2px;padding:22px 22px 20px;
+  }
+  .decide-card.agent{border-color:rgba(30,92,92,.35);background:rgba(30,92,92,.05);}
+  .decide-card.diy{border-color:rgba(201,162,75,.4);background:rgba(201,162,75,.07);}
+  .decide-card h3{
+    font-family:var(--font-sans);font-size:0.78rem;font-weight:700;
+    letter-spacing:.08em;text-transform:uppercase;margin:0 0 12px;
+  }
+  .decide-card.agent h3{color:var(--teal);}
+  .decide-card.diy h3{color:var(--gold);}
+  .decide-card ul{
+    margin:0;padding-left:1.15rem;color:var(--muted);font-size:0.95rem;line-height:1.65;
+  }
+  .decide-table-wrap{overflow-x:auto;margin-top:8px;}
+  .decide-table{
+    width:100%;border-collapse:collapse;font-size:0.92rem;
+  }
+  .decide-table th,
+  .decide-table td{
+    text-align:left;padding:12px 14px;border-bottom:1px solid rgba(26,42,74,.1);
+    vertical-align:top;
+  }
+  .decide-table th{
+    font-family:var(--font-serif);font-weight:600;font-size:1.05rem;color:var(--navy);
+  }
+  .decide-table th.diy-col{color:var(--gold);}
+  .decide-table th.agent-col{color:var(--teal);}
+  .decide-table td.label{
+    color:var(--muted);font-weight:700;font-size:0.75rem;
+    letter-spacing:.04em;text-transform:uppercase;width:7.5rem;white-space:nowrap;
+  }
+  .catch-box{
+    background:var(--navy-deep);border-radius:2px;padding:32px 34px;color:var(--cream);
+  }
+  .catch-box h2{
+    font-family:var(--font-serif);font-size:clamp(1.5rem,2.8vw,1.9rem);
+    font-weight:500;color:var(--cream);margin:0 0 14px;letter-spacing:0;text-transform:none;
+  }
+  .catch-box p{
+    font-size:1rem;line-height:1.65;color:#c7cbd6;margin:0 0 12px;max-width:58ch;
+  }
+  .catch-box p:last-child{margin-bottom:0;}
+  .catch-box strong{color:var(--cream);font-weight:600;}
+  .decide-closing p{
+    font-size:1.02rem;color:var(--muted);line-height:1.65;max-width:52ch;margin:0 0 22px;
+  }
+  .decide-closing .actions{display:flex;flex-wrap:wrap;gap:12px;}
+  .btn-coral{
+    background:#e08a6a;color:#0f1c33;border:1px solid transparent;
+  }
+  .btn-coral:hover{background:#e99a7e;}
+  @media (max-width:700px){
+    .decide-grid{grid-template-columns:1fr;}
+    .catch-box{padding:24px 20px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <nav class="site-nav-bar" aria-label="Primary">
+      <a class="logo" href="/">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 14 14" fill="none"><path d="M1 8c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0" stroke="#c9a24b" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </span>
+        Cruising Cove
+      </a>
+      <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primaryNav">
+        <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="nav-toggle-label">Menu</span>
+      </button>
+      <div class="nav-links" id="primaryNav" data-cc-nav="v4">
+        <a href="/ships/">Ships</a>
+        <a href="/ports/">Ports</a>
+        <div class="nav-dropdown" data-cc-nav-group="onboard">
+          <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">Onboard</button>
+          <div class="nav-dropdown-menu">
+            <a href="/dining/">Dining</a>
+            <a href="/entertainment/">Entertainment</a>
+          </div>
+        </div>
+        <div class="nav-dropdown" data-cc-nav-group="plan">
+          <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">Plan</button>
+          <div class="nav-dropdown-menu">
+            <a href="/planning/my-cruise.html">My Cruise planner</a>
+            <a href="/planning/whats-next.html">What’s next</a>
+            <a href="/planning/disney-cruise-cost.html">What it costs</a>
+            <a href="/planning/deposit-final-payment.html">Deposit &amp; final payment</a>
+            <a href="/planning/booking-windows.html">Booking windows</a>
+            <a href="/planning/castaway-club.html">Castaway Club</a>
+            <a href="/planning/embarkation-day-checklist.html">Embarkation day</a>
+            <a href="/planning/kids-clubs.html">Kids clubs</a>
+            <a href="/planning/gratuities.html">Gratuities</a>
+            <a href="/planning/wifi.html">Wi-Fi packages</a>
+            <a href="/planning/seasickness.html">Seasickness</a>
+            <a href="/planning/accessibility.html">Accessibility</a>
+            <a href="/planning/june-2026-policy-changes.html">June 2026 changes</a>
+            <a href="/planning/stateroom-guides.html">Stateroom guides</a>
+            <a href="/planning/compare-sailings.html">Compare sailings</a>
+            <a href="/planning/disney-cruise-packing-list.html">Packing list</a>
+            <a href="/special-cruises/">Special sailings</a>
+            <a href="/excursions/">Excursions</a>
+            <a href="/pirate-night/">Pirate Night</a>
+            <a href="/faq/">FAQ</a>
+            <a href="/articles/">Articles</a>
+          </div>
+        </div>
+        <a href="/community/">Community</a>
+        <a href="/gallery/">Gallery</a>
+        <a href="/marketplace/">Marketplace</a>
+      </div>
+      <div class="nav-cta">
+        <a href="/agents/" class="btn btn-gold">Find an Agent</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <span class="eyebrow mono">What’s next</span>
+    <h1>Should you book it yourself, or use an <em>agent?</em></h1>
+    <p class="lede">Same price either way — Disney pays the agent’s commission, not you. Here’s how to decide in two minutes.</p>
+  </div>
+  <div class="tide" aria-hidden="true">
+    <svg viewBox="0 0 1200 56" preserveAspectRatio="none">
+      <path d="M0,28 C150,50 300,6 450,28 C600,50 750,6 900,28 C1050,50 1150,18 1200,26 L1200,56 L0,56 Z" fill="#faf7ee"></path>
+    </svg>
+  </div>
+</div>
+
+<main>
+  <section>
+    <span class="label mono">&mdash; Start here</span>
+    <h2>First, a few decisions</h2>
+    <p class="decide-intro">Before staterooms and dining times, there’s one question worth settling early: are you planning this yourself, or bringing in a travel agent? It’s free either way — so it really just comes down to how much of the planning you want to do.</p>
+  </section>
+
+  <section>
+    <span class="label mono">&mdash; Quick take</span>
+    <h2>Which path fits you?</h2>
+    <div class="decide-grid">
+      <div class="decide-card agent">
+        <h3>Use an agent if</h3>
+        <ul>
+          <li>This is your first Disney cruise</li>
+          <li>You’re overwhelmed by staterooms, dining, or Port Adventures</li>
+          <li>You’re planning something high-stakes — honeymoon, reunion, milestone trip</li>
+        </ul>
+      </div>
+      <div class="decide-card diy">
+        <h3>Book it yourself if</h3>
+        <ul>
+          <li>You’ve cruised Disney before and know what you want</li>
+          <li>You already know your ship, date, and stateroom category</li>
+          <li>You enjoy the planning process and want full control of timing</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <span class="label mono">&mdash; Side by side</span>
+    <h2>The full comparison</h2>
+    <div class="decide-table-wrap">
+      <table class="decide-table">
+        <thead>
+          <tr>
+            <th scope="col"></th>
+            <th class="diy-col" scope="col">Book it yourself</th>
+            <th class="agent-col" scope="col">Use a travel agent</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="label">Cost</td>
+            <td>Same price — Disney doesn’t discount for booking direct</td>
+            <td>Free — Disney pays the agent’s commission, not you</td>
+          </tr>
+          <tr>
+            <td class="label">Best for</td>
+            <td>You already know which ship, date, and stateroom you want</td>
+            <td>First Disney cruise, or you’re overwhelmed by the options</td>
+          </tr>
+          <tr>
+            <td class="label">Control</td>
+            <td>Full control over timing — you book the moment your window opens</td>
+            <td>Agent handles booking windows and paperwork for you</td>
+          </tr>
+          <tr>
+            <td class="label">Research</td>
+            <td>High — you’re on your own for staterooms, dining, Port Adventures</td>
+            <td>Low — agent recommends based on your family</td>
+          </tr>
+          <tr>
+            <td class="label">Post-booking</td>
+            <td>None — Disney’s own support line, no personal advocate</td>
+            <td>One person to call — price-drop monitoring, changes, day-of support</td>
+          </tr>
+          <tr>
+            <td class="label">Good fit if</td>
+            <td>You’ve cruised before, or you enjoy the planning process</td>
+            <td>You want it handled, or it’s a high-stakes trip</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="catch-box">
+      <h2>“But is there a catch?”</h2>
+      <p><strong>No, really — it’s free.</strong> Disney pays travel agents a commission for bringing them business, the same way a hotel pays a booking site. Your price doesn’t change whether you book directly with Disney or through an agent.</p>
+      <p>What you get with an agent is a person who already knows the fine print — stateroom quirks, which Port Adventures sell out first, how to word a request for a connecting cabin — and who you can call when a question comes up mid-trip.</p>
+      <p>The trade-off isn’t price. It’s whether you’d rather do the research yourself or hand it to someone who does this daily.</p>
+    </div>
+  </section>
+
+  <section class="decide-closing">
+    <span class="label mono">&mdash; Ready</span>
+    <h2>Ready to decide?</h2>
+    <p>If you want it handled, we’ll match you with a Disney-specialist agent at no extra cost. If you’re booking direct, our booking-window guide walks you through exactly when to lock in your stateroom.</p>
+    <div class="actions">
+      <a class="btn btn-coral" href="/agents/">Match me with an agent</a>
+      <a class="btn btn-outline" href="/planning/booking-windows.html">See booking windows</a>
+    </div>
+  </section>
+</main>
+
+<aside class="site-legal" aria-label="Legal">
+  <div class="wrap">
+    <p class="disclaimer">Cruising Cove is an independent planning guide and is not affiliated with, endorsed by, or sponsored by The Walt Disney Company, Disney Cruise Line, or any of their affiliates.</p>
+  </div>
+</aside>
+<script src="/assets/site-nav.js" defer></script>
+<script src="/assets/analytics.js" defer></script>
+<script src="/assets/site-search.js" defer></script>
+<script src="/assets/chat-widget.js" defer></script>
+</body>
+</html>
