@@ -213,6 +213,8 @@ export const COST_CARD_FACTS: string[] = [
   "Alcohol: drinks often ~$10–15 (+ auto gratuity); dining-room corkage typically ~$20/bottle for your own wine.",
   "Embarkation alcohol policy (since June 2026, 21+): one unopened wine/champagne ≤750 ml OR six beers ≤12 oz (not both) in carry-on at embarkation only; alcohol bought ashore is held until the end of the cruise.",
   "Port Adventures roughly $50–$300+ per person — the biggest discretionary swing by itinerary.",
+  "Onboard collectibles: popcorn buckets and souvenir sippers are paid extras (not in cruise fare). Designs rotate by movie/ship/season and sell out; leave suitcase space. Exact prices change — confirm at the popcorn stand or shops onboard rather than treating any web number as a quote.",
+  "Bingo is a paid family game (cards cost extra); sippers are often refillable for soft drinks/coffee depending on the cup. More context: /entertainment/#bingo-collectibles",
   "Guide: /planning/disney-cruise-cost.html",
 ];
 
@@ -227,6 +229,7 @@ export const PACKING_CARD_FACTS: string[] = [
   "Private islands: sunscreen, hats, dry change for the ride back; Castaway/Lookout towels are provided at the pier.",
   "Alaska: waterproof hooded jacket, fleece/mid-layer, warm hat/gloves, broken-in waterproof shoes, binoculars; usually no Pirate Night.",
   "Panama Canal: Caribbean-style kit + binoculars for locks and motion remedies for sea days; canal day is onboard, not a Panama City pier day.",
+  "Leave room (or a soft bag) for Bingo prizes, sippers, and popcorn buckets — bulky collectibles.",
   "Guide: /planning/disney-cruise-packing-list.html",
 ];
 
@@ -267,13 +270,13 @@ export function findPortsMentioned(question: string): PortCard[] {
 }
 
 function wantsCost(question: string): boolean {
-  return /\b(cost|price|pricing|budget|expensive|gratuity|gratuities|wifi|wi-?fi|how much|fare|alcohol|excursions?)\b/i.test(
+  return /\b(cost|price|pricing|budget|expensive|gratuity|gratuities|wifi|wi-?fi|how much|fare|alcohol|excursions?|popcorn|sipper|bingo|bucket)\b/i.test(
     question
   );
 }
 
 function wantsPacking(question: string): boolean {
-  return /\b(pack|packing|suitcase|what to bring|bring|clothes|wardrobe|formal night|pirate night|passport|documents?)\b/i.test(
+  return /\b(pack|packing|suitcase|what to bring|bring|clothes|wardrobe|formal night|pirate night|passport|documents?|popcorn|sipper)\b/i.test(
     question
   );
 }
@@ -316,6 +319,11 @@ export function buildPlanningFocusBlock(question: string): string {
       ...COST_CARD_FACTS.map((f) => `- ${f}`),
       "Open this guide: https://www.cruisingcove.com/planning/disney-cruise-cost.html"
     );
+    if (/\b(popcorn|sipper|bingo|bucket)\b/i.test(question)) {
+      parts.push(
+        "Open this guide: https://www.cruisingcove.com/entertainment/#bingo-collectibles"
+      );
+    }
   }
   if (wantsPacking(question)) {
     parts.push(

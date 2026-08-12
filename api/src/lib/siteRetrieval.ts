@@ -44,6 +44,11 @@ export const RETRIEVABLE_PAGES: RetrievablePage[] = [
   { path: "/planning/embarkation-day-checklist.html", title: "Embarkation day", keywords: ["embarkation", "port arrival", "boarding"] },
   { path: "/dining/", title: "Dining hub", keywords: ["dining", "palo", "remy", "enchante", "rotational"] },
   { path: "/entertainment/", title: "Entertainment hub", keywords: ["show", "entertainment", "theatre", "theater"] },
+  {
+    path: "/entertainment/#bingo-collectibles",
+    title: "Bingo, sippers & popcorn buckets",
+    keywords: ["popcorn", "popcorn bucket", "sipper", "bingo", "collectible"],
+  },
   { path: "/articles/midship-detective-agency.html", title: "Midship Detective Agency", keywords: ["detective", "midship", "pepe"] },
   {
     path: "/articles/disney-destiny-hidden-secrets.html",
