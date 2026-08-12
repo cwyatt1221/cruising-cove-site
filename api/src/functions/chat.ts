@@ -2,19 +2,10 @@ import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/fu
 import Anthropic from "@anthropic-ai/sdk";
 import { TableClient } from "@azure/data-tables";
 import { randomUUID } from "crypto";
+import { buildChatSystemPrompt } from "../lib/fleetKnowledge";
 
 const MAX_QUESTION_LENGTH = 500;
 const TABLE_NAME = "ChatQuestions";
-
-const SYSTEM_PROMPT = `You are the Cruising Cove assistant, helping people plan a Disney Cruise Line vacation.
-
-Cruising Cove is an independent, unofficial planning resource. It is not affiliated with, endorsed by, or sponsored by The Walt Disney Company, Disney Cruise Line, or any of their affiliates. Never imply or claim any official Disney affiliation.
-
-Answer clearly and helpfully about DCL ships, staterooms, dining, kids' clubs, shows, ports, departure logistics, budgeting, and travel agents.
-
-If you don't actually know something specific — current exact pricing, a particular stateroom's real guest noise reports, or schedule details that vary by sailing — say so plainly rather than guessing, and suggest the person check the relevant Cruising Cove page or Disney's official site directly.
-
-Keep answers concise: 2-4 sentences unless the question genuinely needs a list.`;
 
 let anthropicClient: Anthropic | null = null;
 function getAnthropicClient(): Anthropic {
@@ -86,8 +77,8 @@ export async function chat(request: HttpRequest, context: InvocationContext): Pr
     const anthropic = getAnthropicClient();
     const response = await anthropic.messages.create({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 400,
-      system: SYSTEM_PROMPT,
+      max_tokens: 700,
+      system: buildChatSystemPrompt(question),
       messages: [{ role: "user", content: question }],
     });
 

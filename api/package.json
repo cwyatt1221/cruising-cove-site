@@ -15,7 +15,8 @@
     "test:seller-clicks": "tsc && node dist/src/lib/sellerClicks.test.js",
     "test:community-notify": "tsc && node dist/src/lib/communityNotify.test.js",
     "test:community-chat": "tsc && node dist/src/lib/communityChat.test.js",
-    "test:community-moderation": "tsc && node dist/src/lib/communityModeration.test.js"
+    "test:community-moderation": "tsc && node dist/src/lib/communityModeration.test.js",
+    "test:fleet-knowledge": "tsc && node dist/src/lib/fleetKnowledge.test.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.0",
