@@ -143,6 +143,37 @@ body.cc-admin-logged-in .site-header{top:42px;}
   display:flex;align-items:center;justify-content:center;flex-shrink:0;
 }
 .logo .mark svg{width:14px;height:14px;}
+.cc-nav-first-mate{
+  display:inline-flex;align-items:center;gap:8px;
+  margin:0;padding:4px 10px 4px 4px;
+  border:1px solid rgba(26,42,74,.14);
+  border-radius:999px;
+  background:rgba(15,28,51,.04);
+  color:var(--navy);
+  font-family:var(--font-sans);
+  font-size:0.78rem;
+  font-weight:600;
+  letter-spacing:0.02em;
+  line-height:1;
+  cursor:pointer;
+  flex-shrink:0;
+  transition:border-color .15s ease, background .15s ease, color .15s ease, transform .15s ease;
+}
+.cc-nav-first-mate:hover{
+  border-color:var(--gold);
+  background:rgba(201,162,75,.12);
+  color:var(--navy);
+}
+.cc-nav-first-mate:focus-visible{
+  outline:2px solid var(--gold);
+  outline-offset:2px;
+}
+.cc-nav-first-mate-icon{
+  width:28px;height:28px;border-radius:50%;
+  display:block;object-fit:cover;
+  box-shadow:0 0 0 1px rgba(201,162,75,.35);
+}
+.cc-nav-first-mate-label{white-space:nowrap;}
 .site-nav-bar .nav-links{
   display:none;width:100%;order:4;
   flex-direction:column;align-items:stretch;gap:4px;
@@ -318,6 +349,7 @@ body.cc-admin-logged-in .site-header{top:42px;}
   .site-nav-bar .nav-toggle{display:none;}
   .site-nav-bar > .brand,
   .site-nav-bar > .logo{order:1;flex:0 0 auto;}
+  .site-nav-bar > .cc-nav-first-mate{order:1;flex:0 0 auto;}
   .site-nav-bar .nav-cta{
     order:2;margin-left:auto;flex:0 0 auto;gap:12px;
   }
@@ -402,6 +434,10 @@ body.cc-admin-logged-in .site-header{top:42px;}
     margin-left:0;flex-wrap:wrap;justify-content:flex-end;
   }
   .site-nav-bar .nav-cta .btn{padding:9px 12px;font-size:0.8rem;}
+  .cc-nav-first-mate{
+    padding:3px 8px 3px 3px;font-size:0.72rem;gap:6px;
+  }
+  .cc-nav-first-mate-icon{width:26px;height:26px;}
 }
 
 /* ---------- Shared footer ---------- */
