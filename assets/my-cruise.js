@@ -321,6 +321,7 @@
       bahamas: "Bahamas",
       caribbean: "Caribbean",
       alaska: "Alaska",
+      panama: "Panama Canal",
       europe: "Europe",
       other: "general",
     };
