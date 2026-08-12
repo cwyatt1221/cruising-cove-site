@@ -323,6 +323,11 @@
       alaska: "Alaska",
       panama: "Panama Canal",
       europe: "Europe",
+      "mexican-riviera": "Mexican Riviera",
+      hawaii: "Hawaii",
+      "northern-europe": "Northern Europe",
+      singapore: "Singapore / Asia",
+      transatlantic: "Transatlantic",
       other: "general",
     };
     bits.push(regionLabels[trip.destinationRegion] || "general");
