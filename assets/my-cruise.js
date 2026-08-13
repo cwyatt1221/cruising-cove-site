@@ -20,6 +20,10 @@
     return document.getElementById(id);
   }
 
+  var PAGE =
+    (document.body && document.body.getAttribute("data-mc-page")) ||
+    (document.getElementById("mcDashboard") ? "active" : "setup");
+
   function toast(msg) {
     var el = $("mcToast");
     if (!el) return;
@@ -104,6 +108,7 @@
   }
 
   function readFormIntoTrip(trip) {
+    if (!$("mcShip")) return trip;
     trip.shipSlug = $("mcShip").value;
     trip.embarkDate = $("mcEmbark").value;
     trip.nights = Number($("mcNights").value) || 3;
@@ -133,7 +138,7 @@
   }
 
   function fillForm(trip) {
-    if (!trip) return;
+    if (!trip || !$("mcShip")) return;
     $("mcShip").value = trip.shipSlug || "disney-wish";
     $("mcEmbark").value = trip.embarkDate || "";
     $("mcNights").value = String(trip.nights || 4);
@@ -368,7 +373,10 @@
     var ul = $("mcTripList");
     if (!ul) return;
     if (!state.trips.length) {
-      ul.innerHTML = '<li class="mc-empty">No saved cruises yet — fill the form and save.</li>';
+      ul.innerHTML =
+        PAGE === "active"
+          ? '<li class="mc-empty">No saved cruises yet — <a href="/planning/my-cruise.html">set one up</a>.</li>'
+          : '<li class="mc-empty">No saved cruises yet — fill the form and save.</li>';
       return;
     }
     ul.innerHTML = state.trips
@@ -953,19 +961,44 @@
       }) || { label: trip.castawayTier }).label;
   }
 
+  function renderSetupCta(trip) {
+    var empty = $("mcEmptyDash");
+    var cta = $("mcSetupCta");
+    var summary = $("mcSetupSummary");
+    if (!cta && !empty) return;
+    var ready = !!(trip && trip.embarkDate);
+    if (empty) empty.hidden = ready;
+    if (cta) cta.hidden = !ready;
+    if (summary && ready) {
+      summary.textContent =
+        (trip.title ? trip.title + " — " : "") +
+        shipName(trip.shipSlug) +
+        " · " +
+        trip.embarkDate +
+        " · " +
+        (trip.nights || "?") +
+        " nights · " +
+        ((trip.ports || []).map(portName).join(", ") || "Ports TBD");
+    }
+  }
+
   function renderAll() {
     var trip = activeTrip();
     var dash = $("mcDashboard");
     var empty = $("mcEmptyDash");
     renderTripList();
-    if (!trip) {
-      if (dash) dash.hidden = true;
+    fillForm(trip);
+    if (PAGE === "setup" || !dash) {
+      renderSetupCta(trip);
+      return;
+    }
+    if (!trip || !trip.embarkDate) {
+      dash.hidden = true;
       if (empty) empty.hidden = false;
       return;
     }
-    if (dash) dash.hidden = false;
+    dash.hidden = false;
     if (empty) empty.hidden = true;
-    fillForm(trip);
     renderBanner(trip);
     renderCountdown(trip);
     renderSignup(trip);
@@ -1002,42 +1035,55 @@
   }
 
   function bind() {
-    $("mcSave").addEventListener("click", function () {
-      var trip = activeTrip() || emptyTrip();
-      readFormIntoTrip(trip);
-      if (!trip.embarkDate) {
-        toast("Add an embarkation date first.");
-        return;
-      }
-      var idx = state.trips.findIndex(function (t) {
-        return t.id === trip.id;
+    var saveBtn = $("mcSave");
+    if (saveBtn) {
+      saveBtn.addEventListener("click", function () {
+        var trip = activeTrip() || emptyTrip();
+        readFormIntoTrip(trip);
+        if (!trip.embarkDate) {
+          toast("Add an embarkation date first.");
+          return;
+        }
+        var idx = state.trips.findIndex(function (t) {
+          return t.id === trip.id;
+        });
+        if (idx >= 0) state.trips[idx] = trip;
+        else state.trips.unshift(trip);
+        state.activeId = trip.id;
+        saveLocal();
+        pushTrip(trip);
+        renderAll();
+        toast(
+          Community && Community.getToken()
+            ? "Cruise saved — open Active sailing next."
+            : "Cruise saved — open Active sailing next."
+        );
       });
-      if (idx >= 0) state.trips[idx] = trip;
-      else state.trips.unshift(trip);
-      state.activeId = trip.id;
-      saveLocal();
-      pushTrip(trip);
-      renderAll();
-      toast(Community && Community.getToken() ? "Cruise saved & syncing." : "Cruise saved on this device.");
-    });
+    }
 
-    $("mcNew").addEventListener("click", function () {
-      var trip = emptyTrip();
-      state.trips.unshift(trip);
-      state.activeId = trip.id;
-      saveLocal();
-      fillForm(trip);
-      renderAll();
-      toast("New cruise draft ready.");
-    });
+    var newBtn = $("mcNew");
+    if (newBtn) {
+      newBtn.addEventListener("click", function () {
+        var trip = emptyTrip();
+        state.trips.unshift(trip);
+        state.activeId = trip.id;
+        saveLocal();
+        fillForm(trip);
+        renderAll();
+        toast("New cruise draft ready.");
+      });
+    }
 
-    $("mcPrint").addEventListener("click", function () {
-      document.body.classList.add("mc-printing");
-      window.print();
-      setTimeout(function () {
-        document.body.classList.remove("mc-printing");
-      }, 500);
-    });
+    var printBtn = $("mcPrint");
+    if (printBtn) {
+      printBtn.addEventListener("click", function () {
+        document.body.classList.add("mc-printing");
+        window.print();
+        setTimeout(function () {
+          document.body.classList.remove("mc-printing");
+        }, 500);
+      });
+    }
 
     var shareBtn = $("mcShare");
     if (shareBtn) {
@@ -1053,28 +1099,34 @@
       });
     }
 
-    $("mcTripList").addEventListener("click", function (e) {
-      var load = e.target.getAttribute && e.target.getAttribute("data-load");
-      var del = e.target.getAttribute && e.target.getAttribute("data-del");
-      if (load) {
-        state.activeId = load;
-        saveLocal();
-        renderAll();
-      }
-      if (del) {
-        state.trips = state.trips.filter(function (t) {
-          return t.id !== del;
-        });
-        if (state.activeId === del) state.activeId = state.trips[0] ? state.trips[0].id : null;
-        saveLocal();
-        if (Community && Community.getToken()) {
-          Community.api("/planner/trips/" + encodeURIComponent(del), { method: "DELETE" }).catch(function () {});
+    var tripList = $("mcTripList");
+    if (tripList) {
+      tripList.addEventListener("click", function (e) {
+        var load = e.target.getAttribute && e.target.getAttribute("data-load");
+        var del = e.target.getAttribute && e.target.getAttribute("data-del");
+        if (load) {
+          state.activeId = load;
+          saveLocal();
+          renderAll();
         }
-        renderAll();
-      }
-    });
+        if (del) {
+          state.trips = state.trips.filter(function (t) {
+            return t.id !== del;
+          });
+          if (state.activeId === del) state.activeId = state.trips[0] ? state.trips[0].id : null;
+          saveLocal();
+          if (Community && Community.getToken()) {
+            Community.api("/planner/trips/" + encodeURIComponent(del), { method: "DELETE" }).catch(function () {});
+          }
+          renderAll();
+        }
+      });
+    }
 
-    $("mcDashboard").addEventListener("change", function (e) {
+    var dash = $("mcDashboard");
+    if (!dash) return;
+
+    dash.addEventListener("change", function (e) {
       var trip = activeTrip();
       if (!trip) return;
       var t = e.target;
@@ -1095,7 +1147,7 @@
       }
     });
 
-    $("mcDashboard").addEventListener("click", function (e) {
+    dash.addEventListener("click", function (e) {
       var up = e.target.getAttribute && e.target.getAttribute("data-up");
       var down = e.target.getAttribute && e.target.getAttribute("data-down");
       var shortlist = e.target.getAttribute && e.target.getAttribute("data-shortlist");
@@ -1145,7 +1197,7 @@
       });
     });
 
-    $("mcDashboard").addEventListener("submit", function (e) {
+    dash.addEventListener("submit", function (e) {
       var portForm = e.target.closest("[data-port-review]");
       if (portForm) {
         e.preventDefault();
@@ -1183,7 +1235,7 @@
     }
     try {
       var data = await Community.api("/planner/shares", { method: "POST", body: { trip: trip } });
-      var url = location.origin + (data.urlPath || "/planning/my-cruise.html?share=" + data.token);
+      var url = location.origin + (data.urlPath || "/planning/active-sailing.html?share=" + data.token);
       if (navigator.clipboard) {
         await navigator.clipboard.writeText(url);
         toast("Share link copied.");
@@ -1361,17 +1413,21 @@
 
   function populateStaticFilters() {
     var ship = $("mcShip");
-    ship.innerHTML = DATA.ships
-      .map(function (s) {
-        return '<option value="' + s.slug + '">' + escapeHtml(s.name) + "</option>";
-      })
-      .join("");
+    if (ship) {
+      ship.innerHTML = DATA.ships
+        .map(function (s) {
+          return '<option value="' + s.slug + '">' + escapeHtml(s.name) + "</option>";
+        })
+        .join("");
+    }
     var tier = $("mcTier");
-    tier.innerHTML = DATA.tiers
-      .map(function (t) {
-        return '<option value="' + t.id + '">' + escapeHtml(t.label) + "</option>";
-      })
-      .join("");
+    if (tier) {
+      tier.innerHTML = DATA.tiers
+        .map(function (t) {
+          return '<option value="' + t.id + '">' + escapeHtml(t.label) + "</option>";
+        })
+        .join("");
+    }
     var catalog = $("mcCatalog");
     if (catalog && CATALOG && CATALOG.templates) {
       catalog.innerHTML = CATALOG.templates
@@ -1380,16 +1436,22 @@
         })
         .join("");
     }
-    $("mcPorts").innerHTML = DATA.ports
-      .map(function (p) {
-        return '<option value="' + escapeHtml(p.id) + '">' + escapeHtml(p.name) + "</option>";
-      })
-      .join("");
-    $("mcThemes").innerHTML = DATA.themes
-      .map(function (t) {
-        return '<option value="' + escapeHtml(t.id) + '">' + escapeHtml(t.name) + "</option>";
-      })
-      .join("");
+    var ports = $("mcPorts");
+    if (ports) {
+      ports.innerHTML = DATA.ports
+        .map(function (p) {
+          return '<option value="' + escapeHtml(p.id) + '">' + escapeHtml(p.name) + "</option>";
+        })
+        .join("");
+    }
+    var themes = $("mcThemes");
+    if (themes) {
+      themes.innerHTML = DATA.themes
+        .map(function (t) {
+          return '<option value="' + escapeHtml(t.id) + '">' + escapeHtml(t.name) + "</option>";
+        })
+        .join("");
+    }
     var portFilter = $("mcExcPort");
     if (portFilter) {
       portFilter.innerHTML =
@@ -1419,6 +1481,7 @@
     var el = $("mcAuth");
     if (!el || !Community) return;
     var user = Community.getUser && Community.getUser();
+    var next = encodeURIComponent(location.pathname + location.search);
     if (user && Community.getToken()) {
       el.innerHTML =
         '<p class="who">Signed in as <strong>' +
@@ -1432,7 +1495,9 @@
       };
     } else {
       el.innerHTML =
-        '<p class="who">Works on this device without an account. <a href="/community/login.html?next=/planning/my-cruise.html">Sign in</a> to sync, review, and suggest packing items.</p>';
+        '<p class="who">Works on this device without an account. <a href="/community/login.html?next=' +
+        next +
+        '">Sign in</a> to sync, review, and suggest packing items.</p>';
     }
   }
 

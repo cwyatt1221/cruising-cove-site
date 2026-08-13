@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Cruise Planner | Cruising Cove</title>
-<meta name="description" content="Pick your Disney cruise once — then get booking windows, a sign-up checklist, filtered excursions with reviews, packing lists, characters, and island plans personalized to your sailing.">
+<meta name="description" content="Set up your Disney cruise once — ship, dates, ports, and Castaway tier — then open the Active sailing planner for windows, sign-ups, packing, and more.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/site.css">
 <link rel="stylesheet" href="/assets/my-cruise.css">
 </head>
-<body>
+<body data-mc-page="setup">
 
 <header class="site-header">
   <div class="wrap">
@@ -40,6 +40,7 @@
           <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">Plan</button>
           <div class="nav-dropdown-menu">
             <a href="/planning/my-cruise.html">My Cruise planner</a>
+            <a href="/planning/active-sailing.html">Active sailing</a>
             <a href="/planning/disney-cruise-cost.html">What it costs</a>
             <a href="/planning/deposit-final-payment.html">Deposit &amp; final payment</a>
             <a href="/planning/booking-windows.html">Booking windows</a>
@@ -76,7 +77,7 @@
   <div class="wrap">
     <p class="eyebrow" style="color:var(--gold);">Your sailing, organized</p>
     <h1>Pick your cruise once. <em>Plan</em> everything from there.</h1>
-    <p class="lede">Booking windows, sign-up priorities, excursions with reviews, packing + day-1 carry-on, characters, island backups, stateroom notes, and agent handoff — tailored to your ship and ports.</p>
+    <p class="lede">Save your ship, dates, ports, and Castaway tier here — then open the Active sailing planner for booking windows, sign-ups, packing, excursions, and more.</p>
     <p class="mc-limits">Cruising Cove is a prep planner, not Disney’s booking system. Character times, Port Adventure inventory, and exact open times change — always confirm in the Disney Cruise Line app / My Reservations.</p>
     <div class="mc-auth" id="mcAuth"></div>
   </div>
@@ -163,161 +164,23 @@
         <button type="button" class="btn btn-gold" id="mcSave">Save cruise</button>
         <button type="button" class="btn btn-outline" id="mcNew">New cruise</button>
         <button type="button" class="btn btn-outline" id="mcShare">Share link</button>
-        <button type="button" class="btn btn-outline" id="mcPrint">Print / PDF</button>
       </div>
       <ul class="mc-trip-list" id="mcTripList"></ul>
     </aside>
 
     <div>
-      <p class="mc-empty" id="mcEmptyDash">Save a cruise on the left to open your personalized planner.</p>
-
-      <div id="mcDashboard" hidden>
-        <nav class="mc-section-nav" aria-label="Planner sections">
-          <a href="#mc-windows">Windows</a>
-          <a href="#mc-signup">Sign-ups</a>
-          <a href="#mc-excursions">Excursions</a>
-          <a href="#mc-ports">Port reviews</a>
-          <a href="#mc-characters">Characters</a>
-          <a href="#mc-packing">Packing</a>
-          <a href="#mc-island">Island plan</a>
-          <a href="#mc-stateroom">Staterooms</a>
-          <a href="#mc-agent">Agent</a>
-          <a href="#mc-community">Community</a>
-        </nav>
-
-        <section class="mc-panel mc-banner" id="mc-windows">
-          <div>
-            <p class="section-label" style="margin:0 0 8px;">Active sailing</p>
-            <h2 id="mcBannerTitle">Your cruise</h2>
-            <p class="mc-sub" id="mcBannerMeta" style="margin:0;"></p>
-            <div class="mc-countdown" id="mcCountdown"></div>
-            <form class="mc-remind" id="mcRemindForm">
-              <h3 class="mc-h3">Email me when my window opens</h3>
-              <p class="mc-sub" style="margin-top:0;">We’ll remind you the morning your Castaway Club booking window opens (midnight ET).</p>
-              <div class="mc-add-pack-form">
-                <label class="visually-hidden" for="mcRemindEmail">Email</label>
-                <input id="mcRemindEmail" name="email" type="email" required placeholder="you@email.com">
-                <button type="submit" class="btn btn-gold">Set reminder</button>
-              </div>
-            </form>
-          </div>
+      <div class="mc-panel" id="mcOpenPlanner">
+        <p class="section-label" style="margin:0 0 8px;">Next step</p>
+        <h2>Active sailing planner</h2>
+        <p class="mc-sub">Windows, sign-ups, excursions, port reviews, characters, packing, island plan, staterooms, agent handoff, and community — personalized to the cruise you save on the left.</p>
+        <p class="mc-empty" id="mcEmptyDash">Save a cruise with an embarkation date to unlock your dashboard.</p>
+        <div id="mcSetupCta" hidden>
+          <p class="mc-sub" id="mcSetupSummary" style="margin-top:0;"></p>
           <div class="mc-actions">
-            <a class="btn btn-outline" id="mcCostLink" href="/planning/disney-cruise-cost.html">Cost calculator</a>
+            <a class="btn btn-gold" href="/planning/active-sailing.html">Open active sailing planner</a>
             <a class="btn btn-outline" href="/planning/booking-windows.html">Full windows tool</a>
           </div>
-        </section>
-
-        <section class="mc-panel" id="mc-signup">
-          <h2>Sign-up checklist</h2>
-          <p class="mc-sub">Rank what to grab when your booking window opens. Check items off as you reserve them in the official app.</p>
-          <div id="mcSignupList"></div>
-        </section>
-
-        <section class="mc-panel" id="mc-excursions">
-          <h2>Excursions &amp; port days</h2>
-          <p class="mc-sub">Filter by age fit, category, and energy. Shortlist favorites and read or add reviews.</p>
-          <div class="mc-filters">
-            <select id="mcExcPort" aria-label="Port filter"></select>
-            <select id="mcExcCat" aria-label="Category filter"></select>
-            <select id="mcExcEnergy" aria-label="Energy filter">
-              <option value="all">Any energy</option>
-              <option value="easy">Easy</option>
-              <option value="medium">Medium</option>
-              <option value="high">High</option>
-            </select>
-            <select id="mcExcAge" aria-label="Age filter">
-              <option value="kids">Fit my kids’ ages</option>
-              <option value="all">Ignore age filter</option>
-            </select>
-            <input id="mcExcQ" type="search" placeholder="Search…" aria-label="Search excursions">
-          </div>
-          <div class="mc-exc-grid" id="mcExcursions"></div>
-        </section>
-
-        <section class="mc-panel" id="mc-ports">
-          <h2>Port reviews</h2>
-          <p class="mc-sub">Guest notes for the ports on your itinerary. New reviews are moderated before they go live.</p>
-          <div id="mcPortReviews"></div>
-        </section>
-
-        <section class="mc-panel" id="mc-characters">
-          <h2>Characters &amp; entertainment</h2>
-          <p class="mc-sub">Typical for this ship — exact Navigator times vary by sailing and theme.</p>
-          <div class="mc-two">
-            <div>
-              <h3 style="font-family:var(--font-serif);font-weight:500;color:var(--navy);margin:0;">Characters to watch for</h3>
-              <div id="mcCharacters"></div>
-            </div>
-            <div>
-              <h3 style="font-family:var(--font-serif);font-weight:500;color:var(--navy);margin:0;">Shows &amp; ship highlights</h3>
-              <div id="mcShows"></div>
-            </div>
-          </div>
-        </section>
-
-        <section class="mc-panel" id="mc-packing">
-          <h2>Packing checklist</h2>
-          <p class="mc-sub" id="mcPackingBasis">A default list for your itinerary — check items off as you pack. Add anything extra below.</p>
-          <p class="mc-pack-progress" id="mcPackProgress" hidden></p>
-          <div class="mc-two">
-            <div>
-              <h3 class="mc-h3">Default for this itinerary</h3>
-              <div id="mcPackingList"></div>
-              <div class="mc-add-pack">
-                <h3 class="mc-h3">Your added items</h3>
-                <div id="mcCustomPackingList"></div>
-                <form id="mcAddPackForm" class="mc-add-pack-form">
-                  <label class="visually-hidden" for="mcAddPackItem">New packing item</label>
-                  <input id="mcAddPackItem" name="label" type="text" maxlength="120" required placeholder="Add something to your list…">
-                  <button type="submit" class="btn btn-gold">Add to my list</button>
-                </form>
-              </div>
-            </div>
-            <div>
-              <h3 class="mc-h3">Day-1 carry-on kit</h3>
-              <p class="mc-sub" style="margin-top:0;">Keep these with you — checked bags can be late to the cabin.</p>
-              <div id="mcCarryOnList"></div>
-            </div>
-          </div>
-          <form class="mc-suggest" id="mcSuggestForm">
-            <h3 class="mc-h3">Suggest an item for everyone</h3>
-            <p class="mc-sub">Want it on the sitewide default lists? Submit here — it’s reviewed before it goes live for all users.</p>
-            <div class="mc-field">
-              <label for="mcSugItem">Item</label>
-              <input id="mcSugItem" name="item" required maxlength="120" placeholder="e.g. Magnetic whiteboard for dinner plans">
-            </div>
-            <div class="mc-field">
-              <label for="mcSugReason">Why it helps</label>
-              <textarea id="mcSugReason" name="reason" maxlength="500" placeholder="Optional context"></textarea>
-            </div>
-            <div class="mc-field">
-              <label for="mcSugTags">Tags (optional)</label>
-              <input id="mcSugTags" name="tags" placeholder="kids, alaska, caribbean">
-            </div>
-            <button type="submit" class="btn btn-outline">Submit for review</button>
-          </form>
-        </section>
-
-        <section class="mc-panel" id="mc-island">
-          <h2>Island plan (no cabana)</h2>
-          <p class="mc-sub">Free-day strategies when private cabanas are gone.</p>
-          <div id="mcIsland"></div>
-        </section>
-
-        <section class="mc-panel" id="mc-stateroom">
-          <h2>Stateroom shortlist</h2>
-          <div id="mcStateroom"></div>
-        </section>
-
-        <section class="mc-panel" id="mc-agent">
-          <h2>Agent handoff</h2>
-          <div id="mcAgent"></div>
-        </section>
-
-        <section class="mc-panel" id="mc-community">
-          <h2>Sailing community</h2>
-          <div id="mcCommunity"></div>
-        </section>
+        </div>
       </div>
     </div>
   </div>

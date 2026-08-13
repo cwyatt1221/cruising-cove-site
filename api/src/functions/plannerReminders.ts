@@ -178,8 +178,8 @@ export async function plannerSendRemindersTimer(timer: Timer, context: Invocatio
       const unsub = String(entity.unsubToken ?? "");
       const site = process.env.PUBLIC_SITE_URL || "https://www.cruisingcove.com";
       const subject = `Your Disney cruise booking window opens ${opens}`;
-      const text = `Your Castaway Club booking window for ${ship} (${embark}) opens on ${opens} (midnight ET). Open My Cruise: ${site}/planning/my-cruise.html\nUnsubscribe: ${site}/api/planner/reminders/unsubscribe?token=${unsub}`;
-      const html = `<p>Your Castaway Club booking window for <strong>${ship}</strong> (embark ${embark}) opens on <strong>${opens}</strong> at midnight Eastern.</p><p><a href="${site}/planning/my-cruise.html">Open My Cruise planner</a></p><p style="font-size:12px;color:#666"><a href="${site}/api/planner/reminders/unsubscribe?token=${unsub}">Unsubscribe</a></p>`;
+      const text = `Your Castaway Club booking window for ${ship} (${embark}) opens on ${opens} (midnight ET). Open Active sailing: ${site}/planning/active-sailing.html\nUnsubscribe: ${site}/api/planner/reminders/unsubscribe?token=${unsub}`;
+      const html = `<p>Your Castaway Club booking window for <strong>${ship}</strong> (embark ${embark}) opens on <strong>${opens}</strong> at midnight Eastern.</p><p><a href="${site}/planning/active-sailing.html">Open Active sailing planner</a></p><p style="font-size:12px;color:#666"><a href="${site}/api/planner/reminders/unsubscribe?token=${unsub}">Unsubscribe</a></p>`;
 
       const sent = await sendEmail(email, subject, html, text);
       await reminders.updateEntity(

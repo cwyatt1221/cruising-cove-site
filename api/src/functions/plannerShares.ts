@@ -83,7 +83,7 @@ export async function plannerCreateShare(request: HttpRequest, context: Invocati
     return corsJson(200, {
       success: true,
       token,
-      urlPath: `/planning/my-cruise.html?share=${token}`,
+      urlPath: `/planning/active-sailing.html?share=${token}`,
       expiresAt: expires.toISOString(),
     });
   } catch (err) {

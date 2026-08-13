@@ -24,6 +24,7 @@
     '<div class="nav-dropdown-menu nav-dropdown-menu--plan">' +
     '<p class="nav-menu-label">Start here</p>' +
     '<a href="/planning/my-cruise.html">My Cruise planner</a>' +
+    '<a href="/planning/active-sailing.html">Active sailing</a>' +
     '<a href="/planning/whats-next.html">What’s next</a>' +
     '<a href="/planning/first-cruise.html">First-cruise path</a>' +
     '<a href="/planning/sailing-timeline.html">Sailing timeline</a>' +
