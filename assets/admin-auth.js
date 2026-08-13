@@ -128,6 +128,11 @@
     var existing = document.getElementById("ccAdminBar");
     var loggedIn = Boolean(getToken());
     document.body.classList.toggle("cc-admin-logged-in", loggedIn);
+    try {
+      document.dispatchEvent(
+        new CustomEvent("cc-admin-auth-change", { detail: { loggedIn: loggedIn } })
+      );
+    } catch (_) {}
 
     if (!loggedIn) {
       if (existing) existing.remove();

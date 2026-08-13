@@ -114,6 +114,7 @@
 </div>
 
 <script src="/assets/shops-data.js"></script>
+<script src="/assets/admin-auth.js"></script>
 <script>
   (function(){
     var btn=document.querySelector('.nav-toggle');
@@ -144,6 +145,10 @@
         .replace(/</g,'&lt;')
         .replace(/>/g,'&gt;')
         .replace(/"/g,'&quot;');
+    }
+
+    function isAdminLoggedIn(){
+      return !!(window.CCAdminAuth && window.CCAdminAuth.getToken && window.CCAdminAuth.getToken());
     }
 
     function openSlots(){
@@ -200,7 +205,7 @@
           for(var i=0;i<allShops.length;i++){
             if(allShops[i].id===shopId){ allShops[i].visitCount=n; break; }
           }
-          if(countEl){
+          if(countEl && isAdminLoggedIn()){
             countEl.hidden=false;
             countEl.textContent=visitLabel(n);
           }
@@ -252,6 +257,7 @@
       empty.hidden=allShops.length>0;
       filterEmpty.hidden=!(allShops.length>0 && shops.length===0);
       renderFilters();
+      var showVisits=isAdminLoggedIn();
 
       shops.forEach(function(shop){
         var photos=(shop.photoUrls||[]).slice(0,3);
@@ -284,10 +290,13 @@
             '</blockquote>';
         }
 
-        var visits=visitLabel(shop.visitCount);
-        var visitsHtml=visits
-          ? '<span class="mp-visits" data-visit-count>'+escapeHtml(visits)+'</span>'
-          : '<span class="mp-visits" data-visit-count hidden></span>';
+        var visitsHtml='';
+        if(showVisits){
+          var visits=visitLabel(shop.visitCount);
+          visitsHtml=visits
+            ? '<span class="mp-visits" data-visit-count>'+escapeHtml(visits)+'</span>'
+            : '<span class="mp-visits" data-visit-count hidden></span>';
+        }
 
         var shopUrl=String(shop.shopUrl||shop.etsyUrl||'').trim();
         var visitHtml=shopUrl
@@ -342,6 +351,10 @@
       var card=link.closest('.mp-card');
       var countEl=card ? card.querySelector('[data-visit-count]') : null;
       recordVisit(shopId, countEl);
+    });
+
+    document.addEventListener('cc-admin-auth-change', function(){
+      if(allShops.length) render();
     });
 
     async function load(){
