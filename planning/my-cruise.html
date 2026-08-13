@@ -77,7 +77,7 @@
   <div class="wrap">
     <p class="eyebrow" style="color:var(--gold);">Your sailing, organized</p>
     <h1>Pick your cruise once. <em>Plan</em> everything from there.</h1>
-    <p class="lede">Save your ship, dates, ports, and Castaway tier here — then open the Active sailing planner for booking windows, sign-ups, packing, excursions, and more.</p>
+    <p class="lede">Save your ship and embarkation date first — we’ll fill nights, ports, region, and theme when that sailing is in our catalog — then open the Active sailing planner for windows, sign-ups, packing, and more.</p>
     <p class="mc-limits">Cruising Cove is a prep planner, not Disney’s booking system. Character times, Port Adventure inventory, and exact open times change — always confirm in the Disney Cruise Line app / My Reservations.</p>
     <div class="mc-auth" id="mcAuth"></div>
   </div>
@@ -99,13 +99,8 @@
   <div class="wrap mc-grid">
     <aside class="mc-panel mc-sticky" aria-label="Choose your cruise">
       <h2>Your cruise</h2>
-      <p class="mc-sub">Pick a catalog itinerary to autofill ports &amp; nights, or enter details manually.</p>
+      <p class="mc-sub">Pick ship and embarkation date first — we’ll fill nights, ports, region, and theme when that sailing is in our catalog. You can still edit anything.</p>
 
-      <div class="mc-field">
-        <label for="mcCatalog">Sailing catalog</label>
-        <select id="mcCatalog"></select>
-        <p class="mc-field-hint" id="mcCatalogNote">Templates based on common Disney itineraries — confirm your exact ports in the official app.</p>
-      </div>
       <div class="mc-field">
         <label for="mcTitle">Nickname (optional)</label>
         <input id="mcTitle" type="text" maxlength="80" placeholder="Spring Break Wish">
@@ -117,6 +112,7 @@
       <div class="mc-field">
         <label for="mcEmbark">Embarkation date</label>
         <input id="mcEmbark" type="date" required>
+        <p class="mc-field-hint" id="mcSailingMatch">Enter ship + date to autofill nights, ports, region, and theme.</p>
       </div>
       <div class="mc-field">
         <label for="mcNights">Nights</label>
@@ -160,6 +156,11 @@
         <label for="mcCabins">Stateroom shortlist</label>
         <textarea id="mcCabins" placeholder="One cabin or category per line&#10;e.g. 8020&#10;verandah midship aft"></textarea>
       </div>
+      <div class="mc-field">
+        <label for="mcCatalog">Or start from a template</label>
+        <select id="mcCatalog"></select>
+        <p class="mc-field-hint" id="mcCatalogNote">Generic itinerary patterns when we don’t have your exact date yet — confirm ports in the official app.</p>
+      </div>
       <div class="mc-actions">
         <button type="button" class="btn btn-gold" id="mcSave">Save cruise</button>
         <button type="button" class="btn btn-outline" id="mcNew">New cruise</button>
@@ -199,6 +200,7 @@
 <script src="/assets/community.js"></script>
 <script src="/assets/booking-windows.js"></script>
 <script src="/assets/sailings-catalog.js"></script>
+<script src="/assets/dated-sailings.js"></script>
 <script src="/assets/my-cruise-data.js"></script>
 <script src="/assets/my-cruise.js"></script>
 </body>

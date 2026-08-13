@@ -4,6 +4,7 @@
 (function () {
   var DATA = window.CC_MY_CRUISE;
   var CATALOG = window.CC_SAILING_CATALOG;
+  var DATED = window.CC_DATED_SAILINGS;
   var BW = window.CCBookingWindows;
   var Community = window.CCCommunity;
   var STORAGE_KEY = "cc_my_cruise_trips";
@@ -1099,6 +1100,20 @@
       });
     }
 
+    var shipEl = $("mcShip");
+    var embarkEl = $("mcEmbark");
+    function onShipOrDateChange() {
+      applyDatedSailing({ silent: false });
+    }
+    if (shipEl) shipEl.addEventListener("change", onShipOrDateChange);
+    if (embarkEl) {
+      embarkEl.addEventListener("change", onShipOrDateChange);
+      embarkEl.addEventListener("input", function () {
+        if (embarkEl.value && embarkEl.value.length === 10) onShipOrDateChange();
+        else updateSailingMatchHint(null);
+      });
+    }
+
     var tripList = $("mcTripList");
     if (tripList) {
       tripList.addEventListener("click", function (e) {
@@ -1293,7 +1308,89 @@
     saveLocal();
     var note = $("mcCatalogNote");
     if (note) note.textContent = t.note || "Confirm ports in the official app.";
-    toast("Itinerary template applied — add your embarkation date and save.");
+    updateSailingMatchHint(null);
+    toast("Template applied — add your embarkation date to match a dated sailing, then save.");
+  }
+
+  function regionFromPorts(portIds) {
+    var counts = {};
+    (portIds || []).forEach(function (id) {
+      var p = DATA.ports.find(function (x) {
+        return x.id === id;
+      });
+      if (!p || !p.region || p.region === "other") return;
+      counts[p.region] = (counts[p.region] || 0) + 1;
+    });
+    var best = "";
+    var bestN = 0;
+    Object.keys(counts).forEach(function (r) {
+      if (counts[r] > bestN) {
+        best = r;
+        bestN = counts[r];
+      }
+    });
+    return best || "";
+  }
+
+  function updateSailingMatchHint(sailing) {
+    var hint = $("mcSailingMatch");
+    if (!hint) return;
+    if (sailing) {
+      var themeBit = sailing.theme ? " · " + sailing.theme : " · standard sailing";
+      hint.textContent =
+        "Matched catalog sailing: " +
+        sailing.nights +
+        " nights" +
+        themeBit +
+        (sailing.departurePort ? " from " + sailing.departurePort : "") +
+        ". Confirm in the official app.";
+      return;
+    }
+    var ship = $("mcShip") && $("mcShip").value;
+    var date = $("mcEmbark") && $("mcEmbark").value;
+    if (ship && date) {
+      hint.textContent =
+        "No exact match for that ship + date yet — fill nights/ports manually or pick a template below. We’re expanding dated sailings over time.";
+      return;
+    }
+    hint.textContent = "Enter ship + date to autofill nights, ports, region, and theme.";
+  }
+
+  function applyDatedSailing(opts) {
+    opts = opts || {};
+    if (!DATED || !DATED.lookup) {
+      updateSailingMatchHint(null);
+      return false;
+    }
+    var shipEl = $("mcShip");
+    var dateEl = $("mcEmbark");
+    if (!shipEl || !dateEl) return false;
+    var sailing = DATED.lookup(shipEl.value, dateEl.value);
+    updateSailingMatchHint(sailing);
+    if (!sailing) return false;
+
+    var trip = activeTrip();
+    if (!trip) {
+      trip = emptyTrip();
+      state.trips.unshift(trip);
+      state.activeId = trip.id;
+    }
+    trip.shipSlug = sailing.shipSlug;
+    trip.embarkDate = sailing.embarkationDate;
+    trip.nights = sailing.nights || trip.nights;
+    trip.ports = (sailing.ports || []).slice();
+    trip.destinationRegion =
+      sailing.destinationRegion || regionFromPorts(trip.ports) || trip.destinationRegion;
+    var themeId =
+      (DATED.themeIdFromLabel && DATED.themeIdFromLabel(sailing.theme)) || "none";
+    trip.themes = [themeId];
+    trip.updatedAt = new Date().toISOString();
+    fillForm(trip);
+    saveLocal();
+    if (!opts.silent) {
+      toast("Filled nights, ports, region, and theme from our sailing catalog.");
+    }
+    return true;
   }
 
   function addCustomPackingItem(form) {
@@ -1552,6 +1649,11 @@
     await loadCommunityPacking();
     renderAll();
     loadTemplateFromQuery();
+    if ($("mcShip") && $("mcEmbark") && $("mcEmbark").value) {
+      applyDatedSailing({ silent: true });
+    } else {
+      updateSailingMatchHint(null);
+    }
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
