@@ -866,9 +866,10 @@
     "disney-fantasy": ["midship-detective-agency", "which-disney-ship-should-you-choose"],
     "disney-wonder": ["bluey-on-disney-cruise-line-2026", "which-disney-ship-should-you-choose"],
     "disney-magic": ["which-disney-ship-should-you-choose", "10-hidden-disney-cruise-secrets"],
-    "disney-adventure": ["which-disney-ship-should-you-choose"],
+    "disney-adventure": ["disney-adventure-vs-wish-class", "which-disney-ship-should-you-choose"],
     "disney-believe": [
       "disney-believe-news-and-easter-eggs",
+      "disney-2029-new-ship-class",
       "which-disney-ship-should-you-choose",
       "disney-wish-vs-disney-treasure",
     ],
@@ -907,7 +908,16 @@
     ],
     "disney-believe-news-and-easter-eggs": [
       { href: "/ships/disney-believe.html", title: "Disney Believe guide", meta: "Ships" },
+      { href: "/articles/disney-2029-new-ship-class.html", title: "2029 ship class", meta: "Articles" },
       { href: "/ships/", title: "Compare the Disney fleet", meta: "Ships" },
+    ],
+    "disney-2029-new-ship-class": [
+      { href: "/ships/", title: "Fleet hub", meta: "Ships" },
+      { href: "/articles/disney-believe-news-and-easter-eggs.html", title: "Believe D23 reveal", meta: "Articles" },
+    ],
+    "disney-adventure-vs-wish-class": [
+      { href: "/ships/disney-adventure.html", title: "Disney Adventure guide", meta: "Ships" },
+      { href: "/ports/singapore.html", title: "Singapore hub", meta: "Ports" },
     ],
     "disney-destiny-halloween-high-seas": [
       { href: "/ships/disney-destiny.html", title: "Disney Destiny guide", meta: "Ships" },

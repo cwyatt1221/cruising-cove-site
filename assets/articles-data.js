@@ -18,6 +18,22 @@
       url: "/articles/disney-believe-news-and-easter-eggs.html",
     },
     {
+      id: "disney-2029-new-ship-class",
+      title: "Disney’s 2029 Ship Class: What D23 Actually Said",
+      excerpt:
+        "Three new ships from 2029 — a new class sized between Wonder and Wish, built so Disney can reach more ports as the fleet goes global.",
+      date: "2026-08-17",
+      url: "/articles/disney-2029-new-ship-class.html",
+    },
+    {
+      id: "disney-adventure-vs-wish-class",
+      title: "Disney Adventure vs a Florida Wish-Class Cruise",
+      excerpt:
+        "Singapore mega-ship with themed lands versus Wish, Treasure, and Destiny — size, dining, itineraries, and who should book which.",
+      date: "2026-08-17",
+      url: "/articles/disney-adventure-vs-wish-class.html",
+    },
+    {
       id: "new-panama-canal-itineraries",
       title: "More Itineraries on Cruising Cove: Panama Canal & New Port Guides",
       excerpt:
