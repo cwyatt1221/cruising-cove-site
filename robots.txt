@@ -2,7 +2,12 @@ User-agent: *
 Allow: /
 
 # Admin / internal tools
+Disallow: /admin/
 Disallow: /planning/my-cruise-admin.html
 Disallow: /agents/admin.html
+Disallow: /marketplace/sellers/admin.html
+Disallow: /gallery/admin.html
+Disallow: /community/admin.html
+Disallow: /decorations/admin.html
 
 Sitemap: https://www.cruisingcove.com/sitemap.xml
