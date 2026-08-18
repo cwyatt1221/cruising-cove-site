@@ -867,6 +867,11 @@
     "disney-wonder": ["bluey-on-disney-cruise-line-2026", "which-disney-ship-should-you-choose"],
     "disney-magic": ["which-disney-ship-should-you-choose", "10-hidden-disney-cruise-secrets"],
     "disney-adventure": ["which-disney-ship-should-you-choose"],
+    "disney-believe": [
+      "disney-believe-news-and-easter-eggs",
+      "which-disney-ship-should-you-choose",
+      "disney-wish-vs-disney-treasure",
+    ],
     "disney-believe": ["which-disney-ship-should-you-choose", "disney-wish-vs-disney-treasure"],
   };
 
@@ -899,6 +904,10 @@
     ],
     "disney-destiny-hidden-secrets": [
       { href: "/ships/disney-destiny.html", title: "Disney Destiny guide", meta: "Ships" },
+    ],
+    "disney-believe-news-and-easter-eggs": [
+      { href: "/ships/disney-believe.html", title: "Disney Believe guide", meta: "Ships" },
+      { href: "/ships/", title: "Compare the Disney fleet", meta: "Ships" },
     ],
     "disney-destiny-halloween-high-seas": [
       { href: "/ships/disney-destiny.html", title: "Disney Destiny guide", meta: "Ships" },

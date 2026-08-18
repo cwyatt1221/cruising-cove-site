@@ -6,9 +6,17 @@
 (function (global) {
   var FEATURED_SLOTS = 10;
   /** Pin the first homepage carousel slide. Set to null to rotate by ISO week. */
-  var CAROUSEL_START_ID = "new-panama-canal-itineraries";
+  var CAROUSEL_START_ID = "disney-believe-news-and-easter-eggs";
 
   var articles = [
+    {
+      id: "disney-believe-news-and-easter-eggs",
+      title: "Disney Believe: Every Reveal So Far — and the Easter Eggs",
+      excerpt:
+        "D23 Horizons unveiled Moana’s Grand Hall, a Toy Story stern, and 1953 Tinker Bell bow art — plus what’s next for the late-2027 Wish-class ship.",
+      date: "2026-08-16",
+      url: "/articles/disney-believe-news-and-easter-eggs.html",
+    },
     {
       id: "new-panama-canal-itineraries",
       title: "More Itineraries on Cruising Cove: Panama Canal & New Port Guides",
