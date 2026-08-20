@@ -841,6 +841,7 @@
 
   var SHIP_ARTICLE_IDS = {
     "disney-destiny": [
+      "disney-uncharted-adventure",
       "disney-destiny-hidden-secrets",
       "disney-destiny-halloween-high-seas",
       "disney-destiny-toddler-tips",
@@ -848,12 +849,14 @@
       "which-disney-ship-should-you-choose",
     ],
     "disney-wish": [
+      "disney-uncharted-adventure",
       "disney-wish-vs-disney-treasure",
       "worlds-of-marvel",
       "bluey-on-disney-cruise-line-2026",
       "which-disney-ship-should-you-choose",
     ],
     "disney-treasure": [
+      "disney-uncharted-adventure",
       "disney-wish-vs-disney-treasure",
       "worlds-of-marvel",
       "which-disney-ship-should-you-choose",
@@ -873,7 +876,6 @@
       "which-disney-ship-should-you-choose",
       "disney-wish-vs-disney-treasure",
     ],
-    "disney-believe": ["which-disney-ship-should-you-choose", "disney-wish-vs-disney-treasure"],
   };
 
   var ARTICLE_EXTRA_LINKS = {
@@ -926,6 +928,10 @@
       { href: "/planning/kids-clubs.html", title: "Kids clubs guide", meta: "Plan" },
     ],
     "worlds-of-marvel": [{ href: "/dining/", title: "Dining guides", meta: "Onboard" }],
+    "disney-uncharted-adventure": [
+      { href: "/ships/disney-wish.html#uncharted-adventure", title: "Disney Wish guide", meta: "Ships" },
+      { href: "/articles/midship-detective-agency.html", title: "Midship Detective Agency", meta: "Articles" },
+    ],
     "disney-cruise-fish-extenders": [
       { href: "/marketplace/", title: "Marketplace essentials", meta: "Marketplace" },
     ],

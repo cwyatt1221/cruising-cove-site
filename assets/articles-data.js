@@ -10,6 +10,14 @@
 
   var articles = [
     {
+      id: "disney-uncharted-adventure",
+      title: "What Is Disney Uncharted Adventure?",
+      excerpt:
+        "The free Navigator-app scavenger hunt on Wish, Treasure, and Destiny — Wish-class’s answer to Midship Detective Agency.",
+      date: "2026-08-20",
+      url: "/articles/disney-uncharted-adventure.html",
+    },
+    {
       id: "disney-believe-news-and-easter-eggs",
       title: "Disney Believe: Every Reveal So Far — and the Easter Eggs",
       excerpt:
