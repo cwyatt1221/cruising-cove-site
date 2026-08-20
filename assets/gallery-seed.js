@@ -300,8 +300,8 @@ window.CC_GALLERY_SEED = [
   {
     "id": "seed-nemo-mosaic-28",
     "photoUrl": "/assets/images/gallery/28-finding-nemo-mosaic.jpg",
-    "caption": "Finding Nemo mosaic mural onboard",
-    "ship": "",
+    "caption": "Finding Nemo mosaic in Cabanas on Disney Dream",
+    "ship": "Disney Dream",
     "displayName": "Cruising Cove",
     "category": "other",
     "status": "approved",
