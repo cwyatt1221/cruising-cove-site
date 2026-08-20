@@ -263,5 +263,16 @@ window.CC_GALLERY_SEED = [
     "status": "approved",
     "createdAt": "2026-08-02T18:24:00.000Z",
     "seed": true
+  },
+  {
+    "id": "seed-pluto-latte-25",
+    "photoUrl": "/assets/images/gallery/25-pluto-latte-art.jpg",
+    "caption": "Pluto latte art from a specialty coffee café",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-20T02:00:00.000Z",
+    "seed": true
   }
 ];
