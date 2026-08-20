@@ -648,6 +648,38 @@ ul.plain li:last-child{margin-bottom:0;}
 .callout .label{margin-bottom:0.4rem;}
 .callout p{margin:0;}
 
+/* Inline gallery photos on guides */
+.cc-photo{
+  margin:1.25rem 0 0.35rem;
+}
+.cc-photo img{
+  width:100%;
+  height:auto;
+  border-radius:2px;
+  display:block;
+  background:#e8e2d2;
+  object-fit:cover;
+}
+.cc-photo figcaption{
+  margin-top:0.55rem;
+  font-size:0.88rem;
+  color:var(--muted);
+  line-height:1.45;
+}
+.cc-photo figcaption a{color:var(--teal);}
+.cc-photo-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  margin:1.25rem 0 0.35rem;
+}
+@media (max-width:640px){
+  .cc-photo-grid{grid-template-columns:1fr;}
+}
+.cc-photo-grid .cc-photo{margin:0;}
+.cc-photo--square img{aspect-ratio:1;object-fit:cover;}
+.cc-photo--wide img{aspect-ratio:16/10;object-fit:cover;}
+
 .table-wrap{
   overflow-x:auto;
   margin:1.4rem 0;

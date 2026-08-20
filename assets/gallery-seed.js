@@ -274,5 +274,148 @@ window.CC_GALLERY_SEED = [
     "status": "approved",
     "createdAt": "2026-08-20T02:00:00.000Z",
     "seed": true
+  },
+  {
+    "id": "seed-towel-swans-26",
+    "photoUrl": "/assets/images/gallery/26-towel-swans-magical-porthole.jpg",
+    "caption": "Towel swans & Magical Porthole in an inside stateroom",
+    "ship": "Disney Dream",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-20T03:00:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-admiral-donald-27",
+    "photoUrl": "/assets/images/gallery/27-captain-donald-atrium-statue.jpg",
+    "caption": "Admiral Donald Duck atrium statue",
+    "ship": "Disney Dream",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-20T03:01:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-nemo-mosaic-28",
+    "photoUrl": "/assets/images/gallery/28-finding-nemo-mosaic.jpg",
+    "caption": "Finding Nemo mosaic mural onboard",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-20T03:02:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-window-castaway-29",
+    "photoUrl": "/assets/images/gallery/29-boy-window-castaway-view.jpg",
+    "caption": "Dining with a Castaway Cay view",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-20T03:03:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-looking-out-30",
+    "photoUrl": "/assets/images/gallery/30-boy-looking-out-island-view.jpg",
+    "caption": "Looking out at the private island from the ship",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-20T03:04:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-castaway-lagoon-31",
+    "photoUrl": "/assets/images/gallery/31-castaway-cay-lagoon-umbrellas.jpg",
+    "caption": "Family beach lagoon at Castaway Cay",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-20T03:05:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-splash-table-32",
+    "photoUrl": "/assets/images/gallery/32-toddler-splash-pad-water-table.jpg",
+    "caption": "Toddler splash pad water play",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-20T03:06:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-ship-beach-33",
+    "photoUrl": "/assets/images/gallery/33-dream-class-ship-castaway-beach.jpg",
+    "caption": "Dream-class ship from Castaway Cay beach",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-20T03:07:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-wish-loungefly-34",
+    "photoUrl": "/assets/images/gallery/34-disney-wish-loungefly-backpack.jpg",
+    "caption": "Disney Wish Loungefly mini backpack",
+    "ship": "Disney Wish",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-20T03:08:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-soft-serve-35",
+    "photoUrl": "/assets/images/gallery/35-soft-serve-pool-deck.jpg",
+    "caption": "Soft-serve on the pool deck",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-20T03:09:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-aqua-stairs-36",
+    "photoUrl": "/assets/images/gallery/36-toddler-aqua-splash-stairs.jpg",
+    "caption": "Toddler water play area stairs",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-20T03:10:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-crew-wave-37",
+    "photoUrl": "/assets/images/gallery/37-castaway-crew-mickey-gloves-wave.jpg",
+    "caption": "Castaway Cay crew waving with Mickey gloves",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-20T03:11:00.000Z",
+    "seed": true
+  },
+  {
+    "id": "seed-bike-anchor-38",
+    "photoUrl": "/assets/images/gallery/38-castaway-bike-dcl-anchor.jpg",
+    "caption": "Bike ride by the Castaway Cay DCL anchor",
+    "ship": "",
+    "displayName": "Cruising Cove",
+    "category": "other",
+    "status": "approved",
+    "createdAt": "2026-08-20T03:12:00.000Z",
+    "seed": true
   }
 ];
