@@ -43,7 +43,7 @@ export async function notifyMarketplaceClick(opts: {
   const count = Math.max(0, Math.floor(opts.visitCount));
   const when = opts.at && !Number.isNaN(Date.parse(opts.at)) ? opts.at : new Date().toISOString();
   const path = normalizePath(opts.path);
-  const subject = `Marketplace click: ${name} (${count} visit${count === 1 ? "" : "s"})`;
+  const subject = `Cruise Accessories click: ${name} (${count} visit${count === 1 ? "" : "s"})`;
   const text = [
     "Someone clicked Visit shop on Cruising Cove.",
     "",

@@ -112,7 +112,7 @@ export async function submitSellerApplication(request: HttpRequest, context: Inv
     const message = err instanceof Error ? err.message : String(err);
     try {
       const sent = await notifyOwnerOfSubmitError({
-        form: "Marketplace seller application",
+        form: "Cruise Accessories seller application",
         error: message,
         source: "api/seller-application",
         httpStatus: 500,

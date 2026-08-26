@@ -43,7 +43,7 @@ const ARTICLES: NewsletterArticle[] = [
     path: "/articles/disney-cruise-pixie-dusting.html",
   },
   {
-    title: "Welcome Aboard Bels Castle Creations — First Marketplace Shop",
+    title: "Welcome Aboard Bels Castle Creations — First Cruise Accessories Shop",
     excerpt: "Door magnets, fish extender gifts, cabin décor, and personalized keepsakes.",
     date: "2026-08-05",
     path: "/articles/welcome-aboard-bels-castle-creations.html",

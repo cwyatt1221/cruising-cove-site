@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Marketplace seller applications admin | Cruising Cove</title>
+<title>Cruise Accessories seller applications admin | Cruising Cove</title>
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,7 +39,7 @@
       <a class="logo" href="/">Cruising Cove</a>
       <div class="nav-cta">
         <a href="/admin/" class="btn btn-outline">Admin home</a>
-        <a href="/marketplace/" class="btn btn-outline">Marketplace</a>
+        <a href="/marketplace/" class="btn btn-outline">Cruise Accessories</a>
       </div>
     </nav>
   </div>
@@ -48,7 +48,7 @@
 <main class="agent-admin-shell">
   <div class="wrap" style="max-width:960px;">
     <section class="agent-admin-panel">
-      <h1>Marketplace seller applications</h1>
+      <h1>Cruise Accessories seller applications</h1>
       <p class="agent-admin-sub">Sign in with your admin password, then review Curated 10 submissions and publish approved shops (max 10 live). Edit category tags and social-proof quotes on live shops.</p>
       <div class="agent-admin-key">
         <label for="adminPassword">Admin password</label>
@@ -60,7 +60,7 @@
         <button type="button" class="btn btn-gold" id="loadPending">Pending</button>
         <button type="button" class="btn btn-outline" id="loadApproved">Approved</button>
         <button type="button" class="btn btn-outline" id="loadAll">All</button>
-        <button type="button" class="btn btn-outline" id="loadLive">Live marketplace</button>
+        <button type="button" class="btn btn-outline" id="loadLive">Live Cruise Accessories</button>
       </div>
       <p class="agent-admin-status" id="adminStatus" hidden></p>
       <div id="adminList" class="agent-admin-list"></div>
@@ -224,20 +224,20 @@
               ? "<p class='agent-meta'>Notes: " + escapeHtml(a.otherNotes) + "</p>"
               : "") +
             (live
-              ? '<p class="agent-meta"><a href="' + escapeHtml(live) + '">View on marketplace →</a></p>'
+              ? '<p class="agent-meta"><a href="' + escapeHtml(live) + '">View in Cruise Accessories →</a></p>'
               : "") +
             (pending || approved
               ? '<div class="agent-admin-card-actions">' +
                   '<label class="agent-admin-check"><input type="checkbox" data-featured ' +
                     (a.featured ? "checked" : "") +
-                    "> Featured on marketplace</label>" +
+                    "> Featured in Cruise Accessories</label>" +
                   '<label class="agent-admin-slug">Shop URL id' +
                   '<input type="text" data-seller-id value="' +
                   escapeHtml(a.publishedSellerId || slugPreview(a.shopName)) +
                   '" ' + (a.publishedSellerId ? "readonly" : "") + ">" +
                   "</label>" +
                   '<div class="seller-admin-edit">' +
-                    '<p class="seller-admin-hint">Category tags (shown on marketplace + filter chips)</p>' +
+                    '<p class="seller-admin-hint">Category tags (shown in Cruise Accessories + filter chips)</p>' +
                     categoryChecks(cats) +
                     '<label>Social proof quote (optional)<textarea data-quote rows="2" placeholder="Short guest quote">' +
                     escapeHtml(q.quote) +
@@ -247,7 +247,7 @@
                     '" placeholder="e.g. Sarah"></label>' +
                   "</div>" +
                   '<button type="button" class="btn btn-gold" data-action="approve">' +
-                  (approved ? "Update / re-publish" : "Publish to marketplace") +
+                  (approved ? "Update / re-publish" : "Publish to Cruise Accessories") +
                   "</button>" +
                   (pending
                     ? '<button type="button" class="btn btn-outline" data-action="reject">Reject</button>'
@@ -283,7 +283,7 @@
   }
 
   async function loadLive() {
-    list.innerHTML = "<p class='agent-admin-empty'>Loading live marketplace…</p>";
+    list.innerHTML = "<p class='agent-admin-empty'>Loading live Cruise Accessories…</p>";
     statusEl.hidden = true;
     try {
       var res = await fetch("/api/sellers");
@@ -295,7 +295,7 @@
         return;
       }
       list.innerHTML =
-        "<h2>Live marketplace <span>(" + sellers.length + " of " + (data.max || 10) + ")</span></h2>" +
+        "<h2>Live Cruise Accessories <span>(" + sellers.length + " of " + (data.max || 10) + ")</span></h2>" +
         sellers.map(function (s) {
           var q = firstQuote(s.socialProofQuotes);
           return (
@@ -404,11 +404,11 @@
       }
       var data = await moderate(card, action);
       if (action === "approve") {
-        showStatus("Published — live on the marketplace" + (data.marketplacePath ? " (" + data.marketplacePath + ")" : ""), true);
+        showStatus("Published — live in Cruise Accessories" + (data.marketplacePath ? " (" + data.marketplacePath + ")" : ""), true);
       } else if (action === "reject") {
         showStatus("Application rejected.", true);
       } else if (action === "unpublish") {
-        showStatus("Removed from the public marketplace.", true);
+        showStatus("Removed from the Cruise Accessories directory.", true);
       } else {
         showStatus("Updated.", true);
       }

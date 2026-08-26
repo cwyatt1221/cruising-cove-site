@@ -24,7 +24,7 @@
     },
     {
       href: "/marketplace/sellers/admin.html",
-      label: "Marketplace sellers",
+      label: "Cruise Accessories sellers",
       blurb: "Curated 10 shop applications",
     },
     {

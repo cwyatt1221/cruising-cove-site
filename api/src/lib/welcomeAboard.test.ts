@@ -49,7 +49,7 @@ assert.match(email.html, /Embark/);
 assert.match(email.html, /Return/);
 assert.match(email.html, /Packing list/);
 assert.match(email.html, /disney-cruise-packing-list/);
-assert.match(email.html, /Marketplace/);
+assert.match(email.html, /Cruise Accessories/);
 assert.match(email.html, /Travel agent directory/);
 assert.doesNotMatch(email.html, /\{\{[A-Z0-9_]+\}\}/);
 
@@ -95,7 +95,7 @@ assert.match(cove.html, /Martina/);
 assert.match(cove.html, /Getting Started/);
 assert.match(cove.html, /Key Card/);
 assert.match(cove.html, /Muster Drill/);
-assert.match(cove.html, /Marketplace/);
+assert.match(cove.html, /Cruise Accessories/);
 assert.match(cove.html, /Travel agent directory/);
 assert.match(cove.html, /marketplace\//);
 assert.match(cove.html, /agents\//);

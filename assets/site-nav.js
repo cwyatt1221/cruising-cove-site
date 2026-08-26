@@ -47,7 +47,7 @@
     "</div>" +
     '<a href="/community/">Community</a>' +
     '<a href="/gallery/">Gallery</a>' +
-    '<a href="/marketplace/">Marketplace</a>' +
+    '<a href="/marketplace/">Cruise Accessories</a>' +
     '<a href="/faq/">FAQ</a>' +
     '<a href="/newsletter/">Newsletter</a>' +
     '<button type="button" class="cc-nav-feedback" data-cc-feedback="1">Give Feedback</button>';
@@ -110,9 +110,9 @@
   function normalizePrimaryNav() {
     var links = document.getElementById("primaryNav");
     if (!links) return;
-    if (links.getAttribute("data-cc-nav") === "v11") return;
+    if (links.getAttribute("data-cc-nav") === "v12") return;
     links.innerHTML = NAV_HTML;
-    links.setAttribute("data-cc-nav", "v11");
+    links.setAttribute("data-cc-nav", "v12");
   }
 
   function loadCommunityAuth(cb) {
@@ -880,10 +880,10 @@
 
   var ARTICLE_EXTRA_LINKS = {
     "welcome-aboard-bels-castle-creations": [
-      { href: "/marketplace/", title: "Visit the marketplace", meta: "Marketplace" },
+      { href: "/marketplace/", title: "Visit Cruise Accessories", meta: "Cruise Accessories" },
     ],
     "welcome-aboard-shimmering-ever-after": [
-      { href: "/marketplace/", title: "Visit the marketplace", meta: "Marketplace" },
+      { href: "/marketplace/", title: "Visit Cruise Accessories", meta: "Cruise Accessories" },
     ],
     "disney-cruise-booking-and-cost": [
       { href: "/planning/disney-cruise-cost.html", title: "What a Disney cruise costs", meta: "Plan" },
@@ -933,7 +933,7 @@
       { href: "/articles/midship-detective-agency.html", title: "Midship Detective Agency", meta: "Articles" },
     ],
     "disney-cruise-fish-extenders": [
-      { href: "/marketplace/", title: "Marketplace essentials", meta: "Marketplace" },
+      { href: "/marketplace/", title: "Cruise Accessories essentials", meta: "Cruise Accessories" },
     ],
   };
 
@@ -1200,7 +1200,7 @@
             linkItem("/agents/when-an-agent-helps.html", "When an agent helps", "Agents"),
             linkItem("/planning/first-cruise.html", "First-cruise path", "Plan"),
             linkItem("/ships/", "Compare the Disney fleet", "Ships"),
-            linkItem("/marketplace/", "Marketplace", "Marketplace"),
+            linkItem("/marketplace/", "Cruise Accessories", "Cruise Accessories"),
           ],
           path
         )
@@ -1214,7 +1214,7 @@
         "Also useful",
         dedupeLinks(
           [
-            linkItem("/marketplace/sellers/", "Browse sellers", "Marketplace"),
+            linkItem("/marketplace/sellers/", "Browse sellers", "Cruise Accessories"),
             linkItem("/articles/disney-cruise-fish-extenders.html", "Fish extenders guide", "Article"),
             linkItem("/planning/disney-cruise-packing-list.html", "Packing list", "Plan"),
             linkItem("/agents/", "Find a travel agent", "Agents"),

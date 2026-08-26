@@ -1,5 +1,5 @@
 /**
- * Cruising Cove — Curated 10 marketplace shops.
+ * Cruising Cove — Curated 10 shops.
  * Up to 10 featured shops. Add approved partners to SHOPS (max 10).
  * shop shape: { id, name, shopUrl, description, photoUrls, categories?, socialProofQuotes?, visitCount? }
  */

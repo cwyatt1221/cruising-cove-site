@@ -165,7 +165,7 @@ export async function loadContactCards(opts: { maxAgents?: number; maxSellers?: 
       sellerCards.push({
         kind: "seller",
         name: s.name,
-        blurb: (s.description || (s.categories || []).slice(0, 2).join(", ") || "Marketplace shop").slice(
+        blurb: (s.description || (s.categories || []).slice(0, 2).join(", ") || "Cruise Accessories shop").slice(
           0,
           140
         ),
@@ -324,7 +324,7 @@ export async function buildSailingEmail(opts: BuildSailingEmailOpts): Promise<Sa
     }
   } else {
     textParts.push(`- Find an agent: ${site}/agents/`);
-    textParts.push(`- Marketplace: ${site}/marketplace/`);
+    textParts.push(`- Cruise Accessories: ${site}/marketplace/`);
   }
   textParts.push("");
   textParts.push("— Cruising Cove");
@@ -408,7 +408,7 @@ export async function buildSailingEmail(opts: BuildSailingEmailOpts): Promise<Sa
           (c) => `<tr>
           <td style="padding:12px 0;border-bottom:1px solid #e8e2d4;vertical-align:top">
             <div style="font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#c9a24b;margin-bottom:4px">${
-              c.kind === "agent" ? "Travel agent" : "Marketplace"
+              c.kind === "agent" ? "Travel agent" : "Cruise Accessories"
             }</div>
             <a href="${escapeHtml(c.href)}" style="color:#1a2a4a;font-weight:700;font-size:16px;text-decoration:none">${escapeHtml(c.name)}</a>
             <div style="color:#555;font-size:14px;margin-top:4px">${escapeHtml(c.blurb)}</div>

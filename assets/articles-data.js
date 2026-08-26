@@ -61,7 +61,7 @@
       id: "welcome-aboard-shimmering-ever-after",
       title: "Sparkle for sail days and park days.",
       excerpt:
-        "Sequin mouse ears and embroidered apparel made for Disney trips — the second of ten shops we're hand-picking for the marketplace.",
+        "Sequin mouse ears and embroidered apparel made for Disney trips — the second of ten shops we're hand-picking for Cruise Accessories.",
       date: "2026-08-10",
       url: "/articles/welcome-aboard-shimmering-ever-after.html",
       kind: "featured-shop",
@@ -81,7 +81,7 @@
       id: "welcome-aboard-bels-castle-creations",
       title: "Handmade extras for the trip you're already planning.",
       excerpt:
-        "Custom door magnets, fish extender gifts, and cabin décor made for Disney sailings — the first of ten shops we're hand-picking for the marketplace.",
+        "Custom door magnets, fish extender gifts, and cabin décor made for Disney sailings — the first of ten shops we're hand-picking for Cruise Accessories.",
       date: "2026-08-05",
       url: "/articles/welcome-aboard-bels-castle-creations.html",
       kind: "featured-shop",

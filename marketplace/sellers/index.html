@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Apply for a Curated 10 Slot — Cruising Cove Marketplace</title>
+<title>Apply for a Curated 10 Slot — Cruise Accessories</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -188,7 +188,7 @@
         </div>
         <a href="/community/">Community</a>
         <a href="/gallery/">Gallery</a>
-        <a href="/marketplace/">Marketplace</a>
+        <a href="/marketplace/">Cruise Accessories</a>
       </div>
       <div class="nav-cta">
         <a href="/agents/" class="btn btn-gold">Find an Agent</a>
@@ -230,7 +230,7 @@
     <h2>What you’ll submit</h2>
     <ul>
       <li><strong>Shop URL</strong> — the link families use to visit and shop with you.</li>
-      <li><strong>Directory description</strong> — 2–3 sentences shown on your marketplace card.</li>
+      <li><strong>Directory description</strong> — 2–3 sentences shown on your shop card.</li>
       <li><strong>Product photos</strong> — up to 4 images of items for your listing (required).</li>
     </ul>
     <p style="margin-top:12px;"><a href="/marketplace/">See open spots on the Curated 10 page →</a></p>
@@ -280,7 +280,7 @@
 
     <fieldset>
       <legend>What you sell</legend>
-      <p class="field-hint" style="margin-top:0;">Select the product types that match your shop. These become category tags on your marketplace card so families can filter the directory.</p>
+      <p class="field-hint" style="margin-top:0;">Select the product types that match your shop. These become category tags on your shop card so families can filter the directory.</p>
       <label class="field-label">Product types <span class="req">*</span></label>
       <div class="check-grid" data-group="productCategories">
         <label class="check-item"><input type="checkbox" value="Door magnets"> Door magnets</label>
@@ -567,7 +567,7 @@
       const body = await res.json().catch(function(){ return {}; });
       if (!res.ok) {
         if (window.CCAnalytics && CCAnalytics.reportSubmitError) {
-          CCAnalytics.reportSubmitError('Marketplace seller application', {
+          CCAnalytics.reportSubmitError('Cruise Accessories seller application', {
             httpStatus: res.status,
             error: body.error || ('HTTP ' + res.status),
             email: payload.email,
@@ -585,7 +585,7 @@
       successCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (err) {
       if (window.CCAnalytics && CCAnalytics.reportSubmitError && !(err && err._ccReported)) {
-        CCAnalytics.reportSubmitError('Marketplace seller application', {
+        CCAnalytics.reportSubmitError('Cruise Accessories seller application', {
           httpStatus: 0,
           error: (err && err.message) || 'Network or unknown error',
           email: payload.email,

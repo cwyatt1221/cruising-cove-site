@@ -121,9 +121,9 @@ Agents submit a profile card for manual review:
 
 Tables: `AgentApplications`, `PublishedAgents`. Frontend: `/agents/apply.html`, admin review/publish at `/agents/admin.html`, dynamic profiles at `/agents/profile.html?id=…`. Directory at `/agents/` supports client-side specialty filter chips (unique tokens from live agent specialties, including comma-split “other” text). Sample cards remain in `assets/agents-data.js` until at least one live agent is published. Profile opens call `POST /api/agents/{id}/visit` once per browser session; `visitCount` and `lastNotifyAt` live on `PublishedAgents` and are preserved on re-publish.
 
-## Marketplace seller applications (Curated 10)
+## Cruise Accessories seller applications (Curated 10)
 
-Shops apply for one of ten marketplace slots:
+Shops apply for one of ten Cruise Accessories slots:
 
 | Route | Purpose |
 | --- | --- |
@@ -131,19 +131,19 @@ Shops apply for one of ten marketplace slots:
 | `POST /api/seller-photo-upload` | Product photos → `seller-photos` blob container |
 | `GET /api/seller-applications?key=…` | List apps (`REPORT_ACCESS_KEY`) |
 | `POST /api/seller-applications/{id}?key=…` | Approve / reject / unpublish (`REPORT_ACCESS_KEY`) |
-| `GET /api/sellers` | Public published marketplace cards (max 10) |
+| `GET /api/sellers` | Public published shop cards (max 10) |
 | `POST /api/sellers/{id}/visit` | Increment shop visit counter (once per browser session on the client); owner email (rate-limited) |
 | `POST /api/sellers/{id}?key=…` | Admin edit categories + social-proof quotes on a live shop |
 
 Tables: `SellerApplications`, `PublishedSellers`. Public card fields include `categories`, `socialProofQuotes`, and `visitCount`. `lastNotifyAt` is stored on the published row for owner-email cooldown (not exposed publicly). Frontend: `/marketplace/sellers/`, admin at `/marketplace/sellers/admin.html`, live directory at `/marketplace/`.
 
-### Owner click notifications (marketplace + agent profiles)
+### Owner click notifications (Cruise Accessories + agent profiles)
 
 Site owner only (`AGENT_LEAD_NOTIFY_EMAIL`, default `cgrove0712@gmail.com`) — **not** the seller or agent.
 
 | Trigger | Endpoint | Email subject style |
 | --- | --- | --- |
-| Marketplace **Visit shop** | `POST /api/sellers/{id}/visit` | `Marketplace click: {shop} ({n} visits)` |
+| Cruise Accessories **Visit shop** | `POST /api/sellers/{id}/visit` | `Cruise Accessories click: {shop} ({n} visits)` |
 | Agent profile open | `POST /api/agents/{id}/visit` | `Agent profile click: {name} ({n} views)` |
 
 Each email includes name/id, timestamp, page URL (`path` JSON body or Referer), and the running counter. Counters increment on every recorded visit; emails are soft-rate-limited to **at most one per shop or agent per hour** (`lastNotifyAt` is written only after Resend succeeds). Response fields: `notified` (email actually sent), optional `notifySkipped: "cooldown"`, optional `notifyError` (Resend failure reason, no secrets). Bypass cooldown for testing: `POST .../visit?force=1&key=…` (`REPORT_ACCESS_KEY` or admin session). Existing `agent_request_click` and agent-request form emails are unchanged.

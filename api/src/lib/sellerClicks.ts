@@ -122,7 +122,7 @@ export function buildSellerWeeklyClickEmail(opts: {
     `Visit shop clicks: ${weekClicks}`,
     `Lifetime clicks on Cruising Cove: ${lifetime}`,
     "",
-    `Marketplace: ${site}/marketplace/#${opts.shopId}`,
+    `Cruise Accessories: ${site}/marketplace/#${opts.shopId}`,
     "",
     "These are click-outs from Cruising Cove to your shop link (not Etsy analytics).",
     "You’re receiving this because your shop is listed on Cruising Cove.",
@@ -145,7 +145,7 @@ export function buildOwnerWeeklyDigest(opts: {
   rows: { shopName: string; shopId: string; weekClicks: number; emailed: boolean }[];
 }): { subject: string; html: string; text: string } {
   const total = opts.rows.reduce((sum, r) => sum + r.weekClicks, 0);
-  const subject = `Marketplace weekly clicks: ${total} across ${opts.rows.length} shop${opts.rows.length === 1 ? "" : "s"}`;
+  const subject = `Cruise Accessories weekly clicks: ${total} across ${opts.rows.length} shop${opts.rows.length === 1 ? "" : "s"}`;
   const lines = opts.rows.map(
     (r) =>
       `- ${r.shopName} (${r.shopId}): ${r.weekClicks} click${r.weekClicks === 1 ? "" : "s"}${r.emailed ? "" : " · not emailed (no address)"}`
