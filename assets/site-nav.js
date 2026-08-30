@@ -1269,43 +1269,38 @@
     return Math.floor(num).toLocaleString("en-US");
   }
 
-  function visitorCaptionMode() {
-    if (window.matchMedia("(max-width:979px)").matches) return "mobile";
-    if (window.matchMedia("(max-width:1180px)").matches) return "short";
-    return "full";
-  }
-
   function setVisitorCaptionText(el, total) {
-    var formatted = formatVisitorCount(total);
-    if (!formatted) {
-      el.hidden = true;
-      el.textContent = "";
+    var formatted = total == null ? null : formatVisitorCount(total);
+    el.hidden = false;
+    if (formatted) {
+      el.setAttribute("data-count", String(Math.floor(Number(total))));
+      el.innerHTML =
+        "Welcome, fellow DCL lover — <strong>" +
+        formatted +
+        "</strong> guests have come aboard";
       return;
     }
-    el.hidden = false;
-    el.setAttribute("data-count", String(Math.floor(Number(total))));
-    var mode = visitorCaptionMode();
-    var html;
-    if (mode === "mobile") {
-      html = "<strong>" + formatted + "</strong> guests aboard";
-    } else if (mode === "short") {
-      html = "Welcome, fellow DCL lover — <strong>" + formatted + "</strong> guests aboard";
-    } else {
-      html = "Welcome, fellow DCL lover — <strong>" + formatted + "</strong> guests have come aboard";
-    }
-    el.innerHTML = html;
+    el.removeAttribute("data-count");
+    el.innerHTML =
+      "Welcome, fellow DCL lover — <strong>…</strong> guests have come aboard";
   }
 
   function ensureVisitorCounter() {
-    var links = document.getElementById("primaryNav");
-    if (!links || links.querySelector("[data-cc-visitor-count]")) return;
+    var bar = document.querySelector(".site-nav-bar");
+    if (!bar) return;
 
-    var el = document.createElement("p");
-    el.className = "nav-visitor-count";
-    el.setAttribute("data-cc-visitor-count", "1");
-    el.setAttribute("aria-live", "polite");
-    el.hidden = true;
-    links.insertBefore(el, links.firstChild);
+    var el = bar.querySelector("[data-cc-visitor-count]");
+    if (!el) {
+      el = document.createElement("p");
+      el.className = "site-visitor-count";
+      el.setAttribute("data-cc-visitor-count", "1");
+      el.setAttribute("aria-live", "polite");
+      var nav = document.getElementById("primaryNav");
+      if (nav) bar.insertBefore(el, nav);
+      else bar.appendChild(el);
+    }
+
+    setVisitorCaptionText(el, null);
 
     var counted = false;
     try {
@@ -1334,16 +1329,19 @@
           }
         }
         setVisitorCaptionText(el, data && data.total);
-        if (!el._ccVisitorResize) {
-          el._ccVisitorResize = function () {
-            var n = el.getAttribute("data-count");
-            if (n != null) setVisitorCaptionText(el, n);
-          };
-          window.addEventListener("resize", el._ccVisitorResize);
-        }
       })
       .catch(function () {
-        el.hidden = true;
+        fetch("/api/site-visit", { method: "GET", credentials: "same-origin", cache: "no-store" })
+          .then(function (res) {
+            if (!res.ok) throw new Error("visit " + res.status);
+            return res.json();
+          })
+          .then(function (data) {
+            setVisitorCaptionText(el, data && data.total);
+          })
+          .catch(function () {
+            el.hidden = true;
+          });
       });
   }
 

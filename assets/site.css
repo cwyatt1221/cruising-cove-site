@@ -175,7 +175,7 @@ body.cc-admin-logged-in .site-header{top:42px;}
 }
 .cc-nav-first-mate-label{white-space:nowrap;}
 .site-nav-bar .nav-links{
-  display:none;width:100%;order:4;
+  display:none;width:100%;order:5;
   flex-direction:column;align-items:stretch;gap:4px;
   padding:12px 0 6px;flex-wrap:nowrap;flex:1 1 100%;
   font-size:0.92rem;font-weight:500;color:var(--navy);
@@ -198,7 +198,8 @@ body.cc-admin-logged-in .site-header{top:42px;}
 .site-nav-bar .nav-links > button.cc-nav-feedback:hover{
   color:var(--gold);background:rgba(26,42,74,.04);
 }
-.nav-visitor-count{
+.nav-visitor-count,
+.site-visitor-count{
   margin:0 0 8px;
   padding:0 4px 10px;
   border-bottom:1px solid rgba(26,42,74,.08);
@@ -210,9 +211,19 @@ body.cc-admin-logged-in .site-header{top:42px;}
   color:rgba(26,42,74,.82);
   max-width:100%;
 }
-.nav-visitor-count strong{
+.nav-visitor-count strong,
+.site-visitor-count strong{
   color:var(--navy);
   font-weight:800;
+}
+.site-visitor-count{
+  display:block;
+  width:100%;
+  order:4;
+  margin:2px 0 0;
+  padding:10px 0 8px;
+  border-bottom:0;
+  border-top:1px solid rgba(26,42,74,.08);
 }
 .site-nav-bar .nav-cta{
   display:flex;align-items:center;gap:10px;flex:0 0 auto;
@@ -388,7 +399,8 @@ body.cc-admin-logged-in .site-header{top:42px;}
     flex-wrap:wrap;font-size:0.88rem;
     min-width:0;
   }
-  .nav-visitor-count{
+  .nav-visitor-count,
+  .site-visitor-count{
     margin:0 auto 0 0;
     padding:4px 16px 6px 0;
     border:0;
@@ -400,6 +412,13 @@ body.cc-admin-logged-in .site-header{top:42px;}
     font-weight:700;
     line-height:1.3;
     color:rgba(26,42,74,.78);
+  }
+  .site-visitor-count{
+    order:3;
+    width:auto;
+    margin:0 auto 0 0;
+    padding:4px 16px 6px 0;
+    border-top:0;
   }
   .site-nav-bar .nav-links > a{
     padding:4px 0 6px;
