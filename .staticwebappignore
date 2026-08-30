@@ -1,0 +1,15 @@
+tools/**
+output/**
+.tmp-azure/**
+api/**
+scripts/**
+data/**
+templates/**
+.github/**
+.git/**
+**/.gitignore
+**/.DS_Store
+**/node_modules/**
+**/*.mp4
+**/*.mov
+**/*.zip
