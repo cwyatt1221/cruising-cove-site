@@ -253,46 +253,7 @@
     });
   }
 
-  function ensureFirstMateNav() {
-    var bar = document.querySelector(".site-nav-bar");
-    if (!bar || bar.querySelector("[data-cc-first-mate]")) return;
-
-    var logo = bar.querySelector(".logo, .brand");
-    var btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "cc-nav-first-mate";
-    btn.setAttribute("data-cc-first-mate", "1");
-    btn.setAttribute("aria-label", "Ask AI First Mate");
-    btn.title = "Ask AI First Mate";
-    btn.innerHTML =
-      '<img class="cc-nav-first-mate-icon" src="/assets/images/ai-first-mate.png" width="32" height="32" alt="" decoding="async">' +
-      '<span class="cc-nav-first-mate-label">Ask AI First Mate</span>';
-
-    btn.addEventListener("click", function () {
-      function openChat() {
-        if (window.CruisingCoveChat && typeof window.CruisingCoveChat.open === "function") {
-          window.CruisingCoveChat.open();
-          return true;
-        }
-        return false;
-      }
-      if (openChat()) return;
-      var tries = 0;
-      var timer = setInterval(function () {
-        tries += 1;
-        if (openChat() || tries > 20) clearInterval(timer);
-      }, 100);
-    });
-
-    if (logo && logo.parentNode === bar) {
-      if (logo.nextSibling) bar.insertBefore(btn, logo.nextSibling);
-      else bar.appendChild(btn);
-    } else {
-      bar.insertBefore(btn, bar.firstChild);
-    }
-  }
-
-  function ensureFeedbackLink() {
+  function ensurePrivacyNote() {
     var links = document.getElementById("primaryNav");
     if (!links) return;
 
@@ -1394,7 +1355,6 @@
     markCurrent();
     ensureVisitorCounter();
     ensurePrivacyNote();
-    ensureFirstMateNav();
     ensureFeedbackLink();
     ensureAccountNav();
     ensureNewsletterFooter();

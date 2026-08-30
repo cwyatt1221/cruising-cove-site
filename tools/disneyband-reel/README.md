@@ -1,6 +1,6 @@
 # DisneyBand+ Instagram Reel
 
-Remotion project that builds a **45s / 1080×1920 / 30fps** silent Instagram Reel from still photos with Ken Burns pan/zoom and timed text overlays.
+Remotion project that builds a **45s / 1080×1920 / 30fps** silent Instagram Reel from a **single still** with a continuous Ken Burns journey (boy → DisneyBand+) and timed text overlays.
 
 ## Paths
 
@@ -8,36 +8,32 @@ Remotion project that builds a **45s / 1080×1920 / 30fps** silent Instagram Ree
 |------|------|
 | Project | `tools/disneyband-reel/` |
 | Export | `tools/disneyband-reel/out/disneyband-reel.mp4` |
-| Photos | `tools/disneyband-reel/public/photos/` |
+| Photo | `tools/disneyband-reel/public/photos/boy-disneyband.png` |
 
-## Photo mapping (current)
+## Photo
 
-No dedicated DisneyBand+ product close-ups were found on Desktop/Downloads/site assets. These slots use the best available **cruise stills where a band is visible on a wrist**, plus a closing ship wide. Replace any file below (keep the filename) and re-render.
+Sole asset: square meet-and-greet still of a smiling boy (Star Wars Vader shirt, thumbs up) wearing a **white Stormtrooper DisneyBand+** on his right wrist (viewer’s left). Adults on the sides are cropped out by the 9:16 Ken Burns path.
 
-| Slot | File | Source / notes |
-|------|------|----------------|
-| 1 Hook | `01-hook.jpeg` | Welcome aboard_10 — boy + blue band by ship model |
-| 2 Room key | `02-room-key.jpeg` | Welcome aboard — couple; red + dark bands |
-| 3 Payments | `03-payments.jpeg` | Welcome aboard_2 — both wrists with bands |
-| 4 Detail | `04-detail.jpeg` | Welcome aboard_3 — white patterned band on boy |
-| 5 Extra | `05-glow.jpeg` | Welcome aboard_15 — family + ship model, blue band |
-| 6 Variety | `06-variety.jpeg` | Chewbacca_3 — portrait; band on wrist |
-| 7 Multiple | `07-multiple.jpeg` | Chewbacca family — white + dark bands |
-| 8 Relaxed | `08-relaxed.jpeg` | Moana hug — blue band on wrist |
-| 9 Closing | `09-closing.jpg` | Wish at Castaway Cay pier (gallery) |
+Source resolution is **400×410** — zoom is capped (~2× cover) so the Stormtrooper puck stays readable rather than pixel mush.
 
-Ideal upgrades (if you shoot/export them later): true band close-up on wrist for slot 1, band at cabin door for 2, band at a register/bar for 3, lit/glowing band for 4–5, color/design flat lays for 6–7.
+## Motion path (45s continuous)
 
-## Timing (spec)
+| Time | Camera |
+|------|--------|
+| 0–4s | Medium 9:16 on boy’s face/torso; band visible but not hero |
+| 4–40s | Progressive zoom/pan toward the Stormtrooper wristband puck |
+| 40–45s | Hold on clear band framing for CTA text |
 
-| Scene | Time | Photos | Text |
-|-------|------|--------|------|
-| 1 | 0:00–0:04 | 1 | Hook line |
-| 2 | 0:04–0:12 | 2 → 3 | Room key / payments / wrist (split) |
-| 3 | 0:12–0:20 | 4 → 5 | DisneyBand+ explainer (split) |
-| 4 | 0:20–0:30 | 6 → 7 | Colors / designs (split) |
-| 5 | 0:30–0:38 | 8 | Hands-free / relaxing (split) |
-| 6 | 0:38–0:45 | 9 | Save this CTA |
+## Timing (text overlays)
+
+| Scene | Time | Text |
+|-------|------|------|
+| 1 | 0:00–0:04 | Hook line |
+| 2 | 0:04–0:12 | Room key / payments / wrist (split) |
+| 3 | 0:12–0:20 | DisneyBand+ explainer (split) |
+| 4 | 0:20–0:30 | Colors / designs (split) |
+| 5 | 0:30–0:38 | Hands-free / relaxing (split) |
+| 6 | 0:38–0:45 | Save this CTA |
 
 ## Commands
 
@@ -50,15 +46,7 @@ npm start          # Remotion Studio preview
 npm run render     # → out/disneyband-reel.mp4
 ```
 
-Or explicitly:
-
-```bash
-npx remotion render DisneyBandReel out/disneyband-reel.mp4
-```
-
 ### Pillow + ffmpeg fallback (used for the checked-in export)
-
-If Chrome/Remotion can’t launch in your environment:
 
 ```bash
 cd tools/disneyband-reel
@@ -69,11 +57,11 @@ Requires: `ffmpeg`, Python 3, Pillow (`pip install Pillow`).
 
 ## Audio
 
-Export is **silent** on purpose (Instagram trending audio can’t be fetched programmatically / licensing). Add your track in Instagram Reels after upload, or drop a royalty-free `.mp3` into `public/` and wire an `<Audio>` in `DisneyBandReel.tsx` if you want it baked in.
+Export is **silent** on purpose. Add your track in Instagram Reels after upload, or drop a royalty-free `.mp3` into `public/` and wire an `<Audio>` in `DisneyBandReel.tsx`.
 
 ## Notes
 
 - Composition id: `DisneyBandReel`
-- Motion: zoom 100% → ~108–112%, alternating L→R / R→L pan, ease-in-out
-- Text: Montserrat SemiBold ~68px, white on semi-transparent bar, bottom third (~150px from bottom); CTA uses center
+- Motion: one continuous Ken Burns path (see `src/photos.ts` / `scripts/render_ffmpeg.py`)
+- Text: Montserrat SemiBold ~68px, white on semi-transparent bar, bottom third; CTA uses center
 - This folder is a build tool — not linked from the live site homepage

@@ -1,38 +1,32 @@
 #!/usr/bin/env python3
 """
 Fallback renderer for DisneyBand+ reel when Remotion/Chrome can't launch.
-Matches tools/disneyband-reel timing: 1080x1920, 30fps, 45s, H.264, silent.
+Single photo + continuous Ken Burns (boy → wristband), 1080x1920, 30fps, 45s.
 """
 
 from __future__ import annotations
 
-import math
 import subprocess
 import sys
-import tempfile
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
-PHOTOS = ROOT / "public" / "photos"
+PHOTO = ROOT / "public" / "photos" / "boy-disneyband.png"
 FONT_PATH = ROOT / "public" / "fonts" / "Montserrat-SemiBold.ttf"
 OUT = ROOT / "out" / "disneyband-reel.mp4"
 
 W, H, FPS = 1080, 1920, 30
 TOTAL = 45 * FPS
 
-# photo_id, start_s, end_s, pan ('ltr'|'rtl'), zoom_to, focus (fx, fy)
-PHOTO_BEATS = [
-    (1, 0, 4, "ltr", 1.12, (0.42, 0.55), "01-hook.jpeg"),
-    (2, 4, 8, "rtl", 1.10, (0.35, 0.45), "02-room-key.jpeg"),
-    (3, 8, 12, "ltr", 1.10, (0.55, 0.48), "03-payments.jpeg"),
-    (4, 12, 16, "rtl", 1.11, (0.48, 0.55), "04-detail.jpeg"),
-    (5, 16, 20, "ltr", 1.10, (0.62, 0.50), "05-glow.jpeg"),
-    (6, 20, 25, "rtl", 1.10, (0.48, 0.55), "06-variety.jpeg"),
-    (7, 25, 30, "ltr", 1.09, (0.50, 0.55), "07-multiple.jpeg"),
-    (8, 30, 38, "rtl", 1.11, (0.35, 0.55), "08-relaxed.jpeg"),
-    (9, 38, 45, "ltr", 1.08, (0.62, 0.40), "09-closing.jpg"),
+# Continuous camera path keyframes (t 0–1 → fx, fy, scale)
+JOURNEY = [
+    (0.0, 0.50, 0.40, 1.05),
+    (0.12, 0.46, 0.405, 1.18),
+    (0.45, 0.38, 0.41, 1.50),
+    (0.78, 0.30, 0.418, 1.85),
+    (1.0, 0.272, 0.422, 2.00),
 ]
 
 # start_s, end_s, lines, position ('bottom'|'center')
@@ -54,25 +48,63 @@ FADE_OUT = 0.15
 SLIDE_PX = 12
 
 
-def ease_in_out(t: float) -> float:
+def ease_in_out_quad(t: float) -> float:
     if t <= 0:
         return 0.0
     if t >= 1:
         return 1.0
-    return 0.5 * (1 - math.cos(math.pi * t))
+    if t < 0.5:
+        return 2 * t * t
+    return 1 - (-2 * t + 2) ** 2 / 2
 
 
-def cover_crop(img: Image.Image, scale: float, fx: float, fy: float, pan_x: float) -> Image.Image:
-    """Cover-fit crop into WxH at given scale, with horizontal pan in percent of frame."""
+def ease_in_out_cubic(t: float) -> float:
+    if t <= 0:
+        return 0.0
+    if t >= 1:
+        return 1.0
+    if t < 0.5:
+        return 4 * t * t * t
+    return 1 - (-2 * t + 2) ** 3 / 2
+
+
+def path_progress(t: float) -> float:
+    """Wall-clock seconds → path progress with open/hold on boy and CTA hold."""
+    if t <= 4:
+        return ease_in_out_quad(t / 4) * 0.08
+    if t <= 40:
+        return 0.08 + ease_in_out_cubic((t - 4) / 36) * 0.92
+    return 1.0
+
+
+def sample_journey(progress: float) -> tuple[float, float, float]:
+    keys = JOURNEY
+    if progress <= keys[0][0]:
+        return keys[0][1], keys[0][2], keys[0][3]
+    if progress >= keys[-1][0]:
+        return keys[-1][1], keys[-1][2], keys[-1][3]
+    for i in range(len(keys) - 1):
+        t0, fx0, fy0, s0 = keys[i]
+        t1, fx1, fy1, s1 = keys[i + 1]
+        if t0 <= progress <= t1:
+            local = ease_in_out_quad((progress - t0) / max(t1 - t0, 1e-9))
+            return (
+                fx0 + (fx1 - fx0) * local,
+                fy0 + (fy1 - fy0) * local,
+                s0 + (s1 - s0) * local,
+            )
+    return keys[-1][1], keys[-1][2], keys[-1][3]
+
+
+def cover_crop(img: Image.Image, scale: float, fx: float, fy: float) -> Image.Image:
+    """Cover-fit crop into WxH at given scale around focus (fx, fy)."""
     src_w, src_h = img.size
-    # Base cover scale so image fills frame, then multiply by ken-burns scale
     base = max(W / src_w, H / src_h)
     s = base * scale
     nw, nh = int(round(src_w * s)), int(round(src_h * s))
     resized = img.resize((nw, nh), Image.Resampling.LANCZOS)
 
-    # Focus point in resized coords, then shift by pan
-    cx = fx * nw + (pan_x / 100.0) * W
+    cx = fx * nw
     cy = fy * nh
     left = int(round(cx - W / 2))
     top = int(round(cy - H / 2))
@@ -130,7 +162,6 @@ def render_text_layer(lines: list[str], opacity: float, translate_y: float, posi
         lw = bbox[2] - bbox[0]
         lh = bbox[3] - bbox[1]
         x = box_x + (box_w - lw) // 2
-        # shadow
         shadow_a = int(180 * opacity)
         draw.text((x + 2, y + 2), line, font=font, fill=(0, 0, 0, shadow_a))
         draw.text((x, y), line, font=font, fill=(255, 255, 255, int(255 * opacity)))
@@ -142,23 +173,12 @@ def render_text_layer(lines: list[str], opacity: float, translate_y: float, posi
 def find_text(frame: int):
     t = frame / FPS
     for start, end, lines, pos in TEXT_BEATS:
-        if start <= t < end - 1e-9 or (end == 45 and abs(t - end) < 1e-9):
-            if start <= t < end or (frame == TOTAL - 1 and end == 45):
-                return start, end, lines, pos
-    # inclusive end for last frame
+        if start <= t < end or (frame == TOTAL - 1 and end == 45):
+            return start, end, lines, pos
     for start, end, lines, pos in TEXT_BEATS:
         if start <= t <= end:
             return start, end, lines, pos
     return None
-
-
-def photo_for_frame(frame: int):
-    t = frame / FPS
-    for pid, start, end, pan, zoom_to, focus, fname in PHOTO_BEATS:
-        if start <= t < end or (frame == TOTAL - 1 and end == 45):
-            return pid, start, end, pan, zoom_to, focus, fname
-    # fallback last
-    return PHOTO_BEATS[-1]
 
 
 def main() -> int:
@@ -166,14 +186,12 @@ def main() -> int:
     if not FONT_PATH.exists():
         print(f"Missing font: {FONT_PATH}", file=sys.stderr)
         return 1
+    if not PHOTO.exists():
+        print(f"Missing photo: {PHOTO}", file=sys.stderr)
+        return 1
 
-    cache: dict[str, Image.Image] = {}
-    for *_, fname in PHOTO_BEATS:
-        path = PHOTOS / fname
-        if not path.exists():
-            print(f"Missing photo: {path}", file=sys.stderr)
-            return 1
-        cache[fname] = Image.open(path).convert("RGB")
+    src = Image.open(PHOTO).convert("RGB")
+    print(f"Source: {PHOTO.name} ({src.size[0]}×{src.size[1]})")
 
     cmd = [
         "ffmpeg",
@@ -208,17 +226,10 @@ def main() -> int:
 
     try:
         for frame in range(TOTAL):
-            pid, start, end, pan, zoom_to, focus, fname = photo_for_frame(frame)
-            local = (frame / FPS) - start
-            duration = end - start
-            progress = ease_in_out(local / duration if duration else 0)
-            scale = 1.0 + (zoom_to - 1.0) * progress
-            pan_amt = 3.0
-            pan_x = (-pan_amt + 2 * pan_amt * progress) if pan == "ltr" else (pan_amt - 2 * pan_amt * progress)
+            t = frame / FPS
+            fx, fy, scale = sample_journey(path_progress(t))
+            base = cover_crop(src, scale, fx, fy)
 
-            base = cover_crop(cache[fname], scale, focus[0], focus[1], pan_x)
-
-            # bottom vignette
             vignette = Image.new("RGBA", (W, H), (0, 0, 0, 0))
             vd = ImageDraw.Draw(vignette)
             for i in range(H // 2):
@@ -231,14 +242,14 @@ def main() -> int:
             if info:
                 t0, t1, lines, pos = info
                 dur = t1 - t0
-                local_t = frame / FPS - t0
+                local_t = t - t0
                 opacity, ty = text_alpha(local_t, dur)
                 text_layer = render_text_layer(lines, opacity, ty, pos)
                 frame_img = Image.alpha_composite(frame_img, text_layer)
 
             proc.stdin.write(frame_img.convert("RGB").tobytes())
             if frame % 90 == 0:
-                print(f"  frame {frame}/{TOTAL} ({frame / FPS:.1f}s)")
+                print(f"  frame {frame}/{TOTAL} ({t:.1f}s) scale={scale:.2f} focus=({fx:.2f},{fy:.2f})")
 
         proc.stdin.close()
         err = proc.stderr.read().decode("utf-8", errors="replace") if proc.stderr else ""

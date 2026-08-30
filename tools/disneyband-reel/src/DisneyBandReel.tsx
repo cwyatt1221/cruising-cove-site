@@ -1,7 +1,6 @@
 import React from 'react';
 import {AbsoluteFill, Sequence} from 'remotion';
 import {KenBurnsPhoto} from './KenBurnsPhoto';
-import {PHOTOS} from './photos';
 import {TextOverlay} from './TextOverlay';
 
 export const FPS = 30;
@@ -12,12 +11,6 @@ export const TOTAL_FRAMES = 45 * FPS; // 1350
 /** Convert seconds → frames */
 const s = (seconds: number) => Math.round(seconds * FPS);
 
-type PhotoBeat = {
-  from: number;
-  duration: number;
-  photo: number;
-};
-
 type TextBeat = {
   from: number;
   duration: number;
@@ -26,21 +19,9 @@ type TextBeat = {
 };
 
 /**
- * Exact timing from disneyband-reel-spec.md.
- * Photo beats drive Ken Burns; text beats can split within a long photo.
+ * Scene text timing from the original reel spec.
+ * Photo is one continuous Ken Burns journey (boy → wristband).
  */
-const PHOTO_BEATS: PhotoBeat[] = [
-  {from: s(0), duration: s(4), photo: 1},
-  {from: s(4), duration: s(4), photo: 2},
-  {from: s(8), duration: s(4), photo: 3},
-  {from: s(12), duration: s(4), photo: 4},
-  {from: s(16), duration: s(4), photo: 5},
-  {from: s(20), duration: s(5), photo: 6},
-  {from: s(25), duration: s(5), photo: 7},
-  {from: s(30), duration: s(8), photo: 8},
-  {from: s(38), duration: s(7), photo: 9},
-];
-
 const TEXT_BEATS: TextBeat[] = [
   {
     from: s(0),
@@ -86,19 +67,7 @@ const TEXT_BEATS: TextBeat[] = [
 export const DisneyBandReel: React.FC = () => {
   return (
     <AbsoluteFill style={{backgroundColor: '#0a1628'}}>
-      {PHOTO_BEATS.map((beat, i) => (
-        <Sequence
-          key={`photo-${i}`}
-          from={beat.from}
-          durationInFrames={beat.duration}
-          name={`Photo ${beat.photo}`}
-        >
-          <KenBurnsPhoto
-            photo={PHOTOS[beat.photo]}
-            durationInFrames={beat.duration}
-          />
-        </Sequence>
-      ))}
+      <KenBurnsPhoto />
 
       {TEXT_BEATS.map((beat, i) => (
         <Sequence

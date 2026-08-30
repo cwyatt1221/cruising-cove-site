@@ -7,7 +7,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "assets" / "images" / "og-default.jpg"
+OUT = ROOT / "assets" / "images" / "og-share.jpg"
 BG = ROOT / "assets" / "images" / "gallery" / "01-2024-09-18-disney-wish-castaway-cay-pier-5-ce80a.jpg"
 FONT_SERIF = "/System/Library/Fonts/Supplemental/Georgia.ttf"
 FONT_SANS = "/System/Library/Fonts/Supplemental/Arial.ttf"

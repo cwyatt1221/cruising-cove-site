@@ -6,44 +6,79 @@ import {
   interpolate,
   staticFile,
   useCurrentFrame,
+  useVideoConfig,
 } from 'remotion';
-import type {PhotoSlot} from './photos';
+import {JOURNEY, PHOTO_SRC, type JourneyKeyframe} from './photos';
 
-type Props = {
-  photo: PhotoSlot;
-  durationInFrames: number;
-};
+function sampleJourney(progress: number): {fx: number; fy: number; scale: number} {
+  const keys = JOURNEY;
+  if (progress <= keys[0].t) {
+    return {fx: keys[0].fx, fy: keys[0].fy, scale: keys[0].scale};
+  }
+  const last = keys[keys.length - 1];
+  if (progress >= last.t) {
+    return {fx: last.fx, fy: last.fy, scale: last.scale};
+  }
+  let a: JourneyKeyframe = keys[0];
+  let b: JourneyKeyframe = keys[1];
+  for (let i = 0; i < keys.length - 1; i++) {
+    if (progress >= keys[i].t && progress <= keys[i + 1].t) {
+      a = keys[i];
+      b = keys[i + 1];
+      break;
+    }
+  }
+  const local = (progress - a.t) / Math.max(b.t - a.t, 1e-9);
+  const eased = Easing.inOut(Easing.quad)(local);
+  return {
+    fx: a.fx + (b.fx - a.fx) * eased,
+    fy: a.fy + (b.fy - a.fy) * eased,
+    scale: a.scale + (b.scale - a.scale) * eased,
+  };
+}
 
 /**
- * Cover-fit photo with subtle Ken Burns: always zoom in, alternate pan.
+ * Map wall-clock frame → path progress.
+ * 0–4s: settle on boy; 4–40s: main zoom to band; 40–45s: hold for CTA.
  */
-export const KenBurnsPhoto: React.FC<Props> = ({photo, durationInFrames}) => {
-  const frame = useCurrentFrame();
-  const progress = interpolate(frame, [0, Math.max(durationInFrames - 1, 1)], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-    easing: Easing.inOut(Easing.quad),
-  });
+function pathProgress(frame: number, fps: number): number {
+  const t = frame / fps;
+  if (t <= 4) {
+    return interpolate(t, [0, 4], [0, 0.08], {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+      easing: Easing.inOut(Easing.quad),
+    });
+  }
+  if (t <= 40) {
+    return interpolate(t, [4, 40], [0.08, 1], {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+      easing: Easing.inOut(Easing.cubic),
+    });
+  }
+  return 1;
+}
 
-  const scale = interpolate(progress, [0, 1], [1, photo.zoomTo]);
-  // Subtle horizontal drift (~3% of frame) so the subject stays in crop safety
-  const panAmount = 3;
-  const translateX =
-    photo.pan === 'ltr'
-      ? interpolate(progress, [0, 1], [-panAmount, panAmount])
-      : interpolate(progress, [0, 1], [panAmount, -panAmount]);
+/**
+ * Continuous Ken Burns on the single boy + DisneyBand+ photo.
+ */
+export const KenBurnsPhoto: React.FC = () => {
+  const frame = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const {fx, fy, scale} = sampleJourney(pathProgress(frame, fps));
 
   return (
     <AbsoluteFill style={{backgroundColor: '#0a1628', overflow: 'hidden'}}>
       <Img
-        src={staticFile(photo.src)}
+        src={staticFile(PHOTO_SRC)}
         style={{
           width: '100%',
           height: '100%',
           objectFit: 'cover',
-          objectPosition: `${photo.focusX * 100}% ${photo.focusY * 100}%`,
-          transform: `translateX(${translateX}%) scale(${scale})`,
-          transformOrigin: `${photo.focusX * 100}% ${photo.focusY * 100}%`,
+          objectPosition: `${fx * 100}% ${fy * 100}%`,
+          transform: `scale(${scale})`,
+          transformOrigin: `${fx * 100}% ${fy * 100}%`,
         }}
       />
       {/* Soft bottom vignette so white text stays readable */}

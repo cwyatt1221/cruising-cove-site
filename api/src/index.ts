@@ -1,6 +1,3 @@
-import "./functions/chat";
-import "./functions/chatReview";
-import "./functions/topQuestions";
 import "./functions/creatorApplication";
 import "./functions/listCreatorApplications";
 import "./functions/sellerApplication";

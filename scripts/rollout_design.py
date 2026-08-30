@@ -100,8 +100,7 @@ def footer_html() -> str:
     <p class="disclaimer">{DISCLAIMER}</p>
   </div>
 </footer>
-{NAV_SCRIPT}
-<script src="/assets/chat-widget.js" defer></script>'''
+{NAV_SCRIPT}'''
 
 
 def strip_old_font_and_css_links(html: str) -> str:

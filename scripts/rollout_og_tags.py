@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = "https://www.cruisingcove.com"
-OG_IMAGE = f"{SITE}/assets/images/og-default.jpg"
+OG_IMAGE = f"{SITE}/assets/images/og-share.jpg"
 DEFAULT_DESC = (
     "Independent Disney Cruise Line planning guides from Cruising Cove. "
     "Not affiliated with Disney."
