@@ -1340,7 +1340,7 @@
             setVisitorCaptionText(el, data && data.total);
           })
           .catch(function () {
-            el.hidden = true;
+            setVisitorCaptionText(el, null);
           });
       });
   }

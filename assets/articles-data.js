@@ -6,7 +6,7 @@
 (function (global) {
   var FEATURED_SLOTS = 10;
   /** Pin the first homepage carousel slide. Set to null to rotate by ISO week. */
-  var CAROUSEL_START_ID = "disney-wish-nyc-fall-2027";
+  var CAROUSEL_START_ID = "starboard-vs-port-stateroom-disney-cruise";
 
   var articles = [
     {
