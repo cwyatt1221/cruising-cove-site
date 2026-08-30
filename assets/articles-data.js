@@ -10,6 +10,14 @@
 
   var articles = [
     {
+      id: "starboard-vs-port-stateroom-disney-cruise",
+      title: "Starboard vs Port: Which Stateroom Side Should You Book?",
+      excerpt:
+        "Castaway Cay views, Pirate Night fireworks, and the dock-side wave goodbye — what’s true about port vs starboard on a Disney cruise, and what isn’t.",
+      date: "2026-08-30",
+      url: "/articles/starboard-vs-port-stateroom-disney-cruise.html",
+    },
+    {
       id: "disney-wish-nyc-fall-2027",
       title: "Disney Wish Is Back in NYC: Fall 2027 Sailings & Booking Dates",
       excerpt:
