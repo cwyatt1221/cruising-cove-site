@@ -6,9 +6,25 @@
 (function (global) {
   var FEATURED_SLOTS = 10;
   /** Pin the first homepage carousel slide. Set to null to rotate by ISO week. */
-  var CAROUSEL_START_ID = "disney-believe-news-and-easter-eggs";
+  var CAROUSEL_START_ID = "disney-wish-nyc-fall-2027";
 
   var articles = [
+    {
+      id: "disney-wish-nyc-fall-2027",
+      title: "Disney Wish Is Back in NYC: Fall 2027 Sailings & Booking Dates",
+      excerpt:
+        "Disney Cruise Line returns to New York with the Wish — Bermuda, Canada & New England, Halloween on the High Seas, and Castaway Club booking Aug 31.",
+      date: "2026-08-29",
+      url: "/articles/disney-wish-nyc-fall-2027.html",
+    },
+    {
+      id: "disney-cruise-sail-away-gift-onboard-credit",
+      title: "Sail Away Gift: When Friends & Family Gift You Onboard Credit",
+      excerpt:
+        "How Disney Cruise Line’s shareable Sail Away Gift link works — what onboard credit covers, stateroom cards, and how it differs from physical onboard gifts.",
+      date: "2026-08-28",
+      url: "/articles/disney-cruise-sail-away-gift-onboard-credit.html",
+    },
     {
       id: "disney-uncharted-adventure",
       title: "What Is Disney Uncharted Adventure?",
