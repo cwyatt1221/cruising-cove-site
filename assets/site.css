@@ -221,12 +221,30 @@ body.cc-admin-logged-in .site-header{top:42px;}
   width:100%;
   order:2;
   flex:1 1 100%;
-  margin:2px 0 0;
-  padding:10px 0 8px;
+  margin:0;
+  padding:10px 0 12px;
   border-bottom:0;
   border-top:1px solid rgba(26,42,74,.08);
   font-size:1rem;
   color:var(--navy);
+}
+@media (max-width:979px){
+  .site-nav-bar > .brand{
+    order:1;
+    flex:1 1 100%;
+    width:100%;
+    justify-content:space-between;
+    gap:12px;
+  }
+  .site-nav-bar > .site-visitor-count{
+    order:2;
+  }
+  .site-nav-bar > .nav-toggle{order:3;}
+  .site-nav-bar > .nav-cta{
+    order:4;
+    margin-left:auto;
+  }
+  .site-nav-bar .nav-links{order:5;}
 }
 .site-nav-bar .nav-cta{
   display:flex;align-items:center;gap:10px;flex:0 0 auto;

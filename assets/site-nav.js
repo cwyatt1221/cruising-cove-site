@@ -1285,6 +1285,19 @@
       "Welcome, fellow DCL lover — <strong>…</strong> guests have come aboard";
   }
 
+  function placeVisitorCounter(el) {
+    var bar = document.querySelector(".site-nav-bar");
+    if (!bar || !el) return;
+    var anchor = bar.querySelector(":scope > .brand") || bar.querySelector(":scope > .logo");
+    if (anchor) {
+      anchor.insertAdjacentElement("afterend", el);
+      return;
+    }
+    var nav = document.getElementById("primaryNav");
+    if (nav) bar.insertBefore(el, nav);
+    else bar.appendChild(el);
+  }
+
   function ensureVisitorCounter() {
     var bar = document.querySelector(".site-nav-bar");
     if (!bar) return;
@@ -1295,10 +1308,8 @@
       el.className = "site-visitor-count";
       el.setAttribute("data-cc-visitor-count", "1");
       el.setAttribute("aria-live", "polite");
-      var nav = document.getElementById("primaryNav");
-      if (nav) bar.insertBefore(el, nav);
-      else bar.appendChild(el);
     }
+    placeVisitorCounter(el);
 
     setVisitorCaptionText(el, null);
 
