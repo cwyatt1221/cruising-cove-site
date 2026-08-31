@@ -1285,14 +1285,39 @@
       "Welcome, fellow DCL lover — <strong>…</strong> guests have come aboard";
   }
 
+  function ensureHeaderTopRow(bar) {
+    if (!bar) return null;
+    var top = bar.querySelector(":scope > .site-nav-top");
+    if (top) return top;
+
+    var brand = bar.querySelector(":scope > .brand") || bar.querySelector(":scope > .logo");
+    if (!brand) return null;
+
+    top = document.createElement("div");
+    top.className = "site-nav-top";
+    bar.insertBefore(top, brand);
+    top.appendChild(brand);
+
+    var toggle = bar.querySelector(":scope > .nav-toggle");
+    if (toggle) top.appendChild(toggle);
+
+    var cta = bar.querySelector(":scope > .nav-cta");
+    if (cta) top.appendChild(cta);
+
+    return top;
+  }
+
   function placeVisitorCounter(el) {
     var bar = document.querySelector(".site-nav-bar");
     if (!bar || !el) return;
-    var anchor = bar.querySelector(":scope > .brand") || bar.querySelector(":scope > .logo");
+
+    var top = ensureHeaderTopRow(bar);
+    var anchor = top || bar.querySelector(":scope > .brand") || bar.querySelector(":scope > .logo");
     if (anchor) {
       anchor.insertAdjacentElement("afterend", el);
       return;
     }
+
     var nav = document.getElementById("primaryNav");
     if (nav) bar.insertBefore(el, nav);
     else bar.appendChild(el);
@@ -1372,4 +1397,9 @@
     ensurePageActions();
     loadAdminAuth();
   });
+
+  window.CCNav = {
+    ensureHeaderTopRow: ensureHeaderTopRow,
+    placeVisitorCounter: placeVisitorCounter,
+  };
 })();

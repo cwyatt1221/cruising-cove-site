@@ -169,12 +169,11 @@
         "</svg>";
       wrap.appendChild(mail);
     });
-    document.querySelectorAll(".site-nav-bar [data-cc-visitor-count]").forEach(function (visitor) {
-      var brand = visitor.parentElement && visitor.parentElement.querySelector(":scope > .brand");
-      if (brand && brand.nextElementSibling !== visitor) {
-        brand.insertAdjacentElement("afterend", visitor);
-      }
-    });
+    if (window.CCNav && typeof window.CCNav.placeVisitorCounter === "function") {
+      document.querySelectorAll(".site-nav-bar [data-cc-visitor-count]").forEach(function (visitor) {
+        window.CCNav.placeVisitorCounter(visitor);
+      });
+    }
   }
 
   if (document.readyState === "loading") {
