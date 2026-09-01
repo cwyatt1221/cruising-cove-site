@@ -207,6 +207,7 @@
   h2 em{font-style:italic;color:var(--gold);}
 
   .cards{display:grid;gap:20px;}
+  .cards-2{grid-template-columns:repeat(2,1fr);}
   .cards-3{grid-template-columns:repeat(3,1fr);}
   .cards-5{
     grid-template-columns:repeat(6,1fr);
@@ -215,7 +216,7 @@
   .cards-5 .card:nth-child(4){grid-column:2 / span 2;}
   .cards-5 .card:nth-child(5){grid-column:4 / span 2;}
   @media (max-width:900px){
-    .cards-3,.cards-5{grid-template-columns:1fr;}
+    .cards-2,.cards-3,.cards-5{grid-template-columns:1fr;}
     .cards-5 .card,.cards-5 .card:nth-child(4),.cards-5 .card:nth-child(5){grid-column:auto;}
   }
   .card{
@@ -295,6 +296,16 @@
     background-size:cover;
     background-position:center 40%;
   }
+  .card-media.shop-shimmering{
+    background-image:url('https://cruisingcovelogs.blob.core.windows.net/seller-photos/05c0c047-e24b-470b-989e-3c94f0eaef26.jpg?sv=2026-06-06&spr=https&se=2036-08-10T20%3A27%3A23Z&sr=b&sp=r&sig=8LTP7wJalaz0%2F0NqKCWoXu0pdM2lglzqGiXUUbEYiYQ%3D');
+    background-size:cover;
+    background-position:center center;
+  }
+  .card-media.shop-bels{
+    background-image:url('https://cruisingcovelogs.blob.core.windows.net/seller-photos/05cfe01c-b107-4bd2-844a-bb7101431e9c.jpg?sv=2026-06-06&spr=https&se=2036-08-06T00%3A38%3A41Z&sr=b&sp=r&sig=4b87vOZOu2cJd92jVcywl2lbJbq7GGO4yej%2FGHWBL7I%3D');
+    background-size:cover;
+    background-position:center center;
+  }
   /* Keep why / ship / port cards tall like the first why-row */
   .cards-3,
   .cards-5{
@@ -305,7 +316,9 @@
   .ship-section .card,
   .ship-section a.card,
   .port-section .card,
-  .port-section a.card{
+  .port-section a.card,
+  .shops-section .card,
+  .shops-section a.card{
     display:flex;
     flex-direction:column;
     height:100%;
@@ -313,23 +326,27 @@
   }
   .why-section .card-body,
   .ship-section .card-body,
-  .port-section .card-body{
+  .port-section .card-body,
+  .shops-section .card-body{
     flex:1 1 auto;
   }
   .why-section .card-media,
   .ship-section .card-media,
-  .port-section .card-media{
+  .port-section .card-media,
+  .shops-section .card-media{
     height:168px;
     flex:0 0 168px;
     margin-top:auto;
   }
   /* Photo-led cards: large media like character meet-ups / hidden gems */
   .ship-section a.card.is-photo-led .card-body,
-  .port-section a.card.is-photo-led .card-body{
+  .port-section a.card.is-photo-led .card-body,
+  .shops-section a.card.is-photo-led .card-body{
     flex:0 0 auto;
   }
   .ship-section a.card.is-photo-led .card-media,
-  .port-section a.card.is-photo-led .card-media{
+  .port-section a.card.is-photo-led .card-media,
+  .shops-section a.card.is-photo-led .card-media{
     flex:1 1 auto;
     height:auto;
     min-height:20rem;
@@ -341,11 +358,14 @@
     .ship-section .card,
     .ship-section a.card,
     .port-section .card,
-    .port-section a.card{
+    .port-section a.card,
+    .shops-section .card,
+    .shops-section a.card{
       min-height:0;
     }
     .ship-section a.card.is-photo-led .card-media,
-    .port-section a.card.is-photo-led .card-media{
+    .port-section a.card.is-photo-led .card-media,
+    .shops-section a.card.is-photo-led .card-media{
       min-height:14rem;
       flex:0 0 auto;
       height:14rem;
@@ -358,8 +378,22 @@
     color:var(--navy);margin:0 0 10px;line-height:1.25;
   }
   .card p{font-size:0.95rem;line-height:1.55;color:var(--muted);margin:0;}
+  .shop-card-badge{
+    display:inline-block;margin:0 0 10px;padding:5px 10px;
+    font-size:0.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--navy);background:rgba(201,162,75,.14);
+    border:1px solid rgba(201,162,75,.45);border-radius:2px;
+  }
+  .shops-more{
+    margin:24px 0 0;font-size:0.92rem;color:var(--muted);
+  }
+  .shops-more a{
+    color:var(--navy);border-bottom:1px solid rgba(201,162,75,.55);
+    text-decoration:none;padding-bottom:1px;
+  }
+  .shops-more a:hover{color:var(--gold);}
 
-  .why-section,.ship-section,.port-section{background:var(--cream-2);}
+  .why-section,.ship-section,.port-section,.shops-section{background:var(--cream-2);}
   .save-section{background:#c7cdd6;}
   .save-note{font-size:0.875rem;color:var(--muted);margin-top:20px;max-width:70ch;}
 
@@ -606,6 +640,31 @@
         <div class="card-media has-photo dcl-transfer-bus" role="img" aria-label="Disney Cruise Line transfer bus with Donald Duck and his nephews"></div>
       </a>
     </div>
+  </div>
+</section>
+
+<section class="shops-section" id="shops">
+  <div class="wrap">
+    <h2 class="reveal">Shops we Love</h2>
+    <div class="cards cards-2">
+      <a class="card reveal is-photo-led" href="https://www.etsy.com/shop/shimmeringeverafter" target="_blank" rel="noopener noreferrer" data-shop-id="shimmering-ever-after" data-cc-event="shop_click">
+        <div class="card-body">
+          <span class="shop-card-badge">Founding Shop No. 2</span>
+          <h3>Shimmering Ever After</h3>
+          <p>Sparkly sequin mouse ears and embroidered apparel made for Disney trips — the perfect touch for sail days and park days.</p>
+        </div>
+        <div class="card-media has-photo shop-shimmering" role="img" aria-label="Shimmering Ever After sequin mouse ears"></div>
+      </a>
+      <a class="card reveal is-photo-led" href="https://belscastlecreations.etsy.com/" target="_blank" rel="noopener noreferrer" data-shop-id="bels-castle-creations" data-cc-event="shop_click">
+        <div class="card-body">
+          <span class="shop-card-badge">Founding Shop No. 1</span>
+          <h3>Bels Castle Creations</h3>
+          <p>Custom door magnets, fish extender gifts, cabin décor, and personalized keepsakes designed to make every sailing extra special.</p>
+        </div>
+        <div class="card-media has-photo shop-bels" role="img" aria-label="Bels Castle Creations cruise door décor"></div>
+      </a>
+    </div>
+    <p class="shops-more reveal"><a href="/marketplace/">See all shops in Cruise Accessories</a></p>
   </div>
 </section>
 
