@@ -381,8 +381,12 @@
     color:var(--navy);margin:0 0 10px;line-height:1.25;
   }
   .card p{font-size:0.95rem;line-height:1.55;color:var(--muted);margin:0;}
-  .shop-card-actions{margin-top:16px;}
+  .shop-card-actions{margin-top:16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
   .shop-card-actions .btn{font-size:0.85rem;}
+  .shop-visits{
+    font-size:0.78rem;color:var(--muted);letter-spacing:.02em;pointer-events:none;
+  }
+  .shop-visits[hidden]{display:none !important;}
   .shops-more{
     margin:24px 0 0;font-size:0.92rem;color:var(--muted);
   }
@@ -651,7 +655,8 @@
           <h3>Shimmering Ever After</h3>
           <p>Sparkly sequin mouse ears and embroidered apparel made for Disney trips — the perfect touch for sail days and park days.</p>
           <div class="shop-card-actions">
-            <a class="btn btn-gold" href="https://www.etsy.com/shop/shimmeringeverafter" target="_blank" rel="noopener noreferrer" data-shop-id="shimmering-ever-after" data-cc-event="shop_click">Shop on Etsy</a>
+            <a class="btn btn-gold" href="https://www.etsy.com/shop/shimmeringeverafter" target="_blank" rel="noopener noreferrer" data-shop-id="shimmering-ever-after" data-cc-event="shop_click" data-visit-shop="1">Shop on Etsy</a>
+            <span class="shop-visits" data-visit-count data-shop-id="shimmering-ever-after" hidden></span>
           </div>
         </div>
         <div class="card-media has-photo shop-shimmering" role="img" aria-label="Shimmering Ever After sequin mouse ears"></div>
@@ -661,7 +666,8 @@
           <h3>Bels Castle Creations</h3>
           <p>Custom door magnets, fish extender gifts, cabin décor, and personalized keepsakes designed to make every sailing extra special.</p>
           <div class="shop-card-actions">
-            <a class="btn btn-gold" href="https://belscastlecreations.etsy.com/" target="_blank" rel="noopener noreferrer" data-shop-id="bels-castle-creations" data-cc-event="shop_click">Shop on Etsy</a>
+            <a class="btn btn-gold" href="https://belscastlecreations.etsy.com/" target="_blank" rel="noopener noreferrer" data-shop-id="bels-castle-creations" data-cc-event="shop_click" data-visit-shop="1">Shop on Etsy</a>
+            <span class="shop-visits" data-visit-count data-shop-id="bels-castle-creations" hidden></span>
           </div>
         </div>
         <div class="card-media has-photo shop-bels" role="img" aria-label="Bels Castle Creations cruise door décor"></div>
@@ -856,6 +862,8 @@
   })();
 </script>
 <script src="/assets/site-nav.js" defer></script>
+<script src="/assets/admin-auth.js"></script>
+<script src="/assets/shop-visits.js"></script>
 <script src="/assets/analytics.js" defer></script>
 <script src="/assets/site-search.js" defer></script>
 </body>
