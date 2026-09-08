@@ -6,9 +6,17 @@
 (function (global) {
   var FEATURED_SLOTS = 10;
   /** Pin the first homepage carousel slide. Set to null to rotate by ISO week. */
-  var CAROUSEL_START_ID = "starboard-vs-port-stateroom-disney-cruise";
+  var CAROUSEL_START_ID = "disney-cruise-popcorn-bucket-hack";
 
   var articles = [
+    {
+      id: "disney-cruise-popcorn-bucket-hack",
+      title: "The Disney Cruise Popcorn Bucket Hack",
+      excerpt:
+        "Discounted popcorn refills plus a clever way to carry fries and cookies — what works, what the rules actually say, and the food-safety step cruisers should not skip.",
+      date: "2026-09-07",
+      url: "/articles/disney-cruise-popcorn-bucket-hack.html",
+    },
     {
       id: "starboard-vs-port-stateroom-disney-cruise",
       title: "Starboard vs Port: Which Stateroom Side Should You Book?",
