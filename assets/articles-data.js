@@ -6,9 +6,17 @@
 (function (global) {
   var FEATURED_SLOTS = 10;
   /** Pin the first homepage carousel slide. Set to null to rotate by ISO week. */
-  var CAROUSEL_START_ID = "disney-cruise-popcorn-bucket-hack";
+  var CAROUSEL_START_ID = "dunns-river-falls-jamaica-review";
 
   var articles = [
+    {
+      id: "dunns-river-falls-jamaica-review",
+      title: "Our First Excursion Review - Dunn River Falls - Jamaica",
+      excerpt:
+        "Our honest family review of the famous Jamaica waterfall—what to wear, how the human-chain climb works, what happened with our nine-year-old, and whether it was worth the money.",
+      date: "2026-09-08",
+      url: "/articles/dunns-river-falls-jamaica-review.html",
+    },
     {
       id: "disney-cruise-popcorn-bucket-hack",
       title: "The Disney Cruise Popcorn Bucket Hack",
