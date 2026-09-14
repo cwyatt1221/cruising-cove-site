@@ -253,7 +253,7 @@
     });
   }
 
-  function ensurePrivacyNote() {
+  function ensureFeedbackLink() {
     var links = document.getElementById("primaryNav");
     if (!links) return;
 
@@ -734,20 +734,130 @@
     return raw.replace(/\s*[|—-]\s*Cruising Cove\s*$/i, "").trim() || raw;
   }
 
-  function insertBeforeChrome(section) {
-    var actions = document.querySelector("[data-cc-page-actions]");
-    if (actions && actions.parentNode) {
-      actions.parentNode.insertBefore(section, actions);
-      return;
-    }
-    var legal = document.querySelector(".site-legal");
-    if (legal && legal.parentNode) {
-      legal.parentNode.insertBefore(section, legal);
-      return;
+  function insertBeforeFirstMatch(section, selectors) {
+    if (!section) return;
+    for (var i = 0; i < selectors.length; i++) {
+      var el = document.querySelector(selectors[i]);
+      if (el && el.parentNode) {
+        el.parentNode.insertBefore(section, el);
+        return;
+      }
     }
     var main = document.querySelector("main");
     if (main && main.parentNode) {
       main.parentNode.insertBefore(section, main.nextSibling);
+      return;
+    }
+    document.body.appendChild(section);
+  }
+
+  function insertBeforeChrome(section) {
+    insertBeforeFirstMatch(section, [
+      "[data-cc-page-actions]",
+      "[data-cc-newsletter-footer]",
+      ".site-legal",
+    ]);
+  }
+
+  function contentPathKey(path) {
+    var p = String(path || "").replace(/\/+/g, "/");
+    if (p.length > 1 && p.charAt(p.length - 1) === "/") p = p.slice(0, -1);
+    return p.replace(/\/index\.html$/, "");
+  }
+
+  function nextStepsForPath(path) {
+    var key = contentPathKey(path);
+    var byPath = {
+      "/ships/disney-destiny.html": {
+        lede: "You know the ship. Next: pack, find your sailing, or learn the onboard game.",
+        actions: [
+          { href: "/planning/disney-cruise-packing-list.html", title: "Packing list", primary: true },
+          { href: "/community/", title: "Find your sailing" },
+          { href: "/articles/disney-uncharted-adventure.html", title: "Uncharted Adventure" },
+        ],
+      },
+      "/planning/disney-cruise-packing-list.html": {
+        lede: "List ready? Next is port day, extras to buy, and your sailing board.",
+        actions: [
+          { href: "/planning/embarkation-day-checklist.html", title: "Embarkation checklist", primary: true },
+          { href: "/marketplace/", title: "Cruise Accessories" },
+          { href: "/community/", title: "Find your sailing" },
+        ],
+      },
+      "/articles/disney-uncharted-adventure.html": {
+        lede: "It’s on Wish, Treasure, and Destiny. Open a ship guide, or find your sailing.",
+        actions: [
+          { href: "/ships/disney-destiny.html", title: "Destiny guide", primary: true },
+          { href: "/ships/disney-wish.html", title: "Wish guide" },
+          { href: "/community/", title: "Find your sailing" },
+        ],
+      },
+      "/articles/disney-wish-nyc-fall-2027.html": {
+        lede: "Booking windows first, then the Wish guide and your sailing board.",
+        actions: [
+          { href: "/planning/booking-windows.html", title: "Booking windows", primary: true },
+          { href: "/ships/disney-wish.html", title: "Disney Wish guide" },
+          { href: "/community/", title: "Find your sailing" },
+        ],
+      },
+      "/articles/disney-believe-news-and-easter-eggs.html": {
+        lede: "Read the ship guide, find a sailing, or start a packing list.",
+        actions: [
+          { href: "/ships/disney-believe.html", title: "Disney Believe guide", primary: true },
+          { href: "/community/", title: "Find your sailing" },
+          { href: "/planning/disney-cruise-packing-list.html", title: "Packing list" },
+        ],
+      },
+    };
+    return byPath[key] || null;
+  }
+
+  function renderNextStepsSection(cfg, section) {
+    var listHtml = cfg.actions
+      .map(function (item) {
+        var cls = item.primary ? "btn btn-gold" : "btn btn-outline";
+        return (
+          '<a class="' +
+          cls +
+          '" href="' +
+          escapeHtml(item.href) +
+          '">' +
+          escapeHtml(item.title) +
+          "</a>"
+        );
+      })
+      .join("");
+
+    section.className = "cc-next-steps";
+    section.setAttribute("data-cc-next-steps", "1");
+    section.setAttribute("aria-label", "Do this next");
+    section.innerHTML =
+      '<div class="wrap">' +
+      '<p class="cc-next-steps-label">Do this next</p>' +
+      (cfg.lede ? '<p class="cc-next-steps-lede">' + escapeHtml(cfg.lede) + "</p>" : "") +
+      '<div class="cc-next-steps-row">' +
+      listHtml +
+      "</div>" +
+      "</div>";
+  }
+
+  function ensureNextSteps() {
+    if (document.querySelector("[data-cc-next-steps-off]")) return;
+    var existing = document.querySelector("[data-cc-next-steps]");
+    if (existing && existing.querySelector("a[href]")) return;
+
+    var cfg = nextStepsForPath(location.pathname);
+    if (!cfg || !cfg.actions || !cfg.actions.length) return;
+
+    var section = existing || document.createElement("section");
+    renderNextStepsSection(cfg, section);
+    if (!existing) {
+      insertBeforeFirstMatch(section, [
+        "[data-cc-related]",
+        "[data-cc-page-actions]",
+        "[data-cc-newsletter-footer]",
+        ".site-legal",
+      ]);
     }
   }
 
@@ -1058,8 +1168,21 @@
     return dedupeLinks(merged, location.pathname).slice(0, 4);
   }
 
+  function hrefsFromNextSteps() {
+    var skip = {};
+    document.querySelectorAll("[data-cc-next-steps] a[href]").forEach(function (a) {
+      var href = a.getAttribute("href") || "";
+      skip[normalizePath(href.split("#")[0])] = 1;
+    });
+    return skip;
+  }
+
   function renderRelatedSection(label, ariaLabel, items) {
-    if (!items || !items.length) return;
+    var skip = hrefsFromNextSteps();
+    items = (items || []).filter(function (item) {
+      return item && !skip[normalizePath((item.href || "").split("#")[0])];
+    });
+    if (!items.length) return;
     if (document.querySelector("[data-cc-related]")) return;
 
     var section = document.createElement("section");
@@ -1393,6 +1516,7 @@
     ensureAccountNav();
     ensureNewsletterFooter();
     ensureNewsletterCallouts();
+    ensureNextSteps();
     ensureRelatedLinks();
     ensurePageActions();
     loadAdminAuth();

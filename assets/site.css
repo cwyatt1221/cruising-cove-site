@@ -959,6 +959,35 @@ footer:not(.site-footer) .disclaimer{
   text-decoration:none;
 }
 
+.cc-next-steps{
+  background:var(--cream);
+  border-top:1px solid rgba(26,42,74,.08);
+  padding:40px 0 20px;
+  margin-top:8px;
+}
+.cc-next-steps-label{
+  margin:0 0 8px;
+  font-family:var(--font-serif);
+  font-size:1.45rem;
+  font-weight:500;
+  color:var(--navy);
+}
+.cc-next-steps-lede{
+  margin:0 0 18px;
+  max-width:40rem;
+  color:var(--muted);
+  line-height:1.5;
+}
+.cc-next-steps-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  align-items:center;
+}
+.cc-next-steps .btn{
+  text-decoration:none;
+}
+
 /* Related / next-page engagement (articles + ships) */
 .cc-related{
   background:var(--cream-2);
@@ -1074,6 +1103,7 @@ footer:not(.site-footer) .disclaimer{
   .nav-toggle,
   .cc-site-search,
   .cc-page-actions,
+  .cc-next-steps,
   .cc-related,
   .cc-print-bar,
   .page-hero .tide,
