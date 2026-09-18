@@ -6,9 +6,17 @@
 (function (global) {
   var FEATURED_SLOTS = 10;
   /** Pin the first homepage carousel slide. Set to null to rotate by ISO week. */
-  var CAROUSEL_START_ID = "disney-stingray-city-grand-cayman";
+  var CAROUSEL_START_ID = "disney-cruise-door-banners";
 
   var articles = [
+    {
+      id: "disney-cruise-door-banners",
+      title: "Disney Cruise Door Banners: The New Trend Replacing Magnets",
+      excerpt:
+        "Full-door personalized banners are replacing magnet pile-ups — DCL rules, Dream/Fantasy Concierge wooden doors, sizing tips, and where to get one.",
+      date: "2026-09-18",
+      url: "/articles/disney-cruise-door-banners.html",
+    },
     {
       id: "disney-stingray-city-grand-cayman",
       title: "Disney Stingray City, Grand Cayman: What to Know Before You Book",
