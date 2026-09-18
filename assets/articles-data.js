@@ -6,9 +6,17 @@
 (function (global) {
   var FEATURED_SLOTS = 10;
   /** Pin the first homepage carousel slide. Set to null to rotate by ISO week. */
-  var CAROUSEL_START_ID = "dunns-river-falls-jamaica-review";
+  var CAROUSEL_START_ID = "disney-stingray-city-grand-cayman";
 
   var articles = [
+    {
+      id: "disney-stingray-city-grand-cayman",
+      title: "Disney Stingray City, Grand Cayman: What to Know Before You Book",
+      excerpt:
+        "Tender timing, Disney vs independent pricing, what the sandbar is like with kids, and what to pack for Grand Cayman’s signature stingray boat day.",
+      date: "2026-09-18",
+      url: "/articles/disney-stingray-city-grand-cayman.html",
+    },
     {
       id: "dunns-river-falls-jamaica-review",
       title: "Our First Excursion Review - Dunn River Falls - Jamaica",
@@ -17,6 +25,7 @@
       date: "2026-09-08",
       url: "/articles/dunns-river-falls-jamaica-review.html",
     },
+
     {
       id: "disney-cruise-popcorn-bucket-hack",
       title: "The Disney Cruise Popcorn Bucket Hack",
