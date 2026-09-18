@@ -16,6 +16,8 @@
         "Full-door personalized banners are replacing magnet pile-ups — DCL rules, Dream/Fantasy Concierge wooden doors, sizing tips, and where to get one.",
       date: "2026-09-18",
       url: "/articles/disney-cruise-door-banners.html",
+      image: "/assets/images/disney-cruise-door-banner.jpg",
+      imageAlt: "Full-length Star Wars themed Disney cruise stateroom door banner",
     },
     {
       id: "disney-stingray-city-grand-cayman",

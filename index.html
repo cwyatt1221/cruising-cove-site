@@ -140,7 +140,27 @@
     .hero-inner{padding:36px 0 44px;}
   }
   .week-feature{
-    max-width:720px;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(220px,340px);
+    gap:36px 48px;
+    align-items:center;
+    max-width:none;
+  }
+  .week-feature-copy{min-width:0;}
+  .week-feature-media{
+    margin:0;
+    border-radius:4px;
+    overflow:hidden;
+    background:rgba(26,42,74,.06);
+    aspect-ratio:3/4;
+    max-height:420px;
+    box-shadow:0 12px 36px rgba(15,28,51,.12);
+  }
+  .week-feature-media[hidden]{display:none;}
+  .week-feature-media img{
+    width:100%;height:100%;
+    object-fit:cover;
+    object-position:center top;
   }
   .week-feature .eyebrow{margin-bottom:12px;}
   .week-feature h2{
@@ -182,6 +202,22 @@
   }
   .week-dot[aria-current="true"]{background:var(--gold);}
   .week-count{font-size:0.8rem;color:var(--muted);letter-spacing:.04em;}
+  .week-feature--text-only{
+    grid-template-columns:1fr;
+    max-width:720px;
+  }
+  @media (max-width:800px){
+    .week-feature{
+      grid-template-columns:1fr;
+      gap:24px;
+    }
+    .week-feature-media{
+      max-width:280px;
+      max-height:360px;
+      margin:0 auto;
+      order:-1;
+    }
+  }
 
   /* ---------- MARQUEE ---------- */
   .marquee-strip{
@@ -521,20 +557,25 @@
 <section class="why-section" id="featured-articles">
   <div class="wrap">
     <div class="week-feature" id="weekFeature" aria-label="Featured articles">
-      <p class="section-label" id="weekLabel">Featured articles</p>
-      <h2 id="weekTitle">Our First Excursion Review - Dunn River Falls - Jamaica</h2>
-      <span class="week-badge" id="weekBadge" hidden></span>
-      <p class="excerpt" id="weekExcerpt">Our honest family review of the famous Jamaica waterfall—what to wear, how the human-chain climb works, what happened with our nine-year-old, and whether it was worth the money.</p>
-      <div class="week-actions">
-        <a class="btn btn-gold" id="weekCta" href="/articles/dunns-river-falls-jamaica-review.html">Read the article</a>
-        <a class="archive-link" id="weekSecondary" href="/articles/">All articles</a>
+      <div class="week-feature-copy">
+        <p class="section-label" id="weekLabel">Featured articles</p>
+        <h2 id="weekTitle">Disney Cruise Door Banners: The New Trend Replacing Magnets</h2>
+        <span class="week-badge" id="weekBadge" hidden></span>
+        <p class="excerpt" id="weekExcerpt">Full-door personalized banners are replacing magnet pile-ups — DCL rules, Dream/Fantasy Concierge wooden doors, sizing tips, and where to get one.</p>
+        <div class="week-actions">
+          <a class="btn btn-gold" id="weekCta" href="/articles/disney-cruise-door-banners.html">Read the article</a>
+          <a class="archive-link" id="weekSecondary" href="/articles/">All articles</a>
+        </div>
+        <div class="week-pager" id="weekPager" hidden>
+          <button type="button" class="week-pager-btn" id="weekPrev" aria-label="Previous article">Previous</button>
+          <div class="week-dots" id="weekDots" role="tablist" aria-label="Featured articles"></div>
+          <button type="button" class="week-pager-btn" id="weekNext" aria-label="Next article">Next</button>
+          <span class="week-count" id="weekCount"></span>
+        </div>
       </div>
-      <div class="week-pager" id="weekPager" hidden>
-        <button type="button" class="week-pager-btn" id="weekPrev" aria-label="Previous article">Previous</button>
-        <div class="week-dots" id="weekDots" role="tablist" aria-label="Featured articles"></div>
-        <button type="button" class="week-pager-btn" id="weekNext" aria-label="Next article">Next</button>
-        <span class="week-count" id="weekCount"></span>
-      </div>
+      <figure class="week-feature-media" id="weekMedia">
+        <img id="weekImage" src="/assets/images/disney-cruise-door-banner.jpg" alt="Disney cruise full-door banner example" width="340" height="453">
+      </figure>
     </div>
   </div>
 </section>
@@ -748,7 +789,7 @@
     }
   })();
 </script>
-<script src="/assets/articles-data.js?v=20260918b"></script>
+<script src="/assets/articles-data.js?v=20260918c"></script>
 <script>
   (function(){
     var slides = (window.CC_featuredCarousel && window.CC_featuredCarousel()) || [];
@@ -775,6 +816,8 @@
     var dots = document.getElementById('weekDots');
     var count = document.getElementById('weekCount');
     var feature = document.getElementById('weekFeature');
+    var media = document.getElementById('weekMedia');
+    var image = document.getElementById('weekImage');
 
     function render() {
       var article = slides[idx];
@@ -808,6 +851,19 @@
         var second = article.secondaryCta || null;
         secondary.href = (second && second.href) || '/articles/';
         secondary.textContent = (second && second.label) || 'All articles';
+      }
+      if (media && image) {
+        if (article.image) {
+          media.hidden = false;
+          image.src = article.image;
+          image.alt = article.imageAlt || article.title || 'Article preview';
+          feature && feature.classList.remove('week-feature--text-only');
+        } else {
+          media.hidden = true;
+          image.removeAttribute('src');
+          image.alt = '';
+          feature && feature.classList.add('week-feature--text-only');
+        }
       }
       if (feature) {
         feature.setAttribute('aria-label', isShop ? 'Featured Shop' : 'Featured articles');
