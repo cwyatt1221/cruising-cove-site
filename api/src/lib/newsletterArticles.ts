@@ -12,6 +12,13 @@ export type NewsletterArticle = {
 
 const ARTICLES: NewsletterArticle[] = [
   {
+    title: "Welcome Aboard Randi — Our Newest Travel Agent",
+    excerpt:
+      "Meet Randi DeCap of Salt & Compass Travel Co — families, first-timers, Wish-class, Dream-class, and Concierge.",
+    date: "2026-09-26",
+    path: "/articles/welcome-aboard-randi.html",
+  },
+  {
     title: "More Itineraries on Cruising Cove: Panama Canal & New Port Guides",
     excerpt: "Panama Canal sailings plus Cabo, Puerto Vallarta, and Cartagena guides.",
     date: "2026-08-11",

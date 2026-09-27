@@ -6,9 +6,19 @@
 (function (global) {
   var FEATURED_SLOTS = 10;
   /** Pin the first homepage carousel slide. Set to null to rotate by ISO week. */
-  var CAROUSEL_START_ID = "disney-cruise-door-banners";
+  var CAROUSEL_START_ID = "welcome-aboard-randi";
 
   var articles = [
+    {
+      id: "welcome-aboard-randi",
+      title: "Welcome Aboard Randi — Our Newest Travel Agent",
+      excerpt:
+        "Meet Randi DeCap of Salt & Compass Travel Co — a Disney Cruise specialist for families, first-timers, Wish-class, Dream-class, and Concierge sailings.",
+      date: "2026-09-26",
+      url: "/articles/welcome-aboard-randi.html",
+      image: "/assets/agent-photos/randi-decap.jpg",
+      imageAlt: "Randi DeCap on a Disney cruise deck",
+    },
     {
       id: "disney-cruise-door-banners",
       title: "Disney Cruise Door Banners: The New Trend Replacing Magnets",
