@@ -98,13 +98,13 @@ window.CC_profilePath = function (agent) {
 
 /** Pre-cropped headshots for directory circles (full-body uploads stay in blob storage). */
 window.CC_AGENT_PHOTO_OVERRIDES = {
-  "amanda-carranza": "/assets/agent-photos/amanda-carranza-avatar.jpg?v=3",
+  "amanda-carranza": "/assets/agent-photos/amanda-carranza-avatar.jpg?v=4",
   "emily-schultz": "/assets/agent-photos/emily-schultz.jpg?v=7",
   "martina-yost": "/assets/agent-photos/martina-yost.jpg?v=6",
   "kim-fanning": "/assets/agent-photos/kim-fanning.jpg?v=5",
   "donna-walters": "/assets/agent-photos/donna-walters.jpg?v=5",
   "shana-matos": "/assets/agent-photos/shana-matos.jpg?v=5",
-  "randi-decap": "/assets/agent-photos/randi-decap-card.jpg?v=1",
+  "randi-decap": "/assets/agent-photos/randi-decap-card.jpg?v=2",
   "rebekah-lukins": "/assets/agent-photos/rebekah-lukins.jpg?v=2"
 };
 
