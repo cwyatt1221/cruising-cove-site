@@ -12,6 +12,13 @@ export type NewsletterArticle = {
 
 const ARTICLES: NewsletterArticle[] = [
   {
+    title: "Welcome Aboard Amanda — Our Newest Travel Agent",
+    excerpt:
+      "Meet Amanda Carranza of Travel B and V — fee-free Disney cruise planning for families, first-timers, and large groups.",
+    date: "2026-10-08",
+    path: "/articles/welcome-aboard-amanda.html",
+  },
+  {
     title: "Welcome Aboard Randi — Our Newest Travel Agent",
     excerpt:
       "Meet Randi DeCap of Salt & Compass Travel Co — families, first-timers, Wish-class, Dream-class, and Concierge.",

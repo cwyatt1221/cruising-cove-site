@@ -950,6 +950,10 @@
   };
 
   var ARTICLE_EXTRA_LINKS = {
+    "welcome-aboard-amanda": [
+      { href: "/agents/profile.html?id=amanda-carranza", title: "Amanda Carranza’s profile", meta: "Agents" },
+      { href: "/agents/", title: "Browse travel agents", meta: "Agents" },
+    ],
     "welcome-aboard-randi": [
       { href: "/agents/profile.html?id=randi-decap", title: "Randi DeCap’s profile", meta: "Agents" },
       { href: "/agents/", title: "Browse travel agents", meta: "Agents" },

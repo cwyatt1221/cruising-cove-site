@@ -6,9 +6,19 @@
 (function (global) {
   var FEATURED_SLOTS = 10;
   /** Pin the first homepage carousel slide. Set to null to rotate by ISO week. */
-  var CAROUSEL_START_ID = "welcome-aboard-randi";
+  var CAROUSEL_START_ID = "welcome-aboard-amanda";
 
   var articles = [
+    {
+      id: "welcome-aboard-amanda",
+      title: "Welcome Aboard Amanda — Our Newest Travel Agent",
+      excerpt:
+        "Meet Amanda Carranza of Travel B and V — fee-free Disney cruise planning for families, first-timers, large groups, Alaska, and Europe.",
+      date: "2026-10-08",
+      url: "/articles/welcome-aboard-amanda.html",
+      image: "/assets/agent-photos/amanda-carranza-card.jpg",
+      imageAlt: "Amanda Carranza",
+    },
     {
       id: "welcome-aboard-randi",
       title: "Welcome Aboard Randi — Our Newest Travel Agent",
