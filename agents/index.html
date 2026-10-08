@@ -106,12 +106,7 @@
       <h2>Ready to talk to someone?</h2>
       <p>Pick an agent, tell us about your sailing, and we’ll notify them. They unlock your contact details when they’re ready to reach out.</p>
     </div>
-    <div class="agent-filters" id="agentFilters" hidden>
-      <span class="agent-filters-label">Filter by specialty</span>
-      <div class="agent-filter-chips" id="filterChips" role="group" aria-label="Agent specialties"></div>
-    </div>
     <div class="agent-grid" id="agentGrid"></div>
-    <p class="agent-filter-empty" id="filterEmpty" hidden>No agents match that specialty. <button type="button" class="agent-filter-reset" id="filterReset">Show all agents</button></p>
   </section>
 
   <section id="why-free">
@@ -172,12 +167,7 @@
     }
 
     var allAgents=[];
-    var activeFilter='';
     var grid=document.getElementById('agentGrid');
-    var filtersEl=document.getElementById('agentFilters');
-    var chipsEl=document.getElementById('filterChips');
-    var filterEmpty=document.getElementById('filterEmpty');
-    var filterReset=document.getElementById('filterReset');
 
     function specialtyTokens(agent){
       var out=[];
@@ -190,53 +180,9 @@
       return out;
     }
 
-    function uniqueSpecialties(agents){
-      var seen={};
-      var out=[];
-      agents.forEach(function(agent){
-        specialtyTokens(agent).forEach(function(token){
-          var key=token.toLowerCase();
-          if(seen[key]) return;
-          seen[key]=true;
-          out.push(token);
-        });
-      });
-      out.sort(function(a,b){ return a.localeCompare(b); });
-      return out;
-    }
-
-    function agentMatchesFilter(agent, filter){
-      if(!filter) return true;
-      var needle=filter.toLowerCase();
-      return specialtyTokens(agent).some(function(t){ return t.toLowerCase()===needle; });
-    }
-
-    function filteredAgents(){
-      if(!activeFilter) return allAgents;
-      return allAgents.filter(function(a){ return agentMatchesFilter(a, activeFilter); });
-    }
-
-    function renderFilters(){
-      var specs=uniqueSpecialties(allAgents);
-      if(!specs.length){
-        filtersEl.hidden=true;
-        chipsEl.innerHTML='';
-        return;
-      }
-      filtersEl.hidden=false;
-      var html='<button type="button" class="agent-chip'+(activeFilter?'':' is-active')+'" data-filter="">All</button>';
-      specs.forEach(function(spec){
-        html+='<button type="button" class="agent-chip'+(activeFilter===spec?' is-active':'')+'" data-filter="'+escapeHtml(spec)+'">'+escapeHtml(spec)+'</button>';
-      });
-      chipsEl.innerHTML=html;
-    }
-
     function renderAgents(){
-      var agents=filteredAgents();
       grid.innerHTML='';
-      filterEmpty.hidden=!(allAgents.length>0 && agents.length===0);
-      renderFilters();
-      agents.forEach(function(agent){
+      allAgents.forEach(function(agent){
         var card=document.createElement('article');
         card.className='agent-card is-linked'+(agent.featured?' featured':'')+(agent.sample?' sample':'');
         var profileHref=window.CC_profilePath(agent);
@@ -256,7 +202,7 @@
           '</div>'+
           '<p class="agent-pitch">'+escapeHtml(agent.pitch)+'</p>'+
           '<div class="agent-tags">'+tags.map(function(s){
-            return '<button type="button" class="agent-tag" data-filter-tag="'+escapeHtml(s)+'">'+escapeHtml(s)+'</button>';
+            return '<span class="agent-tag">'+escapeHtml(s)+'</span>';
           }).join('')+'</div>'+
           '<div class="agent-card-actions">'+
             '<a class="btn btn-outline agent-card-link" href="'+escapeHtml(profileHref)+'">View profile</a>'+
@@ -269,29 +215,6 @@
           window.CCCommunity.applyAgentRequestLocks(grid, lock);
         });
       }
-    }
-
-    chipsEl.addEventListener('click',function(e){
-      var btn=e.target.closest('[data-filter]');
-      if(!btn) return;
-      activeFilter=btn.getAttribute('data-filter')||'';
-      renderAgents();
-    });
-
-    grid.addEventListener('click',function(e){
-      var tagBtn=e.target.closest('[data-filter-tag]');
-      if(!tagBtn) return;
-      e.preventDefault();
-      e.stopPropagation();
-      activeFilter=tagBtn.getAttribute('data-filter-tag')||'';
-      renderAgents();
-    });
-
-    if(filterReset){
-      filterReset.addEventListener('click',function(){
-        activeFilter='';
-        renderAgents();
-      });
     }
 
     window.CC_loadDirectoryAgents().then(function(agents){
