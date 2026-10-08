@@ -16,7 +16,7 @@
         "Meet Amanda Carranza of Travel B and V — fee-free Disney cruise planning for families, first-timers, large groups, Alaska, and Europe.",
       date: "2026-10-08",
       url: "/articles/welcome-aboard-amanda.html",
-      image: "/assets/agent-photos/amanda-carranza-card.jpg?v=2",
+      image: "/assets/agent-photos/amanda-carranza-card.jpg?v=3",
       imageAlt: "Amanda Carranza",
     },
     {
